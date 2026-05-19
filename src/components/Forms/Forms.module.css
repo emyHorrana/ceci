@@ -1,0 +1,97 @@
+.formGroup {
+  margin-bottom: 1.5rem;
+}
+
+.label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.required {
+  color: var(--color-alert-red);
+  margin-left: 4px;
+}
+
+.textInput,
+.textArea,
+.select {
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 16px;
+  border: 0.5px solid var(--color-border);
+  border-radius: var(--border-radius-md);
+  font-family: var(--font-sans);
+  transition: all 0.2s ease-out;
+  min-height: 44px;
+}
+
+.textInput:focus,
+.textArea:focus,
+.select:focus {
+  outline: none;
+  border-color: var(--color-primary-blue);
+  box-shadow: 0 0 0 3px rgba(24, 95, 165, 0.1);
+}
+
+.textInput:disabled,
+.textArea:disabled,
+.select:disabled {
+  background-color: var(--color-gray-light);
+  color: var(--color-gray-medium);
+  cursor: not-allowed;
+}
+
+.textInput.error,
+.textArea.error,
+.select.error {
+  border-color: var(--color-alert-red);
+}
+
+.textArea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.errorMessage {
+  display: block;
+  margin-top: 0.5rem;
+  color: var(--color-alert-red);
+  font-size: 13px;
+}
+
+.hint {
+  display: block;
+  margin-top: 0.5rem;
+  color: var(--color-gray-medium);
+  font-size: 13px;
+}
+
+.checkboxGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.checkbox {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  accent-color: var(--color-primary-blue);
+}
+
+.checkbox:focus {
+  outline: 3px solid var(--color-primary-blue);
+  outline-offset: 2px;
+}
+
+.checkboxLabel {
+  font-size: 16px;
+  cursor: pointer;
+  user-select: none;
+  color: var(--color-text-primary);
+}
+

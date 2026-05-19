@@ -1,0 +1,110 @@
+.loginContainer {
+  display: flex;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #E6F1FB 0%, #E1F5EE 100%);
+}
+
+.loginCard {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 2rem;
+  max-width: 500px;
+  margin: 0 auto;
+  background: white;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
+  border-radius: var(--border-radius-lg);
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 500;
+  color: var(--color-primary-blue);
+  margin: 0 0 0.5rem 0;
+}
+
+.subtitle {
+  font-size: 16px;
+  color: var(--color-gray-medium);
+  margin: 0;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.errorBox {
+  padding: 1rem;
+  background: #FCE4E4;
+  border: 0.5px solid #E24B4A;
+  border-radius: var(--border-radius-md);
+  color: #A32D2D;
+  font-size: 14px;
+}
+
+.footer {
+  text-align: center;
+  border-top: 0.5px solid var(--color-border);
+  padding-top: 1rem;
+}
+
+.footer p {
+  margin: 0.5rem 0;
+  font-size: 14px;
+}
+
+.link {
+  color: var(--color-primary-blue);
+  text-decoration: none;
+  font-weight: 500;
+  margin-left: 0.25rem;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+.sideIllustration {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.personagem {
+  font-size: 120px;
+  margin-bottom: 2rem;
+  animation: bounce 1s infinite;
+}
+
+.motivationalText {
+  font-size: 18px;
+  color: var(--color-primary-blue);
+  text-align: center;
+  max-width: 300px;
+}
+
+@media (max-width: 768px) {
+  .loginContainer {
+    flex-direction: column;
+  }
+
+  .sideIllustration {
+    display: none;
+  }
+
+  .loginCard {
+    border-radius: 0;
+  }
+}

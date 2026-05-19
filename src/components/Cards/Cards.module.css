@@ -1,0 +1,197 @@
+.moduleCard {
+  background: white;
+  border-radius: var(--border-radius-lg);
+  border: 0.5px solid var(--color-border);
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.2s ease-out;
+  cursor: pointer;
+}
+
+.moduleCard:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
+}
+
+.status-featured {
+  border: 2px solid var(--color-success-teal);
+}
+
+.moduleHeader {
+  background: linear-gradient(135deg, #E6F1FB, #E1F5EE);
+  padding: 1.5rem;
+  text-align: center;
+  position: relative;
+}
+
+.moduleEmoji {
+  font-size: 64px;
+  margin-bottom: 0.5rem;
+}
+
+.moduleTitle {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--color-primary-blue);
+}
+
+.moduleBody {
+  padding: 1.5rem;
+}
+
+.progressSection {
+  margin-bottom: 1rem;
+}
+
+.progressLabel {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.progressTrack {
+  background: var(--color-gray-light);
+  border-radius: 6px;
+  overflow: hidden;
+  height: 8px;
+}
+
+.progressFill {
+  background: linear-gradient(90deg, #185FA5, #1D9E75);
+  height: 100%;
+  transition: width 0.3s ease-out;
+}
+
+.lessonTags {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.tagCompleted {
+  display: inline-block;
+  padding: 4px 12px;
+  background: var(--color-blue-light);
+  color: var(--color-primary-blue);
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.tagLocked {
+  display: inline-block;
+  padding: 4px 12px;
+  background: var(--color-gray-light);
+  color: var(--color-gray-medium);
+  border-radius: 20px;
+  font-size: 12px;
+}
+
+.continueButton {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: var(--border-radius-md);
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease-out;
+  color: white;
+}
+
+.btn-inprogress {
+  background-color: var(--color-primary-blue);
+}
+
+.btn-inprogress:hover:not(:disabled) {
+  background-color: var(--color-primary-blue-dark);
+}
+
+.btn-featured {
+  background-color: var(--color-success-teal);
+}
+
+.btn-featured:hover {
+  background-color: var(--color-success-teal-dark);
+}
+
+.btn-locked {
+  background-color: var(--color-gray-light);
+  color: var(--color-gray-medium);
+  cursor: not-allowed;
+}
+
+.statCard {
+  text-align: center;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #E6F1FB, #E1F5EE);
+  border-radius: var(--border-radius-lg);
+  min-width: 100px;
+}
+
+.statIcon {
+  font-size: 32px;
+  margin-bottom: 0.5rem;
+}
+
+.statValue {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--color-primary-blue);
+  margin-bottom: 0.25rem;
+}
+
+.statLabel {
+  font-size: 12px;
+  color: var(--color-gray-medium);
+}
+
+.achievementCard {
+  text-align: center;
+  padding: 1.5rem;
+  background: white;
+  border-radius: var(--border-radius-lg);
+  border: 0.5px solid var(--color-border);
+  transition: all 0.2s ease-out;
+}
+
+.achievementCard:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.achievementEmoji {
+  font-size: 48px;
+  margin-bottom: 0.5rem;
+}
+
+.achievementTitle {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.achievementCard.locked {
+  opacity: 0.5;
+}
+
+.lessonCard {
+  padding: 1rem;
+  background: white;
+  border: 0.5px solid var(--color-border);
+  border-radius: var(--border-radius-md);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease-out;
+}
+
+.lessonCard:hover {
+  background: var(--color-gray-light);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}

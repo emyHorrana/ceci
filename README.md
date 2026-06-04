@@ -6,12 +6,6 @@ O **CECI** é uma plataforma web voltada à **alfabetização digital de adultos
 
 Diferente de cursos tradicionais, o projeto propõe uma experiência **adaptativa e acolhedora**, respeitando o ritmo de cada usuário e reduzindo inseguranças comuns no processo de aprendizagem digital.
 
----
-
-## 🎨 Identidade do Projeto
-
-**CECI** — *Computação Educacional Cognitiva para Inclusão (Digital)*
-
 A personagem guia **Ceci** atua como mediadora da experiência, tornando o aprendizado mais leve, amigável e acessível.
 
 ---
@@ -28,51 +22,47 @@ A personagem guia **Ceci** atua como mediadora da experiência, tornando o apren
 
 ## 💡 Diferenciais Técnicos
 
-- **Classificação silenciosa de nível**  
+- **Classificação silenciosa de nível**
   O sistema identifica o nível do usuário por meio de interações (tempo de resposta, cliques, tentativas), sem necessidade de testes formais.
 
-- **IA como suporte pedagógico**  
-  Uso de inteligência artificial para:
-  - Reformular explicações;
-  - Oferecer exemplos adicionais;
-  - Responder dúvidas.
-
-- **Possibilidade de uso offline**  
-  Integração futura com modelos locais (ex: Mistral 7B, Gemma), reduzindo custos e aumentando acessibilidade.
+- **IA como suporte pedagógico** *(via Gemini API — integração futura)*
+  Reformulação de explicações, exemplos adicionais e adaptação de analogias conforme o perfil do usuário.
 
 ---
 
-## 🧩 Estrutura da Plataforma
+## 🧩 Estrutura Pedagógica
 
-Cada módulo de aprendizagem é dividido em:
+Cada lição é dividida em etapas sequenciais:
 
-- **Teoria** — Explicações simples e diretas  
-- **Prática** — Exercícios guiados  
-- **Desafio** — Aplicação do conhecimento  
+|    Tipo    |               Descrição               |
+|------------|---------------------------------------|
+| **Teoria** |      Explicações simples e diretas    | 
+| **Jogo**   |      Exercícios interativos guiados   |
+| **Quiz**   | Verificação do conhecimento adquirido |
+
+Após o quiz, o sistema pode encaminhar para **Revisão** (flashcards) em caso de reprovação, ou seguir para a próxima lição em caso de aprovação.
 
 ### Recursos adicionais:
-
-- Jogos educativos (HTML5/JavaScript);
-- Sistema de revisão (flashcards);
+- Sistema de revisão com flashcards e curva de esquecimento;
 - Personagem guia (Ceci);
-- Chatbot desbloqueável para suporte.
+- Vídeos educativos curados;
+- Celebrações ao completar lições;
+- Feedback e depoimentos de usuários.
 
 ---
 
-## 📚 Conteúdos Iniciais
+## 📚 Conteúdos
 
 ### Módulos prioritários:
-
-1. Uso do mouse  
-2. Uso do teclado  
-3. Dúvidas comuns sobre hardware  
+1. Uso do mouse
+2. Uso do teclado
+3. Dúvidas comuns sobre hardware
 
 ### Expansões futuras:
-
-- Criação e uso de e-mail  
-- Navegação na internet  
-- Ferramentas corporativas  
-- Segurança digital  
+- Criação e uso de e-mail
+- Navegação na internet
+- Ferramentas corporativas
+- Segurança digital
 
 ---
 
@@ -80,8 +70,7 @@ Cada módulo de aprendizagem é dividido em:
 
 Adultos e idosos com pouca ou nenhuma familiaridade com tecnologia.
 
-### Principais desafios identificados:
-
+**Principais desafios identificados:**
 - Medo de errar;
 - Insegurança no ambiente digital;
 - Dificuldade de retenção;
@@ -89,52 +78,135 @@ Adultos e idosos com pouca ou nenhuma familiaridade com tecnologia.
 
 ---
 
-## ⚙️ Metodologia do Sistema
+## ⚙️ Arquitetura Atual
 
-Fluxo básico de funcionamento:
-
-1. Usuário joga ou responde uma atividade  
-2. Sistema converte a interação em um evento padrão  
-3. Evento é salvo no banco de dados  
-4. (Opcional) Modelo prevê o nível de conhecimento do usuário  
-5. Sistema escolhe a próxima lição de forma adaptativa  
-
----
-
-## ⚙️ Arquitetura (Visão Inicial)
+```
+ceci/
+├── index.html               # Entrada da aplicação
+├── package.json             # Dependências do frontend
+├── src/                     # Código React (em desenvolvimento)
+└── server/                  # Backend Node.js
+    ├── index.js             # Servidor Express com rotas da API
+    ├── lib/
+    │   ├── supabaseClient.js    # Conexão com o banco Supabase
+    │   └── geminiClient.js      # Cliente da API Gemini (Google GenAI)
+    └── .env                 # Variáveis de ambiente (NÃO versionar)
+```
 
 ### Frontend
-- React
-- HTML  
-- CSS  
-- JavaScript  
+- **React 19** com React Router DOM (SPA, roteamento client-side)
+- **Vite** como bundler
+- **Axios** para chamadas HTTP ao backend
+- Estrutura de páginas em desenvolvimento; pronta para consumir a API quando o banco estiver configurado
 
-### Backend (planejado)
-- API para gerenciamento de usuários e progresso  
-- Banco de dados para eventos e histórico  
+### Backend
+- **Node.js + Express** rodando na porta `3001`
+- **CORS** habilitado para aceitar chamadas do frontend React
+- Rotas planejadas:
 
-### Inteligência Artificial (futuro)
-- Integração com APIs externas ou modelos locais  
-- Sistema adaptativo baseado em comportamento  
+|     Prefixo      |            Responsabilidade            |
+|------------------|----------------------------------------|
+| `GET /health`    | Health check do servidor               |
+| `/api/usuario`   | Cadastro, login, perfil de aprendizado |
+| `/api/licoes`    | Listagem e desbloqueio de lições       |
+| `/api/progresso` | Registro de progresso e histórico      |
+| `/api/conteudo`  | Etapas, desafios e revisões            |
+
+### Banco de Dados
+- **Supabase** (PostgreSQL gerenciado)
+- Conexão configurada via `server/lib/supabaseClient.js`
+- Schema em desenvolvimento; RLS e policies definidas conforme as entidades do UML
+
+### Inteligência Artificial
+- **Gemini API** (`@google/genai`) configurada via `server/lib/geminiClient.js`
+- Integração com rotas ainda não implementada; cliente pronto para uso
 
 ---
 
-## 📌 Possíveis Funcionalidades Futuras
+## ⚙️ Fluxo do Sistema
 
-- Recomendação de vídeos educativos    
-- Dashboard de progresso do usuário  
-- Personalização avançada de trilhas de aprendizagem  
+```
+Usuário interage com uma atividade
+        ↓
+Sistema registra o evento (tempo, cliques, erros)
+        ↓
+Evento salvo no Supabase
+        ↓
+AlgoritmoAdaptativo classifica o perfil do usuário
+        ↓
+Próxima lição sugerida com dificuldade ajustada
+```
+
+---
+
+## 🗂️ Modelo de Domínio (UML)
+
+O diagrama de classes completo está em `ceci_uml.pdf`. As entidades principais são:
+
+- **Usuário / PerfilAprendizado** — dados do usuário e métricas de aprendizado (pontuação, tempo de resposta, erros)
+- **Personagem** — a Ceci, guia da experiência
+- **Lição / Etapa / Desafio** — estrutura do conteúdo pedagógico
+- **AlgoritmoAdaptativo** — motor de classificação e sugestão de lições
+- **Revisão** — sistema de flashcards pós-reprovação
+- **Progresso** — histórico de lições concluídas e controle de revisões pendentes
+- **Feedback / VideoRecomendado / Celebração** — recursos de suporte e motivação
+
+> O **Chatbot** foi removido do escopo atual do projeto.
+
+---
+
+## 🚀 Como Rodar Localmente
+
+### Pré-requisitos
+- Node.js 18+
+- npm
+
+### Frontend
+
+```bash
+npm install
+npm run dev
+# Acessa em http://localhost:5173
+```
+
+### Backend
+
+```bash
+cd server
+npm install
+# Crie o arquivo .env com base no .env.example da raiz
+npm start
+# Acessa em http://localhost:3001/health
+```
+
+### Variáveis de Ambiente (`server/.env`)
+
+```env
+SUPABASE_URL=
+SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
+GEMINI_API_KEY=
+PORT=3001
+```
+
+> ⚠️ **Nunca commite o arquivo `.env`.** Ele já está no `.gitignore` do servidor.
 
 ---
 
 ## 📌 Status do Projeto
 
-- Em desenvolvimento (fase inicial)
+|           Camada          |                       Status                        |
+|---------------------------|-----------------------------------------------------|
+| Frontend (React)          | 🟡 Estrutura inicial — páginas em desenvolvimento  |
+| Backend (Express)         | 🟡 Servidor iniciado — rotas a implementar         |
+| Banco de dados (Supabase) | 🔴 Schema em definição                             |
+| IA (Gemini)               | 🟡 Cliente configurado — integração pendente       |
+
 ---
 
 ## 📄 Desenvolvedores
 
-- **Ana Clara** - [@anaClara]()
-- **Ana Julia** - [@NjjSouza](https://github.com/NjjSouza)
-- **Emily Horrana** - [@emyHorrana](https://github.com/emyHorrana)
-- **Julia Santana** - [@JuliaSantana]()
+- **Ana Clara** — [@anaClara]()
+- **Ana Julia** — [@NjjSouza](https://github.com/NjjSouza)
+- **Emily Horrana** — [@emyHorrana](https://github.com/emyHorrana)
+- **Julia Santana** — [@JuliaSantana]()

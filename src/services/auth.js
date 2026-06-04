@@ -1,21 +1,28 @@
-import apiClient from './api';
+import { supabase } from '../lib/supabaseClient';
 
 export async function login(email, password) {
-  const response = await apiClient.post('/auth/login', { email, password });
-  localStorage.setItem('ceci-token', response.token);
-  return response.user;
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+  if (error) throw new Error(error.message);
+  return data.user;
 }
 
 export async function register(userData) {
-  const response = await apiClient.post('/auth/register', userData);
-  localStorage.setItem('ceci-token', response.token);
-  return response.user;
+  const { data, error } = await supabase.auth.signUp({
+    email: userData.email,
+    password: userData.password,
+    options: {
+      data: { nome: userData.nome }
+    }
+  });
+  if (error) throw new Error(error.message);
+  return data.user;
 }
 
 export function logout() {
-  localStorage.removeItem('ceci-token');
+  supabase.auth.signOut();
 }
 
 export async function getCurrentUser() {
-  return await apiClient.get('/auth/me');
+  const { data: { user } } = await supabase.auth.getUser();
+  return user;
 }

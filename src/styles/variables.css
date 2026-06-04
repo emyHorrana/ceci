@@ -1,8 +1,112 @@
+/* ============================================
+   CECI – Design Tokens
+   Paleta Pastel: Rosa · Roxo · Lavanda
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap');
+
 :root {
-  --color-primary-blue: #185FA5;
-  --color-success-teal: #1D9E75;
-  --color-gray-light: #F1EFE8;
-  --color-text-primary: #444441;
-  --border-radius-md: 8px;
-  --border-radius-lg: 12px;
+  /* === Cores primárias === */
+--color-pink:          #F48AB8;
+--color-pink-light:    #F9BCD7;
+--color-pink-pale:     #FDE8F1;
+--color-pink-bg:       #FFF8FB;
+
+--color-purple:        #AA8BF5;
+--color-purple-light:  #C8B1FA;
+--color-purple-pale:   #EEE7FF;
+--color-purple-bg:     #FBF9FF;
+
+--color-lavender:      #D0C2FF;
+--color-lavender-pale: #F4F1FF;
+
+/* === Gradientes === */
+--gradient-hero:
+  linear-gradient(
+    135deg,
+    #FFF2F8 0%,
+    #F7F4FF 50%,
+    #F4FAFF 100%
+  );
+
+--gradient-card:
+  linear-gradient(
+    135deg,
+    #FFFBFD 0%,
+    #FEFDFF 100%
+  );
+
+--gradient-btn-primary:
+  linear-gradient(
+    135deg,
+    #F48AB8 0%,
+    #AA8BF5 100%
+  );
+
+--gradient-sidebar:
+  linear-gradient(
+    180deg,
+    #F59BC3 0%,
+    #AA8BF5 100%
+  );
+
+  /* === Neutros === */
+  --color-white:         #FFFFFF;
+  --color-bg:            #FCFBFD;
+  --color-surface:       #FFFFFF;
+  --color-border:        #EDE7F5;
+  --color-border-focus:  #B79AF7;
+
+  /* === Texto === */
+  --color-text-primary:   #2B2140;
+  --color-text-secondary: #73658E;
+  --color-text-muted:     #AA9FBE;
+  --color-text-on-dark:   #FFFFFF;
+
+  /* === Feedback === */
+  --color-success:       #22C55E;
+  --color-success-bg:    #DCFCE7;
+
+  --color-error:         #EF4444;
+  --color-error-bg:      #FEE2E2;
+
+  --color-warning:       #F59E0B;
+  --color-warning-bg:    #FEF3C7;
+
+  /* === Gamificação === */
+  --color-xp:            #FFB366;
+  --color-streak:        #FF8A8A;
+  --color-coin:          #FFD966;
+
+  /* === Tipografia === */
+  --font-display: 'Lexend', sans-serif;
+  --font-body: 'Inter', sans-serif;
+
+  /* === Espaçamentos === */
+  --radius-sm:           8px;
+  --radius-md:           14px;
+  --radius-lg:           20px;
+  --radius-xl:           28px;
+  --radius-pill:         999px;
+
+  /* === Sombras === */
+  --shadow-sm:
+    0 2px 8px rgba(183, 154, 247, 0.08);
+
+  --shadow-md:
+    0 4px 20px rgba(183, 154, 247, 0.14);
+
+  --shadow-lg:
+    0 8px 40px rgba(183, 154, 247, 0.18);
+
+  --shadow-pink:
+    0 4px 20px rgba(247, 154, 192, 0.25);
+
+  --shadow-purple:
+    0 4px 20px rgba(183, 154, 247, 0.25);
+
+  /* === Transições === */
+  --transition-fast:     0.15s ease;
+  --transition-base:     0.25s ease;
+  --transition-slow:     0.40s ease;
 }

@@ -1,4 +1,5 @@
-// ButtonSecondary.jsx
+import styles from './Buttons.module.css';
+
 export function ButtonSecondary({ 
   children, 
   onClick, 
@@ -8,18 +9,18 @@ export function ButtonSecondary({
   fullWidth = false,
   ...props 
 }) {
-  const className = `
-    ${styles.buttonSecondary} 
-    ${styles[`size-${size}`]} 
-    ${fullWidth ? styles.fullWidth : ''}
-  `.trim();
+  const className = [
+    styles.buttonSecondary,
+    styles[`size-${size}`],
+    fullWidth ? styles.fullWidth : ''
+  ].filter(Boolean).join(' ');
 
   return (
     <button
       className={className}
       onClick={onClick}
       disabled={disabled}
-      aria-label={ariaLabel || children}
+      aria-label={ariaLabel || (typeof children === 'string' ? children : undefined)}
       {...props}
     >
       {children}

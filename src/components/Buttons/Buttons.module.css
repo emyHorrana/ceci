@@ -1,77 +1,115 @@
+/* ============================================
+   CECI – Botões
+   ============================================ */
 
+/* === Botão Primário (Rosa → Roxo) === */
 .buttonPrimary {
-  padding: 12px 24px;
-  background-color: var(--color-primary-blue);
-  color: white;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 12px 28px;
+  background: var(--gradient-btn-primary);
+  color: var(--color-text-on-dark);
   border: none;
-  border-radius: var(--border-radius-md);
-  font-size: 16px;
-  font-weight: 500;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
   cursor: pointer;
-  transition: all 0.2s ease-out;
   min-height: 48px;
-  font-family: var(--font-sans);
+  transition: all var(--transition-base);
+  box-shadow: var(--shadow-pink);
+  position: relative;
+  overflow: hidden;
 }
 
+.buttonPrimary::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: white;
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.buttonPrimary:hover:not(:disabled)::after { opacity: 0.10; }
 .buttonPrimary:hover:not(:disabled) {
-  background-color: var(--color-primary-blue-dark);
   transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 6px 28px rgba(255, 78, 163, 0.40);
 }
-
-.buttonPrimary:focus {
-  outline: 3px solid var(--color-primary-blue);
-  outline-offset: 2px;
-}
-
 .buttonPrimary:active:not(:disabled) {
-  transform: scale(0.98);
+  transform: scale(0.97);
 }
-
+.buttonPrimary:focus-visible {
+  outline: 3px solid var(--color-purple-light);
+  outline-offset: 3px;
+}
 .buttonPrimary:disabled {
-  background-color: var(--color-gray-light);
-  color: var(--color-gray-medium);
+  opacity: 0.45;
   cursor: not-allowed;
-  opacity: 0.5;
+  box-shadow: none;
 }
 
+/* === Botão Secundário (contorno roxo) === */
 .buttonSecondary {
-  padding: 12px 24px;
-  background-color: var(--color-success-teal);
-  color: white;
-  border: none;
-  border-radius: var(--border-radius-md);
-  font-size: 16px;
-  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 11px 28px;
+  background: transparent;
+  color: var(--color-purple);
+  border: 2px solid var(--color-purple);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
   cursor: pointer;
-  transition: all 0.2s ease-out;
   min-height: 48px;
-  font-family: var(--font-sans);
+  transition: all var(--transition-base);
 }
 
 .buttonSecondary:hover:not(:disabled) {
-  background-color: var(--color-success-teal-dark);
+  background: var(--color-purple-bg);
   transform: translateY(-2px);
 }
+.buttonSecondary:focus-visible {
+  outline: 3px solid var(--color-purple-light);
+  outline-offset: 3px;
+}
+.buttonSecondary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
 
+/* === Botão Outline (rosa) === */
 .buttonOutline {
-  padding: 12px 24px;
-  background-color: transparent;
-  color: var(--color-primary-blue);
-  border: 2px solid var(--color-primary-blue);
-  border-radius: var(--border-radius-md);
-  font-size: 16px;
-  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 11px 28px;
+  background: transparent;
+  color: var(--color-pink);
+  border: 2px solid var(--color-pink);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s ease-out;
   min-height: 48px;
+  transition: all var(--transition-base);
 }
 
 .buttonOutline:hover:not(:disabled) {
-  background-color: var(--color-blue-light);
-  border-color: var(--color-primary-blue-dark);
+  background: var(--color-pink-bg);
+  transform: translateY(-2px);
 }
 
+/* === Botão ícone === */
 .buttonIcon {
   background: none;
   border: none;
@@ -80,29 +118,22 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: var(--border-radius-md);
-  transition: all 0.2s ease-out;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+  color: var(--color-text-secondary);
 }
 
 .buttonIcon:hover {
-  background-color: var(--color-gray-light);
+  background: var(--color-purple-bg);
+  color: var(--color-purple);
 }
 
-.buttonIcon:focus {
-  outline: 3px solid var(--color-primary-blue);
+.buttonIcon:focus-visible {
+  outline: 3px solid var(--color-purple-light);
+  outline-offset: 2px;
 }
 
-.size-small {
-  padding: 8px 16px;
-  font-size: 14px;
-}
-
-.size-large {
-  padding: 16px 32px;
-  font-size: 18px;
-  min-height: 56px;
-}
-
-.fullWidth {
-  width: 100%;
-}
+/* === Modificadores de tamanho === */
+.size-small  { padding: 8px 18px; font-size: 0.875rem; min-height: 36px; }
+.size-large  { padding: 14px 36px; font-size: 1.125rem; min-height: 56px; }
+.fullWidth   { width: 100%; }

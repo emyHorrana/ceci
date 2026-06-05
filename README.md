@@ -159,37 +159,39 @@ O diagrama de classes completo está em `ceci_uml.pdf`. As entidades principais 
 
 ### Pré-requisitos
 - Node.js 18+
-- npm
+- Conta no Supabase com o schema aplicado (ver `schema.sql`)
 
-### Frontend
+### Configuração
+1. Copie `.env.example` para `.env` na raiz e preencha:
+   - `VITE_SUPABASE_URL`
+   - `VITE_SUPABASE_ANON_KEY`
 
-```bash
-npm install
-npm run dev
-# Acessa em http://localhost:5173
-```
-
-### Backend
-
-```bash
-cd server
-npm install
-# Crie o arquivo .env com base no .env.example da raiz
-npm start
-# Acessa em http://localhost:3001/health
-```
-
-### Variáveis de Ambiente (`server/.env`)
-
-```env
-SUPABASE_URL=
-SUPABASE_ANON_KEY=
-SUPABASE_SERVICE_ROLE_KEY=
-GEMINI_API_KEY=
-PORT=3001
-```
+2. Copie `.env.example` para `server/.env` e preencha:
+   - `SUPABASE_URL`
+   - `SUPABASE_ANON_KEY`
+   - `SUPABASE_SERVICE_ROLE_KEY`
+   - `GEMINI_API_KEY`
 
 > ⚠️ **Nunca commite o arquivo `.env`.** Ele já está no `.gitignore` do servidor.
+
+### Rodando o projeto
+Com concurrently instalado (`npm install -D concurrently`):
+```bash
+npm run dev
+```
+
+Para conferir status do server: `http://localhost:3001/health`.
+
+Ou em dois terminais separados:
+```bash
+# Terminal 1 — raiz
+npm run dev
+
+# Terminal 2 — server
+cd server && node index.js
+```
+
+O front roda em `http://localhost:5173` e o server em `http://localhost:3001`.
 
 ---
 

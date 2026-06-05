@@ -32,10 +32,26 @@ export function ProgressProvider({ children }) {
     }
   }, []);
 
-  const updateProgress = useCallback(async (lessonId, progressData) => {
+  // Busca módulos e progresso de uma vez
+  const fetchDashboard = useCallback(async (userId) => {
+    setLoading(true);
     try {
-      const updated = await progressService.updateProgress(lessonId, progressData);
-      // Atualizar estado local se necessário
+      const [modulesData, progressData] = await Promise.all([
+        progressService.getUserModules(userId),
+        progressService.getUserProgress(userId),
+      ]);
+      setModules(modulesData);
+      setProgress(progressData);
+    } catch (err) {
+      console.error('Erro ao buscar dashboard:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const updateProgress = useCallback(async (usuarioId, licaoId, prog, completed = false) => {
+    try {
+      const updated = await progressService.updateProgress(usuarioId, licaoId, prog, completed);
       return updated;
     } catch (err) {
       console.error('Erro ao atualizar progresso:', err);
@@ -49,7 +65,8 @@ export function ProgressProvider({ children }) {
     loading,
     fetchProgress,
     fetchModules,
-    updateProgress
+    fetchDashboard,
+    updateProgress,
   };
 
   return (

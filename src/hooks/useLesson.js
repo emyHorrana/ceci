@@ -1,3 +1,10 @@
+// useLesson.js
+// Hook de acesso ao LessonContext.
+// Atalho para usar dados e ações de lição sem importar o contexto diretamente.
+//
+// Retorna: { lesson, loading, error, fetchLesson, updateProgress, submitExercise }
+// Lança erro se usado fora do LessonProvider.
+
 import { useContext } from 'react';
 import { LessonContext } from '../context/LessonContext';
 

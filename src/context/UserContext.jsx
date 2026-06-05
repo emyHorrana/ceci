@@ -1,52 +1,27 @@
-import { createContext, useState, useCallback, useEffect } from 'react';
-import { supabase } from '../lib/supabaseClient';
+// UserContext.jsx
+// Contexto global de autenticação e dados do usuário.
+// Disponibiliza: user, loading, error, login, logout, register.
+//
+// Uso: envolva os componentes que precisam de dados do usuário com <UserProvider>.
+// Para consumir: const { user, login } = useContext(UserContext)
+// ou use o hook useUser() de hooks/useUser.js.
+
+import { createContext, useState, useCallback } from 'react';
 import * as authService from '../services/auth';
 
 export const UserContext = createContext();
 
 export function UserProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Restaura sessão ao carregar o app
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) {
-        setUser({
-          id: session.user.id,
-          email: session.user.email,
-          nome: session.user.user_metadata?.nome || session.user.email,
-        });
-      }
-      setLoading(false);
-    });
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session?.user) {
-        setUser({
-          id: session.user.id,
-          email: session.user.email,
-          nome: session.user.user_metadata?.nome || session.user.email,
-        });
-      } else {
-        setUser(null);
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
-
+  // Autentica o usuário via Supabase e armazena os dados no estado
   const login = useCallback(async (email, password) => {
     setLoading(true);
     setError(null);
     try {
-      const supabaseUser = await authService.login(email, password);
-      const userData = {
-        id: supabaseUser.id,
-        email: supabaseUser.email,
-        nome: supabaseUser.user_metadata?.nome || supabaseUser.email,
-      };
+      const userData = await authService.login(email, password);
       setUser(userData);
       return userData;
     } catch (err) {
@@ -57,30 +32,18 @@ export function UserProvider({ children }) {
     }
   }, []);
 
-  const guestLogin = useCallback(() => {
-    setUser({
-      id: null,
-      email: 'visitante@ceci.app',
-      nome: 'Visitante',
-      guest: true,
-    });
-  }, []);
-
+  // Limpa o estado do usuário e encerra a sessão no Supabase
   const logout = useCallback(async () => {
     setUser(null);
     await authService.logout();
   }, []);
 
+  // Cadastra um novo usuário e já o autentica na aplicação
   const register = useCallback(async (userData) => {
     setLoading(true);
     setError(null);
     try {
-      const supabaseUser = await authService.register(userData);
-      const newUser = {
-        id: supabaseUser.id,
-        email: supabaseUser.email,
-        nome: userData.nome,
-      };
+      const newUser = await authService.register(userData);
       setUser(newUser);
       return newUser;
     } catch (err) {
@@ -91,7 +54,14 @@ export function UserProvider({ children }) {
     }
   }, []);
 
-  const value = { user, loading, error, login, guestLogin, logout, register };
+  const value = {
+    user,
+    loading,
+    error,
+    login,
+    logout,
+    register,
+  };
 
   return (
     <UserContext.Provider value={value}>

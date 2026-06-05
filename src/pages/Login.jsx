@@ -2,7 +2,6 @@ import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../context/UserContext';
 import { ButtonPrimary } from '../components/Buttons/ButtonPrimary';
-import { ButtonSecondary } from '../components/Buttons/ButtonSecondary';
 import { TextInput } from '../components/Forms/TextInput';
 import styles from './Login.module.css';
 
@@ -11,7 +10,7 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [error, setError]       = useState('');
   const [loading, setLoading]   = useState(false);
-  const { login, guestLogin }   = useContext(UserContext);
+  const { login }               = useContext(UserContext);
   const navigate = useNavigate();
 
   const handleSubmit = async () => {
@@ -28,15 +27,6 @@ export default function Login() {
       setError(err.message || 'Erro ao fazer login. Tente novamente.');
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleGuest = async () => {
-    try {
-      await guestLogin();
-      navigate('/dashboard');
-    } catch {
-      setError('Erro ao entrar como visitante');
     }
   };
 
@@ -104,18 +94,6 @@ export default function Login() {
           >
             {loading ? 'Entrando...' : 'Entrar'}
           </ButtonPrimary>
-
-          <div className={styles.divider}>
-            <span className={styles.dividerText}>ou</span>
-          </div>
-
-          <ButtonSecondary
-            onClick={handleGuest}
-            fullWidth
-            disabled={loading}
-          >
-            Entrar como visitante
-          </ButtonSecondary>
         </div>
 
         {/* Rodapé */}

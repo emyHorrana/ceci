@@ -1,0 +1,234 @@
+/* ============================================
+   CECI – Página de Cadastro
+   ============================================ */
+
+.container {
+  display: flex;
+  min-height: 100svh;
+}
+
+/* === Lado esquerdo: ilustração === */
+.illustration {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  background: var(--gradient-hero);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Bolhas decorativas — espelho do Login */
+.illustration::before {
+  content: '';
+  position: absolute;
+  width: 320px;
+  height: 320px;
+  background: rgba(255, 78, 163, 0.15);
+  border-radius: 50%;
+  top: -80px;
+  left: -80px;
+  pointer-events: none;
+}
+
+.illustration::after {
+  content: '';
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  background: rgba(151, 71, 255, 0.15);
+  border-radius: 50%;
+  bottom: -40px;
+  right: 40px;
+  pointer-events: none;
+}
+
+.illustrationTitle {
+  font-family: var(--font-display);
+  font-size: 1.625rem;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  margin-bottom: 0.75rem;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.illustrationText {
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  text-align: center;
+  max-width: 340px;
+  margin-bottom: 2rem;
+  position: relative;
+  z-index: 1;
+}
+
+.features {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: relative;
+  z-index: 1;
+}
+
+.featureItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 16px;
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(8px);
+  border-radius: var(--radius-pill);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 2px 8px rgba(151, 71, 255, 0.08);
+}
+
+.featureItem::before {
+  content: '✦';
+  color: var(--color-purple);
+  font-size: 0.75rem;
+}
+
+/* === Lado direito: formulário === */
+.formSide {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 3rem 4rem;
+  max-width: 520px;
+  background: var(--color-white);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+}
+
+.cardHeader {
+  margin-bottom: 2rem;
+}
+
+.logoMini {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  margin-bottom: 1.5rem;
+  display: inline-block;
+  background: var(--gradient-btn-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  margin: 0 0 0.5rem 0;
+  line-height: 1.1;
+}
+
+.subtitle {
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.errorBox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: var(--color-error-bg);
+  border: 2px solid var(--color-error);
+  border-radius: var(--radius-md);
+  color: var(--color-error);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.successBox {
+  text-align: center;
+  padding: 2rem 1rem;
+  margin-bottom: 2rem;
+}
+
+.successEmoji {
+  font-size: 52px;
+  margin-bottom: 0.75rem;
+}
+
+.successBox h3 {
+  margin: 0 0 0.5rem;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--color-success);
+}
+
+.successBox p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--color-text-muted);
+}
+
+.footer {
+  margin-top: 1.5rem;
+  text-align: center;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.footer p {
+  font-size: 0.9375rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.link {
+  font-weight: 700;
+  color: var(--color-pink);
+  margin-left: 4px;
+}
+
+.link:hover {
+  color: var(--color-purple);
+}
+
+/* === Responsivo === */
+@media (max-width: 900px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .illustration {
+    flex: none;
+    min-height: 220px;
+    padding: 2rem;
+  }
+
+  .illustrationText { display: none; }
+  .illustrationTitle { font-size: 1.25rem; }
+
+  .formSide {
+    max-width: 100%;
+    padding: 2rem 1.5rem 3rem;
+  }
+}

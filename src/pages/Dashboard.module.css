@@ -435,3 +435,128 @@
     display: none;
   }
 }
+
+/* ===========================
+   LIÇÕES
+   =========================== */
+
+.badge {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--color-purple);
+  background: var(--color-purple-bg);
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+}
+
+.licoesGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.licaoCard {
+  background: var(--color-white);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--transition-fast);
+}
+
+.licaoCard:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.licaoHeader {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.125rem 1.25rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.licaoHeader:focus-visible {
+  outline: 2px solid var(--color-purple);
+  outline-offset: -2px;
+}
+
+.licaoEmoji {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.licaoInfo {
+  flex: 1;
+}
+
+.licaoTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 2px;
+}
+
+.licaoDesc {
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  margin-bottom: 6px;
+}
+
+.licaoMeta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.etapaCount {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-purple);
+  background: var(--color-purple-bg);
+  padding: 2px 10px;
+  border-radius: var(--radius-pill);
+}
+
+.completedTag {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: #16a34a;
+  background: #dcfce7;
+  padding: 2px 10px;
+  border-radius: var(--radius-pill);
+}
+
+.chevron {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+}
+
+.etapasList {
+  border-top: 1px solid var(--color-border);
+  padding: 0.75rem 1.25rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  background: var(--color-bg);
+}
+
+.iniciarBtn {
+  align-self: flex-end;
+  margin-top: 0.25rem;
+  padding: 8px 20px;
+  border-radius: var(--radius-pill);
+  background: var(--gradient-btn-primary);
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: opacity var(--transition-fast);
+}
+
+.iniciarBtn:hover {
+  opacity: 0.88;
+}

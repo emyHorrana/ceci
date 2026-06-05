@@ -1,13 +1,29 @@
-export function Select({ 
-  label, 
-  value, 
-  onChange, 
+// Select.jsx
+// Campo de seleção (dropdown) acessível do CECI.
+// Renderiza automaticamente uma opção placeholder vazia no topo da lista.
+//
+// Props:
+//   label    - texto do label visível acima do select
+//   value    - valor controlado selecionado
+//   onChange - função chamada ao selecionar uma opção
+//   options  - array de opções: [{ value: string, label: string }]
+//   error    - mensagem de erro exibida abaixo do campo
+//   required - exibe asterisco no label
+//   disabled - desabilita o campo (padrão: false)
+
+import styles from './Forms.module.css';
+
+export function Select({
+  label,
+  value,
+  onChange,
   options = [],
   error,
   required = false,
   disabled = false,
-  ...props 
+  ...props
 }) {
+  // Gera ID único para associar label e select via htmlFor/id
   const id = props.id || `select-${Math.random()}`;
 
   return (
@@ -27,6 +43,7 @@ export function Select({
         aria-invalid={!!error}
         {...props}
       >
+        {/* Opção padrão vazia (placeholder) */}
         <option value="">Selecione uma opção...</option>
         {options.map((opt) => (
           <option key={opt.value} value={opt.value}>

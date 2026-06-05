@@ -1,18 +1,35 @@
+// ModuleCard.jsx
+// Card de módulo exibido no Dashboard do aluno.
+// Mostra o progresso do aluno no módulo, tags das primeiras aulas
+// e um botão de continuar (desabilitado se bloqueado).
+//
+// Props:
+//   title          - nome do módulo
+//   emoji          - emoji representativo do módulo
+//   progress       - número de aulas concluídas
+//   lessonCount    - total de aulas do módulo
+//   status         - 'inprogress' | 'featured' | 'locked'
+//   onClick        - função chamada ao clicar no card
+//   onContinueClick - função chamada ao clicar em "Continuar"
+
 import styles from './Cards.module.css';
 
-export function ModuleCard({ 
-  title, 
-  emoji, 
-  progress, 
+export function ModuleCard({
+  title,
+  emoji,
+  progress,
   lessonCount,
-  status = 'inprogress', // 'inprogress' | 'featured' | 'locked'
+  status = 'inprogress',
   onClick,
-  onContinueClick
+  onContinueClick,
 }) {
+  // Classe de status para estilização condicional via CSS module
   const statusClass = styles[`status-${status}`];
-  
+
   return (
     <div className={`${styles.moduleCard} ${statusClass}`}>
+
+      {/* HEADER: emoji do módulo, título e badge de bloqueio */}
       <div className={styles.moduleHeader}>
         <div className={styles.moduleEmoji}>{emoji}</div>
         <h3 className={styles.moduleTitle}>{title}</h3>
@@ -20,6 +37,7 @@ export function ModuleCard({
       </div>
 
       <div className={styles.moduleBody}>
+        {/* Barra de progresso e tags de aulas (visível apenas se desbloqueado) */}
         {status !== 'locked' && (
           <>
             <div className={styles.progressSection}>
@@ -28,27 +46,31 @@ export function ModuleCard({
                 <span>{progress} de {lessonCount} aulas</span>
               </div>
               <div className={styles.progressTrack}>
-                <div 
+                <div
                   className={styles.progressFill}
                   style={{ width: `${(progress / lessonCount) * 100}%` }}
                 />
               </div>
             </div>
 
+            {/* Tags das 3 primeiras aulas com indicação de concluída/bloqueada */}
             <div className={styles.lessonTags}>
               {Array.from({ length: Math.min(3, lessonCount) }).map((_, i) => (
-                <span 
-                  key={i} 
+                <span
+                  key={i}
                   className={i < progress ? styles.tagCompleted : styles.tagLocked}
                 >
                   Aula {i + 1}
                 </span>
               ))}
-              {lessonCount > 3 && <span className={styles.tagMore}>+{lessonCount - 3}</span>}
+              {lessonCount > 3 && (
+                <span className={styles.tagMore}>+{lessonCount - 3}</span>
+              )}
             </div>
           </>
         )}
 
+        {/* Mensagem exibida quando o módulo está bloqueado */}
         {status === 'locked' && (
           <p className={styles.lockedMessage}>
             Complete o módulo anterior para desbloquear
@@ -63,6 +85,7 @@ export function ModuleCard({
           {status === 'locked' ? 'Bloqueado 🔒' : 'Continuar'}
         </button>
       </div>
+
     </div>
   );
 }

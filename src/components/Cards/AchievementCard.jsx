@@ -1,14 +1,29 @@
-export function AchievementCard({ 
-  emoji, 
-  title, 
+// AchievementCard.jsx
+// Card de conquista do aluno.
+// Exibe emoji, título e descrição opcional da conquista.
+// Conquistas bloqueadas recebem estilo visual diferenciado.
+//
+// Props:
+//   emoji       - emoji representativo da conquista
+//   title       - nome da conquista
+//   description - descrição opcional da conquista
+//   unlocked    - indica se a conquista foi desbloqueada (padrão: false)
+
+import styles from './Cards.module.css';
+
+export function AchievementCard({
+  emoji,
+  title,
   description,
-  unlocked = false
+  unlocked = false,
 }) {
   return (
     <div className={`${styles.achievementCard} ${!unlocked ? styles.locked : ''}`}>
       <div className={styles.achievementEmoji}>{emoji}</div>
       <h4 className={styles.achievementTitle}>{title}</h4>
-      {description && <p className={styles.achievementDesc}>{description}</p>}
+      {description && (
+        <p className={styles.achievementDesc}>{description}</p>
+      )}
     </div>
   );
 }

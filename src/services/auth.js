@@ -1,28 +1,36 @@
+// auth.js
+// Serviço de autenticação do CECI usando Supabase Auth diretamente.
+// Responsável por login, cadastro, logout e recuperação do usuário autenticado.
+// O token de sessão é gerenciado automaticamente pelo Supabase SDK.
+
 import { supabase } from '../lib/supabaseClient';
 
+// Autentica o usuário com e-mail e senha.
 export async function login(email, password) {
   const { data, error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) throw new Error(error.message);
   return data.user;
 }
 
-export async function register(userData) {
+// Cadastra um novo usuário com e-mail e senha.
+// Salva o nome nos metadados do Supabase Auth.
+export async function register({ nome, email, password }) {
   const { data, error } = await supabase.auth.signUp({
-    email: userData.email,
-    password: userData.password,
-    options: {
-      data: { nome: userData.nome }
-    }
+    email,
+    password,
+    options: { data: { nome } },
   });
   if (error) throw new Error(error.message);
   return data.user;
 }
 
-export function logout() {
-  supabase.auth.signOut();
+// Encerra a sessão do usuário atual.
+export async function logout() {
+  await supabase.auth.signOut();
 }
 
+// Retorna os dados do usuário atualmente autenticado (ou null se não logado).
 export async function getCurrentUser() {
-  const { data: { user } } = await supabase.auth.getUser();
-  return user;
+  const { data } = await supabase.auth.getUser();
+  return data?.user ?? null;
 }

@@ -4,6 +4,7 @@ import { UserContext } from '../context/UserContext';
 import { ProgressContext } from '../context/ProgressContext';
 import { ModuleCard } from '../components/Cards/ModuleCard';
 import { ButtonPrimary } from '../components/Buttons/ButtonPrimary';
+import { MODULOS } from '../data/modulos';
 import styles from './Dashboard.module.css';
 
 const NAV_ITEMS = [
@@ -21,11 +22,12 @@ const MOTIVATIONAL = [
 ];
 
 export default function Dashboard() {
-  const { user, logout }                 = useContext(UserContext);
+  const { user, logout }                    = useContext(UserContext);
   const { modules, progress, fetchModules } = useContext(ProgressContext);
-  const navigate                          = useNavigate();
-  const [message, setMessage]             = useState('');
-  const [activeNav, setActiveNav]         = useState('/dashboard');
+  const navigate                            = useNavigate();
+  const [message, setMessage]               = useState('');
+  const [activeNav, setActiveNav]           = useState('/dashboard');
+  const [expandedMini, setExpandedMini]     = useState(null);
 
   useEffect(() => {
     if (user?.id) fetchModules(user.id);
@@ -41,6 +43,9 @@ export default function Dashboard() {
   );
 
   const dailyPct = Math.min(((progress?.dailyProgress || 0) / 10) * 100, 100);
+
+  const toggleMini = (id) =>
+    setExpandedMini((prev) => (prev === id ? null : id));
 
   return (
     <div className={styles.dashboard}>
@@ -91,13 +96,14 @@ export default function Dashboard() {
         <div className={styles.pageContent}>
           {/* Bloco da Cecília */}
           <div className={styles.welcomeCard}>
-            <div className={styles.mascoteSlotSmall} aria-hidden>
-              {/* <img src="/mascote-ceci.png" alt="Mascote Ceci" /> */}
-            </div>
+            <div className={styles.mascoteSlotSmall} aria-hidden />
             <div className={styles.welcomeText}>
               <h2>Olá, {user.nome || 'Aluna'}!</h2>
               <p className={styles.welcomeMessage}>{message}</p>
-              <ButtonPrimary onClick={() => navigate('/licoes/1')} size="small">
+              <ButtonPrimary
+                onClick={() => navigate(`/mini-modulo/${MODULOS[0].miniModulos[0].id}`)}
+                size="small"
+              >
                 Próxima aula
               </ButtonPrimary>
             </div>
@@ -121,6 +127,66 @@ export default function Dashboard() {
             </p>
           </div>
 
+          {/* ── Mini-módulos (lições) ─────────────────────────────── */}
+          <div>
+            <div className={styles.sectionHeader}>
+              <h2>Lições</h2>
+            </div>
+            <div className={styles.licoesGrid}>
+              {MODULOS.map((modulo) =>
+                modulo.miniModulos.map((mm) => {
+                  const isOpen = expandedMini === mm.id;
+                  return (
+                    <div key={mm.id} className={styles.licaoCard}>
+                      <div
+                        className={styles.licaoHeader}
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => toggleMini(mm.id)}
+                        onKeyDown={(e) => e.key === 'Enter' && toggleMini(mm.id)}
+                      >
+                        <span className={styles.licaoEmoji}>{modulo.emoji}</span>
+                        <div className={styles.licaoInfo}>
+                          <div className={styles.licaoTitle}>{mm.titulo}</div>
+                          <div className={styles.licaoDesc}>{modulo.titulo}</div>
+                          <div className={styles.licaoMeta}>
+                            <span className={styles.etapaCount}>
+                              {mm.etapas.length} etapas
+                            </span>
+                          </div>
+                        </div>
+                        <span className={styles.chevron}>{isOpen ? '▲' : '▼'}</span>
+                      </div>
+
+                      {isOpen && (
+                        <div className={styles.etapasList}>
+                          {mm.etapas.map((etapa, i) => (
+                            <div
+                              key={i}
+                              style={{
+                                fontSize: '0.9rem',
+                                color: 'var(--color-text-secondary)',
+                                padding: '4px 0',
+                              }}
+                            >
+                              {i + 1}. {etapa.titulo}
+                            </div>
+                          ))}
+                          <button
+                            className={styles.iniciarBtn}
+                            onClick={() => navigate(`/mini-modulo/${mm.id}`)}
+                          >
+                            Continuar de onde parei
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })
+              )}
+            </div>
+          </div>
+
           {/* Módulos */}
           <div>
             <div className={styles.sectionHeader}>
@@ -136,7 +202,7 @@ export default function Dashboard() {
                   progress={mod.progress || 0}
                   lessonCount={mod.lessonCount || 10}
                   status={mod.status}
-                  onContinueClick={() => navigate(`/licoes/${mod.id}`)}
+                  onContinueClick={() => navigate(`/mini-modulo/${mod.id}`)}
                 />
               ))}
             </div>

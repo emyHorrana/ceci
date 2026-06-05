@@ -1,0 +1,358 @@
+/* ============================================
+   CECI – MiniModulo
+   Página de estudo de um mini-módulo (teoria)
+   ============================================ */
+
+/* ── Página ───────────────────────────────────────────────────────────── */
+
+.page {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  background: var(--gradient-hero);
+  font-family: var(--font-body);
+}
+
+/* ── Header ──────────────────────────────────────────────────────────── */
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.1rem 2rem;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.backBtn {
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  transition: background var(--transition-fast), color var(--transition-fast);
+  white-space: nowrap;
+}
+
+.backBtn:hover {
+  background: var(--color-lavender-pale);
+  color: var(--color-purple);
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  font-size: 0.875rem;
+  overflow: hidden;
+}
+
+.breadcrumbModulo {
+  color: var(--color-text-secondary);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.breadcrumbSep {
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+}
+
+.breadcrumbMini {
+  color: var(--color-purple);
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.etapaInfo {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  background: var(--color-lavender-pale);
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+}
+
+/* ── Barra de progresso ───────────────────────────────────────────────── */
+
+.progressBar {
+  height: 5px;
+  background: var(--color-border);
+}
+
+.progressFill {
+  height: 100%;
+  background: var(--gradient-btn-primary);
+  border-radius: 0 var(--radius-pill) var(--radius-pill) 0;
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Main ─────────────────────────────────────────────────────────────── */
+
+.main {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 2rem;
+  padding: 2rem 2.5rem;
+  max-width: 1100px;
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+/* ── Card de conteúdo ─────────────────────────────────────────────────── */
+
+.conteudoCol {
+  display: flex;
+  flex-direction: column;
+}
+
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: 2.5rem 2.75rem;
+  box-shadow: var(--shadow-md);
+  flex: 1;
+  animation: cardIn 0.35s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+@keyframes cardIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.etapaTitulo {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  margin: 0 0 1.25rem;
+  line-height: 1.2;
+}
+
+/* Estilo do HTML gerado pelo conteúdo das etapas */
+.etapaConteudo {
+  font-size: 1.0625rem;
+  color: var(--color-text-primary);
+  line-height: 1.75;
+}
+
+.etapaConteudo p {
+  margin: 0 0 1rem;
+}
+
+.etapaConteudo p:last-child {
+  margin-bottom: 0;
+}
+
+.etapaConteudo ul {
+  margin: 0.5rem 0 1rem 1.25rem;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.etapaConteudo li {
+  line-height: 1.6;
+}
+
+.etapaConteudo strong {
+  color: var(--color-purple);
+  font-weight: 700;
+}
+
+.etapaConteudo em {
+  color: var(--color-pink);
+}
+
+/* ── Coluna da Cecília ────────────────────────────────────────────────── */
+
+.ceciliaCol {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.ceciliaCard {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: 1.75rem 1.5rem;
+  box-shadow: var(--shadow-sm);
+  text-align: center;
+  width: 100%;
+}
+
+/* Slot da mascote — mesma linguagem visual de Login/Cadastro.
+   Troque o div por <img src="/mascote-ceci.png" alt="Mascote Ceci" />
+   quando a arte estiver pronta; o tamanho e border-radius se mantêm. */
+.mascoteSlot {
+  width: 160px;
+  height: 160px;
+  margin: 0 auto 1.1rem;
+  border-radius: var(--radius-xl);
+  background: rgba(255, 255, 255, 0.5);
+  border: 3px dashed rgba(151, 71, 255, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(8px);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden; /* garante que a imagem respeite o border-radius */
+}
+
+.mascoteSlot img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.dica {
+  font-size: 0.925rem;
+  color: var(--color-text-secondary);
+  line-height: 1.65;
+  margin: 0;
+  font-style: italic;
+}
+
+/* ── Dots de progresso ───────────────────────────────────────────────── */
+
+.dots {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color-border);
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: background var(--transition-fast), transform var(--transition-fast);
+}
+
+.dot:hover {
+  background: var(--color-purple-light);
+  transform: scale(1.2);
+}
+
+.dotDone {
+  background: var(--color-purple-light);
+}
+
+.dotActive {
+  background: var(--color-purple);
+  transform: scale(1.25);
+}
+
+/* ── Footer ──────────────────────────────────────────────────────────── */
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 2.5rem;
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+  position: sticky;
+  bottom: 0;
+}
+
+/* ── Not found ────────────────────────────────────────────────────────── */
+
+.notFound {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+  font-family: var(--font-body);
+  color: var(--color-text-primary);
+}
+
+.notFoundEmoji {
+  font-size: 3rem;
+}
+
+.notFound h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+/* ── Responsivo ──────────────────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  .main {
+    grid-template-columns: 1fr;
+    padding: 1.25rem;
+    gap: 1.25rem;
+  }
+
+  .ceciliaCol {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .ceciliaCard {
+    flex: 1;
+    text-align: left;
+  }
+
+  .mascoteSlot {
+    width: 80px;
+    height: 80px;
+    margin: 0 0 0.75rem;
+  }
+
+  .dots {
+    display: none; /* em mobile os dots ficam escondidos para não poluir */
+  }
+
+  .header {
+    padding: 0.9rem 1rem;
+  }
+
+  .footer {
+    padding: 1rem 1.25rem;
+  }
+
+  .card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    padding: 2.5rem 2.75rem;
+    box-shadow: var(--shadow-md);
+    flex: 1;
+
+    animation: cardIn 0.8s ease-out both;
+    }
+}

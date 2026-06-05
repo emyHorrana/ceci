@@ -44,7 +44,7 @@ export default function Licao() {
       {/* HEADER */}
       <header className={styles.header}>
         <button className={styles.backBtn} onClick={() => navigate('/dashboard')}>
-          ← Voltar
+          Voltar
         </button>
         <h1 className={styles.title}>{lesson?.title}</h1>
         <div className={styles.progress}>
@@ -92,7 +92,7 @@ export default function Licao() {
           onClick={handlePrevious}
           disabled={isFirstStep}
         >
-          ← Anterior
+          Anterior
         </ButtonOutline>
 
         <div className={styles.stepIndicator}>
@@ -108,7 +108,7 @@ export default function Licao() {
         </div>
 
         <ButtonPrimary onClick={handleNext}>
-          {isLastStep ? 'Finalizar aula' : 'Próxima →'}
+          {isLastStep ? 'Finalizar aula' : 'Próxima'}
         </ButtonPrimary>
       </footer>
     </div>

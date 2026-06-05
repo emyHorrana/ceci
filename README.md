@@ -25,8 +25,8 @@ A personagem guia **Ceci** atua como mediadora da experiência, tornando o apren
 - **Classificação silenciosa de nível**
   O sistema identifica o nível do usuário por meio de interações (tempo de resposta, cliques, tentativas), sem necessidade de testes formais.
 
-- **IA como suporte pedagógico** *(via Gemini API — integração futura)*
-  Reformulação de explicações, exemplos adicionais e adaptação de analogias conforme o perfil do usuário.
+- **IA como suporte pedagógico** *(via Gemini API)*
+  Reformulação de explicações, exemplos adicionais e adaptação de analogias conforme o perfil do usuário. Rota `/api/conteudo/reformular` integrada ao Gemini 2.0 Flash.
 
 ---
 
@@ -36,7 +36,7 @@ Cada lição é dividida em etapas sequenciais:
 
 |    Tipo    |               Descrição               |
 |------------|---------------------------------------|
-| **Teoria** |      Explicações simples e diretas    | 
+| **Teoria** |      Explicações simples e diretas    |
 | **Jogo**   |      Exercícios interativos guiados   |
 | **Quiz**   | Verificação do conhecimento adquirido |
 
@@ -83,43 +83,64 @@ Adultos e idosos com pouca ou nenhuma familiaridade com tecnologia.
 ```
 ceci/
 ├── index.html               # Entrada da aplicação
+├── vite.config.js           # Proxy /api → backend em desenvolvimento
 ├── package.json             # Dependências do frontend
-├── src/                     # Código React (em desenvolvimento)
+├── src/
+│   ├── pages/
+│   │   ├── Login.jsx        # Tela de login (autenticação via Supabase Auth)
+│   │   ├── Cadastro.jsx     # Tela de cadastro de novo usuário
+│   │   ├── Dashboard.jsx    # Visão geral do progresso do aluno
+│   │   └── Licao.jsx        # Exibição de lição com steps sequenciais
+│   ├── context/
+│   │   ├── UserContext.jsx     # Autenticação e dados do usuário logado
+│   │   ├── ProgressContext.jsx # Módulos e progresso geral do aluno
+│   │   └── LessonContext.jsx   # Lição em andamento
+│   ├── services/
+│   │   ├── auth.js             # Login, cadastro e logout via Supabase Auth
+│   │   ├── progressService.js  # Módulos e progresso — lê direto do Supabase
+│   │   ├── lessonService.js    # Lições e exercícios — usa apiClient (backend)
+│   │   ├── algorithmService.js # Lógica de classificação de nível
+│   │   ├── storageService.js   # Utilitários de localStorage (cache, preferências)
+│   │   └── api.js              # Cliente Axios apontando para o backend
+│   └── lib/
+│       └── supabaseClient.js   # Instância do Supabase SDK (frontend)
 └── server/                  # Backend Node.js
     ├── index.js             # Servidor Express com rotas da API
     ├── lib/
-    │   ├── supabaseClient.js    # Conexão com o banco Supabase
+    │   ├── supabaseClient.js    # Conexão com o banco Supabase (server-side)
     │   └── geminiClient.js      # Cliente da API Gemini (Google GenAI)
     └── .env                 # Variáveis de ambiente (NÃO versionar)
 ```
 
 ### Frontend
 - **React 19** com React Router DOM (SPA, roteamento client-side)
-- **Vite** como bundler
-- **Axios** para chamadas HTTP ao backend
-- Estrutura de páginas em desenvolvimento; pronta para consumir a API quando o banco estiver configurado
+- **Vite** como bundler, com proxy `/api` configurado para evitar CORS em desenvolvimento
+- Autenticação e progresso comunicam diretamente com o Supabase via SDK do lado do cliente; funcionalidades de conteúdo e IA utilizam o backend Express como intermediário
+- Rotas disponíveis: `/` (Login), `/cadastro` (Cadastro), `/dashboard` e `/licoes/:id`
 
 ### Backend
 - **Node.js + Express** rodando na porta `3001`
 - **CORS** habilitado para aceitar chamadas do frontend React
-- Rotas planejadas:
+- Rotas implementadas:
 
-|     Prefixo      |            Responsabilidade            |
-|------------------|----------------------------------------|
-| `GET /health`    | Health check do servidor               |
-| `/api/usuario`   | Cadastro, login, perfil de aprendizado |
-| `/api/licoes`    | Listagem e desbloqueio de lições       |
-| `/api/progresso` | Registro de progresso e histórico      |
-| `/api/conteudo`  | Etapas, desafios e revisões            |
+|     Prefixo                    |            Responsabilidade                        |
+|--------------------------------|----------------------------------------------------|
+| `GET /health`                  | Health check do servidor                           |
+| `/api/usuario`                 | Cadastro, login, perfil de aprendizado             |
+| `/api/licoes`                  | Listagem e desbloqueio de lições                   |
+| `/api/progresso`               | Registro de progresso e histórico                  |
+| `/api/conteudo`                | Etapas, desafios e revisões                        |
+| `/api/conteudo/reformular`     | Reformulação de explicações via Gemini 2.0 Flash   |
 
 ### Banco de Dados
 - **Supabase** (PostgreSQL gerenciado)
-- Conexão configurada via `server/lib/supabaseClient.js`
-- Schema em desenvolvimento; RLS e policies definidas conforme as entidades do UML
+- Tabelas ativas: `licoes`, `progresso_usuario`, `conquistas`
+- Acesso direto pelo frontend protegido por **Row Level Security (RLS)** — cada usuário acessa apenas seus próprios dados
+- Conexão server-side via `server/lib/supabaseClient.js`; conexão client-side via `src/lib/supabaseClient.js`
 
 ### Inteligência Artificial
-- **Gemini API** (`@google/genai`) configurada via `server/lib/geminiClient.js`
-- Integração com rotas ainda não implementada; cliente pronto para uso
+- **Gemini API** (`@google/genai`) integrada na rota `/api/conteudo/reformular`
+- Reformula explicações de lições conforme o perfil do aluno
 
 ---
 
@@ -175,7 +196,7 @@ O diagrama de classes completo está em `ceci_uml.pdf`. As entidades principais 
 > ⚠️ **Nunca commite o arquivo `.env`.** Ele já está no `.gitignore` do servidor.
 
 ### Rodando o projeto
-Com concurrently instalado (`npm install -D concurrently`):
+Com `concurrently` instalado (`npm install -D concurrently`):
 ```bash
 npm run dev
 ```
@@ -197,12 +218,12 @@ O front roda em `http://localhost:5173` e o server em `http://localhost:3001`.
 
 ## 📌 Status do Projeto
 
-|           Camada          |                       Status                        |
-|---------------------------|-----------------------------------------------------|
-| Frontend (React)          | 🟡 Estrutura inicial — páginas em desenvolvimento  |
-| Backend (Express)         | 🟡 Servidor iniciado — rotas a implementar         |
-| Banco de dados (Supabase) | 🔴 Schema em definição                             |
-| IA (Gemini)               | 🟡 Cliente configurado — integração pendente       |
+|           Camada          |                       Status                                        |
+|---------------------------|---------------------------------------------------------------------|
+| Frontend (React)          | 🟢 Login, Cadastro, Dashboard e Lição funcionais                   |
+| Backend (Express)         | 🟢 Rotas implementadas com integração Supabase e Gemini            |
+| Banco de dados (Supabase) | 🟡 Schema aplicado, queries ativas — RLS a configurar              |
+| IA (Gemini)               | 🟡 Rota `/reformular` integrada — demais funcionalidades pendentes |
 
 ---
 

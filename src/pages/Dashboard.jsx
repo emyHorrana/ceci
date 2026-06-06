@@ -80,7 +80,7 @@ export default function Dashboard() {
         <header className={styles.topbar}>
           <div className={styles.greeting}>
             <span className={styles.greetingHello}>Bem-vindo(a) de volta</span>
-            <span className={styles.greetingName}>{user.nome || 'Aluna'}</span>
+            <span className={styles.greetingName}>{user.nome || 'Aluno(a)'}</span>
           </div>
 
           <div className={styles.topbarStats}>
@@ -98,7 +98,7 @@ export default function Dashboard() {
           <div className={styles.welcomeCard}>
             <div className={styles.mascoteSlotSmall} aria-hidden />
             <div className={styles.welcomeText}>
-              <h2>Olá, {user.nome || 'Aluna'}!</h2>
+              <h2>Olá, {user.nome || 'Aluno(a)'}!</h2>
               <p className={styles.welcomeMessage}>{message}</p>
               <ButtonPrimary
                 onClick={() => navigate(`/mini-modulo/${MODULOS[0].miniModulos[0].id}`)}

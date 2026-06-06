@@ -59,7 +59,7 @@ export default function Cadastro() {
       <div className={styles.illustration}>
         <h2 className={styles.illustrationTitle}>Aprenda com a CECI</h2>
         <p className={styles.illustrationText}>
-          Uma plataforma pensada para você aprender digitação no seu próprio ritmo, com leveza e sem pressão.
+          Uma plataforma pensada para você aprender tecnologia no seu próprio ritmo, com leveza e sem pressão.
         </p>
         <div className={styles.features}>
           <div className={styles.featureItem}>Lições adaptadas ao seu nível</div>

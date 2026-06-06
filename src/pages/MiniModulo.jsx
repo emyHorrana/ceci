@@ -103,7 +103,7 @@ export default function MiniModulo() {
           <div className={styles.ceciliaCard}>
             {/* Slot para arte da personagem-guia — substitua pela <img> quando estiver pronta */}
             <div className={styles.mascoteSlot} aria-hidden>
-              {/* <img src="/mascote-ceci.png" alt="Mascote Ceci" /> */}
+              <img src="/mascote-ceci.png" alt="Mascote Ceci" />
             </div>
             <p className={styles.dica}>
               {etapa.dica || 'Você está indo muito bem! Continue assim! 💪'}

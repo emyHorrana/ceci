@@ -110,7 +110,11 @@ export default function Login() {
         <div className={styles.illustrationContent}>
           {/* Slot para imagem da mascote */}
           <div className={styles.mascoteSlot} aria-hidden>
-            {/* <img src="/mascote-ceci.png" alt="Mascote Ceci" /> */}
+            <img
+              src="/mascote-ceci.png"
+              alt="Mascote Ceci"
+              className={styles.mascote}
+            />
           </div>
 
           <h2 className={styles.illustrationTitle}>

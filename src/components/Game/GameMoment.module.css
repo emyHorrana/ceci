@@ -1,0 +1,161 @@
+/* CECI - GameMoment
+   Momento de jogo/prática dentro de uma lição.
+   Visualmente distinto do card de teoria: borda tracejada +
+   fundo levemente lilás, pra reforçar "aqui é modo ação". */
+
+.gameMoment {
+  background: var(--color-purple-pale);
+  border: 2px dashed var(--color-purple-light);
+  border-radius: var(--radius-xl);
+  padding: 2rem 2.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  text-align: center;
+  animation: gameIn 0.35s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+@keyframes gameIn {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ── Aviso de transição ─────────────────────────────────────────────── */
+
+.modeBanner {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  border-radius: var(--radius-pill);
+  background: var(--gradient-btn-primary);
+  box-shadow: var(--shadow-purple);
+}
+
+.modeIcon {
+  font-size: 1rem;
+}
+
+.modeLabel {
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--color-text-on-dark);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* Título e instruções */
+
+.title {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.instructions {
+  font-size: 1.0625rem;
+  color: var(--color-text-secondary);
+  line-height: 1.65;
+  max-width: 46ch;
+  margin: 0;
+}
+
+/* Slot do jogo */
+
+.gameSlot {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/* Recadinho da Cecília */
+
+.ceciFeedback {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 0.85rem 1.25rem;
+  box-shadow: var(--shadow-sm);
+  max-width: 34rem;
+}
+
+.ceciAvatar {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--color-lavender-pale);
+}
+
+.ceciAvatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ceciMessage {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--color-text-primary);
+  text-align: left;
+  line-height: 1.5;
+}
+
+/* Tentativas / pular */
+
+.attemptsRow {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.attemptsText {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+/* Estados */
+
+.gameMoment[data-status='sucesso'] {
+  background: var(--color-success-bg);
+  border-color: var(--color-success);
+  border-style: solid;
+}
+
+.gameMoment[data-status='pulado'] {
+  background: var(--color-lavender-pale);
+  border-color: var(--color-border);
+  border-style: solid;
+}
+
+/* Responsivo */
+
+@media (max-width: 768px) {
+  .gameMoment {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .ceciFeedback {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .ceciMessage {
+    text-align: center;
+  }
+}

@@ -1,4 +1,3 @@
-// App.jsx
 // Componente raiz da aplicação CECI.
 
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
@@ -8,6 +7,7 @@ import Cadastro   from './pages/Cadastro';
 import Dashboard  from './pages/Dashboard';
 import Licao      from './pages/Licao';
 import MiniModulo from './pages/MiniModulo';
+import BoasVindas from './pages/BoasVindas';
 
 import { UserProvider }     from './context/UserContext';
 import { ProgressProvider } from './context/ProgressContext';
@@ -22,6 +22,10 @@ function App() {
             <Routes>
               {/* Página inicial: tela de login */}
               <Route path="/"          element={<Login />} />
+
+              {/* Boas-vindas: apresentação da Ceci + diagnóstico inicial */}
+              {/* Acesso livre por enquanto, pra facilitar o desenvolvimento */}
+              <Route path="/boas-vindas" element={<BoasVindas />} />
 
               {/* Cadastro: criação de nova conta */}
               <Route path="/cadastro"  element={<Cadastro />} />

@@ -3,10 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../context/UserContext';
 import { ButtonPrimary } from '../components/Buttons/ButtonPrimary';
 import { TextInput } from '../components/Forms/TextInput';
+import { useLocalStorage } from '../hooks/useLocalStorage';
 import styles from './Cadastro.module.css';
 
 export default function Cadastro() {
-  const [nome, setNome] = useState('');
+  // Se a pessoa passou pelo fluxo de /boas-vindas antes de chegar aqui,
+  // o nome que ela digitou lá já fica pré-preenchido - não faz sentido
+  // pedir de novo algo que ela já contou pra Ceci.
+  const [onboarding] = useLocalStorage('ceci_onboarding', {});
+  const [nome, setNome] = useState(onboarding?.nome?.meta?.nome || '');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');

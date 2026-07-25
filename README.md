@@ -1,6 +1,6 @@
-# 📘 CECI — Computação Educacional Cognitiva para Inclusão Digital
+# 📘 CECI - Computação Educacional Cognitiva para Inclusão Digital
 
-## 🧠 Sobre o Projeto
+## .✦ ہ˖ Sobre o Projeto
 
 O **CECI** é uma plataforma web voltada à **alfabetização digital de adultos e idosos**, com foco em inclusão, acessibilidade e autonomia no uso de tecnologias.
 
@@ -10,7 +10,7 @@ A personagem guia **Ceci** atua como mediadora da experiência, tornando o apren
 
 ---
 
-## 🎯 Objetivos
+## .✦ ہ˖ Objetivos
 
 - Promover inclusão digital de forma acessível;
 - Reduzir o medo de errar no ambiente digital;
@@ -20,7 +20,7 @@ A personagem guia **Ceci** atua como mediadora da experiência, tornando o apren
 
 ---
 
-## 💡 Diferenciais Técnicos
+## .✦ ہ˖ Diferenciais Técnicos
 
 - **Classificação silenciosa de nível**
   O sistema identifica o nível do usuário por meio de interações (tempo de resposta, cliques, tentativas), sem necessidade de testes formais.
@@ -30,7 +30,7 @@ A personagem guia **Ceci** atua como mediadora da experiência, tornando o apren
 
 ---
 
-## 🧩 Estrutura Pedagógica
+## .✦ ہ˖ Estrutura Pedagógica
 
 Cada lição é dividida em etapas sequenciais:
 
@@ -51,22 +51,21 @@ Após o quiz, o sistema pode encaminhar para **Revisão** (flashcards) em caso d
 
 ---
 
-## 📚 Conteúdos
+## .✦ ہ˖ Conteúdos
 
 ### Módulos prioritários:
 1. Uso do mouse
 2. Uso do teclado
-3. Dúvidas comuns sobre hardware
+3. Hardware e periféricos
 
-### Expansões futuras:
-- Criação e uso de e-mail
-- Navegação na internet
-- Ferramentas corporativas
-- Segurança digital
+### Com tempo hábil:
+4. Área de trabalho
+5. Navegando na internet
+6. Segurança online
 
 ---
 
-## 👥 Público-Alvo
+## .✦ ہ˖ Público-Alvo
 
 Adultos e idosos com pouca ou nenhuma familiaridade com tecnologia.
 
@@ -78,7 +77,7 @@ Adultos e idosos com pouca ou nenhuma familiaridade com tecnologia.
 
 ---
 
-## ⚙️ Arquitetura Atual
+## .✦ ہ˖ Arquitetura Atual
 
 ```
 ceci/
@@ -97,8 +96,8 @@ ceci/
 │   │   └── LessonContext.jsx   # Lição em andamento
 │   ├── services/
 │   │   ├── auth.js             # Login, cadastro e logout via Supabase Auth
-│   │   ├── progressService.js  # Módulos e progresso — lê direto do Supabase
-│   │   ├── lessonService.js    # Lições e exercícios — usa apiClient (backend)
+│   │   ├── progressService.js  # Módulos e progresso - lê direto do Supabase
+│   │   ├── lessonService.js    # Lições e exercícios - usa apiClient (backend)
 │   │   ├── algorithmService.js # Lógica de classificação de nível
 │   │   ├── storageService.js   # Utilitários de localStorage (cache, preferências)
 │   │   └── api.js              # Cliente Axios apontando para o backend
@@ -135,7 +134,7 @@ ceci/
 ### Banco de Dados
 - **Supabase** (PostgreSQL gerenciado)
 - Tabelas ativas: `licoes`, `progresso_usuario`, `conquistas`
-- Acesso direto pelo frontend protegido por **Row Level Security (RLS)** — cada usuário acessa apenas seus próprios dados
+- Acesso direto pelo frontend protegido por **Row Level Security (RLS)** - cada usuário acessa apenas seus próprios dados
 - Conexão server-side via `server/lib/supabaseClient.js`; conexão client-side via `src/lib/supabaseClient.js`
 
 ### Inteligência Artificial
@@ -144,7 +143,7 @@ ceci/
 
 ---
 
-## ⚙️ Fluxo do Sistema
+## .✦ ہ˖ Fluxo do Sistema
 
 ```
 Usuário interage com uma atividade
@@ -160,23 +159,23 @@ Próxima lição sugerida com dificuldade ajustada
 
 ---
 
-## 🗂️ Modelo de Domínio (UML)
+## .✦ ہ˖ Modelo de Domínio (UML)
 
 O diagrama de classes completo está em `ceci_uml.pdf`. As entidades principais são:
 
-- **Usuário / PerfilAprendizado** — dados do usuário e métricas de aprendizado (pontuação, tempo de resposta, erros)
-- **Personagem** — a Ceci, guia da experiência
-- **Lição / Etapa / Desafio** — estrutura do conteúdo pedagógico
-- **AlgoritmoAdaptativo** — motor de classificação e sugestão de lições
-- **Revisão** — sistema de flashcards pós-reprovação
-- **Progresso** — histórico de lições concluídas e controle de revisões pendentes
-- **Feedback / VideoRecomendado / Celebração** — recursos de suporte e motivação
+- **Usuário / PerfilAprendizado** - dados do usuário e métricas de aprendizado (pontuação, tempo de resposta, erros)
+- **Personagem** - a Ceci, guia da experiência
+- **Lição / Etapa / Desafio** - estrutura do conteúdo pedagógico
+- **AlgoritmoAdaptativo** - motor de classificação e sugestão de lições
+- **Revisão** - sistema de flashcards pós-reprovação
+- **Progresso** - histórico de lições concluídas e controle de revisões pendentes
+- **Feedback / VideoRecomendado / Celebração** - recursos de suporte e motivação
 
 > O **Chatbot** foi removido do escopo atual do projeto.
 
 ---
 
-## 🚀 Como Rodar Localmente
+## .✦ ہ˖ Como Rodar Localmente
 
 ### Pré-requisitos
 - Node.js 18+
@@ -205,10 +204,10 @@ Para conferir status do server: `http://localhost:3001/health`.
 
 Ou em dois terminais separados:
 ```bash
-# Terminal 1 — raiz
+# Terminal 1 - raiz
 npm run dev
 
-# Terminal 2 — server
+# Terminal 2 - server
 cd server && node index.js
 ```
 
@@ -216,20 +215,20 @@ O front roda em `http://localhost:5173` e o server em `http://localhost:3001`.
 
 ---
 
-## 📌 Status do Projeto
+## .✦ ہ˖ Status do Projeto
 
 |           Camada          |                       Status                                        |
 |---------------------------|---------------------------------------------------------------------|
 | Frontend (React)          | 🟢 Login, Cadastro, Dashboard e Lição funcionais                   |
 | Backend (Express)         | 🟢 Rotas implementadas com integração Supabase e Gemini            |
-| Banco de dados (Supabase) | 🟡 Schema aplicado, queries ativas — RLS a configurar              |
-| IA (Gemini)               | 🟡 Rota `/reformular` integrada — demais funcionalidades pendentes |
+| Banco de dados (Supabase) | 🟡 Schema aplicado, queries ativas - RLS a configurar              |
+| IA (Gemini)               | 🟡 Rota `/reformular` integrada - demais funcionalidades pendentes |
 
 ---
 
-## 📄 Desenvolvedores
+## .✦ ہ˖ Desenvolvedores
 
-- **Ana Clara** — [@anaClara]()
-- **Ana Julia** — [@NjjSouza](https://github.com/NjjSouza)
-- **Emily Horrana** — [@emyHorrana](https://github.com/emyHorrana)
-- **Julia Santana** — [@JuliaSantana]()
+- **Ana Clara** - [@anaClara]()
+- **Ana Julia** - [@NjjSouza](https://github.com/NjjSouza)
+- **Emily Horrana** - [@emyHorrana](https://github.com/emyHorrana)
+- **Julia Santana** - [@JuliaSantana]()

@@ -1,7 +1,7 @@
 /**
  * modulos.js
  * Fonte da verdade local para a estrutura de módulos e mini-módulos do CECI.
- * Não precisa estar no banco de dados — é conteúdo estático do currículo.
+ * Não precisa estar no banco de dados - é conteúdo estático do currículo.
  *
  * Estrutura:
  *  modulos[]
@@ -126,7 +126,7 @@ export const MODULOS = [
         etapas: [
           {
             titulo: 'Hardware: a parte que você toca',
-            conteudo: `<p><strong>Hardware</strong> são todas as partes físicas do computador — tudo que você pode <em>tocar</em>.</p>
+            conteudo: `<p><strong>Hardware</strong> são todas as partes físicas do computador - tudo que você pode <em>tocar</em>.</p>
 <p>Exemplos: monitor, teclado, mouse, impressora, pen drive.</p>`,
             dica: 'Se você pode segurar na mão, é hardware!',
           },

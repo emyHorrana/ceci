@@ -1,13 +1,11 @@
-/* ============================================
-   CECI – Página de Login / Entrar
-   ============================================ */
+/* CECI - Página de Login / Entrar */
 
 .loginContainer {
   display: flex;
   min-height: 100svh;
 }
 
-/* === Lado esquerdo: formulário === */
+/* Lado esquerdo: formulário */
 .loginForm {
   flex: 1;
   display: flex;
@@ -161,7 +159,7 @@
   color: var(--color-purple);
 }
 
-/* === Lado direito: ilustração === */
+/* Lado direito: ilustração */
 .sideIllustration {
   flex: 1;
   display: flex;
@@ -255,7 +253,7 @@
   box-shadow: 0 2px 8px rgba(151, 71, 255, 0.08);
 }
 
-/* === Responsivo === */
+/* Responsivo */
 @media (max-width: 900px) {
   .loginContainer {
     flex-direction: column;

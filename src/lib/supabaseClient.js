@@ -1,6 +1,6 @@
 // supabaseClient.js
 // Instância única do cliente Supabase para o frontend.
-// Importe este arquivo em qualquer service que precise do Supabase —
+// Importe este arquivo em qualquer service que precise do Supabase -
 // nunca chame createClient() fora daqui.
 
 import { createClient } from '@supabase/supabase-js';

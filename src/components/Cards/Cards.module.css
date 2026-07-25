@@ -1,8 +1,6 @@
-/* ============================================
-   CECI – Cards
-   ============================================ */
+/* CECI - Cards */
 
-/* === Card de Módulo === */
+/* Card de Módulo */
 
 .moduleCard {
   background: var(--color-white);
@@ -156,7 +154,7 @@
   box-shadow: none;
 }
 
-/* === Stat Card (topbar) === */
+/* Stat Card (topbar) */
 
 .statCard {
   text-align: center;
@@ -190,7 +188,7 @@
   letter-spacing: 0.04em;
 }
 
-/* === Achievement Card === */
+/* Achievement Card */
 
 .achievementCard {
   text-align: center;
@@ -227,7 +225,7 @@
   line-height: 1.3;
 }
 
-/* === Lesson Card === */
+/* Lesson Card */
 
 .lessonCard {
   padding: 1rem 1.25rem;

@@ -1,13 +1,11 @@
-/* ============================================
-   CECI – Página de Cadastro
-   ============================================ */
+/* CECI - Página de Cadastro */
 
 .container {
   display: flex;
   min-height: 100svh;
 }
 
-/* === Lado esquerdo: ilustração === */
+/* Lado esquerdo: ilustração */
 .illustration {
   flex: 1;
   display: flex;
@@ -20,7 +18,7 @@
   overflow: hidden;
 }
 
-/* Bolhas decorativas — espelho do Login */
+/* Bolhas decorativas - espelho do Login */
 .illustration::before {
   content: '';
   position: absolute;
@@ -96,7 +94,7 @@
   font-size: 0.75rem;
 }
 
-/* === Lado direito: formulário === */
+/* Lado direito: formulário */
 .formSide {
   flex: 1;
   display: flex;
@@ -212,7 +210,7 @@
   color: var(--color-purple);
 }
 
-/* === Responsivo === */
+/* Responsivo */
 @media (max-width: 900px) {
   .container {
     flex-direction: column;

@@ -1,8 +1,6 @@
-/* ============================================
-   CECI – Botões
-   ============================================ */
+/* CECI - Botões */
 
-/* === Botão Primário (Rosa → Roxo) === */
+/* Botão Primário (Rosa → Roxo) */
 .buttonPrimary {
   display: inline-flex;
   align-items: center;
@@ -52,7 +50,7 @@
   box-shadow: none;
 }
 
-/* === Botão Secundário (contorno roxo) === */
+/* Botão Secundário (contorno roxo) */
 .buttonSecondary {
   display: inline-flex;
   align-items: center;
@@ -85,7 +83,7 @@
   cursor: not-allowed;
 }
 
-/* === Botão Outline (rosa) === */
+/* Botão Outline (rosa) */
 .buttonOutline {
   display: inline-flex;
   align-items: center;
@@ -109,7 +107,7 @@
   transform: translateY(-2px);
 }
 
-/* === Botão ícone === */
+/* Botão ícone */
 .buttonIcon {
   background: none;
   border: none;
@@ -133,7 +131,7 @@
   outline-offset: 2px;
 }
 
-/* === Modificadores de tamanho === */
+/* Modificadores de tamanho */
 .size-small  { padding: 8px 18px; font-size: 0.875rem; min-height: 36px; }
 .size-large  { padding: 14px 36px; font-size: 1.125rem; min-height: 56px; }
 .fullWidth   { width: 100%; }

@@ -1,9 +1,7 @@
-/* ============================================
-   CECI – MiniModulo
-   Página de estudo de um mini-módulo (teoria)
-   ============================================ */
+/* CECI - MiniModulo
+   Página de estudo de um mini-módulo (teoria) */
 
-/* ── Página ───────────────────────────────────────────────────────────── */
+/* Página */
 
 .page {
   min-height: 100svh;
@@ -13,7 +11,7 @@
   font-family: var(--font-body);
 }
 
-/* ── Header ──────────────────────────────────────────────────────────── */
+/* Header */
 
 .header {
   display: flex;
@@ -85,7 +83,7 @@
   border-radius: var(--radius-pill);
 }
 
-/* ── Barra de progresso ───────────────────────────────────────────────── */
+/* Barra de progresso */
 
 .progressBar {
   height: 5px;
@@ -99,7 +97,7 @@
   transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* ── Main ─────────────────────────────────────────────────────────────── */
+/* Main */
 
 .main {
   flex: 1;
@@ -113,7 +111,7 @@
   box-sizing: border-box;
 }
 
-/* ── Card de conteúdo ─────────────────────────────────────────────────── */
+/* Card de conteúdo */
 
 .conteudoCol {
   display: flex;
@@ -187,7 +185,7 @@
   color: var(--color-pink);
 }
 
-/* ── Coluna da Cecília ────────────────────────────────────────────────── */
+/* Coluna da Cecília */
 
 .ceciliaCol {
   display: flex;
@@ -228,7 +226,7 @@
   font-style: italic;
 }
 
-/* ── Dots de progresso ───────────────────────────────────────────────── */
+/* Dots de progresso */
 
 .dots {
   display: flex;
@@ -262,7 +260,7 @@
   transform: scale(1.25);
 }
 
-/* ── Footer ──────────────────────────────────────────────────────────── */
+/* Footer */
 
 .footer {
   display: flex;
@@ -275,7 +273,7 @@
   bottom: 0;
 }
 
-/* ── Not found ────────────────────────────────────────────────────────── */
+/* Not found */
 
 .notFound {
   min-height: 100svh;
@@ -298,7 +296,7 @@
   margin: 0;
 }
 
-/* ── Responsivo ──────────────────────────────────────────────────────── */
+/* Responsivo */
 
 @media (max-width: 768px) {
   .main {

@@ -21,7 +21,7 @@ export function ProgressProvider({ children }) {
     }
   }, []);
 
-  // Busca módulos E progresso geral ao mesmo tempo —
+  // Busca módulos E progresso geral ao mesmo tempo 
   // o Dashboard só chama fetchModules, então fazemos os dois aqui.
   const fetchModules = useCallback(async (userId) => {
     setLoading(true);

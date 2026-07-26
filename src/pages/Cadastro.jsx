@@ -11,7 +11,7 @@ export default function Cadastro() {
   // o nome que ela digitou lá já fica pré-preenchido - não faz sentido
   // pedir de novo algo que ela já contou pra Ceci.
   const [onboarding] = useLocalStorage('ceci_onboarding', {});
-  const [nome, setNome] = useState(onboarding?.nome?.meta?.nome || '');
+  const [nome, setNome] = useState(onboarding?.nome?.meta?.valor || '');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');

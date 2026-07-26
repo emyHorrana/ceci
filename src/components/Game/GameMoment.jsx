@@ -114,7 +114,7 @@ export function GameMoment({
 
   const [attempts, setAttempts] = useState(0);
   const [status, setStatus] = useState('jogando'); // 'jogando' | 'sucesso' | 'pulado'
-  const [ceciMessage, setCeciMessage] = useState(instructions);
+  const [ceciMessage, setCeciMessage] = useState(null);
 
   const canSkip = allowSkip && status === 'jogando' && attempts >= maxAttempts;
 
@@ -164,13 +164,16 @@ export function GameMoment({
         {children({ reportResult, attempts, status })}
       </div>
 
-      {/* Recadinho da Cecília, reagindo ao que está acontecendo */}
-      <div className={styles.ceciFeedback}>
-        <div className={styles.ceciAvatar} aria-hidden>
-          <img src="/mascote-ceci.png" alt="" />
+      {/* Recadinho da Cecília - só aparece quando ela tem algo de fato a
+          dizer (erro, acerto ou "pular"), pra não repetir a instrução */}
+      {ceciMessage && (
+        <div className={styles.ceciFeedback}>
+          <div className={styles.ceciAvatar} aria-hidden>
+            <img src="/mascote-ceci.png" alt="" />
+          </div>
+          <p className={styles.ceciMessage}>{ceciMessage}</p>
         </div>
-        <p className={styles.ceciMessage}>{ceciMessage}</p>
-      </div>
+      )}
 
       {/* Indicador discreto de tentativas - só aparece depois do 1º erro,
           pra não deixar a pessoa ansiosa logo de cara */}

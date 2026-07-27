@@ -14,7 +14,7 @@
 }
 
 .required {
-  color: var(--color-pink);
+  color: var(--color-yellow-deep);
   margin-left: 3px;
 }
 
@@ -43,21 +43,21 @@
 .textInput:hover:not(:disabled),
 .textArea:hover:not(:disabled),
 .select:hover:not(:disabled) {
-  border-color: var(--color-lavender);
+  border-color: var(--color-yellow-pale);
 }
 
 .textInput:focus,
 .textArea:focus,
 .select:focus {
-  border-color: var(--color-purple);
-  box-shadow: 0 0 0 4px rgba(151, 71, 255, 0.12);
-  background: var(--color-purple-bg);
+  border-color: var(--color-yellow-deep);
+  box-shadow: 0 0 0 4px rgba(255, 202, 26, 0.12);
+  background: var(--color-yellow-bg);
 }
 
 .textInput:disabled,
 .textArea:disabled,
 .select:disabled {
-  background: var(--color-lavender-pale);
+  background: var(--color-yellow-bg);
   color: var(--color-text-muted);
   cursor: not-allowed;
   opacity: 0.7;
@@ -104,12 +104,12 @@
   width: 22px;
   height: 22px;
   cursor: pointer;
-  accent-color: var(--color-purple);
+  accent-color: var(--color-yellow-deep);
   border-radius: 6px;
 }
 
 .checkbox:focus-visible {
-  outline: 3px solid var(--color-purple-light);
+  outline: 3px solid var(--color-yellow);
   outline-offset: 2px;
 }
 

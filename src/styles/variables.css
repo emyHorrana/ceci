@@ -1,69 +1,63 @@
-/* ============================================
-   CECI - Design Tokens
-   Paleta Pastel: Rosa · Roxo · Lavanda
-   ============================================ */
+/* CECI - Design Tokens
+   Paleta oficial do site: Amarelo (acolhedor, neutro, não associado a nenhum gênero) 
+   Rosa/Roxo reservadas para momentos de interação direta com a mascote Cecília */
 
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap');
 
 :root {
-  /* === Cores primárias === */
---color-pink:          #F48AB8;
---color-pink-light:    #F9BCD7;
---color-pink-pale:     #FDE8F1;
---color-pink-bg:       #FFF8FB;
+  /* Marca do site: Amarelo */
+  /* Escala completa da paleta oficial (5 tons, do mais claro ao mais forte) */
+  --color-yellow-bg:    #FFFDF0;
+  --color-yellow-pale:  #FFFFCC;
+  --color-yellow-soft:  #FFF099;
+  --color-yellow-light: #FFE880;
+  --color-yellow:       #FFD94D;
+  --color-yellow-deep:  #FFCA1A;
 
---color-purple:        #AA8BF5;
---color-purple-light:  #C8B1FA;
---color-purple-pale:   #EEE7FF;
---color-purple-bg:     #FBF9FF;
+  /* Gradientes (marca do site) */
+  --gradient-hero:
+    linear-gradient(
+      135deg,
+      #FFFDF0 0%,
+      #FFFBE0 50%,
+      #FFF6CC 100%
+    );
 
---color-lavender:      #D0C2FF;
---color-lavender-pale: #F4F1FF;
+  --gradient-card:
+    linear-gradient(
+      135deg,
+      #FFFEFB 0%,
+      #FFFCF0 100%
+    );
 
-/* === Gradientes === */
---gradient-hero:
-  linear-gradient(
-    135deg,
-    #FFF2F8 0%,
-    #F7F4FF 50%,
-    #F4FAFF 100%
-  );
+  --gradient-btn-primary:
+    linear-gradient(
+      135deg,
+      #FFD94D 0%,
+      #FFCA1A 100%
+    );
 
---gradient-card:
-  linear-gradient(
-    135deg,
-    #FFFBFD 0%,
-    #FEFDFF 100%
-  );
+  --gradient-sidebar:
+    linear-gradient(
+      180deg,
+      #FFE880 0%,
+      #FFCA1A 100%
+    );
 
---gradient-btn-primary:
-  linear-gradient(
-    135deg,
-    #F48AB8 0%,
-    #AA8BF5 100%
-  );
-
---gradient-sidebar:
-  linear-gradient(
-    180deg,
-    #F59BC3 0%,
-    #AA8BF5 100%
-  );
-
-  /* === Neutros === */
+  /* Neutros */
   --color-white:         #FFFFFF;
-  --color-bg:            #FCFBFD;
+  --color-bg:            #FDFBF3;
   --color-surface:       #FFFFFF;
-  --color-border:        #EDE7F5;
-  --color-border-focus:  #B79AF7;
+  --color-border:        #EDE4CE;
+  --color-border-focus:  #E0A100;
 
-  /* === Texto === */
+  /* Texto */
   --color-text-primary:   #2B2140;
   --color-text-secondary: #73658E;
   --color-text-muted:     #AA9FBE;
   --color-text-on-dark:   #FFFFFF;
 
-  /* === Feedback === */
+  /* Feedback */
   --color-success:       #22C55E;
   --color-success-bg:    #DCFCE7;
 
@@ -73,40 +67,62 @@
   --color-warning:       #F59E0B;
   --color-warning-bg:    #FEF3C7;
 
-  /* === Gamificação === */
+  /* Gamificação */
   --color-xp:            #FFB366;
   --color-streak:        #FF8A8A;
   --color-coin:          #FFD966;
 
-  /* === Tipografia === */
+  /* Tipografia */
   --font-display: 'Lexend', sans-serif;
   --font-body: 'Inter', sans-serif;
 
-  /* === Espaçamentos === */
+  /* Espaçamentos */
   --radius-sm:           8px;
   --radius-md:           14px;
   --radius-lg:           20px;
   --radius-xl:           28px;
   --radius-pill:         999px;
 
-  /* === Sombras === */
+  /* Sombras */
   --shadow-sm:
-    0 2px 8px rgba(183, 154, 247, 0.08);
+    0 2px 8px rgba(230, 180, 60, 0.10);
 
   --shadow-md:
-    0 4px 20px rgba(183, 154, 247, 0.14);
+    0 4px 20px rgba(230, 180, 60, 0.16);
 
   --shadow-lg:
-    0 8px 40px rgba(183, 154, 247, 0.18);
+    0 8px 40px rgba(230, 180, 60, 0.20);
 
-  --shadow-pink:
-    0 4px 20px rgba(247, 154, 192, 0.25);
+  --shadow-yellow:
+    0 4px 20px rgba(255, 202, 26, 0.35);
 
-  --shadow-purple:
-    0 4px 20px rgba(183, 154, 247, 0.25);
-
-  /* === Transições === */
+  /* Transições */
   --transition-fast:     0.15s ease;
   --transition-base:     0.25s ease;
   --transition-slow:     0.40s ease;
+
+  /* Cores da Cecília (mascote) - interação direta com a personagem (avatar,
+    falas, futuras seções dedicadas a ela). Nunca no restante do site. */
+  --color-ceci-pink:          #F48AB8;
+  --color-ceci-pink-light:    #F9BCD7;
+  --color-ceci-pink-pale:     #FDE8F1;
+  --color-ceci-pink-bg:       #FFF8FB;
+
+  --color-ceci-purple:        #AA8BF5;
+  --color-ceci-purple-light:  #C8B1FA;
+  --color-ceci-purple-pale:   #EEE7FF;
+  --color-ceci-purple-bg:     #FBF9FF;
+
+  --color-ceci-lavender:      #D0C2FF;
+  --color-ceci-lavender-pale: #F4F1FF;
+
+  --gradient-ceci:
+    linear-gradient(
+      135deg,
+      #F48AB8 0%,
+      #AA8BF5 100%
+    );
+
+  --shadow-ceci:
+    0 4px 20px rgba(183, 154, 247, 0.25);
 }

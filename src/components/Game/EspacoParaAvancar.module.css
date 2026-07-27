@@ -22,7 +22,7 @@
   flex-direction: column;
   gap: 8px;
   padding: 1.25rem;
-  background: var(--color-lavender-pale);
+  background: var(--color-yellow-bg);
   border-radius: var(--radius-lg);
   width: 100%;
   max-width: 20rem;
@@ -51,23 +51,23 @@
   font-family: var(--font-body);
   font-size: 0.7rem;
   font-weight: 700;
-  color: var(--color-text-on-dark);
+  color: var(--color-text-primary);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   background: var(--gradient-btn-primary);
   border-radius: 6px;
-  box-shadow: var(--shadow-purple);
+  box-shadow: var(--shadow-yellow);
   animation: pulsar 1.6s ease-in-out infinite;
 }
 
 @keyframes pulsar {
   0%, 100% {
     transform: scale(1);
-    box-shadow: var(--shadow-purple);
+    box-shadow: var(--shadow-yellow);
   }
   50% {
     transform: scale(1.04);
-    box-shadow: 0 4px 26px rgba(183, 154, 247, 0.4);
+    box-shadow: 0 4px 26px rgba(255, 202, 26, 0.4);
   }
 }
 

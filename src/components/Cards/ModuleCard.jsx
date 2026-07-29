@@ -9,6 +9,8 @@
 //   progress       - número de aulas concluídas
 //   lessonCount    - total de aulas do módulo
 //   status         - 'inprogress' | 'featured' | 'locked'
+//   lockedMessage  - texto exibido quando bloqueado (opcional; padrão
+//                    assume que é por causa do módulo anterior)
 //   onClick        - função chamada ao clicar no card
 //   onContinueClick - função chamada ao clicar em "Continuar"
 
@@ -20,6 +22,7 @@ export function ModuleCard({
   progress,
   lessonCount,
   status = 'inprogress',
+  lockedMessage = 'Complete o módulo anterior para desbloquear',
   onClick,
   onContinueClick,
 }) {
@@ -27,7 +30,13 @@ export function ModuleCard({
   const statusClass = styles[`status-${status}`];
 
   return (
-    <div className={`${styles.moduleCard} ${statusClass}`}>
+    <div
+      className={`${styles.moduleCard} ${statusClass}`}
+      onClick={onClick}
+      role={onClick ? 'button' : undefined}
+      tabIndex={onClick ? 0 : undefined}
+      onKeyDown={onClick ? (e) => { if (e.key === 'Enter') onClick(); } : undefined}
+    >
 
       {/* HEADER: emoji do módulo, título e badge de bloqueio */}
       <div className={styles.moduleHeader}>
@@ -73,13 +82,13 @@ export function ModuleCard({
         {/* Mensagem exibida quando o módulo está bloqueado */}
         {status === 'locked' && (
           <p className={styles.lockedMessage}>
-            Complete o módulo anterior para desbloquear
+            {lockedMessage}
           </p>
         )}
 
         <button
           className={`${styles.continueButton} ${styles[`btn-${status}`]}`}
-          onClick={onContinueClick}
+          onClick={(e) => { e.stopPropagation(); onContinueClick?.(); }}
           disabled={status === 'locked'}
         >
           {status === 'locked' ? 'Bloqueado 🔒' : 'Continuar'}

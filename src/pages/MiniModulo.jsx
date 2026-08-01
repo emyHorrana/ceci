@@ -53,7 +53,7 @@ export default function MiniModulo() {
   return (
     <div className={styles.page}>
 
-      {/* ── HEADER ─────────────────────────────────────────────────── */}
+      {/* HEADER */}
       <header className={styles.header}>
         <button className={styles.backBtn} onClick={() => navigate('/dashboard')}>
           Início
@@ -74,7 +74,7 @@ export default function MiniModulo() {
         </div>
       </header>
 
-      {/* ── BARRA DE PROGRESSO ─────────────────────────────────────── */}
+      {/* BARRA DE PROGRESSO */}
       <div className={styles.progressBar}>
         <div
           className={styles.progressFill}
@@ -82,7 +82,7 @@ export default function MiniModulo() {
         />
       </div>
 
-      {/* ── CONTEÚDO PRINCIPAL ─────────────────────────────────────── */}
+      {/* CONTEÚDO PRINCIPAL */}
       <main className={styles.main}>
 
         {/* Coluna do conteúdo */}
@@ -124,7 +124,7 @@ export default function MiniModulo() {
         </aside>
       </main>
 
-      {/* ── RODAPÉ COM NAVEGAÇÃO ───────────────────────────────────── */}
+      {/* RODAPÉ COM NAVEGAÇÃO */}
       <footer className={styles.footer}>
         <ButtonOutline onClick={retroceder} disabled={isFirst}>
           Anterior
@@ -132,7 +132,7 @@ export default function MiniModulo() {
 
         {isLast ? (
           <ButtonPrimary onClick={concluir}>
-            Concluir mini-módulo 🎉
+            Concluir mini-módulo
           </ButtonPrimary>
         ) : (
           <ButtonPrimary onClick={avancar}>

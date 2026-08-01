@@ -1,0 +1,85 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  max-width: 360px;
+}
+
+.dicaTopo {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.viewport {
+  width: 100%;
+  height: 220px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: var(--color-surface);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  transition: border-color var(--transition-fast), background var(--transition-fast);
+}
+
+.viewport:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+
+.viewport[data-errado='true'] {
+  composes: erro from '../GameMoment.module.css';
+}
+
+.conteudo {
+  position: relative;
+  width: 100%;
+}
+
+/* Trilha decorativa - só pra dar noção de "caminho" enquanto rola,
+   sem ser conteúdo de verdade (o alvo é o que importa) */
+.trilha {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 2px;
+  height: 100%;
+  background: repeating-linear-gradient(
+    to bottom,
+    var(--color-border) 0,
+    var(--color-border) 8px,
+    transparent 8px,
+    transparent 16px
+  );
+}
+
+.zonaAlvo {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-yellow-pale);
+  border: 2px dashed var(--color-yellow);
+  border-radius: var(--radius-md);
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+
+.zonaAlvo[data-ativa='true'] {
+  background: var(--color-yellow-soft);
+  border-color: var(--color-yellow-deep);
+  border-style: solid;
+}
+
+.zonaAlvoLabel {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  text-align: center;
+  padding: 0 0.5rem;
+}

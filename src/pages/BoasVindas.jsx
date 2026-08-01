@@ -12,10 +12,12 @@
 // 3) Pergunta de bifurcação sobre familiaridade com o mouse: "sim" ou
 //    "não" são igualmente válidos, então NÃO passa pelo GameMoment (que
 //    é pra momentos com resposta certa/errada) - é só uma escolha, via
-//    PerguntaBinaria. A resposta fica salva pro algoritmo adaptativo;
-//    o encaminhamento de verdade (formulário de afinidade vs. lição
-//    introdutória de mouse) ainda não existe, então por hoje os dois
-//    caminhos convergem pro mesmo diagnóstico de nome (ver TODO abaixo).
+//    PerguntaBinaria. A resposta fica salva no onboarding (localStorage)
+//    e é o Cadastro.jsx quem lê ela pra decidir o destino pós-cadastro:
+//    "não sei usar mouse" -> direto pro primeiro mini-módulo do Módulo 1
+//    (Uso do Mouse); "já uso" -> Dashboard. Ainda não existe um
+//    formulário de afinidade separado pra quem respondeu "sim" - quando
+//    existir, é só trocar o destino default no Cadastro.jsx.
 // 4) Diagnóstico inicial: uma sequência de pequenas interações discretas
 //    (hoje: digitar o nome). Cada uma parece só uma etapa normal de
 //    cadastro, mas na real também dá sinais de familiaridade com
@@ -78,12 +80,9 @@ export default function BoasVindas() {
     }
   };
 
-  // TODO: quando as lições de mouse e o formulário de afinidade
-  // existirem de verdade, esta função deve decidir a próxima fase com
-  // base na resposta ('sim' -> formulário de afinidade; 'nao' -> direto
-  // pra lição introdutória de mouse). Por enquanto os dois caminhos
-  // convergem pro mesmo diagnóstico de nome, mas a resposta já fica
-  // salva no onboarding pra quando essas rotas existirem.
+  // O encaminhamento de verdade acontece no Cadastro.jsx (é lá que a
+  // conta existe de fato): "não sei usar mouse" -> primeiro mini-módulo
+  // do Módulo 1; "já uso" -> Dashboard. Aqui só guardamos a resposta.
   const handleRespostaMouse = (resposta) => {
     setOnboarding((atual) => ({ ...atual, familiaridadeMouse: resposta }));
     setFase('diagnostico');

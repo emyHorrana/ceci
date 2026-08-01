@@ -17,6 +17,7 @@ cima de um punhado de mecânicas.
 | Clicar em alvo | `ClicarAlvoGame.jsx` | Escolher a opção certa entre várias, clicando | Botão esquerdo/direito, ícones, menu contextual, duplo clique |
 | Arrastar e soltar | `ArrastarSoltarGame.jsx` | Arrastar um item até o lugar certo | Mover ícones, soltar em pasta/lixeira, "arraste o cartão" |
 | Digitar texto | `DigitarTextoGame.jsx` | Digitar algo e confirmar | Nome, senha, e-mail, palavras, números, símbolos |
+| Rolar até um ponto | `ScrollAteUmPontoGame.jsx` | Rolar (scroll) e parar numa zona marcada | Rolar a página, controlar velocidade (zona mais estreita = mais precisão) |
 
 ## .✦ ہ˖ Como usar
 
@@ -45,10 +46,8 @@ modelo pra criar as próximas interações específicas de cada mini-tópico
 
 ## .✦ ہ˖ Mecânicas que ainda faltam (mesma ideia, quando forem necessárias)
 
-- **Scroll até um ponto** - pra "controlar velocidade da rolagem",
-  "parar no ponto desejado" do Módulo 1
 - **Atalho de teclado** - pra Ctrl+C, Ctrl+V, Shift etc do Módulo 2
 
-Quando alguma dessas for necessária, criar seguindo o mesmo formato:
+Quando essa for necessária, criar seguindo o mesmo formato:
 recebe `reportResult`, recebe a configuração do que conta como acerto,
 não sabe nada sobre tentativas/Ceci/pular.

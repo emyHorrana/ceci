@@ -148,7 +148,17 @@
    e soltar, clicar no alvo, ...): borda/fundo de erro + tremidinha.
    Uma mecânica nova que precise do mesmo feedback usa, na própria
    classe de erro do seu .module.css:
-     composes: erro from '../GameMoment.module.css';
+     .erro {
+       composes: erro from '../GameMoment.module.css';
+     }
+   e aplica via className condicional no JS:
+     className={`${styles.alvo} ${errado ? styles.erro : ''}`}
+   IMPORTANTE: `composes` só é permitido num seletor de classe única -
+   NÃO dá pra escrever `.alvo[data-errado='true'] { composes: ... }`
+   (o Vite quebra o build com "composition is only allowed when
+   selector is single :local class name"). Por isso é className
+   condicional no JS, não data-attribute no CSS, pra essa classe
+   específica.
    As duas propriedades de cor levam !important porque a classe .erro
    é combinada com a classe base do elemento (mesma especificidade) -
    sem isso, quem vence dependeria da ordem de import no bundle. */

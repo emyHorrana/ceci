@@ -111,6 +111,12 @@
   box-sizing: border-box;
 }
 
+/* Durante uma etapa de jogo, a coluna da Cecília some (o GameMoment já
+   tem o próprio feedback dela) e o card de jogo ocupa a largura toda */
+.main[data-modo='jogo'] {
+  grid-template-columns: 1fr;
+}
+
 /* Card de conteúdo */
 
 .conteudoCol {

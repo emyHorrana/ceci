@@ -4,16 +4,18 @@
 // precisão), e também ajuda em "Coordenação e precisão" (1-6).
 //
 // Recebe uma altura de conteúdo rolável e uma zona-alvo (em % da
-// altura do conteúdo) - a pessoa precisa rolar até parar com o topo da
-// área visível dentro dessa zona.
+// altura do conteúdo) - a pessoa precisa rolar até a zona marcada
+// ficar visível e mais ou menos centralizada na área visível (não é
+// preciso alinhar pixel a pixel - há uma margem de tolerância nas
+// bordas, ver COMO FUNCIONA A AVALIAÇÃO).
 //
 //   // rolar até o meio, com folga generosa (iniciante)
 //   <ScrollAteUmPontoGame reportResult={reportResult}
-//     zonaAlvo={{ inicio: 45, fim: 60 }} />
+//     zonaAlvo={{ inicio: 45, fim: 55 }} />
 //
 //   // mais precisão (fim do mini-módulo / "controlar a velocidade")
 //   <ScrollAteUmPontoGame reportResult={reportResult}
-//     zonaAlvo={{ inicio: 70, fim: 76 }}
+//     zonaAlvo={{ inicio: 70, fim: 74 }}
 //     alturaConteudoPx={1400} />
 //
 // COMO FUNCIONA A AVALIAÇÃO
@@ -21,6 +23,17 @@
 // scroll é contínuo. Por isso só avaliamos uma "tentativa" quando a
 // pessoa PARA de rolar por um tempinho (debounce) - rolar não conta
 // como erro em si, só parar fora da zona-alvo conta.
+//
+// "Acertar" é definido pelo que a pessoa efetivamente VÊ na tela: o
+// PONTO MÉDIO da zona-alvo precisa estar dentro de uma faixa central
+// da área visível (com ~15% de margem em cada borda, pra não contar
+// "só uma pontinha apareceu" como acerto). Importante: isso NÃO é a
+// mesma coisa que comparar o topo do scroll com a faixa da zona -
+// aquela conta ingênua permite casos em que a zona já saiu inteira de
+// vista mas ainda seria marcada como "certo" (foi exatamente o bug
+// corrigido aqui). O destaque visual em tempo real (zona pisca de
+// amarelo mais forte) usa essa mesma fórmula, então o que acende como
+// "quase lá" é sempre consistente com o que de fato conta como acerto.
 //
 // ACESSIBILIDADE: o container é focável (tabIndex=0) e scrollável nativamente,
 // então setas/Page Down/Page Up do teclado já funcionam sem código
@@ -60,12 +73,12 @@ export function ScrollAteUmPontoGame({
   const [dentroDaZona, setDentroDaZona] = useState(false);
   const [zonaErrada, setZonaErrada] = useState(false);
 
-  // Base única de porcentagem: posição (em px) dentro do CONTEÚDO,
-  // não do progresso de scroll. Os dois só coincidiriam se
-  // alturaVisivelPx fosse desprezível perto de alturaConteudoPx - como
-  // não é, calculamos sempre em cima de alturaConteudoPx, a mesma base
-  // usada pra posicionar a zona-alvo visualmente (via `top: X%`).
-  const calcularPercentual = (scrollTop) => (scrollTop / alturaConteudoPx) * 100;
+  // Zona-alvo em px, convertida uma vez a partir do % de altura do
+  // conteúdo (a mesma base usada pra posicionar a zona visualmente,
+  // via `top: X%` no JSX abaixo).
+  const zonaInicioPx = (zonaAlvo.inicio / 100) * alturaConteudoPx;
+  const zonaFimPx = (zonaAlvo.fim / 100) * alturaConteudoPx;
+  const zonaMeioPx = (zonaInicioPx + zonaFimPx) / 2;
 
   // Como o topo da área visível nunca passa de
   // (alturaConteudoPx - alturaVisivelPx), uma zona-alvo além desse
@@ -81,30 +94,38 @@ export function ScrollAteUmPontoGame({
     );
   }
 
+  // "Acertou" = o MEIO da zona-alvo está visível dentro de uma faixa
+  // central da área visível (não só encostando na borda - por isso a
+  // margem). Isso garante que o que a pessoa VÊ na tela (a zona
+  // marcada, mais ou menos centralizada) é exatamente o que conta como
+  // acerto - antes essa checagem comparava só o topo do scroll com a
+  // faixa, o que podia dar "certo" com a zona inteira fora da tela.
+  const margem = alturaVisivelPx * 0.15;
+  const zonaCentralizada = (scrollTop) =>
+    zonaMeioPx >= scrollTop + margem && zonaMeioPx <= scrollTop + alturaVisivelPx - margem;
+
   const avaliarPosicaoAtual = useCallback(() => {
     const viewport = viewportRef.current;
     if (!viewport) return;
 
-    const percentualAtual = calcularPercentual(viewport.scrollTop);
-    const acertou = percentualAtual >= zonaAlvo.inicio && percentualAtual <= zonaAlvo.fim;
+    const acertou = zonaCentralizada(viewport.scrollTop);
 
     if (acertou) {
-      reportResult(true, { percentualParado: percentualAtual });
+      reportResult(true, { scrollTop: viewport.scrollTop });
       return;
     }
 
     setZonaErrada(true);
-    reportResult(false, { percentualParado: percentualAtual });
+    reportResult(false, { scrollTop: viewport.scrollTop });
     setTimeout(() => setZonaErrada(false), 400);
-  }, [alturaConteudoPx, zonaAlvo, reportResult]);
+  }, [zonaMeioPx, alturaVisivelPx, reportResult]);
 
   const handleScroll = () => {
     jaInteragiuRef.current = true;
 
     const viewport = viewportRef.current;
     if (viewport) {
-      const percentualAtual = calcularPercentual(viewport.scrollTop);
-      setDentroDaZona(percentualAtual >= zonaAlvo.inicio && percentualAtual <= zonaAlvo.fim);
+      setDentroDaZona(zonaCentralizada(viewport.scrollTop));
     }
 
     // Reinicia o "temporizador de pausa" a cada evento de scroll - só
@@ -121,8 +142,7 @@ export function ScrollAteUmPontoGame({
 
       <div
         ref={viewportRef}
-        className={styles.viewport}
-        data-errado={zonaErrada}
+        className={`${styles.viewport} ${zonaErrada ? styles.erro : ''}`}
         tabIndex={0}
         role="region"
         aria-label="Área de rolagem - role até a zona marcada"

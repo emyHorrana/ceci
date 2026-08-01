@@ -66,8 +66,7 @@ export function ClicarAlvoGame({
         <button
           key={alvo.id}
           type="button"
-          className={styles.alvo}
-          data-errado={alvoErrado === alvo.id}
+          className={`${styles.alvo} ${alvoErrado === alvo.id ? styles.erro : ''}`}
           {...{ [eventoDeClique]: () => handleClique(alvo) }}
         >
           {alvo.label}

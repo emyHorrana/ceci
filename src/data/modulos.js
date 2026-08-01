@@ -78,6 +78,15 @@ export const MODULOS = [
             conteudo: `<p>Depois de conseguir mover o cursor com tranquilidade, vem o próximo passo: parar o cursor exatamente onde você quer e fazer um <strong>clique simples</strong>, apertando levemente o botão esquerdo uma única vez.</p>
 <p>É esse clique que você vai usar para selecionar algo na tela ou confirmar uma escolha.</p>`,
           },
+          {
+            tipo: 'jogo',
+            titulo: 'Agora é sua vez!',
+            instructions: 'Clique no botão abaixo com o botão esquerdo do mouse.',
+            jogo: 'clicar',
+            jogoProps: {
+              alvos: [{ id: 'aqui', label: '👆 Clique aqui', correto: true }],
+            },
+          },
         ],
       },
       {
@@ -94,6 +103,16 @@ export const MODULOS = [
             conteudo: `<p>O desafio, no início, costuma ser o ritmo: se os cliques forem devagar demais, o computador entende como dois cliques separados, e não como um duplo clique. Se vier com muita força ou muito rápido, pode acontecer de sair do lugar.</p>
 <p>Não existe problema em tentar novamente - praticar esse ritmo é como aprender a bater palmas em um compasso constante: no começo exige atenção, depois vem naturalmente.</p>`,
             dica: 'Mantenha a mão parada sobre o mouse durante os dois cliques, sem deslizar. Isso ajuda bastante a acertar o duplo clique!',
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Pratique o duplo clique',
+            instructions: 'Dê um duplo clique (dois cliques rápidos, sem mover o mouse) no ícone abaixo.',
+            jogo: 'clicar',
+            jogoProps: {
+              duploClique: true,
+              alvos: [{ id: 'pasta', label: '📁 Duplo clique aqui', correto: true }],
+            },
           },
         ],
       },
@@ -114,6 +133,15 @@ export const MODULOS = [
             conteudo: `<p>Você pode controlar a velocidade da rolagem: gire devagar para ler com calma, ou um pouco mais rápido quando quiser passar por um conteúdo já conhecido.</p>
 <p>O importante é girar aos poucos e observar como a tela responde, até sentir confiança para parar exatamente no ponto que deseja ler.</p>`,
             dica: 'Essa ação de "rolar" pra ver mais conteúdo lembra alguma outra situação da sua vida, como desenrolar um tecido ou passar as páginas de um álbum de fotos?',
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Pratique o scroll',
+            instructions: 'Role a área abaixo (com a rodinha do mouse) até parar dentro da faixa marcada.',
+            jogo: 'scroll',
+            jogoProps: {
+              zonaAlvo: { inicio: 47, fim: 57 },
+            },
           },
         ],
       },
@@ -141,6 +169,16 @@ export const MODULOS = [
             conteudo: `<p>O ponto de maior atenção aqui é não soltar o botão antes da hora. Se isso acontecer, o item cai em um lugar diferente do pretendido - mas não é motivo para preocupação, pois basta repetir o processo e arrastá-lo novamente para o lugar certo.</p>`,
             dica: 'Você consegue pensar numa tarefa manual do dia a dia - como carregar uma xícara até a pia - parecida com o movimento de "segurar e soltar"?',
           },
+          {
+            tipo: 'jogo',
+            titulo: 'Pratique arrastar e soltar',
+            instructions: 'Arraste o documento abaixo até a pasta.',
+            jogo: 'arrastar',
+            jogoProps: {
+              item: { id: 'documento', label: '📄 Documento' },
+              zonas: [{ id: 'pasta', label: '📁 Solte aqui', correta: true }],
+            },
+          },
         ],
       },
       {
@@ -164,6 +202,20 @@ export const MODULOS = [
             titulo: 'A precisão vem com a prática',
             conteudo: `<p>É natural que, no começo, a mão precise de mais tempo para apontar com exatidão em áreas pequenas da tela. Isso melhora com a prática, da mesma forma que qualquer habilidade manual - como costurar um botão ou encaixar uma chave na fechadura - fica mais precisa quanto mais vezes é repetida.</p>
 <p>Se em algum momento você clicar no lugar errado, não há problema: basta clicar novamente no local correto. Errar faz parte do processo de aprender.</p>`,
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Desafio de precisão',
+            instructions: 'Entre as opções abaixo, clique só na que estiver certa.',
+            jogo: 'clicar',
+            jogoProps: {
+              layout: 'grade',
+              alvos: [
+                { id: 'errado-1', label: '❌', correto: false },
+                { id: 'certo',    label: '✅ Clique aqui', correto: true },
+                { id: 'errado-2', label: '❌', correto: false },
+              ],
+            },
           },
           {
             titulo: 'Para lembrar',

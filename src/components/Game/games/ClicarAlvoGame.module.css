@@ -35,6 +35,9 @@
   transform: translateY(0);
 }
 
-.alvo[data-errado='true'] {
+/* composes só é permitido num seletor de classe única - por isso essa
+   classe fica separada e é aplicada via className condicional no JS
+   (não via data-attribute no CSS, que quebraria o composes) */
+.erro {
   composes: erro from '../GameMoment.module.css';
 }

@@ -9,13 +9,23 @@
 //
 // Uso:
 //   <AppLayout>
-//     <div>conteúdo da página aqui</div>
+//     <PageHeader>...conteúdo do cabeçalho (título, stats, etc)...</PageHeader>
+//     <div className={styles.pageContent /* de AppLayout.module.css */}>
+//       conteúdo da página aqui
+//     </div>
 //   </AppLayout>
+//
+// PageHeader só aplica o wrapper <header> sticky compartilhado - o
+// conteúdo de dentro é livre e específico de cada página.
 
 import { useContext } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { UserContext } from '../../context/UserContext';
 import styles from './AppLayout.module.css';
+
+export function PageHeader({ children }) {
+  return <header className={styles.topbar}>{children}</header>;
+}
 
 const NAV_ITEMS = [
   { icon: '⌂', label: 'Início',      path: '/dashboard' },

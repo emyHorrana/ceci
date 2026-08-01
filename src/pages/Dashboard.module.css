@@ -1,130 +1,7 @@
-/* CECI - Dashboard (área do aluno) */
-
-.dashboard {
-  display: grid;
-  grid-template-columns: 240px 1fr;
-  grid-template-rows: 1fr;
-  min-height: 100svh;
-  background: var(--color-bg);
-  font-family: var(--font-body);
-}
-
-/* SIDEBAR */
-
-.sidebar {
-  background: var(--gradient-sidebar);
-  padding: 2rem 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  position: sticky;
-  top: 0;
-  height: 100svh;
-  overflow-y: auto;
-}
-
-.sidebarLogo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.sidebarLogoIcon {
-  width: 32px;
-  height: 32px;
-  background: rgba(255, 255, 255, 0.25);
-  border-radius: var(--radius-sm);
-}
-
-.sidebarLogoText {
-  font-family: var(--font-display);
-  font-size: 1.25rem;
-  font-weight: 800;
-  color: white;
-  letter-spacing: 0.08em;
-}
-
-.sidebarNav {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  flex: 1;
-}
-
-.navItem {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 11px 14px;
-  border-radius: var(--radius-md);
-  font-size: 0.9375rem;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.8);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  background: none;
-  border: none;
-  text-align: left;
-  width: 100%;
-}
-
-.navItem:hover {
-  background: rgba(255, 255, 255, 0.15);
-  color: white;
-}
-
-.navItem.active {
-  background: rgba(255, 255, 255, 0.22);
-  color: white;
-}
-
-.navItemIcon {
-  font-size: 1.1rem;
-}
-
-.sidebarLogout {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 11px 14px;
-  border-radius: var(--radius-md);
-  font-size: 0.9375rem;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.7);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  background: rgba(0, 0, 0, 0.15);
-  border: none;
-  width: 100%;
-  text-align: left;
-}
-
-.sidebarLogout:hover {
-  background: rgba(0, 0, 0, 0.28);
-  color: white;
-}
-
-/* CONTEÚDO PRINCIPAL */
-
-.main {
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto;
-}
-
-/* Topbar */
-
-.topbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1.5rem 2rem;
-  background: var(--color-white);
-  border-bottom: 1px solid var(--color-border);
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
+/* CECI - Dashboard (área do aluno)
+   Sidebar, .main e o esqueleto do topbar/pageContent vivem no AppLayout
+   (components/Layout/AppLayout) - usado por esta página via <AppLayout>.
+   Aqui só o conteúdo específico do Dashboard. */
 
 .greeting {
   display: flex;
@@ -177,14 +54,13 @@
   border-color: #FFE0A0;
 }
 
-/* Conteúdo da página */
+/* Conteúdo da página - base (padding, flex) vem de AppLayout.pageContent;
+   aqui só o que o Dashboard precisa a mais (empilhar os blocos com gap) */
 
-.pageContent {
-  padding: 2rem;
+.pageContentDashboard {
   display: flex;
   flex-direction: column;
   gap: 2rem;
-  flex: 1;
 }
 
 /* Bloco da Cecília / boas-vindas */
@@ -377,47 +253,6 @@
 /* RESPONSIVO */
 
 @media (max-width: 900px) {
-  .dashboard {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto 1fr;
-  }
-
-  .sidebar {
-    position: static;
-    height: auto;
-    padding: 1rem 1.25rem;
-    flex-direction: row;
-    align-items: center;
-    gap: 0;
-  }
-
-  .sidebarNav {
-    flex-direction: row;
-    flex: 1;
-    overflow-x: auto;
-    gap: 4px;
-    padding: 0 0.5rem;
-  }
-
-  .navItem {
-    white-space: nowrap;
-    flex-shrink: 0;
-    padding: 8px 12px;
-    font-size: 0.875rem;
-  }
-
-  .navItemIcon { display: none; }
-
-  .sidebarLogout {
-    flex-shrink: 0;
-    padding: 8px 12px;
-    font-size: 0.875rem;
-  }
-
-  .pageContent {
-    padding: 1.25rem;
-  }
-
   .welcomeCard {
     flex-direction: column;
     text-align: center;

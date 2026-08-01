@@ -2,7 +2,8 @@ import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../context/UserContext';
 import { ProgressContext } from '../context/ProgressContext';
-import { AppLayout } from '../components/Layout/AppLayout';
+import { AppLayout, PageHeader } from '../components/Layout/AppLayout';
+import appStyles from '../components/Layout/AppLayout.module.css';
 import { ModuleCard } from '../components/Cards/ModuleCard';
 import { ButtonPrimary } from '../components/Buttons/ButtonPrimary';
 import { MODULOS } from '../data/modulos';
@@ -39,8 +40,7 @@ export default function Dashboard() {
 
   return (
     <AppLayout>
-        {/* Topbar */}
-        <header className={styles.topbar}>
+        <PageHeader>
           <div className={styles.greeting}>
             <span className={styles.greetingHello}>Bem-vindo(a) de volta</span>
             <span className={styles.greetingName}>{user.nome || 'Aluno(a)'}</span>
@@ -54,9 +54,9 @@ export default function Dashboard() {
               {progress?.totalPoints || 0} pontos
             </div>
           </div>
-        </header>
+        </PageHeader>
 
-        <div className={styles.pageContent}>
+        <div className={`${appStyles.pageContent} ${styles.pageContentDashboard}`}>
           {/* Bloco da Cecília */}
           <div className={styles.welcomeCard}>
             <div className={styles.mascoteSlotSmall} aria-hidden />

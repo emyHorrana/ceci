@@ -39,8 +39,8 @@
 }
 
 .backBtn:hover {
-  background: var(--color-lavender-pale);
-  color: var(--color-purple);
+  background: var(--color-yellow-pale);
+  color: var(--color-border-focus);
 }
 
 .breadcrumb {
@@ -66,7 +66,7 @@
 }
 
 .breadcrumbMini {
-  color: var(--color-purple);
+  color: var(--color-border-focus);
   font-weight: 700;
   white-space: nowrap;
   overflow: hidden;
@@ -78,7 +78,7 @@
   font-weight: 600;
   color: var(--color-text-muted);
   white-space: nowrap;
-  background: var(--color-lavender-pale);
+  background: var(--color-yellow-pale);
   padding: 4px 12px;
   border-radius: var(--radius-pill);
 }
@@ -177,12 +177,12 @@
 }
 
 .etapaConteudo strong {
-  color: var(--color-purple);
+  color: var(--color-border-focus);
   font-weight: 700;
 }
 
 .etapaConteudo em {
-  color: var(--color-pink);
+  color: var(--color-yellow-deep);
 }
 
 /* Coluna da Cecília */
@@ -247,16 +247,16 @@
 }
 
 .dot:hover {
-  background: var(--color-purple-light);
+  background: var(--color-yellow-light);
   transform: scale(1.2);
 }
 
 .dotDone {
-  background: var(--color-purple-light);
+  background: var(--color-yellow-light);
 }
 
 .dotActive {
-  background: var(--color-purple);
+  background: var(--color-yellow-deep);
   transform: scale(1.25);
 }
 

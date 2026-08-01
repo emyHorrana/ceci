@@ -4,6 +4,8 @@ import { UserContext } from '../context/UserContext';
 import { ButtonPrimary } from '../components/Buttons/ButtonPrimary';
 import { TextInput } from '../components/Forms/TextInput';
 import { useLocalStorage } from '../hooks/useLocalStorage';
+import { AuthLayout } from '../components/Layout/AuthLayout';
+import authStyles from '../components/Layout/AuthLayout.module.css';
 import styles from './Cadastro.module.css';
 
 export default function Cadastro() {
@@ -59,106 +61,106 @@ export default function Cadastro() {
   };
 
   return (
-    <div className={styles.container}>
-      {/* Lado esquerdo: ilustração */}
-      <div className={styles.illustration}>
-        <h2 className={styles.illustrationTitle}>Aprenda com a CECI</h2>
-        <p className={styles.illustrationText}>
-          Uma plataforma pensada para você aprender tecnologia no seu próprio ritmo, com leveza e sem pressão.
-        </p>
-        <div className={styles.features}>
-          <div className={styles.featureItem}>Lições adaptadas ao seu nível</div>
-          <div className={styles.featureItem}>Atividades práticas e interativas</div>
-          <div className={styles.featureItem}>Acompanhe seu progresso em tempo real</div>
-          <div className={styles.featureItem}>Conquistas e recompensas ao longo do caminho</div>
+    <AuthLayout
+      formPosition="right"
+      illustrationMobileMinHeight="220px"
+      illustration={
+        <>
+          <h2 className={authStyles.illustrationTitle}>Aprenda com a CECI</h2>
+          <p className={styles.illustrationText}>
+            Uma plataforma pensada para você aprender tecnologia no seu próprio ritmo, com leveza e sem pressão.
+          </p>
+          <div className={styles.features}>
+            <div className={styles.featureItem}>Lições adaptadas ao seu nível</div>
+            <div className={styles.featureItem}>Atividades práticas e interativas</div>
+            <div className={styles.featureItem}>Acompanhe seu progresso em tempo real</div>
+            <div className={styles.featureItem}>Conquistas e recompensas ao longo do caminho</div>
+          </div>
+        </>
+      }
+    >
+      <div className={styles.card}>
+        <div className={styles.cardHeader}>
+          <div className={styles.logoMini}>CECI</div>
+          <h1 className={authStyles.title}>Criar conta</h1>
+          <p className={authStyles.subtitle}>Comece a aprender hoje, de graça</p>
         </div>
-    </div>
 
-      {/* Lado direito: formulário */}
-      <div className={styles.formSide}>
-        <div className={styles.card}>
-          <div className={styles.cardHeader}>
-            <div className={styles.logoMini}>CECI</div>
-            <h1 className={styles.title}>Criar conta</h1>
-            <p className={styles.subtitle}>Comece a aprender hoje, de graça</p>
+        {success ? (
+          <div className={styles.successBox}>
+            <div className={styles.successEmoji}>🎉</div>
+            <h3>Conta criada com sucesso!</h3>
+            <p>Redirecionando para o dashboard...</p>
           </div>
+        ) : (
+          <form onSubmit={handleSubmit} className={authStyles.form} noValidate>
+            <TextInput
+              label="Como você se chama?"
+              type="text"
+              value={nome}
+              onChange={(e) => setNome(e.target.value)}
+              placeholder="Seu nome"
+              required
+              disabled={loading}
+              autoFocus
+            />
 
-          {success ? (
-            <div className={styles.successBox}>
-              <div className={styles.successEmoji}>🎉</div>
-              <h3>Conta criada com sucesso!</h3>
-              <p>Redirecionando para o dashboard...</p>
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit} className={styles.form} noValidate>
-              <TextInput
-                label="Como você se chama?"
-                type="text"
-                value={nome}
-                onChange={(e) => setNome(e.target.value)}
-                placeholder="Seu nome"
-                required
-                disabled={loading}
-                autoFocus
-              />
+            <TextInput
+              label="E-mail"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="seu@email.com"
+              required
+              disabled={loading}
+            />
 
-              <TextInput
-                label="E-mail"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="seu@email.com"
-                required
-                disabled={loading}
-              />
+            <TextInput
+              label="Senha"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Mínimo 6 caracteres"
+              required
+              disabled={loading}
+            />
 
-              <TextInput
-                label="Senha"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Mínimo 6 caracteres"
-                required
-                disabled={loading}
-              />
+            <TextInput
+              label="Confirmar senha"
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="Repita sua senha"
+              required
+              disabled={loading}
+            />
 
-              <TextInput
-                label="Confirmar senha"
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="Repita sua senha"
-                required
-                disabled={loading}
-              />
+            {error && (
+              <div className={authStyles.errorBox} role="alert">
+                ⚠️ {error}
+              </div>
+            )}
 
-              {error && (
-                <div className={styles.errorBox} role="alert">
-                  ⚠️ {error}
-                </div>
-              )}
+            <ButtonPrimary
+              type="submit"
+              fullWidth
+              disabled={loading}
+              size="large"
+            >
+              {loading ? '⏳ Criando conta...' : 'Criar conta grátis'}
+            </ButtonPrimary>
+          </form>
+        )}
 
-              <ButtonPrimary
-                type="submit"
-                fullWidth
-                disabled={loading}
-                size="large"
-              >
-                {loading ? '⏳ Criando conta...' : 'Criar conta grátis'}
-              </ButtonPrimary>
-            </form>
-          )}
-
-          <div className={styles.footer}>
-            <p>
-              Já tem conta?{' '}
-              <a href="/" className={styles.link}>
-                Fazer login
-              </a>
-            </p>
-          </div>
+        <div className={authStyles.footer}>
+          <p>
+            Já tem conta?{' '}
+            <a href="/" className={authStyles.link}>
+              Fazer login
+            </a>
+          </p>
         </div>
       </div>
-    </div>
+    </AuthLayout>
   );
 }

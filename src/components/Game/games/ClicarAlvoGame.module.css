@@ -27,7 +27,7 @@
 }
 
 .alvo:hover {
-  border-color: var(--color-purple-light);
+  border-color: var(--color-yellow-deep);
   transform: translateY(-2px);
 }
 
@@ -36,13 +36,5 @@
 }
 
 .alvo[data-errado='true'] {
-  border-color: var(--color-error);
-  background: var(--color-error-bg);
-  animation: tremer 0.3s;
-}
-
-@keyframes tremer {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-4px); }
-  75% { transform: translateX(4px); }
+  composes: erro from '../GameMoment.module.css';
 }

@@ -1,5 +1,12 @@
 
 .licaoContainer {
+  /* Variáveis legadas da lição antiga (mantidas só aqui por compatibilidade,
+     não fazem parte da paleta oficial em variables.css) */
+  --color-primary-blue: #2F80ED;
+  --color-gray-medium: #6B7280;
+  --color-gray-light: #E5E7EB;
+  --border-radius-lg: 16px;
+
   display: flex;
   flex-direction: column;
   min-height: 100vh;

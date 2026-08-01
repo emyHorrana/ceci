@@ -17,7 +17,8 @@
 import { useNavigate } from 'react-router-dom';
 import { MODULOS } from '../data/modulos';
 import { ModuleCard } from '../components/Cards/ModuleCard';
-import { AppLayout } from '../components/Layout/AppLayout';
+import { AppLayout, PageHeader } from '../components/Layout/AppLayout';
+import appStyles from '../components/Layout/AppLayout.module.css';
 import styles from './Modulos.module.css';
 
 // Módulos do currículo que ainda não têm conteúdo escrito. Aparecem como
@@ -42,16 +43,16 @@ export default function Modulos() {
 
   return (
     <AppLayout>
-      <header className={styles.topbar}>
+      <PageHeader>
         <div>
           <h1 className={styles.title}>Seus módulos</h1>
           <p className={styles.subtitle}>
             Acompanhe seu caminho de aprendizado, um módulo de cada vez.
           </p>
         </div>
-      </header>
+      </PageHeader>
 
-      <div className={styles.pageContent}>
+      <div className={appStyles.pageContent}>
         <div className={styles.grid}>
           {MODULOS.map((modulo, index) => (
             <ModuleCard

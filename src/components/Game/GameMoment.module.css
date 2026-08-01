@@ -144,6 +144,27 @@
   border-style: solid;
 }
 
+/* Feedback de erro compartilhado entre as mecânicas de jogo (arrastar
+   e soltar, clicar no alvo, ...): borda/fundo de erro + tremidinha.
+   Uma mecânica nova que precise do mesmo feedback usa, na própria
+   classe de erro do seu .module.css:
+     composes: erro from '../GameMoment.module.css';
+   As duas propriedades de cor levam !important porque a classe .erro
+   é combinada com a classe base do elemento (mesma especificidade) -
+   sem isso, quem vence dependeria da ordem de import no bundle. */
+
+@keyframes tremer {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+.erro {
+  border-color: var(--color-error) !important;
+  background: var(--color-error-bg) !important;
+  animation: tremer 0.3s;
+}
+
 /*  Responsivo  */
 
 @media (max-width: 768px) {

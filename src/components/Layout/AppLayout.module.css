@@ -110,7 +110,41 @@
   overflow-y: auto;
 }
 
-/* RESPONSIVO */
+/* CABEÇALHO E CONTEÚDO DAS PÁGINAS INTERNAS
+   Usados pelas páginas dentro do <AppLayout> (Dashboard, Módulos, ...)
+   via <PageHeader> e a classe .pageContent, pra não reimplementar esse
+   bloco em cada página nova. O que cada página precisa a mais (stats,
+   grid, gap...) continua no CSS module da própria página, combinado
+   com esta classe base. */
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem 2rem;
+  background: var(--color-white);
+  border-bottom: 1px solid var(--color-border);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.pageContent {
+  padding: 2rem;
+  flex: 1;
+}
+
+@media (max-width: 768px) {
+  .topbar {
+    padding: 1.25rem;
+  }
+
+  .pageContent {
+    padding: 1.25rem;
+  }
+}
+
+/* RESPONSIVO (sidebar) */
 
 @media (max-width: 900px) {
   .shell {

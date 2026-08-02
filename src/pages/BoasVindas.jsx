@@ -2,7 +2,7 @@
 // Primeira tela que a pessoa vê ao entrar no CECI, antes de criar conta.
 // Rota: /boas-vindas
 //
-// COMO FUNCIONA
+// COMO FUNCIONA (sequência de fases, em ordem)
 // 1) Apresentação: a Cecília se apresenta e convida a pessoa a "dar uma
 //    volta" - não importa se ela chegou sozinha ou com ajuda de alguém.
 // 2) Tutorial da barra de espaço: ensina que dá pra apertar espaço pra
@@ -12,27 +12,48 @@
 // 3) Pergunta de bifurcação sobre familiaridade com o mouse: "sim" ou
 //    "não" são igualmente válidos, então NÃO passa pelo GameMoment (que
 //    é pra momentos com resposta certa/errada) - é só uma escolha, via
-//    PerguntaBinaria. A resposta fica salva no onboarding (localStorage)
-//    e é o Cadastro.jsx quem lê ela pra decidir o destino pós-cadastro:
-//    "não sei usar mouse" -> direto pro primeiro mini-módulo do Módulo 1
-//    (Uso do Mouse); "já uso" -> Dashboard. Ainda não existe um
-//    formulário de afinidade separado pra quem respondeu "sim" - quando
-//    existir, é só trocar o destino default no Cadastro.jsx.
-// 4) Diagnóstico inicial: uma sequência de pequenas interações discretas
+//    PerguntaBinaria.
+//    - "não sei usar mouse" -> aula básica de mouse embutida aqui mesmo
+//      (fases aula-mouse-intro/aula-mouse-pratica), ANTES de qualquer
+//      outra coisa. A ideia: sem o básico de mouse, a pessoa não
+//      conseguiria se orientar sozinha nem pra preencher o resto do
+//      onboarding, então essa aula não pode vir depois do cadastro.
+//    - "já uso" -> pula direto pro próximo passo.
+//    Os dois caminhos convergem no formulário de domínios (passo 4).
+// 4) Formulário de domínios: mais perguntas de bifurcação (mesmo
+//    componente PerguntaBinaria), sobre teclado e internet - pelo mesmo
+//    motivo do mouse: quem não sabe usar teclado também teria
+//    dificuldade em digitar nome/e-mail no diagnóstico e no cadastro
+//    logo a seguir.
+// 5) Diagnóstico inicial: uma sequência de pequenas interações discretas
 //    (hoje: digitar o nome). Cada uma parece só uma etapa normal de
 //    cadastro, mas na real também dá sinais de familiaridade com
-//    mouse/teclado pro algoritmo adaptativo usar depois.
-// 5) Ao final, os resultados ficam guardados no navegador (localStorage,
+//    mouse/teclado pro algoritmo adaptativo usar depois. Se a pessoa
+//    respondeu "não sei teclado" no formulário de domínios, aparece um
+//    aviso leve de acolhimento antes do primeiro passo (não é uma aula
+//    de teclado de verdade - isso é maior, fica pro backlog).
+// 6) Mini-aula de orientações de conta: antes de ir pro cadastro de
+//    verdade, avisos rápidos e leves (pode usar e-mail de alguém de
+//    confiança, anotar a senha em lugar seguro) - pensados pra quem
+//    nunca criou uma conta online antes.
+// 7) Ao final, os resultados ficam guardados no navegador (localStorage,
 //    via useLocalStorage) até a pessoa criar a conta - não existe
 //    usuário autenticado ainda nessa fase, então não dá pra salvar no
 //    Supabase diretamente (ver bdCeci.txt: usuarios.id referencia
-//    auth.users). Quem lê esse localStorage depois é o Cadastro.jsx.
+//    auth.users). Quem lê esse localStorage depois é o Cadastro.jsx
+//    (hoje só pra pré-preencher o nome - a bifurcação de destino
+//    pós-cadastro não existe mais, porque agora ela toda acontece
+//    ANTES do cadastro, aqui nesta página).
 //
 // COMO ADICIONAR UM NOVO PASSO DE DIAGNÓSTICO
 // Só acrescentar um objeto no array DIAGNOSTIC_STEPS abaixo, com uma
 // key única, título, instrução e a função que renderiza o joguinho
 // dentro do GameMoment. A página já cuida de avançar pro próximo passo
 // e de salvar o resultado de cada um automaticamente.
+//
+// COMO ADICIONAR UMA NOVA PERGUNTA DE DOMÍNIO
+// Mesma ideia, no array DOMINIO_PERGUNTAS: key, pergunta, opcaoSim,
+// opcaoNao. A resposta fica em onboarding.dominios[key].
 //
 // IMPORTANTE: por enquanto essa rota fica de acesso livre (sem exigir
 // login), de propósito, pra facilitar o desenvolvimento e os testes.
@@ -46,6 +67,7 @@ import { GameMoment } from '../components/Game/GameMoment';
 import { EspacoParaAvancar } from '../components/Game/EspacoParaAvancar';
 import { PerguntaBinaria } from '../components/Game/PerguntaBinaria';
 import { DigitarNomeGame } from '../components/Game/games/DigitarNomeGame';
+import { ClicarAlvoGame } from '../components/Game/games/ClicarAlvoGame';
 import { ButtonPrimary } from '../components/Buttons/ButtonPrimary';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import styles from './BoasVindas.module.css';
@@ -60,32 +82,69 @@ const DIAGNOSTIC_STEPS = [
   },
 ];
 
+// Perguntas do "formulário de domínios" - mesma lógica do
+// PerguntaBinaria da pergunta do mouse, mas em sequência.
+const DOMINIO_PERGUNTAS = [
+  {
+    key: 'teclado',
+    pergunta: 'Você já usa o teclado para digitar palavras ou frases?',
+    opcaoSim: 'Sim, já digito',
+    opcaoNao: 'Ainda não sei bem',
+  },
+  {
+    key: 'internet',
+    pergunta: 'Você já usou a internet - sites, redes sociais ou mensagens - antes?',
+    opcaoSim: 'Sim, já usei',
+    opcaoNao: 'Ainda não usei',
+  },
+];
+
 export default function BoasVindas() {
   const navigate = useNavigate();
-  const [fase, setFase] = useState('apresentacao'); // 'apresentacao' | 'tutorial-espaco' | 'pergunta-mouse' | 'diagnostico' | 'concluido'
+  // 'apresentacao' | 'tutorial-espaco' | 'pergunta-mouse' |
+  // 'aula-mouse-intro' | 'aula-mouse-pratica' | 'formulario-dominios' |
+  // 'diagnostico' | 'mini-aula-seguranca' | 'concluido'
+  const [fase, setFase] = useState('apresentacao');
   const [stepIndex, setStepIndex] = useState(0);
+  const [dominioIndex, setDominioIndex] = useState(0);
   const [onboarding, setOnboarding] = useLocalStorage('ceci_onboarding', {});
 
   const stepAtual = DIAGNOSTIC_STEPS[stepIndex];
   const ultimoStep = stepIndex === DIAGNOSTIC_STEPS.length - 1;
+
+  const perguntaDominioAtual = DOMINIO_PERGUNTAS[dominioIndex];
+  const ultimaPerguntaDominio = dominioIndex === DOMINIO_PERGUNTAS.length - 1;
 
   const handleStepComplete = (resultado) => {
     // Guarda o resultado desse passo, mantendo os anteriores.
     setOnboarding((atual) => ({ ...atual, [stepAtual.key]: resultado }));
 
     if (ultimoStep) {
-      setFase('concluido');
+      setFase('mini-aula-seguranca');
     } else {
       setStepIndex((i) => i + 1);
     }
   };
 
-  // O encaminhamento de verdade acontece no Cadastro.jsx (é lá que a
-  // conta existe de fato): "não sei usar mouse" -> primeiro mini-módulo
-  // do Módulo 1; "já uso" -> Dashboard. Aqui só guardamos a resposta.
+  // "não sei usar mouse" -> aula básica embutida aqui mesmo, antes de
+  // qualquer outro passo (ver nota no topo do arquivo). "já uso" pula
+  // direto pro formulário de domínios - os dois caminhos convergem ali.
   const handleRespostaMouse = (resposta) => {
     setOnboarding((atual) => ({ ...atual, familiaridadeMouse: resposta }));
-    setFase('diagnostico');
+    setFase(resposta === 'nao' ? 'aula-mouse-intro' : 'formulario-dominios');
+  };
+
+  const handleRespostaDominio = (resposta) => {
+    setOnboarding((atual) => ({
+      ...atual,
+      dominios: { ...atual.dominios, [perguntaDominioAtual.key]: resposta },
+    }));
+
+    if (ultimaPerguntaDominio) {
+      setFase('diagnostico');
+    } else {
+      setDominioIndex((i) => i + 1);
+    }
   };
 
   return (
@@ -141,8 +200,74 @@ export default function BoasVindas() {
         </div>
       )}
 
+      {fase === 'aula-mouse-intro' && (
+        <div className={styles.card}>
+          <img
+            src="/mascote-ceci.png"
+            alt="Mascote Ceci"
+            className={styles.mascote}
+          />
+          <h1 className={styles.titulo}>Vamos aprender juntos</h1>
+          <p className={styles.texto}>
+            O mouse é o objeto que você move com a mão para controlar a
+            setinha na tela. Segure-o com calma, sem apertar - ele
+            desliza sozinho sobre a mesa.
+          </p>
+          <p className={styles.texto}>
+            O botão da esquerda (o que fica embaixo do seu dedo
+            indicador) é o que você mais vai usar: um toque leve nele é
+            chamado de <strong>clique</strong>.
+          </p>
+          <ButtonPrimary size="large" onClick={() => setFase('aula-mouse-pratica')}>
+            Vamos praticar!
+          </ButtonPrimary>
+        </div>
+      )}
+
+      {fase === 'aula-mouse-pratica' && (
+        <div className={styles.diagnosticoWrapper}>
+          <GameMoment
+            title="Agora é sua vez!"
+            instructions="Clique no botão abaixo com o botão esquerdo do mouse."
+            onComplete={() => setFase('formulario-dominios')}
+          >
+            {({ reportResult }) => (
+              <ClicarAlvoGame
+                reportResult={reportResult}
+                alvos={[{ id: 'aqui', label: '👆 Clique aqui', correto: true }]}
+              />
+            )}
+          </GameMoment>
+        </div>
+      )}
+
+      {fase === 'formulario-dominios' && perguntaDominioAtual && (
+        <div className={styles.card}>
+          <img
+            src="/mascote-ceci.png"
+            alt="Mascote Ceci"
+            className={styles.mascote}
+          />
+          <h1 className={styles.titulo}>Mais uma coisinha...</h1>
+          <PerguntaBinaria
+            key={perguntaDominioAtual.key}
+            pergunta={perguntaDominioAtual.pergunta}
+            opcaoSim={perguntaDominioAtual.opcaoSim}
+            opcaoNao={perguntaDominioAtual.opcaoNao}
+            onResposta={handleRespostaDominio}
+          />
+        </div>
+      )}
+
       {fase === 'diagnostico' && stepAtual && (
         <div className={styles.diagnosticoWrapper}>
+          {onboarding?.dominios?.teclado === 'nao' && stepIndex === 0 && (
+            <p className={styles.avisoTeclado}>
+              Não tem problema se for devagar - é só apertar, uma de cada
+              vez, as teclas com as letras do seu nome. 💜
+            </p>
+          )}
+
           {/* key=stepAtual.key remonta o GameMoment a cada novo passo,
               zerando tentativas e status automaticamente */}
           <GameMoment
@@ -153,6 +278,30 @@ export default function BoasVindas() {
           >
             {({ reportResult }) => stepAtual.render(reportResult)}
           </GameMoment>
+        </div>
+      )}
+
+      {fase === 'mini-aula-seguranca' && (
+        <div className={styles.card}>
+          <img
+            src="/mascote-ceci.png"
+            alt="Mascote Ceci"
+            className={styles.mascote}
+          />
+          <h1 className={styles.titulo}>Antes de criar sua conta</h1>
+          <p className={styles.texto}>
+            Se você não tiver um e-mail próprio, pode usar o de alguém
+            de confiança - só combine com essa pessoa antes, porque os
+            avisos da sua conta vão chegar lá.
+          </p>
+          <p className={styles.texto}>
+            Depois de escolher sua senha, anote-a em um lugar seguro
+            (um caderninho, por exemplo) - assim você não corre o
+            risco de esquecê-la.
+          </p>
+          <ButtonPrimary size="large" onClick={() => setFase('concluido')}>
+            Entendi, continuar
+          </ButtonPrimary>
         </div>
       )}
 

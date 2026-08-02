@@ -23,15 +23,6 @@ export default function Cadastro() {
   const { register } = useContext(UserContext);
   const navigate = useNavigate();
 
-  // Pra onde mandar a pessoa depois de criar a conta.
-  // Quem disse no /boas-vindas que "ainda não sabe usar mouse" vai direto
-  // pro primeiro mini-módulo do Módulo 1 (Uso do Mouse), em vez do
-  // Dashboard genérico - ainda não existe um formulário de afinidade
-  // separado pra quem respondeu "sim", então esse caminho continua indo
-  // pro Dashboard normalmente.
-  const destinoAposCadastro =
-    onboarding?.familiaridadeMouse === 'nao' ? '/mini-modulo/1-1' : '/dashboard';
-
   const validate = () => {
     if (!nome.trim()) return 'Por favor, informe seu nome.';
     if (!email.trim()) return 'Por favor, informe seu e-mail.';
@@ -55,8 +46,11 @@ export default function Cadastro() {
     try {
       await register({ nome: nome.trim(), email: email.trim(), password });
       setSuccess(true);
-      // Aguarda 2s para mostrar mensagem de sucesso, depois redireciona
-      setTimeout(() => navigate(destinoAposCadastro), 2000);
+      // Aguarda 2s para mostrar mensagem de sucesso, depois redireciona pro
+      // Dashboard - a bifurcação por familiaridade com mouse acontece toda
+      // ANTES do cadastro agora (embutida no /boas-vindas: aula-mouse-intro
+      // + aula-mouse-pratica), então aqui não tem mais decisão a fazer.
+      setTimeout(() => navigate('/dashboard'), 2000);
     } catch (err) {
       // Supabase pode retornar "User already registered" em inglês
       if (err.message?.toLowerCase().includes('already registered')) {
@@ -98,11 +92,7 @@ export default function Cadastro() {
         {success ? (
           <div className={styles.successBox}>
             <h3>Conta criada com sucesso!</h3>
-            <p>
-              {destinoAposCadastro === '/dashboard'
-                ? 'Redirecionando para o dashboard...'
-                : 'Redirecionando para sua primeira lição...'}
-            </p>
+            <p>Redirecionando para o dashboard...</p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className={authStyles.form} noValidate>

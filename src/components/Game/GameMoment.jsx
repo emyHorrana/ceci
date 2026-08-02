@@ -149,7 +149,6 @@ export function GameMoment({
 
       {/* Aviso de transição: sinaliza que a leitura acabou e agora é ação */}
       <div className={styles.modeBanner}>
-        <span className={styles.modeIcon} aria-hidden>🎮</span>
         <span className={styles.modeLabel}>Hora de praticar!</span>
       </div>
 

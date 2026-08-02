@@ -2,17 +2,12 @@ import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../context/UserContext';
 import { ProgressContext } from '../context/ProgressContext';
+import { AppLayout, PageHeader } from '../components/Layout/AppLayout';
+import appStyles from '../components/Layout/AppLayout.module.css';
 import { ModuleCard } from '../components/Cards/ModuleCard';
 import { ButtonPrimary } from '../components/Buttons/ButtonPrimary';
 import { MODULOS } from '../data/modulos';
 import styles from './Dashboard.module.css';
-
-const NAV_ITEMS = [
-  { icon: '⌂', label: 'Início',      path: '/dashboard' },
-  { icon: '◫', label: 'Módulos',     path: '/modulos' },
-  { icon: '★', label: 'Conquistas',  path: '/conquistas' },
-  { icon: '◎', label: 'Meu perfil',  path: '/perfil' },
-];
 
 const MOTIVATIONAL = [
   'Você está indo muito bem! Continue assim!',
@@ -22,19 +17,15 @@ const MOTIVATIONAL = [
 ];
 
 export default function Dashboard() {
-  const { user, logout }                    = useContext(UserContext);
+  const { user }                             = useContext(UserContext);
   const { modules, progress, fetchModules } = useContext(ProgressContext);
   const navigate                            = useNavigate();
-  const [message, setMessage]               = useState('');
-  const [activeNav, setActiveNav]           = useState('/dashboard');
+  const [message]                           = useState(() => MOTIVATIONAL[Math.floor(Math.random() * MOTIVATIONAL.length)]);
   const [expandedMini, setExpandedMini]     = useState(null);
 
   useEffect(() => {
     if (user?.id) fetchModules(user.id);
-    setMessage(MOTIVATIONAL[Math.floor(Math.random() * MOTIVATIONAL.length)]);
   }, [user?.id]);
-
-  const handleLogout = () => { logout(); navigate('/'); };
 
   if (!user) return (
     <div style={{ display:'flex', alignItems:'center', justifyContent:'center', minHeight:'100svh' }}>
@@ -48,36 +39,8 @@ export default function Dashboard() {
     setExpandedMini((prev) => (prev === id ? null : id));
 
   return (
-    <div className={styles.dashboard}>
-      {/* ===== SIDEBAR ===== */}
-      <aside className={styles.sidebar}>
-        <div className={styles.sidebarLogo}>
-          <div className={styles.sidebarLogoIcon} />
-          <span className={styles.sidebarLogoText}>CECI</span>
-        </div>
-
-        <nav className={styles.sidebarNav}>
-          {NAV_ITEMS.map((item) => (
-            <button
-              key={item.path}
-              className={`${styles.navItem} ${activeNav === item.path ? styles.active : ''}`}
-              onClick={() => { setActiveNav(item.path); navigate(item.path); }}
-            >
-              <span className={styles.navItemIcon}>{item.icon}</span>
-              {item.label}
-            </button>
-          ))}
-        </nav>
-
-        <button className={styles.sidebarLogout} onClick={handleLogout}>
-          Sair
-        </button>
-      </aside>
-
-      {/* ===== CONTEÚDO ===== */}
-      <main className={styles.main}>
-        {/* Topbar */}
-        <header className={styles.topbar}>
+    <AppLayout>
+        <PageHeader>
           <div className={styles.greeting}>
             <span className={styles.greetingHello}>Bem-vindo(a) de volta</span>
             <span className={styles.greetingName}>{user.nome || 'Aluno(a)'}</span>
@@ -91,9 +54,9 @@ export default function Dashboard() {
               {progress?.totalPoints || 0} pontos
             </div>
           </div>
-        </header>
+        </PageHeader>
 
-        <div className={styles.pageContent}>
+        <div className={`${appStyles.pageContent} ${styles.pageContentDashboard}`}>
           {/* Bloco da Cecília */}
           <div className={styles.welcomeCard}>
             <div className={styles.mascoteSlotSmall} aria-hidden />
@@ -127,7 +90,7 @@ export default function Dashboard() {
             </p>
           </div>
 
-          {/* ── Mini-módulos (lições) ─────────────────────────────── */}
+          {/* Mini-módulos (lições) */}
           <div>
             <div className={styles.sectionHeader}>
               <h2>Lições</h2>
@@ -224,7 +187,6 @@ export default function Dashboard() {
             </div>
           </div>
         </div>
-      </main>
-    </div>
+    </AppLayout>
   );
 }

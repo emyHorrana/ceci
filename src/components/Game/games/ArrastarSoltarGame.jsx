@@ -72,9 +72,8 @@ export function ArrastarSoltarGame({ reportResult, item, zonas }) {
         {zonas.map((zona) => (
           <div
             key={zona.id}
-            className={styles.zona}
+            className={`${styles.zona} ${zonaErrada === zona.id ? styles.erro : ''}`}
             data-sobre={zonaSobre === zona.id}
-            data-errada={zonaErrada === zona.id}
             onDragOver={(e) => {
               e.preventDefault();
               setZonaSobre(zona.id);

@@ -10,7 +10,7 @@
   font-size: 2rem;
   padding: 1rem 1.5rem;
   background: var(--color-surface);
-  border: 2px solid var(--color-purple-light);
+  border: 2px solid var(--color-yellow-light);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
   cursor: grab;
@@ -40,25 +40,20 @@
   padding: 1rem;
   font-size: 0.95rem;
   color: var(--color-text-secondary);
-  background: var(--color-lavender-pale);
+  background: var(--color-yellow-pale);
   border: 2px dashed var(--color-border);
   border-radius: var(--radius-lg);
   transition: border-color var(--transition-fast), background var(--transition-fast);
 }
 
 .zona[data-sobre='true'] {
-  border-color: var(--color-purple);
-  background: var(--color-purple-pale);
+  border-color: var(--color-yellow-deep);
+  background: var(--color-yellow-soft);
 }
 
-.zona[data-errada='true'] {
-  border-color: var(--color-error);
-  background: var(--color-error-bg);
-  animation: tremer 0.3s;
-}
-
-@keyframes tremer {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-4px); }
-  75% { transform: translateX(4px); }
+/* composes só é permitido num seletor de classe única - por isso essa
+   classe fica separada e é aplicada via className condicional no JS
+   (não via data-attribute no CSS, que quebraria o composes) */
+.erro {
+  composes: erro from '../GameMoment.module.css';
 }

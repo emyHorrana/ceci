@@ -39,8 +39,8 @@
 }
 
 .backBtn:hover {
-  background: var(--color-lavender-pale);
-  color: var(--color-purple);
+  background: var(--color-yellow-pale);
+  color: var(--color-border-focus);
 }
 
 .breadcrumb {
@@ -66,7 +66,7 @@
 }
 
 .breadcrumbMini {
-  color: var(--color-purple);
+  color: var(--color-border-focus);
   font-weight: 700;
   white-space: nowrap;
   overflow: hidden;
@@ -78,7 +78,7 @@
   font-weight: 600;
   color: var(--color-text-muted);
   white-space: nowrap;
-  background: var(--color-lavender-pale);
+  background: var(--color-yellow-pale);
   padding: 4px 12px;
   border-radius: var(--radius-pill);
 }
@@ -109,6 +109,12 @@
   width: 100%;
   margin: 0 auto;
   box-sizing: border-box;
+}
+
+/* Durante uma etapa de jogo, a coluna da Cecília some (o GameMoment já
+   tem o próprio feedback dela) e o card de jogo ocupa a largura toda */
+.main[data-modo='jogo'] {
+  grid-template-columns: 1fr;
 }
 
 /* Card de conteúdo */
@@ -177,12 +183,12 @@
 }
 
 .etapaConteudo strong {
-  color: var(--color-purple);
+  color: var(--color-border-focus);
   font-weight: 700;
 }
 
 .etapaConteudo em {
-  color: var(--color-pink);
+  color: var(--color-yellow-deep);
 }
 
 /* Coluna da Cecília */
@@ -247,16 +253,16 @@
 }
 
 .dot:hover {
-  background: var(--color-purple-light);
+  background: var(--color-yellow-light);
   transform: scale(1.2);
 }
 
 .dotDone {
-  background: var(--color-purple-light);
+  background: var(--color-yellow-light);
 }
 
 .dotActive {
-  background: var(--color-purple);
+  background: var(--color-yellow-deep);
   transform: scale(1.25);
 }
 

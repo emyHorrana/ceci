@@ -1,0 +1,23 @@
+/* CECI - Módulos
+   Topbar e pageContent vêm de components/Layout/AppLayout.module.css
+   (compartilhado com o Dashboard). Aqui só o que é específico desta tela. */
+
+.title {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  margin: 0 0 4px 0;
+}
+
+.subtitle {
+  font-size: 0.9375rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.25rem;
+}

@@ -1,22 +1,8 @@
-/* CECI - Página de Login / Entrar */
-
-.loginContainer {
-  display: flex;
-  min-height: 100svh;
-}
-
-/* Lado esquerdo: formulário */
-.loginForm {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 3rem 4rem;
-  max-width: 520px;
-  background: var(--color-white);
-  position: relative;
-  z-index: 1;
-}
+/* CECI - Página de Login / Entrar
+   Layout (colunas, bolhas, responsivo) e classes compartilhadas com o
+   Cadastro (title, subtitle, form, errorBox, footer, link, illustrationTitle)
+   vivem em components/Layout/AuthLayout.module.css. Aqui só o que é
+   específico desta tela. */
 
 .logo {
   display: flex;
@@ -49,8 +35,8 @@
   align-items: center;
   gap: 6px;
   padding: 5px 14px;
-  background: var(--color-pink-bg);
-  color: var(--color-pink);
+  background: var(--color-yellow-bg);
+  color: var(--color-yellow-deep);
   border-radius: var(--radius-pill);
   font-size: 0.8125rem;
   font-weight: 700;
@@ -59,33 +45,11 @@
   text-transform: uppercase;
 }
 
-.title {
-  font-family: var(--font-display);
-  font-size: 2rem;
-  font-weight: 800;
-  color: var(--color-text-primary);
-  margin-bottom: 0.5rem;
-  line-height: 1.1;
-}
-
 .titleAccent {
   background: var(--gradient-btn-primary);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-}
-
-.subtitle {
-  font-size: 1rem;
-  color: var(--color-text-secondary);
-  line-height: 1.5;
-}
-
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-  margin-bottom: 1.5rem;
 }
 
 .formLinks {
@@ -96,24 +60,11 @@
 .linkSmall {
   font-size: 0.875rem;
   font-weight: 600;
-  color: var(--color-purple);
+  color: var(--color-yellow-deep);
 }
 
 .linkSmall:hover {
-  color: var(--color-pink);
-}
-
-.errorBox {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 16px;
-  background: var(--color-error-bg);
-  border: 2px solid var(--color-error);
-  border-radius: var(--radius-md);
-  color: var(--color-error);
-  font-size: 0.9rem;
-  font-weight: 600;
+  color: var(--color-yellow-deep);
 }
 
 .divider {
@@ -137,64 +88,7 @@
   white-space: nowrap;
 }
 
-.footer {
-  margin-top: 1.5rem;
-  text-align: center;
-  padding-top: 1.25rem;
-  border-top: 1px solid var(--color-border);
-}
-
-.footer p {
-  font-size: 0.9375rem;
-  color: var(--color-text-secondary);
-}
-
-.link {
-  font-weight: 700;
-  color: var(--color-pink);
-  margin-left: 4px;
-}
-
-.link:hover {
-  color: var(--color-purple);
-}
-
-/* Lado direito: ilustração */
-.sideIllustration {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 3rem;
-  background: var(--gradient-hero);
-  position: relative;
-  overflow: hidden;
-}
-
-/* Bolhas decorativas */
-.sideIllustration::before {
-  content: '';
-  position: absolute;
-  width: 320px;
-  height: 320px;
-  background: rgba(255, 78, 163, 0.15);
-  border-radius: 50%;
-  top: -80px;
-  right: -80px;
-}
-
-.sideIllustration::after {
-  content: '';
-  position: absolute;
-  width: 200px;
-  height: 200px;
-  background: rgba(151, 71, 255, 0.15);
-  border-radius: 50%;
-  bottom: -40px;
-  left: 40px;
-}
-
+/* Conteúdo do lado da ilustração (a coluna em si é a AuthLayout) */
 .illustrationContent {
   position: relative;
   z-index: 1;
@@ -214,14 +108,6 @@
   height: 125%;
   object-fit: contain;
   transform: translateX(-35px);
-}
-
-.illustrationTitle {
-  font-family: var(--font-display);
-  font-size: 1.625rem;
-  font-weight: 800;
-  color: var(--color-text-primary);
-  margin-bottom: 0.75rem;
 }
 
 .illustrationSubtitle {
@@ -250,33 +136,16 @@
   font-weight: 600;
   color: var(--color-text-primary);
   border: 1px solid rgba(255, 255, 255, 0.9);
-  box-shadow: 0 2px 8px rgba(151, 71, 255, 0.08);
+  box-shadow: 0 2px 8px rgba(255, 202, 26, 0.08);
 }
 
-/* Responsivo */
+/* Responsivo (só o que é específico daqui - o resto está no AuthLayout) */
 @media (max-width: 900px) {
-  .loginContainer {
-    flex-direction: column;
-  }
-
-  .sideIllustration {
-    order: -1;
-    flex: none;
-    min-height: 260px;
-    padding: 2rem;
-  }
-
   .mascoteSlot {
     width: 140px;
     height: 140px;
     margin-bottom: 1rem;
   }
 
-  .illustrationTitle { font-size: 1.25rem; }
   .illustrationSubtitle { display: none; }
-
-  .loginForm {
-    max-width: 100%;
-    padding: 2rem 1.5rem 3rem;
-  }
 }

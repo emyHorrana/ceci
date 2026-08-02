@@ -27,7 +27,7 @@
 }
 
 .alvo:hover {
-  border-color: var(--color-purple-light);
+  border-color: var(--color-yellow-deep);
   transform: translateY(-2px);
 }
 
@@ -35,14 +35,9 @@
   transform: translateY(0);
 }
 
-.alvo[data-errado='true'] {
-  border-color: var(--color-error);
-  background: var(--color-error-bg);
-  animation: tremer 0.3s;
-}
-
-@keyframes tremer {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-4px); }
-  75% { transform: translateX(4px); }
+/* composes só é permitido num seletor de classe única - por isso essa
+   classe fica separada e é aplicada via className condicional no JS
+   (não via data-attribute no CSS, que quebraria o composes) */
+.erro {
+  composes: erro from '../GameMoment.module.css';
 }

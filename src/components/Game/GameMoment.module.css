@@ -4,8 +4,8 @@
    fundo levemente lilás, pra reforçar "aqui é modo ação". */
 
 .gameMoment {
-  background: var(--color-purple-pale);
-  border: 2px dashed var(--color-purple-light);
+  background: var(--color-yellow-pale);
+  border: 2px dashed var(--color-yellow);
   border-radius: var(--radius-xl);
   padding: 2rem 2.25rem;
   display: flex;
@@ -27,7 +27,7 @@
   }
 }
 
-/* ── Aviso de transição ─────────────────────────────────────────────── */
+/* Aviso de transição */
 
 .modeBanner {
   display: inline-flex;
@@ -36,7 +36,7 @@
   padding: 6px 16px;
   border-radius: var(--radius-pill);
   background: var(--gradient-btn-primary);
-  box-shadow: var(--shadow-purple);
+  box-shadow: var(--shadow-yellow);
 }
 
 .modeIcon {
@@ -47,7 +47,7 @@
   font-family: var(--font-display);
   font-size: 0.8rem;
   font-weight: 700;
-  color: var(--color-text-on-dark);
+  color: var(--color-text-primary);
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
@@ -98,7 +98,8 @@
   flex-shrink: 0;
   border-radius: 50%;
   overflow: hidden;
-  background: var(--color-lavender-pale);
+  background: var(--gradient-ceci);
+  box-shadow: var(--shadow-ceci);
 }
 
 .ceciAvatar img {
@@ -138,12 +139,43 @@
 }
 
 .gameMoment[data-status='pulado'] {
-  background: var(--color-lavender-pale);
+  background: var(--color-yellow-bg);
   border-color: var(--color-border);
   border-style: solid;
 }
 
-/* Responsivo */
+/* Feedback de erro compartilhado entre as mecânicas de jogo (arrastar
+   e soltar, clicar no alvo, ...): borda/fundo de erro + tremidinha.
+   Uma mecânica nova que precise do mesmo feedback usa, na própria
+   classe de erro do seu .module.css:
+     .erro {
+       composes: erro from '../GameMoment.module.css';
+     }
+   e aplica via className condicional no JS:
+     className={`${styles.alvo} ${errado ? styles.erro : ''}`}
+   IMPORTANTE: `composes` só é permitido num seletor de classe única -
+   NÃO dá pra escrever `.alvo[data-errado='true'] { composes: ... }`
+   (o Vite quebra o build com "composition is only allowed when
+   selector is single :local class name"). Por isso é className
+   condicional no JS, não data-attribute no CSS, pra essa classe
+   específica.
+   As duas propriedades de cor levam !important porque a classe .erro
+   é combinada com a classe base do elemento (mesma especificidade) -
+   sem isso, quem vence dependeria da ordem de import no bundle. */
+
+@keyframes tremer {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+.erro {
+  border-color: var(--color-error) !important;
+  background: var(--color-error-bg) !important;
+  animation: tremer 0.3s;
+}
+
+/*  Responsivo  */
 
 @media (max-width: 768px) {
   .gameMoment {

@@ -11,6 +11,7 @@ app.use(express.json());
 // Rota de health check - confirma que o servidor está no ar
 app.get('/health', (req, res) => res.json({ status: 'ok' }));
 
+app.use('/api/licao', require('./routes/licao'));
 app.use('/api/usuario',   require('./routes/usuario'));
 app.use('/api/licoes',    require('./routes/licoes'));
 app.use('/api/progresso', require('./routes/progresso'));

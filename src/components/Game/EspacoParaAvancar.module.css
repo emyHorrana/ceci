@@ -15,62 +15,6 @@
   margin: 0;
 }
 
-/* Teclado (placeholder em CSS) */
-
-.teclado {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 1.25rem;
-  background: var(--color-yellow-bg);
-  border-radius: var(--radius-lg);
-  width: 100%;
-  max-width: 20rem;
-}
-
-.linha {
-  display: flex;
-  justify-content: center;
-  gap: 6px;
-}
-
-.tecla {
-  width: 22px;
-  height: 22px;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 5px;
-}
-
-.barraEspaco {
-  width: 70%;
-  height: 26px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-body);
-  font-size: 0.7rem;
-  font-weight: 700;
-  color: var(--color-text-primary);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  background: var(--gradient-btn-primary);
-  border-radius: 6px;
-  box-shadow: var(--shadow-yellow);
-  animation: pulsar 1.6s ease-in-out infinite;
-}
-
-@keyframes pulsar {
-  0%, 100% {
-    transform: scale(1);
-    box-shadow: var(--shadow-yellow);
-  }
-  50% {
-    transform: scale(1.04);
-    box-shadow: 0 4px 26px rgba(255, 202, 26, 0.4);
-  }
-}
-
 /* Fallback pra ninguém travar */
 
 .fallback {

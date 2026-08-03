@@ -2,7 +2,7 @@
    Paleta oficial do site: Amarelo (acolhedor, neutro, não associado a nenhum gênero) 
    Rosa/Roxo reservadas para momentos de interação direta com a mascote Cecília */
 
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@700;900&family=Archivo:wght@400;500;600;700;900&display=swap');
 
 :root {
   /* Marca do site: Amarelo */
@@ -73,8 +73,8 @@
   --color-coin:          #FFD966;
 
   /* Tipografia */
-  --font-display: 'Lexend', sans-serif;
-  --font-body: 'Inter', sans-serif;
+  --font-display: 'Merriweather', serif;
+  --font-body: 'Archivo', sans-serif;
 
   /* Espaçamentos */
   --radius-sm:           8px;

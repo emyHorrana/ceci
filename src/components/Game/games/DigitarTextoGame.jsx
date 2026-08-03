@@ -34,10 +34,18 @@
 //                  "certa", só se quer captar o que a pessoa digitou).
 //   mensagemErro (string, opcional) - texto de erro do campo quando a
 //                  validação falha (ex: "Tenta digitar 'gato' certinho!")
+//   mostrarDicaEnter (bool, padrão false) - mostra o teclado com o Enter
+//                  destacado, ensinando que dá pra confirmar sem clicar
+//                  no botão (o <form> já reage a Enter nativamente,
+//                  isto é só a parte visual/didática). Como fica
+//                  repetitivo depois que a pessoa já sabe, é opt-in por
+//                  uso - liga só no primeiro contato de verdade (ex: no
+//                  diagnóstico do /boas-vindas).
 
 import { useState, useRef } from 'react';
 import { TextInput } from '../../Forms/TextInput';
 import { ButtonPrimary } from '../../Buttons/ButtonPrimary';
+import { Teclado } from '../Teclado';
 import styles from './DigitarTextoGame.module.css';
 
 const aceitaQualquerTextoNaoVazio = (valor) => valor.length > 0;
@@ -49,6 +57,7 @@ export function DigitarTextoGame({
   tipo = 'text',
   validar = aceitaQualquerTextoNaoVazio,
   mensagemErro,
+  mostrarDicaEnter = false,
 }) {
   const [valor, setValor] = useState('');
   const [mostrarErro, setMostrarErro] = useState(false);
@@ -96,6 +105,15 @@ export function DigitarTextoGame({
       <ButtonPrimary type="submit" fullWidth>
         Confirmar
       </ButtonPrimary>
+
+      {mostrarDicaEnter && (
+        <div className={styles.dicaEnter}>
+          <p className={styles.dicaEnterTexto}>
+            Ou aperte a tecla Enter (destacada abaixo) para confirmar:
+          </p>
+          <Teclado teclaDestacada="enter" />
+        </div>
+      )}
     </form>
   );
 }

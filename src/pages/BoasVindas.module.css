@@ -15,10 +15,10 @@
 /* Card de apresentação/conclusão */
 
 .card {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
+  background: var(--color-ceci-lavender-pale);
+  border: 1px solid var(--color-ceci-purple-light);
   border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow-ceci);
   padding: 2.75rem 2.5rem;
   max-width: 30rem;
   width: 100%;

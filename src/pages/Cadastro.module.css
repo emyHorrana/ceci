@@ -54,7 +54,9 @@
 }
 
 .logoMini {
-  font-family: var(--font-display);
+  /* Exceção à regra de títulos: wordmark da marca, pede um sans forte
+     (Archivo) em vez da serifa (Merriweather) */
+  font-family: var(--font-body);
   font-size: 1.25rem;
   font-weight: 800;
   letter-spacing: 0.08em;

@@ -44,7 +44,9 @@
 }
 
 .modeLabel {
-  font-family: var(--font-display);
+  /* Exceção à regra de títulos: badge pequeno, pede um sans forte
+     (Archivo) em vez da serifa (Merriweather) */
+  font-family: var(--font-body);
   font-size: 0.8rem;
   font-weight: 700;
   color: var(--color-text-primary);
@@ -84,11 +86,11 @@
   display: flex;
   align-items: center;
   gap: 0.85rem;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
+  background: var(--color-ceci-purple-pale);
+  border: 1px solid var(--color-ceci-purple-light);
   border-radius: var(--radius-lg);
   padding: 0.85rem 1.25rem;
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-ceci);
   max-width: 34rem;
 }
 

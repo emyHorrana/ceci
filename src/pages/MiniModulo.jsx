@@ -18,6 +18,8 @@ import { GameMoment } from '../components/Game/GameMoment';
 import { ClicarAlvoGame } from '../components/Game/games/ClicarAlvoGame';
 import { ArrastarSoltarGame } from '../components/Game/games/ArrastarSoltarGame';
 import { ScrollAteUmPontoGame } from '../components/Game/games/ScrollAteUmPontoGame';
+import { DigitarTextoGame } from '../components/Game/games/DigitarTextoGame';
+import { PressionarTeclaGame } from '../components/Game/games/PressionarTeclaGame';
 import styles from './MiniModulo.module.css';
 
 // Registro das mecânicas disponíveis pro campo `jogo` de uma etapa em
@@ -28,6 +30,8 @@ const JOGOS = {
   clicar: ClicarAlvoGame,
   arrastar: ArrastarSoltarGame,
   scroll: ScrollAteUmPontoGame,
+  digitar: DigitarTextoGame,
+  pressionar: PressionarTeclaGame,
 };
 
 export default function MiniModulo() {

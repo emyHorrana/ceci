@@ -1,0 +1,15 @@
+.wrapper {
+  display: flex;
+  justify-content: center;
+  padding: 10px;
+  border: 2px solid transparent;
+  border-radius: var(--radius-lg);
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+
+/* composes só é permitido num seletor de classe única - por isso essa
+   classe fica separada e é aplicada via className condicional no JS
+   (não via data-attribute no CSS, que quebraria o composes) */
+.erro {
+  composes: erro from '../GameMoment.module.css';
+}

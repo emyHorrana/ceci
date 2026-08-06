@@ -1,8 +1,7 @@
 // Mecânica genérica de "aperte esta tecla". Cobre teclas isoladas do
 // Módulo 2 (Teclado): Espaço, Enter, Backspace, Delete, Caps Lock,
-// Shift, Esc. Combinações (Ctrl+C, Ctrl+V etc) são um caso diferente
-// (mais complexo: duas teclas em sequência, uma delas precisa continuar
-// segurada).
+// Shift, Esc, Setas. Combinações (Ctrl+C, Ctrl+V etc) são um caso
+// diferente.
 //
 // Letras, números e símbolos individuais NÃO cabem aqui - o teclado
 // desenhado (Teclado.jsx) não tem rótulo em cada tecla, só nas
@@ -20,7 +19,8 @@
 //   reportResult (função, obrigatória) - vem do GameMoment
 //   tecla        obrigatório, um de:
 //     'espaco' | 'enter' | 'backspace' | 'delete' | 'capslock' |
-//     'shift' | 'esc'
+//     'shift' | 'esc' | 'seta-cima' | 'seta-baixo' | 'seta-esquerda' |
+//     'seta-direita'
 //     Também repassada direto pro <Teclado teclaDestacada={tecla}>,
 //     então os dois sempre concordam sobre qual tecla está sendo pedida.
 
@@ -39,6 +39,10 @@ const CODIGOS_ESPERADOS = {
   capslock: ['CapsLock'],
   shift: ['ShiftLeft', 'ShiftRight'],
   esc: ['Escape'],
+  'seta-cima': ['ArrowUp'],
+  'seta-baixo': ['ArrowDown'],
+  'seta-esquerda': ['ArrowLeft'],
+  'seta-direita': ['ArrowRight'],
 };
 
 // Teclas "especiais" que contam como erro se apertadas na hora errada

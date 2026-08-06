@@ -472,7 +472,7 @@ export const MODULOS = [
   <li><strong>:</strong> e <strong>;</strong> (dois-pontos e ponto e vírgula): usados na escrita de frases.</li>
 </ul>
 <p>Não é necessário memorizar a posição de todos de uma vez - com o uso repetido em situações reais, como digitar seu próprio e-mail, a localização vai se tornando familiar.</p>`,
-            dica: 'No teclado brasileiro (o mais comum, chamado de ABNT2), o @ costuma sair com Alt Gr + Q (uma tecla que fica à direita da barra de espaço). Em teclados americanos, geralmente é Shift + 2. Se um não funcionar, vale tentar o outro!',
+            dica: 'No teclado brasileiro (o mais comum por aqui, chamado de ABNT2), o @ costuma sair com Alt Gr + Q - a tecla Alt Gr fica à direita da barra de espaço. Em teclados americanos, geralmente é Shift + 2. Se um não funcionar, vale tentar o outro!',
           },
           {
             tipo: 'jogo',
@@ -524,6 +524,13 @@ export const MODULOS = [
   <li>Existem atalhos para ir diretamente ao início ou ao final de uma linha.</li>
 </ul>`,
           },
+          {
+            tipo: 'jogo',
+            titulo: 'Pratique as setas',
+            instructions: 'Aperte a seta para baixo (destacada abaixo, num grupo separado do restante do teclado).',
+            jogo: 'pressionar',
+            jogoProps: { tecla: 'seta-baixo' },
+          },
         ],
       },
       {
@@ -540,6 +547,34 @@ export const MODULOS = [
   <li><strong>Ctrl + A</strong>: seleciona todo o conteúdo de uma vez.</li>
 </ul>`,
             dica: 'Esses atalhos não precisam ser usados desde já - eles vão se tornando naturais conforme você for ganhando confiança com o teclado.',
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Pratique o Ctrl + C',
+            instructions: 'Segure Ctrl e aperte a tecla C ao mesmo tempo (em Mac, use Cmd no lugar do Ctrl).',
+            jogo: 'atalho',
+            jogoProps: { letra: 'c' },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Pratique o Ctrl + V',
+            instructions: 'Segure Ctrl e aperte a tecla V ao mesmo tempo (em Mac, use Cmd no lugar do Ctrl).',
+            jogo: 'atalho',
+            jogoProps: { letra: 'v' },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Pratique o Ctrl + Z',
+            instructions: 'Segure Ctrl e aperte a tecla Z ao mesmo tempo (em Mac, use Cmd no lugar do Ctrl).',
+            jogo: 'atalho',
+            jogoProps: { letra: 'z' },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Pratique o Ctrl + A',
+            instructions: 'Segure Ctrl e aperte a tecla A ao mesmo tempo (em Mac, use Cmd no lugar do Ctrl).',
+            jogo: 'atalho',
+            jogoProps: { letra: 'a' },
           },
         ],
       },
@@ -580,6 +615,30 @@ export const MODULOS = [
   <li>Os atalhos tornam algumas tarefas mais rápidas, mas podem ser aprendidos com calma.</li>
 </ul>`,
             dica: 'Cada palavra digitada é um passo a mais na sua autonomia. Continue praticando no seu ritmo - a confiança vem da repetição, não da pressa. 💛',
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Desafio: juntando tudo',
+            instructions: 'Digite um e-mail (pode ser fictício, tipo exemplo@email.com) e confirme.',
+            jogo: 'digitar',
+            jogoProps: {
+              label: 'Digite um e-mail',
+              placeholder: 'exemplo@email.com',
+              validar: (valor) => /.+@.+\..+/.test(valor),
+              mensagemErro: 'Um e-mail sempre tem um @ e um ponto no meio, tipo exemplo@email.com.',
+            },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Desafio final: digite um e-mail',
+            instructions: 'Digite um endereço de e-mail simples (pode inventar um) - ele junta tudo que você já praticou: letras, o símbolo @ e um ponto.',
+            jogo: 'digitar',
+            jogoProps: {
+              label: 'Digite um e-mail',
+              placeholder: 'nome@email.com',
+              validar: (valor) => /^[a-z0-9._-]+@[a-z0-9.-]+\.[a-z]{2,}$/i.test(valor.trim()),
+              mensagemErro: 'Falta alguma coisa - um e-mail geralmente tem um nome, o símbolo @, e termina com um ponto (como .com).',
+            },
           },
         ],
       },

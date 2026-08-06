@@ -1,18 +1,19 @@
 .wrapper {
   display: flex;
   align-items: flex-start;
-  gap: 10px;
+  gap: 14px;
   width: 100%;
-  max-width: 22rem;
+  max-width: 30rem;
+  padding: 1.75rem;
+  background: var(--color-yellow-bg);
+  border-radius: var(--radius-lg);
+  box-sizing: border-box;
 }
 
 .teclado {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding: 1.25rem;
-  background: var(--color-yellow-bg);
-  border-radius: var(--radius-lg);
+  gap: 10px;
   flex: 1;
   min-width: 0;
 }
@@ -20,7 +21,7 @@
 .linha {
   display: flex;
   justify-content: center;
-  gap: 6px;
+  gap: 8px;
 }
 
 .linhaEsc {
@@ -29,16 +30,16 @@
 }
 
 .tecla {
-  width: 22px;
-  height: 22px;
+  width: 26px;
+  height: 26px;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: 5px;
+  border-radius: 6px;
 }
 
 /* Enter: mais largo que uma tecla comum */
 .enter {
-  width: 40px;
+  width: 46px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -48,17 +49,17 @@
 
 /* Backspace: mesma ideia do Enter, no fim da fileira de números. */
 .backspace {
-  width: 34px;
+  width: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   color: var(--color-text-secondary);
 }
 
 /* Caps Lock: mesma ideia, no início da home row. */
 .capslock {
-  width: 34px;
+  width: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -68,7 +69,7 @@
 
 /* Shift: as duas pontas da fileira de baixo. */
 .shift {
-  width: 34px;
+  width: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -76,14 +77,30 @@
   color: var(--color-text-secondary);
 }
 
-/* Esc: pequena, sozinha, acima da fileira de números. */
-.esc {
-  width: 26px;
-  height: 18px;
+/* Ctrl: mesma ideia, fileira ainda mais embaixo, fora do Shift. */
+.ctrl {
+  width: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.5rem;
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+
+.espacador {
+  flex: 1;
+}
+
+/* Esc: pequena, sozinha, acima da fileira de números. */
+.esc {
+  width: 30px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.55rem;
   font-weight: 700;
   text-transform: uppercase;
   color: var(--color-text-muted);
@@ -91,12 +108,12 @@
 
 .barraEspaco {
   width: 70%;
-  height: 26px;
+  height: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: var(--font-body);
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   font-weight: 700;
   color: var(--color-text-secondary);
   text-transform: uppercase;
@@ -111,18 +128,49 @@
 .clusterExtra {
   display: flex;
   flex-direction: column;
-  padding-top: 1.25rem;
+  padding-left: 18px;
+  padding-top: 32px;
+  border-left: 1px dashed var(--color-border);
 }
 
 .delete {
-  width: 26px;
-  height: 22px;
+  width: 30px;
+  height: 26px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.55rem;
+  font-size: 0.6rem;
   font-weight: 700;
   text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+
+/* Setas: T invertido, abaixo do Delete - mesmo agrupamento à parte. */
+.setasBloco {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  margin-top: 14px;
+}
+
+.setasLinhaCima {
+  display: flex;
+  justify-content: center;
+}
+
+.setasLinhaBaixo {
+  display: flex;
+  gap: 3px;
+}
+
+.seta {
+  width: 22px;
+  height: 22px;
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: var(--color-text-secondary);
 }
 

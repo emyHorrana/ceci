@@ -70,17 +70,6 @@
   width: 100%;
 }
 
-.avisoTeclado {
-  font-size: 0.9375rem;
-  font-weight: 600;
-  color: var(--color-yellow-deep);
-  background: var(--color-yellow-bg);
-  border-radius: var(--radius-md);
-  padding: 10px 16px;
-  margin-bottom: 1rem;
-  text-align: center;
-}
-
 /* Responsivo */
 
 @media (max-width: 768px) {

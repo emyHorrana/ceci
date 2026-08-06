@@ -25,13 +25,17 @@
 //    motivo do mouse: quem não sabe usar teclado também teria
 //    dificuldade em digitar nome/e-mail no diagnóstico e no cadastro
 //    logo a seguir.
+//    - "não sei usar teclado" (primeira pergunta do formulário) -> aula
+//      básica de teclado embutida aqui mesmo (fases
+//      aula-teclado-intro/aula-teclado-pratica), assim que o formulário
+//      termina - mesma lógica da aula de mouse: sem o básico de
+//      teclado, a pessoa não conseguiria preencher o diagnóstico
+//      (digitar nome) nem o cadastro que vem depois.
+//    - "já uso" -> pula direto pro diagnóstico.
 // 5) Diagnóstico inicial: uma sequência de pequenas interações discretas
 //    (hoje: digitar o nome). Cada uma parece só uma etapa normal de
 //    cadastro, mas na real também dá sinais de familiaridade com
-//    mouse/teclado pro algoritmo adaptativo usar depois. Se a pessoa
-//    respondeu "não sei teclado" no formulário de domínios, aparece um
-//    aviso leve de acolhimento antes do primeiro passo (não é uma aula
-//    de teclado de verdade - isso é maior, fica pro backlog).
+//    mouse/teclado pro algoritmo adaptativo usar depois.
 // 6) Mini-aula de orientações de conta: antes de ir pro cadastro de
 //    verdade, avisos rápidos e leves (pode usar e-mail de alguém de
 //    confiança, anotar a senha em lugar seguro) - pensados pra quem
@@ -66,7 +70,9 @@ import { useNavigate } from 'react-router-dom';
 import { GameMoment } from '../components/Game/GameMoment';
 import { EspacoParaAvancar } from '../components/Game/EspacoParaAvancar';
 import { PerguntaBinaria } from '../components/Game/PerguntaBinaria';
+import { Teclado } from '../components/Game/Teclado';
 import { DigitarNomeGame } from '../components/Game/games/DigitarNomeGame';
+import { DigitarTextoGame } from '../components/Game/games/DigitarTextoGame';
 import { ClicarAlvoGame } from '../components/Game/games/ClicarAlvoGame';
 import { ButtonPrimary } from '../components/Buttons/ButtonPrimary';
 import { useLocalStorage } from '../hooks/useLocalStorage';
@@ -103,7 +109,8 @@ export default function BoasVindas() {
   const navigate = useNavigate();
   // 'apresentacao' | 'tutorial-espaco' | 'pergunta-mouse' |
   // 'aula-mouse-intro' | 'aula-mouse-pratica' | 'formulario-dominios' |
-  // 'diagnostico' | 'mini-aula-seguranca' | 'concluido'
+  // 'aula-teclado-intro' | 'aula-teclado-pratica' | 'diagnostico' |
+  // 'mini-aula-seguranca' | 'concluido'
   const [fase, setFase] = useState('apresentacao');
   const [stepIndex, setStepIndex] = useState(0);
   const [dominioIndex, setDominioIndex] = useState(0);
@@ -135,13 +142,17 @@ export default function BoasVindas() {
   };
 
   const handleRespostaDominio = (resposta) => {
-    setOnboarding((atual) => ({
-      ...atual,
-      dominios: { ...atual.dominios, [perguntaDominioAtual.key]: resposta },
-    }));
+    // Calculado localmente (não só via setOnboarding) pra poder decidir
+    // a próxima fase já nesta mesma chamada, sem depender do timing da
+    // atualização de estado - funciona não importa em que ordem as
+    // perguntas de domínio estejam.
+    const dominiosAtualizados = { ...onboarding.dominios, [perguntaDominioAtual.key]: resposta };
+    setOnboarding((atual) => ({ ...atual, dominios: dominiosAtualizados }));
 
     if (ultimaPerguntaDominio) {
-      setFase('diagnostico');
+      // "não sei usar teclado" -> aula básica embutida aqui mesmo,
+      // igual já acontece com o mouse (ver nota no topo do arquivo).
+      setFase(dominiosAtualizados.teclado === 'nao' ? 'aula-teclado-intro' : 'diagnostico');
     } else {
       setDominioIndex((i) => i + 1);
     }
@@ -259,15 +270,53 @@ export default function BoasVindas() {
         </div>
       )}
 
+      {fase === 'aula-teclado-intro' && (
+        <div className={styles.card}>
+          <img
+            src="/mascote-ceci.png"
+            alt="Mascote Ceci"
+            className={styles.mascote}
+          />
+          <h1 className={styles.titulo}>Vamos aprender o teclado</h1>
+          <p className={styles.texto}>
+            Cada tecla tem uma letra, número ou símbolo desenhado nela.
+            Apertar uma tecla escreve o que está desenhado ali - um
+            toque leve já é suficiente, não precisa de força.
+          </p>
+          <p className={styles.texto}>
+            Se sair uma letra errada, sem problema: a tecla{' '}
+            <strong>Backspace</strong> apaga a última letra escrita, e
+            você pode tentar de novo.
+          </p>
+          <Teclado teclaDestacada="backspace" />
+          <ButtonPrimary size="large" onClick={() => setFase('aula-teclado-pratica')}>
+            Vamos praticar!
+          </ButtonPrimary>
+        </div>
+      )}
+
+      {fase === 'aula-teclado-pratica' && (
+        <div className={styles.diagnosticoWrapper}>
+          <GameMoment
+            title="Agora é sua vez!"
+            instructions='Digite a palavra "oi" e confirme.'
+            onComplete={() => setFase('diagnostico')}
+          >
+            {({ reportResult }) => (
+              <DigitarTextoGame
+                reportResult={reportResult}
+                label='Digite a palavra "oi"'
+                placeholder="Digite aqui"
+                validar={(valor) => valor.toLowerCase() === 'oi'}
+                mensagemErro='Quase lá! Confere se digitou "oi" certinho.'
+              />
+            )}
+          </GameMoment>
+        </div>
+      )}
+
       {fase === 'diagnostico' && stepAtual && (
         <div className={styles.diagnosticoWrapper}>
-          {onboarding?.dominios?.teclado === 'nao' && stepIndex === 0 && (
-            <p className={styles.avisoTeclado}>
-              Não tem problema se for devagar - é só apertar, uma de cada
-              vez, as teclas com as letras do seu nome. 💜
-            </p>
-          )}
-
           {/* key=stepAtual.key remonta o GameMoment a cada novo passo,
               zerando tentativas e status automaticamente */}
           <GameMoment

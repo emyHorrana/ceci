@@ -1,0 +1,29 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 10px;
+  border: 2px solid transparent;
+  border-radius: var(--radius-lg);
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+
+.letraAlvo {
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.letraAlvo strong {
+  color: var(--color-text-primary);
+  font-weight: 700;
+}
+
+/* composes só é permitido num seletor de classe única - por isso essa
+   classe fica separada e é aplicada via className condicional no JS
+   (não via data-attribute no CSS, que quebraria o composes) */
+.erro {
+  composes: erro from '../GameMoment.module.css';
+}

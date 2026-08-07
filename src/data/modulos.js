@@ -472,7 +472,7 @@ export const MODULOS = [
   <li><strong>:</strong> e <strong>;</strong> (dois-pontos e ponto e vírgula): usados na escrita de frases.</li>
 </ul>
 <p>Não é necessário memorizar a posição de todos de uma vez - com o uso repetido em situações reais, como digitar seu próprio e-mail, a localização vai se tornando familiar.</p>`,
-            dica: 'No teclado brasileiro (o mais comum por aqui, chamado de ABNT2), o @ costuma sair com Alt Gr + Q - a tecla Alt Gr fica à direita da barra de espaço. Em teclados americanos, geralmente é Shift + 2. Se um não funcionar, vale tentar o outro!',
+            dica: 'No teclado brasileiro (ABNT2), o @ costuma sair com Alt Gr + Q (essa tecla fica à direita da barra de espaço). Em teclados americanos, geralmente é Shift + 2. Se um não funcionar, vale tentar o outro!',
           },
           {
             tipo: 'jogo',
@@ -626,18 +626,6 @@ export const MODULOS = [
               placeholder: 'exemplo@email.com',
               validar: (valor) => /.+@.+\..+/.test(valor),
               mensagemErro: 'Um e-mail sempre tem um @ e um ponto no meio, tipo exemplo@email.com.',
-            },
-          },
-          {
-            tipo: 'jogo',
-            titulo: 'Desafio final: digite um e-mail',
-            instructions: 'Digite um endereço de e-mail simples (pode inventar um) - ele junta tudo que você já praticou: letras, o símbolo @ e um ponto.',
-            jogo: 'digitar',
-            jogoProps: {
-              label: 'Digite um e-mail',
-              placeholder: 'nome@email.com',
-              validar: (valor) => /^[a-z0-9._-]+@[a-z0-9.-]+\.[a-z]{2,}$/i.test(valor.trim()),
-              mensagemErro: 'Falta alguma coisa - um e-mail geralmente tem um nome, o símbolo @, e termina com um ponto (como .com).',
             },
           },
         ],

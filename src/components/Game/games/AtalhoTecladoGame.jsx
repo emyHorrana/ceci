@@ -23,6 +23,7 @@ import styles from './AtalhoTecladoGame.module.css';
 
 export function AtalhoTecladoGame({ reportResult, letra }) {
   const [errada, setErrada] = useState(false);
+  const [certa, setCerta] = useState(false);
   const codigoLetra = `Key${letra.toUpperCase()}`;
 
   useEffect(() => {
@@ -31,6 +32,7 @@ export function AtalhoTecladoGame({ reportResult, letra }) {
 
       if (modificadorSegurado && e.code === codigoLetra) {
         e.preventDefault();
+        setCerta(true);
         reportResult(true, { letra: e.code, comMeta: e.metaKey });
         return;
       }
@@ -55,7 +57,7 @@ export function AtalhoTecladoGame({ reportResult, letra }) {
   }, [codigoLetra, reportResult]);
 
   return (
-    <div className={`${styles.wrapper} ${errada ? styles.erro : ''}`}>
+    <div className={`${styles.wrapper} ${errada ? styles.erro : ''} ${certa ? styles.acerto : ''}`}>
       <TecladoCompleto
         teclasDestacadas={['ControlLeft', 'ControlRight', 'MetaLeft', codigoLetra]}
       />

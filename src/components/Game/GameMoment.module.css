@@ -177,6 +177,26 @@
   animation: tremer 0.3s;
 }
 
+/* Feedback de acerto - mesmo esquema do .erro acima (composes na
+   classe do .module.css da mecânica, className condicional no JS),
+   só que pro caminho feliz. Em vez de tremer, um "pulo de comemoração"
+   com uma leve torção - pra ter personalidade própria e não parecer
+   só "erro mas verde". */
+
+@keyframes comemorar {
+  0%   { transform: scale(1)     rotate(0deg); }
+  30%  { transform: scale(1.15)  rotate(-4deg); }
+  55%  { transform: scale(0.95)  rotate(3deg); }
+  75%  { transform: scale(1.05)  rotate(-1.5deg); }
+  100% { transform: scale(1)     rotate(0deg); }
+}
+
+.acerto {
+  border-color: var(--color-success) !important;
+  background: var(--color-success-bg) !important;
+  animation: comemorar 0.5s ease-out;
+}
+
 /*  Responsivo  */
 
 @media (max-width: 768px) {

@@ -41,9 +41,13 @@ export function ClicarAlvoGame({
   // Guarda o id do último alvo clicado errado, só pra um feedback visual
   // rápido (pisca vermelho) - não impede novas tentativas.
   const [alvoErrado, setAlvoErrado] = useState(null);
+  // Mesma ideia, só que pro alvo certo - fica destacado (não volta a
+  // null), já que depois de acertar o GameMoment encerra a tentativa.
+  const [alvoCerto, setAlvoCerto] = useState(null);
 
   const handleClique = (alvo) => {
     if (alvo.correto) {
+      setAlvoCerto(alvo.id);
       reportResult(true, { alvoEscolhido: alvo.id });
       return;
     }
@@ -66,7 +70,7 @@ export function ClicarAlvoGame({
         <button
           key={alvo.id}
           type="button"
-          className={`${styles.alvo} ${alvoErrado === alvo.id ? styles.erro : ''}`}
+          className={`${styles.alvo} ${alvoErrado === alvo.id ? styles.erro : ''} ${alvoCerto === alvo.id ? styles.acerto : ''}`}
           {...{ [eventoDeClique]: () => handleClique(alvo) }}
         >
           {alvo.label}

@@ -55,6 +55,7 @@ const TECLAS_ESPECIAIS = Object.values(CODIGOS_ESPERADOS).flat().concat(['Tab'])
 
 export function PressionarTeclaGame({ reportResult, tecla }) {
   const [errada, setErrada] = useState(false);
+  const [certa, setCerta] = useState(false);
 
   useEffect(() => {
     const codigosEsperados = CODIGOS_ESPERADOS[tecla] || [];
@@ -62,6 +63,7 @@ export function PressionarTeclaGame({ reportResult, tecla }) {
     const handleKeyDown = (e) => {
       if (codigosEsperados.includes(e.code)) {
         e.preventDefault();
+        setCerta(true);
         reportResult(true, { tecla: e.code });
         return;
       }
@@ -79,7 +81,7 @@ export function PressionarTeclaGame({ reportResult, tecla }) {
   }, [tecla, reportResult]);
 
   return (
-    <div className={`${styles.wrapper} ${errada ? styles.erro : ''}`}>
+    <div className={`${styles.wrapper} ${errada ? styles.erro : ''} ${certa ? styles.acerto : ''}`}>
       <Teclado teclaDestacada={tecla} />
     </div>
   );

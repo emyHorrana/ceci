@@ -38,6 +38,10 @@
   composes: erro from '../GameMoment.module.css';
 }
 
+.acerto {
+  composes: acerto from '../GameMoment.module.css';
+}
+
 .conteudo {
   position: relative;
   width: 100%;

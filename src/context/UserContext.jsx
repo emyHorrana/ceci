@@ -6,7 +6,7 @@
 // Para consumir: const { user, login } = useContext(UserContext)
 // ou use o hook useUser() de hooks/useUser.js.
 
-import { createContext, useState, useCallback } from 'react';
+import { createContext, useState, useCallback, useEffect } from 'react';
 import * as authService from '../services/auth';
 
 export const UserContext = createContext();
@@ -15,6 +15,40 @@ export function UserProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  // 'initializing' cobre só a checagem inicial de sessão ao carregar o app
+  const [initializing, setInitializing] = useState(true);
+
+  // Ao montar o app: tenta restaurar a sessão que o Supabase já
+  // persiste sozinho (localStorage) e passa a escutar mudanças
+  // (login/logout em outra aba, refresh de token expirado, etc), pra
+  // 'user' nunca ficar desatualizado em relação à sessão real.
+  useEffect(() => {
+    let ativo = true;
+
+    authService.getCurrentUser()
+      .then((userData) => {
+        if (ativo) setUser(userData);
+      })
+      .catch(() => {
+        if (ativo) setUser(null);
+      })
+      .finally(() => {
+        if (ativo) setInitializing(false);
+      });
+
+    const unsubscribe = authService.onAuthStateChange((userData) => {
+      if (ativo) {
+        setUser(userData);
+        setInitializing(false);
+      }
+    });
+
+    return () => {
+      ativo = false;
+      unsubscribe();
+    };
+  }, []);
 
   // Autentica o usuário via Supabase e armazena os dados no estado
   const login = useCallback(async (email, password) => {
@@ -57,6 +91,7 @@ export function UserProvider({ children }) {
   const value = {
     user,
     loading,
+    initializing,
     error,
     login,
     logout,

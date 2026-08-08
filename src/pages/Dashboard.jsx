@@ -17,7 +17,7 @@ const MOTIVATIONAL = [
 ];
 
 export default function Dashboard() {
-  const { user }                             = useContext(UserContext);
+  const { user, initializing }              = useContext(UserContext);
   const { modules, progress, fetchModules } = useContext(ProgressContext);
   const navigate                            = useNavigate();
   const [message]                           = useState(() => MOTIVATIONAL[Math.floor(Math.random() * MOTIVATIONAL.length)]);
@@ -27,7 +27,18 @@ export default function Dashboard() {
     if (user?.id) fetchModules(user.id);
   }, [user?.id]);
 
-  if (!user) return (
+  // Antes, essa checagem era só "if (!user)" - o que prendia a pessoa
+  // num "Carregando..." pra sempre quando a sessão não estava mais em
+  // memória (voltar pelo navegador, recarregar a página), porque nada
+  // aqui tentava de fato buscar a sessão nem saía desse estado.
+  // Agora: 'initializing' cobre só o instante em que ainda estamos
+  // checando se existe sessão salva - depois disso, se não tem
+  // usuário mesmo, manda pro login em vez de travar aqui.
+  useEffect(() => {
+    if (!initializing && !user) navigate('/', { replace: true });
+  }, [initializing, user, navigate]);
+
+  if (initializing || !user) return (
     <div style={{ display:'flex', alignItems:'center', justifyContent:'center', minHeight:'100svh' }}>
       Carregando...
     </div>

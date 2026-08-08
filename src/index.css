@@ -15,6 +15,21 @@ html {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Tamanho de texto ajustável (acessibilidade) - ver TextSizeContext.jsx.
+   Como praticamente todo font-size do projeto usa rem (relativo a
+   este font-size do <html>), essas 3 regras bastam pra escalar o
+   site inteiro (texto, e também paddings/gaps em rem, o que também
+   ajuda em alvos de toque maiores) sem precisar tocar em nenhum outro
+   arquivo CSS. O padrão 'normal' não precisa de regra própria - já é
+   o font-size: 16px acima. */
+html[data-tamanho-texto='grande'] {
+  font-size: 18px;
+}
+
+html[data-tamanho-texto='extra-grande'] {
+  font-size: 20px;
+}
+
 body {
   margin: 0;
   font-family: var(--font-body);
@@ -27,6 +42,10 @@ body {
   min-height: 100svh;
   display: flex;
   flex-direction: column;
+  /* Reserva o espaço da barra fixa de tamanho de texto (ver
+     TextSizeControl), que fica por cima de tudo em position: fixed -
+     sem isso, o topo de cada página nasceria escondido atrás dela. */
+  padding-top: var(--a11y-bar-height);
 }
 
 /* === Headings === */

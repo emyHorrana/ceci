@@ -1,0 +1,84 @@
+/* Fixa no topo, largura inteira, por cima de tudo - ver comentário em
+   TextSizeControl.jsx sobre por quê. A altura tem que bater com
+   --a11y-bar-height (variables.css), que é quem reserva esse espaço
+   em #root/.topbar/.sidebar - mudou aqui, muda lá também. */
+
+.barra {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--a11y-bar-height);
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding: 0 1.25rem;
+
+  background: var(--color-yellow-bg);
+  border-bottom: 2px solid var(--color-yellow);
+}
+
+.rotulo {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.botoes {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.botao {
+  font-family: var(--font-body);
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  background: var(--color-white);
+  border: 2px solid var(--color-border);
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  line-height: 1;
+  transition: transform var(--transition-fast), border-color var(--transition-fast), background var(--transition-fast);
+}
+
+.botao:hover {
+  transform: translateY(-1px);
+  border-color: var(--color-yellow-deep);
+}
+
+/* A letra "A" cresce de botão pra botão - o próprio tamanho já avisa
+   o que cada um faz, sem depender de leitura. Tamanhos fixos em px
+   (não em rem) de propósito: não devem escalar com a preferência
+   atual, senão o botão "A" (normal) ficaria enorme quando o nível
+   ativo já for extra-grande. */
+.botao[data-nivel='normal']       { font-size: 12px; }
+.botao[data-nivel='grande']       { font-size: 15px; }
+.botao[data-nivel='extra-grande'] { font-size: 18px; }
+
+.botao[data-ativo='true'] {
+  background: var(--gradient-btn-primary);
+  color: var(--color-text-primary);
+  border-color: var(--color-yellow-deep);
+  box-shadow: var(--shadow-yellow);
+}
+
+/* Em telas pequenas some o rótulo em texto - os botões continuam do
+   mesmo tamanho (são alvo de toque, não deveriam encolher). */
+@media (max-width: 640px) {
+  .rotulo {
+    display: none;
+  }
+}

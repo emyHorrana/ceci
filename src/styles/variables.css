@@ -101,6 +101,13 @@
   --transition-base:     0.25s ease;
   --transition-slow:     0.40s ease;
 
+  /* Acessibilidade */
+  /* Altura da barra fixa de tamanho de texto (TextSizeControl) - usada
+     tanto pra reservar espaço no topo da página (#root) quanto pelos
+     headers sticky internos (AppLayout .topbar, MiniModulo .header),
+     que precisam "começar" abaixo dela em vez de embaixo/atrás. */
+  --a11y-bar-height:     44px;
+
   /* Cores da Cecília (mascote) - interação direta com a personagem (avatar,
     falas, futuras seções dedicadas a ela). Nunca no restante do site. */
   --color-ceci-pink:          #F48AB8;

@@ -21,7 +21,9 @@
   background: var(--color-surface);
   border-bottom: 1px solid var(--color-border);
   position: sticky;
-  top: 0;
+  /* Mesmo motivo do .topbar em AppLayout.module.css - gruda abaixo da
+     barra de tamanho de texto, não atrás dela. */
+  top: var(--a11y-bar-height);
   z-index: 10;
 }
 

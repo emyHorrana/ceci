@@ -15,10 +15,10 @@
 /* Card de apresentação/conclusão */
 
 .card {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
+  background: var(--color-ceci-lavender-pale);
+  border: 1px solid var(--color-ceci-purple-light);
   border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow-ceci);
   padding: 2.75rem 2.5rem;
   max-width: 30rem;
   width: 100%;
@@ -68,17 +68,6 @@
 .diagnosticoWrapper {
   max-width: 34rem;
   width: 100%;
-}
-
-.avisoTeclado {
-  font-size: 0.9375rem;
-  font-weight: 600;
-  color: var(--color-yellow-deep);
-  background: var(--color-yellow-bg);
-  border-radius: var(--radius-md);
-  padding: 10px 16px;
-  margin-bottom: 1rem;
-  text-align: center;
 }
 
 /* Responsivo */

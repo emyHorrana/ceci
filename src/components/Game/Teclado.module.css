@@ -1,0 +1,198 @@
+.wrapper {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  width: 100%;
+  max-width: 30rem;
+  padding: 1.75rem;
+  background: var(--color-yellow-bg);
+  border-radius: var(--radius-lg);
+  box-sizing: border-box;
+}
+
+.teclado {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+
+.linha {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.linhaEsc {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.tecla {
+  width: 26px;
+  height: 26px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+}
+
+/* Enter: mais largo que uma tecla comum */
+.enter {
+  width: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  color: var(--color-text-secondary);
+}
+
+/* Backspace: mesma ideia do Enter, no fim da fileira de números. */
+.backspace {
+  width: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+}
+
+/* Caps Lock: mesma ideia, no início da home row. */
+.capslock {
+  width: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+}
+
+/* Shift: as duas pontas da fileira de baixo. */
+.shift {
+  width: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+}
+
+/* Ctrl: mesma ideia, fileira ainda mais embaixo, fora do Shift. */
+.ctrl {
+  width: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+
+.espacador {
+  flex: 1;
+}
+
+/* Esc: pequena, sozinha, acima da fileira de números. */
+.esc {
+  width: 30px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.55rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.barraEspaco {
+  width: 70%;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+}
+
+/* Delete não fica no bloco principal - agrupamento à parte, alinhado
+   perto do topo (é mais ou menos onde ele fica de verdade). */
+.clusterExtra {
+  display: flex;
+  flex-direction: column;
+  padding-left: 18px;
+  padding-top: 32px;
+  border-left: 1px dashed var(--color-border);
+}
+
+.delete {
+  width: 30px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+
+/* Setas: T invertido, abaixo do Delete - mesmo agrupamento à parte. */
+.setasBloco {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  margin-top: 14px;
+}
+
+.setasLinhaCima {
+  display: flex;
+  justify-content: center;
+}
+
+.setasLinhaBaixo {
+  display: flex;
+  gap: 3px;
+}
+
+.seta {
+  width: 22px;
+  height: 22px;
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-secondary);
+}
+
+/* Estado destacado - a tecla que a pessoa deve apertar agora.
+   Compartilhado entre todas as teclas nomeadas; cada uma cuida só do
+   próprio formato ("molde"), este cuida da cor/pulso de "é essa aqui". */
+.destacada {
+  font-weight: 700;
+  color: var(--color-text-primary);
+  background: var(--gradient-btn-primary);
+  border: none;
+  box-shadow: var(--shadow-yellow);
+  animation: pulsar 1.6s ease-in-out infinite;
+}
+
+@keyframes pulsar {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: var(--shadow-yellow);
+  }
+  50% {
+    transform: scale(1.04);
+    box-shadow: 0 4px 26px rgba(255, 202, 26, 0.4);
+  }
+}

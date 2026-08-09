@@ -14,41 +14,51 @@ import BoasVindas from './pages/BoasVindas';
 import { UserProvider }     from './context/UserContext';
 import { ProgressProvider } from './context/ProgressContext';
 import { LessonProvider }   from './context/LessonContext';
+import { TextSizeProvider } from './context/TextSizeContext';
+import { TextSizeControl }  from './components/Accessibility/TextSizeControl';
 
 function App() {
   return (
-    <UserProvider>
-      <ProgressProvider>
-        <LessonProvider>
-          <BrowserRouter>
-            <Routes>
-              {/* Página inicial: tela de login */}
-              <Route path="/"          element={<Login />} />
+    <TextSizeProvider>
+      <UserProvider>
+        <ProgressProvider>
+          <LessonProvider>
+            <BrowserRouter>
+              {/* Fora das <Routes> de propósito - precisa aparecer em
+                  QUALQUER tela (login, boas-vindas, dashboard, lição),
+                  não só nas internas. Ver comentário em
+                  TextSizeControl.jsx. */}
+              <TextSizeControl />
 
-              {/* Boas-vindas: apresentação da Ceci + diagnóstico inicial */}
-              {/* Acesso livre por enquanto, pra facilitar o desenvolvimento */}
-              <Route path="/boas-vindas" element={<BoasVindas />} />
+              <Routes>
+                {/* Página inicial: tela de login */}
+                <Route path="/"          element={<Login />} />
 
-              {/* Cadastro: criação de nova conta */}
-              <Route path="/cadastro"  element={<Cadastro />} />
+                {/* Boas-vindas: apresentação da Ceci + diagnóstico inicial */}
+                {/* Acesso livre por enquanto, pra facilitar o desenvolvimento */}
+                <Route path="/boas-vindas" element={<BoasVindas />} />
 
-              {/* Dashboard: visão geral do progresso do aluno */}
-              <Route path="/dashboard" element={<Dashboard />} />
+                {/* Cadastro: criação de nova conta */}
+                <Route path="/cadastro"  element={<Cadastro />} />
 
-              {/* Módulos: listagem dos módulos do currículo */}
-              <Route path="/modulos"   element={<Modulos />} />
+                {/* Dashboard: visão geral do progresso do aluno */}
+                <Route path="/dashboard" element={<Dashboard />} />
 
-              {/* Mini-módulo: estudo de uma lição específica */}
-              {/* Ex: /mini-modulo/1-1  →  módulo 1, mini-módulo 1 */}
-              <Route path="/mini-modulo/:miniModuloId" element={<MiniModulo />} />
+                {/* Módulos: listagem dos módulos do currículo */}
+                <Route path="/modulos"   element={<Modulos />} />
 
-              {/* Lição legada (mantida por compatibilidade) */}
-              <Route path="/licoes/:id" element={<Licao />} />
-            </Routes>
-          </BrowserRouter>
-        </LessonProvider>
-      </ProgressProvider>
-    </UserProvider>
+                {/* Mini-módulo: estudo de uma lição específica */}
+                {/* Ex: /mini-modulo/1-1  →  módulo 1, mini-módulo 1 */}
+                <Route path="/mini-modulo/:miniModuloId" element={<MiniModulo />} />
+
+                {/* Lição legada (mantida por compatibilidade) */}
+                <Route path="/licoes/:id" element={<Licao />} />
+              </Routes>
+            </BrowserRouter>
+          </LessonProvider>
+        </ProgressProvider>
+      </UserProvider>
+    </TextSizeProvider>
   );
 }
 

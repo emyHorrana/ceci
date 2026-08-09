@@ -34,3 +34,14 @@ export async function getCurrentUser() {
   const { data } = await supabase.auth.getUser();
   return data?.user ?? null;
 }
+
+// Escuta mudanças de sessão (login, logout, refresh de token, sessão
+// restaurada do localStorage ao abrir/recarregar a página, etc).
+// Chama callback(user) sempre que o estado de autenticação mudar.
+// Retorna uma função de unsubscribe - chame ao desmontar quem escuta.
+export function onAuthStateChange(callback) {
+  const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    callback(session?.user ?? null);
+  });
+  return () => subscription.unsubscribe();
+}

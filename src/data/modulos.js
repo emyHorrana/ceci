@@ -286,6 +286,18 @@ export const MODULOS = [
 <p>Vá com calma. Digitar devagar, letra por letra, é uma etapa normal e importante do aprendizado - não é sinal de dificuldade, mas parte natural do processo, como quem está aprendendo a bordar um ponto novo e vai devagar até pegar o jeito.</p>
 <p>Se, ao digitar, uma letra sair errada, não há problema algum: já vamos ver como corrigir isso com tranquilidade, usando a tecla Backspace.</p>`,
           },
+          {
+            tipo: 'jogo',
+            titulo: 'Pratique digitando',
+            instructions: 'Digite a palavra "gato" e confirme.',
+            jogo: 'digitar',
+            jogoProps: {
+              label: 'Digite a palavra "gato"',
+              placeholder: 'Digite aqui',
+              validar: (valor) => valor.toLowerCase() === 'gato',
+              mensagemErro: 'Quase lá! Confere se digitou "gato" certinho.',
+            },
+          },
         ],
       },
       {
@@ -299,6 +311,13 @@ export const MODULOS = [
   <li>Aperte a barra de espaço uma vez entre cada palavra - apertar várias vezes seguidas cria espaços demais no texto.</li>
   <li>Depois do espaço, você pode continuar digitando normalmente a próxima palavra da frase.</li>
 </ul>`,
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Pratique a barra de espaço',
+            instructions: 'Aperte a barra de espaço (a tecla comprida, destacada abaixo).',
+            jogo: 'pressionar',
+            jogoProps: { tecla: 'espaco' },
           },
         ],
       },
@@ -317,6 +336,13 @@ export const MODULOS = [
 </ul>
 <p>Pense nele como o ponto final de uma ação: ele avisa ao computador que você concluiu aquele passo.</p>`,
           },
+          {
+            tipo: 'jogo',
+            titulo: 'Pratique o Enter',
+            instructions: 'Aperte a tecla Enter (destacada abaixo).',
+            jogo: 'pressionar',
+            jogoProps: { tecla: 'enter' },
+          },
         ],
       },
       {
@@ -328,6 +354,13 @@ export const MODULOS = [
             conteudo: `<p>O Backspace é uma das teclas mais úteis para quem está aprendendo, porque ela serve para <strong>apagar a letra imediatamente antes do cursor</strong>. Costuma ficar acima do Enter, geralmente identificada por uma seta apontando para a esquerda.</p>
 <p>Se você errar uma letra, ou quiser reescrever uma palavra, é só apertar o Backspace quantas vezes forem necessárias para apagar o que não está certo, e depois digitar novamente. Não há pressa nem julgamento nesse processo.</p>`,
             dica: 'Quando você escreve à mão e erra uma palavra, o que costuma fazer? Talvez perceba que corrigir no computador é até mais simples do que apagar com borracha.',
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Pratique o Backspace',
+            instructions: 'Aperte a tecla Backspace (destacada abaixo).',
+            jogo: 'pressionar',
+            jogoProps: { tecla: 'backspace' },
           },
         ],
       },
@@ -344,6 +377,13 @@ export const MODULOS = [
 </ul>
 <p>Não é preciso decorar isso de imediato - com a prática, a diferença fica clara naturalmente.</p>`,
           },
+          {
+            tipo: 'jogo',
+            titulo: 'Pratique o Delete',
+            instructions: 'Aperte a tecla Delete (destacada abaixo - repare que ela fica um pouco separada do bloco principal).',
+            jogo: 'pressionar',
+            jogoProps: { tecla: 'delete' },
+          },
         ],
       },
       {
@@ -358,6 +398,13 @@ export const MODULOS = [
   <li>Permite digitar os <strong>símbolos que ficam na parte de cima</strong> de algumas teclas (como o próprio @, em muitos teclados).</li>
 </ul>
 <p>O segredo para usá-la bem é a ordem: primeiro segure o Shift, depois aperte a outra tecla, mantendo as duas pressionadas por um instante e soltando em seguida.</p>`,
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Pratique o Shift',
+            instructions: 'Aperte a tecla Shift (destacada abaixo - existem duas, uma de cada lado, e as duas funcionam).',
+            jogo: 'pressionar',
+            jogoProps: { tecla: 'shift' },
           },
         ],
       },
@@ -375,6 +422,13 @@ export const MODULOS = [
 </ul>
 <p>Se, ao digitar, você notar que TUDO ESTÁ SAINDO EM MAIÚSCULAS sem que você quisesse, é bem provável que o Caps Lock esteja ativado. Basta apertá-lo novamente para voltar ao normal.</p>`,
           },
+          {
+            tipo: 'jogo',
+            titulo: 'Pratique o Caps Lock',
+            instructions: 'Aperte a tecla Caps Lock (destacada abaixo, no início da fileira do meio).',
+            jogo: 'pressionar',
+            jogoProps: { tecla: 'capslock' },
+          },
         ],
       },
       {
@@ -388,6 +442,18 @@ export const MODULOS = [
   <li>Pelo <strong>teclado numérico</strong>, um bloco à direita presente em muitos teclados de computador de mesa, organizado de forma parecida com uma calculadora.</li>
 </ul>
 <p>Essa habilidade é útil para digitar telefones, datas e documentos como o CPF - situações comuns no dia a dia, como preencher um cadastro.</p>`,
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Pratique os números',
+            instructions: 'Digite alguns números (o que você quiser, com pelo menos 2 dígitos) e confirme.',
+            jogo: 'digitar',
+            jogoProps: {
+              label: 'Digite alguns números',
+              placeholder: 'Ex: 2024',
+              validar: (valor) => /^\d{2,}$/.test(valor),
+              mensagemErro: 'Tenta digitar só números, com pelo menos 2 dígitos.',
+            },
           },
         ],
       },
@@ -406,6 +472,19 @@ export const MODULOS = [
   <li><strong>:</strong> e <strong>;</strong> (dois-pontos e ponto e vírgula): usados na escrita de frases.</li>
 </ul>
 <p>Não é necessário memorizar a posição de todos de uma vez - com o uso repetido em situações reais, como digitar seu próprio e-mail, a localização vai se tornando familiar.</p>`,
+            dica: 'No teclado brasileiro (ABNT2), o @ costuma sair com Alt Gr + Q (essa tecla fica à direita da barra de espaço). Em teclados americanos, geralmente é Shift + 2. Se um não funcionar, vale tentar o outro!',
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Pratique um símbolo',
+            instructions: 'Digite o símbolo @ (arroba) e confirme.',
+            jogo: 'digitar',
+            jogoProps: {
+              label: 'Digite o símbolo @ (arroba)',
+              placeholder: 'Digite aqui',
+              validar: (valor) => valor.includes('@'),
+              mensagemErro: 'Tenta encontrar o símbolo @ no teclado e digitar de novo.',
+            },
           },
         ],
       },
@@ -423,6 +502,13 @@ export const MODULOS = [
   <li><strong>Setas direcionais</strong>: movem o cursor para cima, para baixo, para a esquerda ou para a direita dentro de um texto.</li>
 </ul>`,
           },
+          {
+            tipo: 'jogo',
+            titulo: 'Pratique o Esc',
+            instructions: 'Aperte a tecla Esc (destacada abaixo, sozinha, acima da fileira de números).',
+            jogo: 'pressionar',
+            jogoProps: { tecla: 'esc' },
+          },
         ],
       },
       {
@@ -437,6 +523,13 @@ export const MODULOS = [
   <li>É possível selecionar um trecho de texto combinando o Shift com as setas.</li>
   <li>Existem atalhos para ir diretamente ao início ou ao final de uma linha.</li>
 </ul>`,
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Pratique as setas',
+            instructions: 'Aperte a seta para baixo (destacada abaixo, num grupo separado do restante do teclado).',
+            jogo: 'pressionar',
+            jogoProps: { tecla: 'seta-baixo' },
           },
         ],
       },
@@ -454,6 +547,34 @@ export const MODULOS = [
   <li><strong>Ctrl + A</strong>: seleciona todo o conteúdo de uma vez.</li>
 </ul>`,
             dica: 'Esses atalhos não precisam ser usados desde já - eles vão se tornando naturais conforme você for ganhando confiança com o teclado.',
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Pratique o Ctrl + C',
+            instructions: 'Segure Ctrl e aperte a tecla C ao mesmo tempo (em Mac, use Cmd no lugar do Ctrl).',
+            jogo: 'atalho',
+            jogoProps: { letra: 'c' },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Pratique o Ctrl + V',
+            instructions: 'Segure Ctrl e aperte a tecla V ao mesmo tempo (em Mac, use Cmd no lugar do Ctrl).',
+            jogo: 'atalho',
+            jogoProps: { letra: 'v' },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Pratique o Ctrl + Z',
+            instructions: 'Segure Ctrl e aperte a tecla Z ao mesmo tempo (em Mac, use Cmd no lugar do Ctrl).',
+            jogo: 'atalho',
+            jogoProps: { letra: 'z' },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Pratique o Ctrl + A',
+            instructions: 'Segure Ctrl e aperte a tecla A ao mesmo tempo (em Mac, use Cmd no lugar do Ctrl).',
+            jogo: 'atalho',
+            jogoProps: { letra: 'a' },
           },
         ],
       },
@@ -494,6 +615,18 @@ export const MODULOS = [
   <li>Os atalhos tornam algumas tarefas mais rápidas, mas podem ser aprendidos com calma.</li>
 </ul>`,
             dica: 'Cada palavra digitada é um passo a mais na sua autonomia. Continue praticando no seu ritmo - a confiança vem da repetição, não da pressa. 💛',
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Desafio: juntando tudo',
+            instructions: 'Digite um e-mail (pode ser fictício, tipo exemplo@email.com) e confirme.',
+            jogo: 'digitar',
+            jogoProps: {
+              label: 'Digite um e-mail',
+              placeholder: 'exemplo@email.com',
+              validar: (valor) => /.+@.+\..+/.test(valor),
+              mensagemErro: 'Um e-mail sempre tem um @ e um ponto no meio, tipo exemplo@email.com.',
+            },
           },
         ],
       },
@@ -543,6 +676,13 @@ export const MODULOS = [
             conteudo: `<p>O gabinete (também chamado de CPU) é a caixa que guarda as peças internas do computador - é como o "cérebro" da máquina, guardado dentro de uma estrutura protegida.</p>
 <p>Vale a pena reconhecer o botão de ligar, geralmente localizado na parte da frente do gabinete. Um cuidado importante: evite desligar o gabinete de forma incorreta, como tirando o cabo de energia diretamente da tomada enquanto o computador está em uso.</p>`,
           },
+          {
+            tipo: 'jogo',
+            titulo: 'Encontre o botão de ligar',
+            instructions: 'Clique no botão de ligar do gabinete.',
+            jogo: 'gabinete-frente',
+            jogoProps: {},
+          },
         ],
       },
       {
@@ -557,6 +697,13 @@ export const MODULOS = [
   <li>Se pararem de responder, muitas vezes o motivo é simples: um cabo solto, uma pilha descarregada ou uma conexão que precisa ser refeita.</li>
 </ul>`,
           },
+          {
+            tipo: 'jogo',
+            titulo: 'Pratique a conexão',
+            instructions: 'Arraste o cabo do mouse até a porta certa - repare no formato de cada uma.',
+            jogo: 'porta-traseira',
+            jogoProps: {},
+          },
         ],
       },
       {
@@ -567,6 +714,13 @@ export const MODULOS = [
             titulo: 'Reproduzindo os sons do computador',
             conteudo: `<p>As caixas de som são responsáveis por reproduzir os sons do computador - músicas, vídeos, mensagens de áudio e avisos do sistema.</p>
 <p>Elas se conectam por um cabo específico, ligado à saída de som, que costuma ficar na parte de trás ou na lateral do gabinete ou do notebook.</p>`,
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Ajuste o volume',
+            instructions: 'Use os botões - e + até o volume chegar exatamente no nível 6. Se passar do ponto, é só usar o - pra voltar - não tem problema.',
+            jogo: 'volume',
+            jogoProps: { alvo: 6, min: 0, max: 10 },
           },
         ],
       },
@@ -599,6 +753,13 @@ export const MODULOS = [
           {
             titulo: 'Aos poucos, sem pressa',
             conteudo: `<p>Existem diversos tipos de cabos e conexões diferentes no universo dos computadores, cada um com uma função específica - não é necessário conhecer todos de uma vez. Aos poucos, à medida que for usando o computador no dia a dia, você vai naturalmente identificando qual cabo serve para qual finalidade.</p>`,
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Reconhecendo cabos',
+            instructions: 'Clique no cabo USB entre as opções abaixo.',
+            jogo: 'identificar-cabo',
+            jogoProps: {},
           },
         ],
       },

@@ -6,13 +6,9 @@
 // Pensado especialmente pra quem "não faz a menor ideia" de mouse ou
 // teclado ainda - por isso o teclado é desenhado por inteiro (não só a
 // barra de espaço solta), pra pessoa primeiro reconhecer o objeto e
-// depois nós apontamos qual tecla importa agora.
-//
-// PLACEHOLDER DE ARTE: o teclado aqui é feito só em CSS (retângulos),
-// pra não depender da responsável pelas artes agora. Quando tiver uma
-// ilustração/gif de verdade mostrando o dedo apertando a tecla, é só
-// trocar o bloco <div className={styles.teclado}> por essa mídia - o
-// resto do componente (escuta de tecla, fallback) continua igual.
+// depois nós apontamos qual tecla importa agora. O desenho do teclado
+// em si vive em components/Game/Teclado.jsx (compartilhado - reaproveita
+// pra apontar outras teclas, como o Enter, em outras telas).
 //
 // NÃO TRAVA NINGUÉM: além de escutar a barra de espaço, sempre existe
 // um "ou clique aqui" discreto embaixo. Serve pra quem não encontrar a
@@ -25,6 +21,7 @@
 //   mensagem (string, opcional) - texto explicativo acima do teclado
 
 import { useEffect } from 'react';
+import { Teclado } from './Teclado';
 import styles from './EspacoParaAvancar.module.css';
 
 const MENSAGEM_PADRAO =
@@ -46,27 +43,7 @@ export function EspacoParaAvancar({ onAvancar, mensagem }) {
     <div className={styles.wrapper}>
       <p className={styles.mensagem}>{mensagem || MENSAGEM_PADRAO}</p>
 
-      {/* Teclado simples em CSS - ver nota de placeholder de arte acima */}
-      <div className={styles.teclado} aria-hidden>
-        <div className={styles.linha}>
-          {Array.from({ length: 10 }).map((_, i) => (
-            <span key={i} className={styles.tecla} />
-          ))}
-        </div>
-        <div className={styles.linha}>
-          {Array.from({ length: 9 }).map((_, i) => (
-            <span key={i} className={styles.tecla} />
-          ))}
-        </div>
-        <div className={styles.linha}>
-          {Array.from({ length: 7 }).map((_, i) => (
-            <span key={i} className={styles.tecla} />
-          ))}
-        </div>
-        <div className={styles.linha}>
-          <span className={styles.barraEspaco}>espaço</span>
-        </div>
-      </div>
+      <Teclado teclaDestacada="espaco" />
 
       <button type="button" className={styles.fallback} onClick={onAvancar}>
         ou clique aqui para continuar

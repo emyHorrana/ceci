@@ -21,7 +21,9 @@
   background: var(--color-surface);
   border-bottom: 1px solid var(--color-border);
   position: sticky;
-  top: 0;
+  /* Mesmo motivo do .topbar em AppLayout.module.css - gruda abaixo da
+     barra de tamanho de texto, não atrás dela. */
+  top: var(--a11y-bar-height);
   z-index: 10;
 }
 
@@ -201,11 +203,11 @@
 }
 
 .ceciliaCard {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
+  background: var(--color-ceci-lavender-pale);
+  border: 1px solid var(--color-ceci-purple-light);
   border-radius: var(--radius-xl);
   padding: 1.75rem 1.5rem;
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-ceci);
   text-align: center;
   width: 100%;
 }
@@ -229,7 +231,6 @@
   color: var(--color-text-secondary);
   line-height: 1.65;
   margin: 0;
-  font-style: italic;
 }
 
 /* Dots de progresso */

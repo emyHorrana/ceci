@@ -1,0 +1,56 @@
+.cena {
+  width: 100%;
+  max-width: 380px;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+.alvo {
+  fill: transparent;
+  stroke: transparent;
+  stroke-width: 3;
+  cursor: pointer;
+  transition: fill var(--transition-fast), stroke var(--transition-fast);
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.alvo:hover,
+.alvo:focus-visible {
+  fill: var(--color-yellow-bg);
+  stroke: var(--color-yellow-deep);
+  outline: none;
+}
+
+/* SVG não tem "border-color" como o DOM normal - por isso o feedback
+   aqui é feito com fill/stroke, e não compõe (composes) o .erro/
+   .acerto de GameMoment.module.css como as outras mecânicas, que são
+   todas <div>. Mesmas cores da paleta, mesma ideia (tremer no erro,
+   comemorar no acerto), só que em SVG. */
+
+@keyframes cenaTremer {
+  0%, 100% { transform: translateX(0); }
+  25%      { transform: translateX(-4px); }
+  75%      { transform: translateX(4px); }
+}
+
+@keyframes cenaComemorar {
+  0%   { transform: scale(1); }
+  30%  { transform: scale(1.15); }
+  55%  { transform: scale(0.95); }
+  75%  { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.erro {
+  fill: var(--color-error-bg) !important;
+  stroke: var(--color-error) !important;
+  animation: cenaTremer 0.3s;
+}
+
+.acerto {
+  fill: var(--color-success-bg) !important;
+  stroke: var(--color-success) !important;
+  animation: cenaComemorar 0.5s ease-out;
+}

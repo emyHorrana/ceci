@@ -44,7 +44,9 @@
 }
 
 .modeLabel {
-  font-family: var(--font-display);
+  /* Exceção à regra de títulos: badge pequeno, pede um sans forte
+     (Archivo) em vez da serifa (Merriweather) */
+  font-family: var(--font-body);
   font-size: 0.8rem;
   font-weight: 700;
   color: var(--color-text-primary);
@@ -84,11 +86,11 @@
   display: flex;
   align-items: center;
   gap: 0.85rem;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
+  background: var(--color-ceci-purple-pale);
+  border: 1px solid var(--color-ceci-purple-light);
   border-radius: var(--radius-lg);
   padding: 0.85rem 1.25rem;
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-ceci);
   max-width: 34rem;
 }
 
@@ -173,6 +175,26 @@
   border-color: var(--color-error) !important;
   background: var(--color-error-bg) !important;
   animation: tremer 0.3s;
+}
+
+/* Feedback de acerto - mesmo esquema do .erro acima (composes na
+   classe do .module.css da mecânica, className condicional no JS),
+   só que pro caminho feliz. Em vez de tremer, um "pulo de comemoração"
+   com uma leve torção - pra ter personalidade própria e não parecer
+   só "erro mas verde". */
+
+@keyframes comemorar {
+  0%   { transform: scale(1)     rotate(0deg); }
+  30%  { transform: scale(1.15)  rotate(-4deg); }
+  55%  { transform: scale(0.95)  rotate(3deg); }
+  75%  { transform: scale(1.05)  rotate(-1.5deg); }
+  100% { transform: scale(1)     rotate(0deg); }
+}
+
+.acerto {
+  border-color: var(--color-success) !important;
+  background: var(--color-success-bg) !important;
+  animation: comemorar 0.5s ease-out;
 }
 
 /*  Responsivo  */

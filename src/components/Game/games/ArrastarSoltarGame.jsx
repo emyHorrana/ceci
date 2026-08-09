@@ -38,6 +38,7 @@ import styles from './ArrastarSoltarGame.module.css';
 export function ArrastarSoltarGame({ reportResult, item, zonas }) {
   const [zonaSobre, setZonaSobre] = useState(null);
   const [zonaErrada, setZonaErrada] = useState(null);
+  const [zonaCerta, setZonaCerta] = useState(null);
 
   const handleDragStart = (e) => {
     e.dataTransfer.setData('text/plain', item.id);
@@ -48,6 +49,7 @@ export function ArrastarSoltarGame({ reportResult, item, zonas }) {
     setZonaSobre(null);
 
     if (zona.correta) {
+      setZonaCerta(zona.id);
       reportResult(true, { zonaEscolhida: zona.id });
       return;
     }
@@ -72,7 +74,7 @@ export function ArrastarSoltarGame({ reportResult, item, zonas }) {
         {zonas.map((zona) => (
           <div
             key={zona.id}
-            className={`${styles.zona} ${zonaErrada === zona.id ? styles.erro : ''}`}
+            className={`${styles.zona} ${zonaErrada === zona.id ? styles.erro : ''} ${zonaCerta === zona.id ? styles.acerto : ''}`}
             data-sobre={zonaSobre === zona.id}
             onDragOver={(e) => {
               e.preventDefault();

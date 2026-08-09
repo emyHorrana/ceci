@@ -18,6 +18,13 @@ import { GameMoment } from '../components/Game/GameMoment';
 import { ClicarAlvoGame } from '../components/Game/games/ClicarAlvoGame';
 import { ArrastarSoltarGame } from '../components/Game/games/ArrastarSoltarGame';
 import { ScrollAteUmPontoGame } from '../components/Game/games/ScrollAteUmPontoGame';
+import { DigitarTextoGame } from '../components/Game/games/DigitarTextoGame';
+import { PressionarTeclaGame } from '../components/Game/games/PressionarTeclaGame';
+import { AtalhoTecladoGame } from '../components/Game/games/AtalhoTecladoGame';
+import { GabineteFrenteGame } from '../components/Game/games/GabineteFrenteGame';
+import { AjustarVolumeGame } from '../components/Game/games/AjustarVolumeGame';
+import { PortaTraseiraGame } from '../components/Game/games/PortaTraseiraGame';
+import { IdentificarCaboGame } from '../components/Game/games/IdentificarCaboGame';
 import styles from './MiniModulo.module.css';
 
 // Registro das mecânicas disponíveis pro campo `jogo` de uma etapa em
@@ -28,6 +35,13 @@ const JOGOS = {
   clicar: ClicarAlvoGame,
   arrastar: ArrastarSoltarGame,
   scroll: ScrollAteUmPontoGame,
+  digitar: DigitarTextoGame,
+  pressionar: PressionarTeclaGame,
+  atalho: AtalhoTecladoGame,
+  'gabinete-frente': GabineteFrenteGame,
+  volume: AjustarVolumeGame,
+  'porta-traseira': PortaTraseiraGame,
+  'identificar-cabo': IdentificarCaboGame,
 };
 
 export default function MiniModulo() {

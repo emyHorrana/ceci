@@ -72,6 +72,7 @@ export function ScrollAteUmPontoGame({
 
   const [dentroDaZona, setDentroDaZona] = useState(false);
   const [zonaErrada, setZonaErrada] = useState(false);
+  const [zonaCerta, setZonaCerta] = useState(false);
 
   // Zona-alvo em px, convertida uma vez a partir do % de altura do
   // conteúdo (a mesma base usada pra posicionar a zona visualmente,
@@ -111,6 +112,7 @@ export function ScrollAteUmPontoGame({
     const acertou = zonaCentralizada(viewport.scrollTop);
 
     if (acertou) {
+      setZonaCerta(true);
       reportResult(true, { scrollTop: viewport.scrollTop });
       return;
     }
@@ -142,7 +144,7 @@ export function ScrollAteUmPontoGame({
 
       <div
         ref={viewportRef}
-        className={`${styles.viewport} ${zonaErrada ? styles.erro : ''}`}
+        className={`${styles.viewport} ${zonaErrada ? styles.erro : ''} ${zonaCerta ? styles.acerto : ''}`}
         tabIndex={0}
         role="region"
         aria-label="Área de rolagem - role até a zona marcada"

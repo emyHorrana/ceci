@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8" />
+<title>Exemplo AB-BKT</title>
+</head>
+<body>
+  <h1>Exemplo: Questão de matemática</h1>
+  <p id="pergunta">Quanto é 7 x 8?</p>
+  <button onclick="responder(true)">Responder certo (56)</button>
+  <button onclick="responder(false)">Responder errado</button>
+  <pre id="resultado"></pre>
+
+  <script type="module">
+    import { RastreadorEventos } from './client/RastreadorEventos.js';
+
+    const rastreador = new RastreadorEventos();
+    rastreador.iniciar();
+
+    window.responder = async function (correto) {
+      rastreador.finalizar();
+      const dadosEvento = rastreador.obterDadosBrutos();
+
+      // No projeto real isso é um axios.post('/api/licao/responder', {...})
+      const resposta = await fetch('http://localhost:5000/api/licao/responder', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          correto,
+          dadosEvento,
+          tempoIdeal: 15, // questão "média" 
+          tentativas: 1,
+          tentativasAposErro: 0,
+          moduleId: 'modulo-matematica-basica',
+        }),
+      }).then((r) => r.json());
+
+      document.getElementById('resultado').textContent = JSON.stringify(resposta, null, 2);
+    };
+  </script>
+</body>
+</html>

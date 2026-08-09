@@ -676,6 +676,13 @@ export const MODULOS = [
             conteudo: `<p>O gabinete (também chamado de CPU) é a caixa que guarda as peças internas do computador - é como o "cérebro" da máquina, guardado dentro de uma estrutura protegida.</p>
 <p>Vale a pena reconhecer o botão de ligar, geralmente localizado na parte da frente do gabinete. Um cuidado importante: evite desligar o gabinete de forma incorreta, como tirando o cabo de energia diretamente da tomada enquanto o computador está em uso.</p>`,
           },
+          {
+            tipo: 'jogo',
+            titulo: 'Encontre o botão de ligar',
+            instructions: 'Clique no botão de ligar do gabinete.',
+            jogo: 'gabinete-frente',
+            jogoProps: {},
+          },
         ],
       },
       {
@@ -690,6 +697,13 @@ export const MODULOS = [
   <li>Se pararem de responder, muitas vezes o motivo é simples: um cabo solto, uma pilha descarregada ou uma conexão que precisa ser refeita.</li>
 </ul>`,
           },
+          {
+            tipo: 'jogo',
+            titulo: 'Pratique a conexão',
+            instructions: 'Arraste o cabo do mouse até a porta certa - repare no formato de cada uma.',
+            jogo: 'porta-traseira',
+            jogoProps: {},
+          },
         ],
       },
       {
@@ -700,6 +714,13 @@ export const MODULOS = [
             titulo: 'Reproduzindo os sons do computador',
             conteudo: `<p>As caixas de som são responsáveis por reproduzir os sons do computador - músicas, vídeos, mensagens de áudio e avisos do sistema.</p>
 <p>Elas se conectam por um cabo específico, ligado à saída de som, que costuma ficar na parte de trás ou na lateral do gabinete ou do notebook.</p>`,
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Ajuste o volume',
+            instructions: 'Use os botões - e + até o volume chegar exatamente no nível 6. Se passar do ponto, é só usar o - pra voltar - não tem problema.',
+            jogo: 'volume',
+            jogoProps: { alvo: 6, min: 0, max: 10 },
           },
         ],
       },
@@ -732,6 +753,13 @@ export const MODULOS = [
           {
             titulo: 'Aos poucos, sem pressa',
             conteudo: `<p>Existem diversos tipos de cabos e conexões diferentes no universo dos computadores, cada um com uma função específica - não é necessário conhecer todos de uma vez. Aos poucos, à medida que for usando o computador no dia a dia, você vai naturalmente identificando qual cabo serve para qual finalidade.</p>`,
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Reconhecendo cabos',
+            instructions: 'Clique no cabo USB entre as opções abaixo.',
+            jogo: 'identificar-cabo',
+            jogoProps: {},
           },
         ],
       },

@@ -1,0 +1,44 @@
+.cena {
+  width: 100%;
+  max-width: 380px;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+.zona {
+  fill: transparent;
+  stroke: var(--color-border);
+  stroke-width: 2;
+  stroke-dasharray: 6 4;
+  transition: fill var(--transition-fast), stroke var(--transition-fast);
+}
+
+.zonaAtiva {
+  fill: var(--color-yellow-bg);
+  stroke: var(--color-yellow-deep);
+  stroke-dasharray: none;
+}
+
+@keyframes zonaTremer {
+  0%, 100% { transform: translateX(0); }
+  25%      { transform: translateX(-4px); }
+  75%      { transform: translateX(4px); }
+}
+
+.erro {
+  fill: var(--color-error-bg) !important;
+  stroke: var(--color-error) !important;
+  stroke-dasharray: none;
+  animation: zonaTremer 0.3s;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.item {
+  cursor: grab;
+}
+
+.item[data-arrastando='true'] {
+  cursor: grabbing;
+}

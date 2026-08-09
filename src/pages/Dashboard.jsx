@@ -5,8 +5,10 @@ import { ProgressContext } from '../context/ProgressContext';
 import { AppLayout, PageHeader } from '../components/Layout/AppLayout';
 import appStyles from '../components/Layout/AppLayout.module.css';
 import { ModuleCard } from '../components/Cards/ModuleCard';
+import { UnidadeCard } from '../components/Cards/UnidadeCard';
 import { ButtonPrimary } from '../components/Buttons/ButtonPrimary';
 import { MODULOS } from '../data/modulos';
+import { UNIDADES_POR_MODULO } from '../data/unidades';
 import styles from './Dashboard.module.css';
 
 const MOTIVATIONAL = [
@@ -21,7 +23,6 @@ export default function Dashboard() {
   const { modules, progress, fetchModules } = useContext(ProgressContext);
   const navigate                            = useNavigate();
   const [message]                           = useState(() => MOTIVATIONAL[Math.floor(Math.random() * MOTIVATIONAL.length)]);
-  const [expandedMini, setExpandedMini]     = useState(null);
 
   useEffect(() => {
     if (user?.id) fetchModules(user.id);
@@ -45,9 +46,6 @@ export default function Dashboard() {
   );
 
   const dailyPct = Math.min(((progress?.dailyProgress || 0) / 10) * 100, 100);
-
-  const toggleMini = (id) =>
-    setExpandedMini((prev) => (prev === id ? null : id));
 
   return (
     <AppLayout>
@@ -101,63 +99,28 @@ export default function Dashboard() {
             </p>
           </div>
 
-          {/* Mini-módulos (lições) */}
+          {/* Trilha de aprendizagem: Módulo → Unidade → mini-módulos.
+              Ver data/unidades.js - agrupamento vindo da arquitetura
+              adaptativa (documento), só listagem por enquanto: não
+              depende de progresso nem do algoritmo (ainda não existe). */}
           <div>
             <div className={styles.sectionHeader}>
-              <h2>Lições</h2>
+              <h2>Trilha de aprendizagem</h2>
             </div>
-            <div className={styles.licoesGrid}>
-              {MODULOS.map((modulo) =>
-                modulo.miniModulos.map((mm) => {
-                  const isOpen = expandedMini === mm.id;
-                  return (
-                    <div key={mm.id} className={styles.licaoCard}>
-                      <div
-                        className={styles.licaoHeader}
-                        role="button"
-                        tabIndex={0}
-                        onClick={() => toggleMini(mm.id)}
-                        onKeyDown={(e) => e.key === 'Enter' && toggleMini(mm.id)}
-                      >
-                        <span className={styles.licaoEmoji}>{modulo.emoji}</span>
-                        <div className={styles.licaoInfo}>
-                          <div className={styles.licaoTitle}>{mm.titulo}</div>
-                          <div className={styles.licaoDesc}>{modulo.titulo}</div>
-                          <div className={styles.licaoMeta}>
-                            <span className={styles.etapaCount}>
-                              {mm.etapas.length} etapas
-                            </span>
-                          </div>
-                        </div>
-                        <span className={styles.chevron}>{isOpen ? '▲' : '▼'}</span>
-                      </div>
-
-                      {isOpen && (
-                        <div className={styles.etapasList}>
-                          {mm.etapas.map((etapa, i) => (
-                            <div
-                              key={i}
-                              style={{
-                                fontSize: '0.9rem',
-                                color: 'var(--color-text-secondary)',
-                                padding: '4px 0',
-                              }}
-                            >
-                              {i + 1}. {etapa.titulo}
-                            </div>
-                          ))}
-                          <button
-                            className={styles.iniciarBtn}
-                            onClick={() => navigate(`/mini-modulo/${mm.id}`)}
-                          >
-                            Continuar de onde parei
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })
-              )}
+            <div className={styles.trilhaModulos}>
+              {UNIDADES_POR_MODULO.map((grupo) => (
+                <div key={grupo.moduloId} className={styles.trilhaModulo}>
+                  <div className={styles.trilhaModuloHeader}>
+                    <span className={styles.licaoEmoji}>{grupo.moduloEmoji}</span>
+                    <h3 className={styles.trilhaModuloTitulo}>{grupo.moduloTitulo}</h3>
+                  </div>
+                  <div className={styles.licoesGrid}>
+                    {grupo.unidades.map((unidade) => (
+                      <UnidadeCard key={unidade.id} unidade={unidade} />
+                    ))}
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 

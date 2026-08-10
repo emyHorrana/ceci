@@ -1,0 +1,76 @@
+/* CECI - Conquistas
+   Topbar e pageContent vêm de components/Layout/AppLayout.module.css
+   (compartilhado com Dashboard e Módulos). Aqui só o que é específico
+   desta tela. */
+
+.title {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  margin: 0 0 4px 0;
+}
+
+.subtitle {
+  font-size: 0.9375rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+/* Mesmo estilo dos .statBadge do Dashboard (contador em pílula amarela) */
+.progressBadge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: var(--radius-pill);
+  font-size: 0.875rem;
+  font-weight: 700;
+  background: var(--color-yellow-bg);
+  color: var(--color-yellow-deep);
+  border: 1.5px solid var(--color-yellow-pale);
+  white-space: nowrap;
+}
+
+.grupo {
+  margin-bottom: 2.5rem;
+}
+
+.grupo:last-child {
+  margin-bottom: 0;
+}
+
+.grupoHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.grupoHeader h2 {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.grupoChip {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--color-yellow-deep);
+  background: var(--color-yellow-bg);
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.25rem;
+}
+
+@media (max-width: 768px) {
+  .progressBadge {
+    display: none;
+  }
+}

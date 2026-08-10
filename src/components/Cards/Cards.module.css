@@ -191,3 +191,72 @@
   cursor: not-allowed;
   box-shadow: none;
 }
+/* Card de Conquista (AchievementCard) - página /conquistas e resumo do
+   Dashboard. Reaproveita o mesmo estilo de "card com header ilustrado"
+   dos outros cards, mas mais compacto e com estado "locked" (silhueta
+   em tons de cinza, sem revelar o emoji da conquista ainda). */
+
+.achievementCard {
+  background: var(--gradient-card);
+  border-radius: var(--radius-lg);
+  border: 1.5px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+  padding: 1.5rem 1.25rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all var(--transition-base);
+}
+
+.achievementCard:not(.locked):hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-3px);
+  border-color: var(--color-yellow-pale);
+}
+
+.achievementEmoji {
+  font-size: 2.75rem;
+  line-height: 1;
+  margin-bottom: 0.25rem;
+}
+
+.achievementTitle {
+  margin: 0;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  font-family: var(--font-display);
+}
+
+.achievementDesc {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+  line-height: 1.4;
+}
+
+/* Conquista ainda não desbloqueada: silhueta neutra, emoji "apagado"
+   (grayscale) pra não entregar qual é antes da hora, mas o título e o
+   motivo continuam legíveis - a pessoa sabe o que precisa fazer. */
+.achievementCard.locked {
+  background: var(--color-yellow-bg);
+  border-style: dashed;
+}
+
+.achievementCard.locked .achievementEmoji {
+  filter: grayscale(1);
+  opacity: 0.45;
+}
+
+.achievementCard.locked .achievementTitle {
+  color: var(--color-text-muted);
+}
+
+.achievementLock {
+  font-size: 0.75rem;
+  margin-left: 4px;
+  vertical-align: middle;
+  opacity: 0.7;
+}

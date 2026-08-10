@@ -2,7 +2,7 @@
   display: grid;
   grid-template-columns: 240px 1fr;
   grid-template-rows: 1fr;
-  min-height: 100svh;
+  height: 100%;
   background: var(--color-bg);
   font-family: var(--font-body);
 }
@@ -130,10 +130,14 @@
   background: var(--color-white);
   border-bottom: 1px solid var(--color-border);
   position: sticky;
-  /* Não é 0: #root já reserva o espaço da barra de tamanho de texto no
-     topo (ver index.css/variables.css), então o topbar gruda logo
-     abaixo dela, não atrás dela. */
-  top: var(--a11y-bar-height);
+  /* Não é var(--a11y-bar-height): diferente do .header do MiniModulo
+     (que rola junto com a página inteira), aqui quem rola é o .main
+     (overflow-y: auto, ver acima) - e o .main já nasce abaixo da
+     barra de acessibilidade, porque o #root inteiro tem padding-top
+     pra isso (ver index.css). Contar var(--a11y-bar-height) de novo
+     aqui descontava esse espaço duas vezes e fazia o topbar grudar
+     sobreposto ao conteúdo ao rolar. */
+  top: 0;
   z-index: 10;
 }
 

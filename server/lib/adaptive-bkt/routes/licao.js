@@ -1,9 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { BKTAdaptativo } = require('../lib/adaptive-bkt');
-
-const supabaseModule = require('../lib/supabaseClient');
+const supabaseModule = require('../../supabaseClient');
 const supabase = supabaseModule.supabase || supabaseModule;
+const { BKTAdaptativo } = require('../index');
 
 router.post('/responder', async (req, res) => {
   try {

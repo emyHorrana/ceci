@@ -71,7 +71,11 @@
 //                    acolhedor; pensado só pra casos muito específicos).
 //   onComplete     (função)               Chamada UMA vez, quando o
 //                    usuário acerta ou escolhe pular. Recebe:
-//                    { success, attempts, skipped }
+//                    { success, attempts, skipped, meta, sinais }
+//   onAbandon      (função, opcional)     Chamada UMA vez, só se o
+//                    componente for desmontado ainda em jogo (trocou de
+//                    etapa/saiu da página sem acertar nem pular). Recebe
+//                    os mesmos `sinais` de onComplete, com abandonado: true.
 //   messages       (objeto, opcional)     Sobrescreve as falas padrão da
 //                    Cecília. Formato:
 //                    {
@@ -86,10 +90,39 @@
 // metricas) - o segundo argumento já é aceito e simplesmente repassado
 // dentro do objeto de resultado como result.meta, sem exigir mudança na
 // assinatura nem nos componentes que já usam o GameMoment hoje.
+//
+// SINAIS DE ENGAJAMENTO (pro AB-BKT)
+// Além de meta (livre, específico de cada jogo), o resultado agora também
+// carrega `sinais`: dados que QUALQUER etapa produz, sem o jogo precisar
+// saber nada disso (igual tentativas/status já funcionava antes):
+//   { tempoRespostaMs, trocasDeAba, tempoInativoMs, abandonado }
+// Correspondem ao `dadosEvento` que Indicadores.aPartirDoEvento espera
+// (tempoResposta, trocasDeAba, tempoInativo, abandonado), só que ainda em
+// unidades brutas do navegador (ms) - a conversão final de formato/nomes
+// pro contrato exato da rota /api/licao/responder é responsabilidade de
+// quem CHAMA o algoritmo (não deste componente - ver algorithmService.js).
+//
+// IMPORTANTE: isso aqui SÓ captura e expõe os sinais. Não chama nenhum
+// back-end, não sabe nada sobre Unidade/BKT - só mede o que já está
+// acontecendo na tela.
+//
+//   - trocasDeAba: quantas vezes a pessoa saiu da aba (visibilitychange)
+//     enquanto esse GameMoment estava montado.
+//   - tempoInativoMs: soma de intervalos > 3s sem nenhuma atividade
+//     (mouse/teclado/toque/scroll) - não conta pausas curtas normais
+//     entre uma tentativa e outra, só quando a pessoa realmente parou.
+//   - abandonado: true se o componente foi desmontado (trocou de etapa,
+//     saiu da página) enquanto o status ainda era 'jogando' - nem acertou
+//     nem pulou. Chega via onAbandon (chamado no máximo uma vez, só
+//     nesse cenário - onComplete continua reservado pra acerto/pular).
 
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useRef, useEffect } from 'react';
 import styles from './GameMoment.module.css';
 import { ButtonOutline } from '../Buttons/ButtonOutline';
+
+// Só conta como "tempo parado" gaps de atividade maiores que isso -
+// evita contar o intervalo normal entre um clique e outro como inatividade.
+const LIMIAR_INATIVIDADE_MS = 3000;
 
 const DEFAULT_MESSAGES = {
   encourage: [
@@ -108,6 +141,7 @@ export function GameMoment({
   maxAttempts = 3,
   allowSkip = true,
   onComplete,
+  onAbandon,
   messages,
 }) {
   const msgs = useMemo(() => ({ ...DEFAULT_MESSAGES, ...messages }), [messages]);
@@ -118,9 +152,81 @@ export function GameMoment({
 
   const canSkip = allowSkip && status === 'jogando' && attempts >= maxAttempts;
 
+  // --- Sinais de engajamento (ver comentário no topo do arquivo) ---
+  // Date.now() não pode ser chamado direto no useRef(...) - é uma
+  // função impura, e chamar ela durante o render (mesmo que só o
+  // primeiro valor de um useRef seja usado depois) quebra a regra de
+  // pureza do React Compiler. Por isso inicia com null e marca o
+  // instante real de início dentro de um efeito, que roda só uma vez.
+  const inicioRef = useRef(null);
+  const trocasDeAbaRef = useRef(0);
+  const tempoInativoRef = useRef(0);
+  const ultimaAtividadeRef = useRef(null);
+  const statusRef = useRef(status);
+
+  useEffect(() => {
+    inicioRef.current = Date.now();
+    ultimaAtividadeRef.current = Date.now();
+  }, []);
+
+  useEffect(() => {
+    statusRef.current = status;
+  }, [status]);
+
+  // Precisa vir ANTES do efeito de atividade/visibilidade logo abaixo,
+  // que referencia coletarSinais no cleanup (abandono) - referenciar
+  // antes de declarar funciona em runtime graças ao closure (o
+  // cleanup só roda no unmount, bem depois de tudo já estar
+  // atribuído), mas o linter não consegue provar isso estaticamente.
+  const coletarSinais = useCallback((extra = {}) => ({
+    tempoRespostaMs: inicioRef.current ? Date.now() - inicioRef.current : 0,
+    trocasDeAba: trocasDeAbaRef.current,
+    tempoInativoMs: tempoInativoRef.current,
+    abandonado: false,
+    ...extra,
+  }), []);
+
+  useEffect(() => {
+    const registrarAtividade = () => {
+      const agora = Date.now();
+      if (ultimaAtividadeRef.current === null) {
+        ultimaAtividadeRef.current = agora;
+        return;
+      }
+      const gap = agora - ultimaAtividadeRef.current;
+      if (gap > LIMIAR_INATIVIDADE_MS) {
+        tempoInativoRef.current += gap;
+      }
+      ultimaAtividadeRef.current = agora;
+    };
+
+    const registrarVisibilidade = () => {
+      if (document.hidden) trocasDeAbaRef.current += 1;
+    };
+
+    const eventosDeAtividade = ['mousemove', 'mousedown', 'keydown', 'touchstart', 'scroll'];
+    eventosDeAtividade.forEach((ev) => window.addEventListener(ev, registrarAtividade));
+    document.addEventListener('visibilitychange', registrarVisibilidade);
+
+    return () => {
+      eventosDeAtividade.forEach((ev) => window.removeEventListener(ev, registrarAtividade));
+      document.removeEventListener('visibilitychange', registrarVisibilidade);
+
+      // Componente sendo desmontado ainda em jogo (trocou de etapa, saiu
+      // da página) - nem acertou, nem pulou. onComplete não é o lugar
+      // certo pra isso (é reservado pra conclusão de verdade), por isso
+      // um callback separado.
+      if (statusRef.current === 'jogando') {
+        onAbandon?.(coletarSinais({ abandonado: true }));
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // Chamada pelo jogo filho a cada tentativa do usuário.
-  // meta é opcional e serve para o algoritmo adaptativo evoluir depois
-  // (tempo de resposta, tipo de erro etc) sem mudar essa assinatura.
+  // meta é opcional e serve pra informação específica daquele jogo (ex:
+  // qual alvo foi escolhido) - sinais de engajamento vêm à parte, em
+  // result.sinais, sem o jogo precisar saber que isso existe.
   const reportResult = useCallback((success, meta) => {
     // já concluído (acertou ou pulou) - ignora tentativas fora de hora
     if (status !== 'jogando') return;
@@ -128,7 +234,7 @@ export function GameMoment({
     if (success) {
       setStatus('sucesso');
       setCeciMessage(msgs.success);
-      onComplete?.({ success: true, attempts, skipped: false, meta });
+      onComplete?.({ success: true, attempts, skipped: false, meta, sinais: coletarSinais() });
       return;
     }
 
@@ -136,13 +242,13 @@ export function GameMoment({
     const indiceMsg = attempts % msgs.encourage.length;
     setAttempts(proximaTentativa);
     setCeciMessage(msgs.encourage[indiceMsg]);
-  }, [status, attempts, msgs, onComplete]);
+  }, [status, attempts, msgs, onComplete, coletarSinais]);
 
   const handleSkip = useCallback(() => {
     setStatus('pulado');
     setCeciMessage(msgs.skipAvailable);
-    onComplete?.({ success: false, attempts, skipped: true });
-  }, [attempts, msgs, onComplete]);
+    onComplete?.({ success: false, attempts, skipped: true, sinais: coletarSinais() });
+  }, [attempts, msgs, onComplete, coletarSinais]);
 
   return (
     <div className={styles.gameMoment} data-status={status}>
@@ -160,6 +266,13 @@ export function GameMoment({
 
       {/* Slot do jogo de verdade - o GameMoment não sabe o que tem aqui dentro */}
       <div className={styles.gameSlot}>
+        {/* eslint-disable-next-line react-hooks/refs -- reportResult só
+            LÊ refs quando é de fato CHAMADO (dentro de um evento do
+            jogo filho), nunca durante este render - é o padrão
+            clássico de render prop. A regra do compiler não consegue
+            provar isso estaticamente e trata qualquer função exposta
+            aqui que toque ref em algum lugar do corpo como arriscada,
+            mesmo sem ser invocada agora. */}
         {children({ reportResult, attempts, status })}
       </div>
 

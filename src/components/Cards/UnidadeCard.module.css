@@ -129,3 +129,31 @@
   border-radius: var(--radius-pill);
   flex-shrink: 0;
 }
+
+/* Botão do desafio de fim de Unidade - visualmente distinto dos
+   mini-módulos normais (fundo já amarelo, não só borda no hover), pra
+   comunicar "isso é diferente/mais importante" sem precisar de texto
+   extra explicando. */
+.checkpointBtn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 4px;
+  padding: 10px 14px;
+  background: var(--color-yellow-bg);
+  border: 1.5px dashed var(--color-yellow-deep);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  text-align: left;
+  font-family: var(--font-body);
+  transition: transform var(--transition-fast), background var(--transition-fast);
+}
+
+.checkpointBtn:hover {
+  background: var(--color-yellow-pale);
+  transform: translateX(2px);
+}
+
+.checkpointIcone {
+  font-size: 1.125rem;
+}

@@ -23,6 +23,18 @@
  *
  * `miniModulos` é resolvido automaticamente a partir de `MODULOS` (não
  * precisa manter os dados dos mini-módulos duplicados aqui, só os ids).
+ *
+ * `checkpoint` (opcional): o desafio de fim de Unidade - um jogo um
+ * pouco mais difícil (associação ou quiz), pensado como a etapa que dá
+ * o veredito de domínio daquela Unidade (ver pages/UnidadeCheckpoint.jsx).
+ * Nem toda Unidade tem um ainda - só as que já foram escritas como
+ * exemplo do padrão (U1.1 e U2.3). Formato:
+ *   {
+ *     tipo: 'associacao' | 'quiz',
+ *     titulo, instructions (mesma cara de uma etapa normal),
+ *     jogoProps: as props exatas do jogo escolhido (ArrastarSoltarGame
+ *       pra 'associacao', QuizGame pra 'quiz')
+ *   }
  */
 
 import { MODULOS } from './modulos';
@@ -42,14 +54,44 @@ export const TIERS = {
 
 const DEFINICOES_UNIDADES = [
   // Módulo 1 - Mouse (Tier 0: conhecimento mínimo absoluto)
-  { id: 'U1.1', moduloId: '1', tier: 0, titulo: 'Fundamentos do mouse', miniModuloIds: ['1-1', '1-2'] },
+  {
+    id: 'U1.1', moduloId: '1', tier: 0, titulo: 'Fundamentos do mouse', miniModuloIds: ['1-1', '1-2'],
+    checkpoint: {
+      tipo: 'associacao',
+      titulo: 'Desafio: qual botão faz o quê?',
+      instructions: 'Arraste a ação até o botão certo do mouse.',
+      jogoProps: {
+        item: { id: 'abrir-menu', label: 'Abrir o menu de opções' },
+        zonas: [
+          { id: 'esquerdo', label: 'Clique esquerdo', correta: false },
+          { id: 'direito', label: 'Clique direito', correta: true },
+        ],
+      },
+    },
+  },
   { id: 'U1.2', moduloId: '1', tier: 0, titulo: 'Cliques com timing', miniModuloIds: ['1-3', '1-5'] },
   { id: 'U1.3', moduloId: '1', tier: 0, titulo: 'Rolagem e precisão', miniModuloIds: ['1-4', '1-6'] },
 
   // Módulo 2 - Teclado (Tier 1: segundo conhecimento mínimo, necessário pra login/cadastro)
   { id: 'U2.1', moduloId: '2', tier: 1, titulo: 'Fundamentos do teclado', miniModuloIds: ['2-1', '2-2'] },
   { id: 'U2.2', moduloId: '2', tier: 1, titulo: 'Escrever e confirmar', miniModuloIds: ['2-3', '2-4', '2-5'] },
-  { id: 'U2.3', moduloId: '2', tier: 1, titulo: 'Corrigindo erros', miniModuloIds: ['2-6', '2-7'] },
+  {
+    id: 'U2.3', moduloId: '2', tier: 1, titulo: 'Corrigindo erros', miniModuloIds: ['2-6', '2-7'],
+    checkpoint: {
+      tipo: 'quiz',
+      titulo: 'Desafio: Backspace ou Delete?',
+      instructions: 'Escolha a resposta certa.',
+      jogoProps: {
+        pergunta: 'Qual tecla apaga o caractere que vem DEPOIS do cursor?',
+        alternativas: [
+          { id: 'backspace', texto: 'Backspace', correta: false },
+          { id: 'delete', texto: 'Delete', correta: true },
+          { id: 'enter', texto: 'Enter', correta: false },
+          { id: 'espaco', texto: 'Barra de espaço', correta: false },
+        ],
+      },
+    },
+  },
   { id: 'U2.4', moduloId: '2', tier: 1, titulo: 'Maiúsculas', miniModuloIds: ['2-8', '2-9'] },
   { id: 'U2.5', moduloId: '2', tier: 1, titulo: 'Números e símbolos', miniModuloIds: ['2-10', '2-11'] },
   { id: 'U2.6', moduloId: '2', tier: 1, titulo: 'Teclas especiais e navegação', miniModuloIds: ['2-12', '2-13'] },

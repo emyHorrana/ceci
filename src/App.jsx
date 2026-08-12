@@ -10,6 +10,7 @@ import Modulos    from './pages/Modulos';
 import Conquistas from './pages/Conquistas';
 import Licao      from './pages/Licao';
 import MiniModulo from './pages/MiniModulo';
+import UnidadeCheckpoint from './pages/UnidadeCheckpoint';
 import BoasVindas from './pages/BoasVindas';
 
 import { UserProvider }     from './context/UserContext';
@@ -54,6 +55,12 @@ function App() {
                 {/* Mini-módulo: estudo de uma lição específica */}
                 {/* Ex: /mini-modulo/1-1  →  módulo 1, mini-módulo 1 */}
                 <Route path="/mini-modulo/:miniModuloId" element={<MiniModulo />} />
+
+                {/* Desafio de fim de Unidade: jogo mais difícil
+                    (associação/quiz) que dá o veredito de domínio da
+                    Unidade inteira. Ver data/unidades.js (campo
+                    `checkpoint`) e pages/UnidadeCheckpoint.jsx. */}
+                <Route path="/unidade/:unidadeId/checkpoint" element={<UnidadeCheckpoint />} />
 
                 {/* Lição legada (mantida por compatibilidade) */}
                 <Route path="/licoes/:id" element={<Licao />} />

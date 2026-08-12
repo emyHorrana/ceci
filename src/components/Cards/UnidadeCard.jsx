@@ -53,6 +53,22 @@ export function UnidadeCard({ unidade }) {
               <span className={styles.miniModuloEtapas}>{mm.etapas.length} etapas</span>
             </button>
           ))}
+
+          {/* Só aparece pras Unidades que já têm um desafio escrito
+              (ver checkpoint em data/unidades.js) - nem toda Unidade
+              tem um ainda. Alcançável direto, sem depender de marcar
+              os mini-módulos acima como concluídos primeiro (isso
+              ainda não existe de verdade - ver MiniModulo.jsx). */}
+          {unidade.checkpoint && (
+            <button
+              type="button"
+              className={styles.checkpointBtn}
+              onClick={() => navigate(`/unidade/${unidade.id}/checkpoint`)}
+            >
+              <span className={styles.checkpointIcone} aria-hidden>🏁</span>
+              <span className={styles.miniModuloTitulo}>Fazer o desafio da Unidade</span>
+            </button>
+          )}
         </div>
       )}
     </div>

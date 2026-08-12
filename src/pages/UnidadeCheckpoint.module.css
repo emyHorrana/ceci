@@ -1,0 +1,125 @@
+.page {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  background: var(--gradient-hero);
+  font-family: var(--font-body);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.1rem 2rem;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.backBtn {
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  transition: background var(--transition-fast);
+}
+
+.backBtn:hover {
+  background: var(--color-bg);
+}
+
+.badge {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--color-yellow-deep);
+  background: var(--color-yellow-bg);
+  padding: 4px 14px;
+  border-radius: var(--radius-pill);
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.card {
+  width: 100%;
+  max-width: 560px;
+  background: var(--color-white);
+  border-radius: var(--radius-lg);
+  border: 1.5px solid var(--color-border);
+  box-shadow: var(--shadow-md);
+  padding: 2rem;
+}
+
+.unidadeTitulo {
+  text-align: center;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin-bottom: 1.25rem;
+}
+
+.desfecho {
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.75rem;
+  background: var(--color-white);
+  border-radius: var(--radius-lg);
+  border: 2px solid var(--color-border);
+  padding: 2.5rem 2rem;
+  box-shadow: var(--shadow-md);
+}
+
+.desfecho[data-tipo='dominou'] {
+  border-color: var(--color-success);
+  background: var(--color-success-bg);
+}
+
+.desfecho[data-tipo='reforco'] {
+  border-color: var(--color-yellow);
+  background: var(--color-yellow-bg);
+}
+
+.desfechoEmoji {
+  font-size: 3rem;
+}
+
+.desfecho h2 {
+  font-size: 1.25rem;
+  color: var(--color-text-primary);
+}
+
+.desfecho p {
+  font-size: 0.9375rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.notFound {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  text-align: center;
+  padding: 2rem;
+}
+
+.notFoundEmoji {
+  font-size: 3rem;
+}

@@ -9,7 +9,7 @@
  * Rota: /mini-modulo/:miniModuloId
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getMiniModulo } from '../data/modulos';
 import { ButtonPrimary } from '../components/Buttons/ButtonPrimary';
@@ -56,6 +56,14 @@ export default function MiniModulo() {
   const [etapaAtual, setEtapaAtual] = useState(0);
   const [resultadoJogo, setResultadoJogo] = useState(null);
 
+  // Sinais de abandono (ver comentário sobre onAbandon em
+  // GameMoment.jsx) - guardados aqui por enquanto, sem mandar pra
+  // lugar nenhum ainda. Quem decide o destino disso (mandar pro
+  // algoritmo, virar pendência etc) é trabalho de integração
+  // separado, já encarregado - aqui só garante que a captura não se
+  // perde no vácuo enquanto isso não existe.
+  const abandonosRef = useRef([]);
+
   // Toda vez que a etapa muda (avançar, retroceder ou clicar num dot),
   // esquece o resultado do jogo anterior - cada etapa de jogo precisa
   // ser resolvida de novo pra liberar "Próxima". Se no futuro isso
@@ -92,6 +100,14 @@ export default function MiniModulo() {
   const concluir = () => {
     // TODO: marcar mini-módulo como concluído no contexto/backend
     navigate('/dashboard');
+  };
+
+  const registrarAbandono = (sinais) => {
+    abandonosRef.current.push({
+      miniModuloId,
+      etapaId: etapa.id ?? etapaAtual,
+      ...sinais,
+    });
   };
 
   // Numa etapa de jogo, só libera avançar depois que o GameMoment
@@ -143,6 +159,7 @@ export default function MiniModulo() {
                 title={etapa.titulo}
                 instructions={etapa.instructions}
                 onComplete={setResultadoJogo}
+                onAbandon={registrarAbandono}
               >
                 {({ reportResult }) => (
                   <Jogo reportResult={reportResult} {...etapa.jogoProps} />

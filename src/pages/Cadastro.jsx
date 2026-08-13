@@ -4,6 +4,7 @@ import { UserContext } from '../context/UserContext';
 import { ButtonPrimary } from '../components/Buttons/ButtonPrimary';
 import { TextInput } from '../components/Forms/TextInput';
 import { useLocalStorage } from '../hooks/useLocalStorage';
+import { flushOnboardingSignals } from '../services/onboardingSync';
 import { AuthLayout } from '../components/Layout/AuthLayout';
 import authStyles from '../components/Layout/AuthLayout.module.css';
 import styles from './Cadastro.module.css';
@@ -44,8 +45,18 @@ export default function Cadastro() {
     setLoading(true);
 
     try {
-      await register({ nome: nome.trim(), email: email.trim(), password });
+      const newUser = await register({ nome: nome.trim(), email: email.trim(), password });
       setSuccess(true);
+
+      // A conta acabou de nascer - agora sim dá pra mandar pro algoritmo
+      // adaptativo os sinais capturados durante /boas-vindas (clique do
+      // mouse, "digite oi", digitar o nome), que até aqui só existiam no
+      // localStorage por falta de userId. Fire-and-forget: não deve
+      // atrasar o redirecionamento nem quebrar o cadastro se falhar.
+      flushOnboardingSignals(newUser.id).catch((err) => {
+        console.error('Erro ao sincronizar sinais do onboarding:', err);
+      });
+
       // Aguarda 2s para mostrar mensagem de sucesso, depois redireciona pro
       // Dashboard - a bifurcação por familiaridade com mouse acontece toda
       // ANTES do cadastro agora (embutida no /boas-vindas: aula-mouse-intro

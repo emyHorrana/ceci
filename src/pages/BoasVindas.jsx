@@ -36,6 +36,17 @@
 //    (hoje: digitar o nome). Cada uma parece só uma etapa normal de
 //    cadastro, mas na real também dá sinais de familiaridade com
 //    mouse/teclado pro algoritmo adaptativo usar depois.
+//
+// SINAIS PRO ALGORITMO ADAPTATIVO (AB-BKT)
+// Ainda não existe conta nesse ponto (ver nota do passo 7), então não dá
+// pra chamar o backend aqui. Os resultados dos GameMoment que já rodam
+// no onboarding (clique do mouse, "digite oi", digitar o nome) ficam
+// bufferizados em onboarding.sinaisAdaptativos (ver
+// registrarSinalAdaptativo abaixo) e só são enviados pro algoritmo
+// depois que a conta é criada, em Cadastro.jsx (via
+// services/onboardingSync.js) - assim o L inicial de "Fundamentos do
+// mouse"/"Fundamentos do teclado" já nasce baseado em comportamento
+// real, em vez do padrão fixo.
 // 6) Mini-aula de orientações de conta: antes de ir pro cadastro de
 //    verdade, avisos rápidos e leves (pode usar e-mail de alguém de
 //    confiança, anotar a senha em lugar seguro) - pensados pra quem
@@ -76,6 +87,7 @@ import { DigitarTextoGame } from '../components/Game/games/DigitarTextoGame';
 import { ClicarAlvoGame } from '../components/Game/games/ClicarAlvoGame';
 import { ButtonPrimary } from '../components/Buttons/ButtonPrimary';
 import { useLocalStorage } from '../hooks/useLocalStorage';
+import { getTempoIdealMs } from '../utils/jogoTempoIdeal';
 import styles from './BoasVindas.module.css';
 
 // Sequência de interações de diagnóstico. Adicione novos passos aqui.
@@ -122,9 +134,37 @@ export default function BoasVindas() {
   const perguntaDominioAtual = DOMINIO_PERGUNTAS[dominioIndex];
   const ultimaPerguntaDominio = dominioIndex === DOMINIO_PERGUNTAS.length - 1;
 
+  // Acumula um sinal comportamental no buffer que vai ser enviado pro
+  // algoritmo adaptativo assim que a conta existir (ver nota "SINAIS PRO
+  // ALGORITMO ADAPTATIVO" no topo do arquivo).
+  const registrarSinalAdaptativo = ({ etapaId, moduleId, resultado, tempoIdeal }) => {
+    setOnboarding((atual) => ({
+      ...atual,
+      sinaisAdaptativos: [
+        ...(atual.sinaisAdaptativos ?? []),
+        {
+          etapaId,
+          moduleId,
+          correto: resultado.success,
+          sinais: resultado.sinais,
+          tempoIdeal,
+        },
+      ],
+    }));
+  };
+
   const handleStepComplete = (resultado) => {
-    // Guarda o resultado desse passo, mantendo os anteriores.
+    // Guarda o resultado desse passo, mantendo os anteriores (formato
+    // usado hoje só pra pré-preencher o nome em Cadastro.jsx).
     setOnboarding((atual) => ({ ...atual, [stepAtual.key]: resultado }));
+
+    // "Digitar o nome" também é sinal de familiaridade com teclado.
+    registrarSinalAdaptativo({
+      etapaId: `boas-vindas#diagnostico-${stepAtual.key}`,
+      moduleId: 'U2.1',
+      resultado,
+      tempoIdeal: getTempoIdealMs('digitar'),
+    });
 
     if (ultimoStep) {
       setFase('mini-aula-seguranca');
@@ -240,7 +280,15 @@ export default function BoasVindas() {
           <GameMoment
             title="Agora é sua vez!"
             instructions="Clique no botão abaixo com o botão esquerdo do mouse."
-            onComplete={() => setFase('formulario-dominios')}
+            onComplete={(resultado) => {
+              registrarSinalAdaptativo({
+                etapaId: 'boas-vindas#pratica-mouse',
+                moduleId: 'U1.1',
+                resultado,
+                tempoIdeal: getTempoIdealMs('clicar'),
+              });
+              setFase('formulario-dominios');
+            }}
           >
             {({ reportResult }) => (
               <ClicarAlvoGame
@@ -300,7 +348,15 @@ export default function BoasVindas() {
           <GameMoment
             title="Agora é sua vez!"
             instructions='Digite a palavra "oi" e confirme.'
-            onComplete={() => setFase('diagnostico')}
+            onComplete={(resultado) => {
+              registrarSinalAdaptativo({
+                etapaId: 'boas-vindas#pratica-teclado',
+                moduleId: 'U2.1',
+                resultado,
+                tempoIdeal: getTempoIdealMs('digitar'),
+              });
+              setFase('diagnostico');
+            }}
           >
             {({ reportResult }) => (
               <DigitarTextoGame

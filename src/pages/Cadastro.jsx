@@ -5,6 +5,7 @@ import { ButtonPrimary } from '../components/Buttons/ButtonPrimary';
 import { TextInput } from '../components/Forms/TextInput';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { flushOnboardingSignals } from '../services/onboardingSync';
+import { criarUsuario } from '../services/usuarioService';
 import { AuthLayout } from '../components/Layout/AuthLayout';
 import authStyles from '../components/Layout/AuthLayout.module.css';
 import styles from './Cadastro.module.css';
@@ -47,6 +48,17 @@ export default function Cadastro() {
     try {
       const newUser = await register({ nome: nome.trim(), email: email.trim(), password });
       setSuccess(true);
+
+      // O Supabase Auth já criou a conta de login (auth.users) - falta a
+      // linha correspondente em `usuarios` (perfil complementar: nome,
+      // e-mail), que o resto do app espera existir. Aguarda pra reduzir
+      // a chance do Dashboard carregar antes dessa linha existir, mas
+      // não trava o cadastro se falhar - a conta em si já está criada.
+      try {
+        await criarUsuario({ id: newUser.id, nome: nome.trim(), email: email.trim() });
+      } catch (err) {
+        console.error('Erro ao criar perfil em usuarios:', err);
+      }
 
       // A conta acabou de nascer - agora sim dá pra mandar pro algoritmo
       // adaptativo os sinais capturados durante /boas-vindas (clique do

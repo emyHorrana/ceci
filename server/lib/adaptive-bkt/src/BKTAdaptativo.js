@@ -47,6 +47,7 @@ class BKTAdaptativo {
     tentativas = 1,
     tentativasAposErro = 0,
     biasModulo = 0,
+    etapaId = null,
   }) {
     // 1. eventos brutos -> indicadores normalizados
     const indicadores = Indicadores.aPartirDoEvento(dadosEvento, {
@@ -85,7 +86,7 @@ class BKTAdaptativo {
     const nivel = Classificador.classificar(novoDominio);
     const recomendacao = Recomendacao.recomendar(nivel);
 
-    // 6. persiste o novo estado do aluno
+    // 6. persiste o novo estado do aluno (agregado por módulo)
     this.perfil.registrarTentativa({
       correto,
       tempoReal: dadosEvento.tempoResposta,
@@ -94,6 +95,20 @@ class BKTAdaptativo {
       novoDominio,
     });
     await this.perfil.salvar();
+
+    // 7. loga a resposta individual (auditoria por etapa)
+    if (etapaId) {
+      await this.perfil.registrarAtividade({
+        etapaId,
+        acerto,
+        velocidade: indicadores.velocidade,
+        foco: indicadores.foco,
+        erros,
+        scoreUsuario: score,
+        scoreFinal: novoDominio,
+        tempoReal: dadosEvento.tempoResposta,
+      });
+    }
 
     return {
       score,

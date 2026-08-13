@@ -1,31 +1,56 @@
 // algorithmService.js
-// Serviço de integração com o algoritmo adaptativo do CECI.
-// Responsável por análise de perfil, recomendação de lições,
-// ajuste de dificuldade e monitoramento de interações do aluno.
+// Serviço de integração com o algoritmo adaptativo (AB-BKT) do CECI.
+// Único ponto do front que fala com server/lib/adaptive-bkt - os nomes
+// de campo aqui têm que bater exatamente com o que
+// Indicadores.aPartirDoEvento (backend) espera.
 
 import apiClient from './api';
 
-// Analisa o perfil de aprendizado do aluno (histórico, padrões, nível estimado)
-export async function analyzeUserProfile(userId) {
-  return await apiClient.get(`/algorithm/profile/${userId}`);
+// GameMoment.jsx entrega os sinais brutos do navegador como
+// { tempoRespostaMs, trocasDeAba, tempoInativoMs, abandonado }.
+// O backend (Indicadores.js) espera { tempoResposta, trocasDeAba,
+// tempoInativo, abandonado } - só o nome de dois campos muda (sem o
+// sufixo "Ms"), mas divergir aqui silenciosamente vira NaN lá no meio
+// do cálculo do BKT, então a conversão fica centralizada nesta função.
+export function sinaisParaDadosEvento(sinais) {
+  return {
+    tempoResposta: sinais?.tempoRespostaMs ?? 0,
+    trocasDeAba: sinais?.trocasDeAba ?? 0,
+    tempoInativo: sinais?.tempoInativoMs ?? 0,
+    abandonado: sinais?.abandonado ?? false,
+  };
 }
 
-// Retorna a próxima lição recomendada pelo algoritmo para o aluno
-export async function getNextRecommendedLesson(userId) {
-  return await apiClient.get(`/algorithm/recommend/${userId}`);
-}
-
-// Ajusta a dificuldade das próximas lições com base na performance recente
-// performanceData: { correctAnswers, totalAnswers, timeSpent, etc. }
-export async function adjustDifficulty(userId, performanceData) {
-  return await apiClient.post(`/algorithm/adjust-difficulty/${userId}`, performanceData);
-}
-
-// Registra uma interação do aluno para análise pelo algoritmo adaptativo
-// interactionData: { lessonId, exerciseId, action, result, etc. }
-export async function monitorInteraction(userId, interactionData) {
-  return await apiClient.post(`/algorithm/monitor/${userId}`, {
-    ...interactionData,
-    timestamp: new Date().toISOString(),
+// Envia o resultado de uma resposta (jogo, checkpoint) pro AB-BKT e
+// recebe de volta o domínio atualizado, o nível e a recomendação.
+// moduleId = id da Unidade (ex: "U1.1"), etapaId = string única
+// identificando a etapa/desafio respondido.
+export async function responderQuestao({
+  userId,
+  moduleId,
+  etapaId,
+  correto,
+  sinais,
+  tempoIdeal,
+  tentativas,
+  tentativasAposErro,
+  biasModulo,
+}) {
+  return await apiClient.post('/licao/responder', {
+    userId,
+    moduleId,
+    etapaId,
+    correto,
+    dadosEvento: sinaisParaDadosEvento(sinais),
+    tempoIdeal,
+    tentativas,
+    tentativasAposErro,
+    biasModulo,
   });
+}
+
+// Retorna a próxima Unidade recomendada pro aluno (reforço pendente ou
+// a próxima nova na sequência), calculada a partir dos perfis salvos.
+export async function getProximaUnidade(userId) {
+  return await apiClient.get(`/licao/proxima-unidade/${userId}`);
 }

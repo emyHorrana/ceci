@@ -9,7 +9,8 @@
 import axios from 'axios';
 
 // URL base da API: usa variável de ambiente ou localhost em desenvolvimento
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+// (server/index.js sobe em PORT || 3001, não 5000 - manter os dois em sincronia)
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,

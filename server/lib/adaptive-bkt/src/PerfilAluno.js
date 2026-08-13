@@ -80,6 +80,35 @@ class PerfilAluno {
       foco_medio: this.focoMedio,
       velocidade_media: this.velocidadeMedia,
       updated_at: new Date().toISOString(),
+    }, { onConflict: 'user_id,module_id' });
+
+    if (error) throw error;
+  }
+
+  /*
+    Loga uma linha em atividade_usuario pra cada resposta individual
+    (auditoria por etapa, em complemento ao agregado de perfis_aluno).
+   */
+  async registrarAtividade({
+    etapaId,
+    acerto,
+    velocidade,
+    foco,
+    erros,
+    scoreUsuario,
+    scoreFinal,
+    tempoReal,
+  }) {
+    const { error } = await this.supabase.from('atividade_usuario').insert({
+      usuario_id: this.userId,
+      etapa_id: etapaId,
+      acerto,
+      velocidade,
+      foco,
+      erros,
+      score_usuario: scoreUsuario,
+      score_final: scoreFinal,
+      tempo_real: Math.round(tempoReal ?? 0),
     });
 
     if (error) throw error;

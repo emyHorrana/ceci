@@ -9,9 +9,13 @@
  * Rota: /mini-modulo/:miniModuloId
  */
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getMiniModulo } from '../data/modulos';
+import { getUnidadeByMiniModulo } from '../data/unidades';
+import { UserContext } from '../context/UserContext';
+import { responderQuestao } from '../services/algorithmService';
+import { getTempoIdealMs } from '../utils/jogoTempoIdeal';
 import { ButtonPrimary } from '../components/Buttons/ButtonPrimary';
 import { ButtonOutline } from '../components/Buttons/ButtonOutline';
 import { GameMoment } from '../components/Game/GameMoment';
@@ -47,6 +51,7 @@ const JOGOS = {
 export default function MiniModulo() {
   const { miniModuloId } = useParams();
   const navigate = useNavigate();
+  const { user } = useContext(UserContext);
 
   const resultado = getMiniModulo(miniModuloId);
   const etapas = resultado?.miniModulo?.etapas ?? [];
@@ -55,6 +60,15 @@ export default function MiniModulo() {
   // "mini-módulo não encontrado" só é decidido depois, no JSX.
   const [etapaAtual, setEtapaAtual] = useState(0);
   const [resultadoJogo, setResultadoJogo] = useState(null);
+  // Recomendação que o AB-BKT devolveu pra última resposta ('Próximo
+  // módulo' | 'Questão mais difícil' | 'Mesmo módulo' | 'Revisão') - só
+  // 'Revisão' muda alguma coisa na tela hoje (ver nudge mais abaixo); o
+  // conteúdo ainda não tem variantes fácil/padrão/difícil pra escalar
+  // nas outras recomendações.
+  const [recomendacaoAtual, setRecomendacaoAtual] = useState(null);
+  // Incrementado quando a pessoa escolhe "praticar mais uma vez" -
+  // usado só pra forçar o GameMoment a remontar do zero na mesma etapa.
+  const [tentativaExtra, setTentativaExtra] = useState(0);
 
   // Sinais de abandono (ver comentário sobre onAbandon em
   // GameMoment.jsx) - guardados aqui por enquanto, sem mandar pra
@@ -72,6 +86,8 @@ export default function MiniModulo() {
   // completadas em vez de um valor único.
   useEffect(() => {
     setResultadoJogo(null);
+    setRecomendacaoAtual(null);
+    setTentativaExtra(0);
   }, [etapaAtual]);
 
   // mini-módulo não encontrado
@@ -109,6 +125,47 @@ export default function MiniModulo() {
       ...sinais,
     });
   };
+
+  // Reporta o resultado do jogo pro algoritmo adaptativo (AB-BKT) e só
+  // depois libera o "Próxima" (mesmo comportamento de antes, via
+  // resultadoJogo) - se o mini-módulo ainda não pertence a nenhuma
+  // Unidade (ver data/unidades.js) ou não há sessão, só segue o fluxo
+  // local, sem quebrar a experiência.
+  const handleGameComplete = async (resultadoJogoAtual) => {
+    setResultadoJogo(resultadoJogoAtual);
+    setRecomendacaoAtual(null);
+
+    const unidade = getUnidadeByMiniModulo(miniModuloId);
+    if (!unidade || !user?.id) return;
+
+    try {
+      const resposta = await responderQuestao({
+        userId: user.id,
+        moduleId: unidade.id,
+        etapaId: `${miniModuloId}#${etapa.id ?? etapaAtual}`,
+        correto: resultadoJogoAtual.success,
+        sinais: resultadoJogoAtual.sinais,
+        tempoIdeal: getTempoIdealMs(etapa.jogo),
+        tentativas: (resultadoJogoAtual.attempts ?? 0) + 1,
+        tentativasAposErro: resultadoJogoAtual.attempts ?? 0,
+      });
+      setRecomendacaoAtual(resposta.recomendacao);
+    } catch (err) {
+      console.error('Erro ao reportar resposta pro algoritmo adaptativo:', err);
+    }
+  };
+
+  // "Revisão" é a única recomendação que muda algo na tela hoje: as
+  // outras (Próximo módulo / Questão mais difícil / Mesmo módulo)
+  // exigiriam ter variantes de conteúdo (fácil/padrão/difícil) que ainda
+  // não existem em data/modulos.js - ver conversa com a Emily.
+  const handlePraticarNovamente = () => {
+    setResultadoJogo(null);
+    setRecomendacaoAtual(null);
+    setTentativaExtra((n) => n + 1);
+  };
+
+  const handleContinuarMesmoAssim = () => setRecomendacaoAtual(null);
 
   // Numa etapa de jogo, só libera avançar depois que o GameMoment
   // reportar sucesso OU a pessoa optar por pular.
@@ -156,15 +213,35 @@ export default function MiniModulo() {
           {ehJogo ? (
             <div key={etapaAtual} className={styles.card}>
               <GameMoment
+                key={tentativaExtra}
                 title={etapa.titulo}
                 instructions={etapa.instructions}
-                onComplete={setResultadoJogo}
+                onComplete={handleGameComplete}
                 onAbandon={registrarAbandono}
               >
                 {({ reportResult }) => (
                   <Jogo reportResult={reportResult} {...etapa.jogoProps} />
                 )}
               </GameMoment>
+
+              {/* Nudge de revisão: o algoritmo adaptativo avaliou que vale
+                  a pena repetir essa etapa antes de seguir - a pessoa
+                  decide, nunca é forçado. */}
+              {recomendacaoAtual === 'Revisão' && (
+                <div className={styles.revisaoNudge}>
+                  <p className={styles.revisaoTexto}>
+                    Que tal praticar essa etapa mais uma vez antes de continuar?
+                  </p>
+                  <div className={styles.revisaoAcoes}>
+                    <ButtonPrimary onClick={handlePraticarNovamente}>
+                      Praticar mais uma vez
+                    </ButtonPrimary>
+                    <ButtonOutline onClick={handleContinuarMesmoAssim}>
+                      Continuar mesmo assim
+                    </ButtonOutline>
+                  </div>
+                </div>
+              )}
             </div>
           ) : (
             <div key={etapaAtual} className={styles.card}>

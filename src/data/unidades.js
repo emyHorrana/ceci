@@ -122,3 +122,11 @@ export const UNIDADES_POR_MODULO = MODULOS.map((modulo) => ({
   moduloTitulo: modulo.titulo,
   unidades: UNIDADES.filter((u) => u.moduloId === modulo.id),
 }));
+
+// A que Unidade um mini-módulo pertence - é o `moduleId` que o algoritmo
+// adaptativo espera (ver server/lib/adaptive-bkt), já que ele trabalha
+// no nível de Unidade, não de mini-módulo isolado. Retorna undefined se
+// o mini-módulo não estiver em nenhuma Unidade ainda.
+export function getUnidadeByMiniModulo(miniModuloId) {
+  return UNIDADES.find((u) => u.miniModuloIds.includes(miniModuloId));
+}

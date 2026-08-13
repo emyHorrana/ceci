@@ -9,9 +9,13 @@
  * Rota: /mini-modulo/:miniModuloId
  */
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getMiniModulo } from '../data/modulos';
+import { getUnidadeByMiniModulo } from '../data/unidades';
+import { UserContext } from '../context/UserContext';
+import { responderQuestao } from '../services/algorithmService';
+import { getTempoIdealMs } from '../utils/jogoTempoIdeal';
 import { ButtonPrimary } from '../components/Buttons/ButtonPrimary';
 import { ButtonOutline } from '../components/Buttons/ButtonOutline';
 import { GameMoment } from '../components/Game/GameMoment';
@@ -47,6 +51,7 @@ const JOGOS = {
 export default function MiniModulo() {
   const { miniModuloId } = useParams();
   const navigate = useNavigate();
+  const { user } = useContext(UserContext);
 
   const resultado = getMiniModulo(miniModuloId);
   const etapas = resultado?.miniModulo?.etapas ?? [];
@@ -110,6 +115,31 @@ export default function MiniModulo() {
     });
   };
 
+  // Reporta o resultado do jogo pro algoritmo adaptativo (AB-BKT) e só
+  // depois libera o "Próxima" (mesmo comportamento de antes, via
+  // resultadoJogo) - se o mini-módulo ainda não pertence a nenhuma
+  // Unidade (ver data/unidades.js) ou não há sessão, só segue o fluxo
+  // local, sem quebrar a experiência.
+  const handleGameComplete = (resultadoJogoAtual) => {
+    setResultadoJogo(resultadoJogoAtual);
+
+    const unidade = getUnidadeByMiniModulo(miniModuloId);
+    if (!unidade || !user?.id) return;
+
+    responderQuestao({
+      userId: user.id,
+      moduleId: unidade.id,
+      etapaId: `${miniModuloId}#${etapa.id ?? etapaAtual}`,
+      correto: resultadoJogoAtual.success,
+      sinais: resultadoJogoAtual.sinais,
+      tempoIdeal: getTempoIdealMs(etapa.jogo),
+      tentativas: (resultadoJogoAtual.attempts ?? 0) + 1,
+      tentativasAposErro: resultadoJogoAtual.attempts ?? 0,
+    }).catch((err) => {
+      console.error('Erro ao reportar resposta pro algoritmo adaptativo:', err);
+    });
+  };
+
   // Numa etapa de jogo, só libera avançar depois que o GameMoment
   // reportar sucesso OU a pessoa optar por pular.
   const proximaBloqueada = ehJogo && !resultadoJogo;
@@ -158,7 +188,7 @@ export default function MiniModulo() {
               <GameMoment
                 title={etapa.titulo}
                 instructions={etapa.instructions}
-                onComplete={setResultadoJogo}
+                onComplete={handleGameComplete}
                 onAbandon={registrarAbandono}
               >
                 {({ reportResult }) => (

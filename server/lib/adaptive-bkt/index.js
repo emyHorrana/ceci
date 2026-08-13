@@ -1,5 +1,5 @@
 /*
-Exporta as 8 classes num pacote só, pra facilitar o import em outros lugares.
+Exporta as 9 classes num pacote só, pra facilitar o import em outros lugares.
  */
 
 const BKTAdaptativo = require('./src/BKTAdaptativo');
@@ -10,6 +10,7 @@ const RastreamentoBayesiano = require('./src/RastreamentoBayesiano');
 const Classificador = require('./src/Classificador');
 const Recomendacao = require('./src/Recomendacao');
 const Indicadores = require('./src/Indicadores');
+const FilaDePendencias = require('./src/FilaDePendencias');
 
 module.exports = {
   BKTAdaptativo,
@@ -20,4 +21,5 @@ module.exports = {
   Classificador,
   Recomendacao,
   Indicadores,
+  FilaDePendencias,
 };

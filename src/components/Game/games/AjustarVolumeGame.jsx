@@ -1,14 +1,14 @@
 // AjustarVolumeGame.jsx
-// Mecânica de "aumentar e diminuir o som" - botões físicos − e +, não
+// Mecânica de "aumentar e diminuir o som" - botões físicos - e +, não
 // um slider/controle deslizante de software, porque é assim que
 // caixas de som (e a maioria dos controles de volume físicos) de fato
 // funcionam.
 //
 // Diferente das outras mecânicas: aqui não existe "clique errado" -
-// tanto + quanto − são ações sempre válidas, só mudam o número. O
+// tanto + quanto - são ações sempre válidas, só mudam o número. O
 // objetivo é chegar EXATAMENTE no nível pedido, o que naturalmente
 // ensina as duas direções: quem passa do ponto (ex: foi de 4 direto
-// pra 7) precisa usar o − pra corrigir - e isso não conta como erro,
+// pra 7) precisa usar o - pra corrigir - e isso não conta como erro,
 // é só ajuste, igual seria numa caixa de som de verdade.
 //
 // Props:
@@ -70,7 +70,7 @@ export function AjustarVolumeGame({ reportResult, alvo, min = 0, max = 10 }) {
           disabled={chegou || nivel <= min}
           aria-label="Diminuir volume"
         >
-          −
+          -
         </button>
         <button
           type="button"

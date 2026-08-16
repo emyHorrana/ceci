@@ -5,9 +5,9 @@
 //
 // Recebe uma altura de conteúdo rolável e uma zona-alvo (em % da
 // altura do conteúdo) - a pessoa precisa rolar até a zona marcada
-// ficar visível e mais ou menos centralizada na área visível (não é
-// preciso alinhar pixel a pixel - há uma margem de tolerância nas
-// bordas, ver COMO FUNCIONA A AVALIAÇÃO).
+// ficar praticamente centralizada na área visível (ver
+// COMO FUNCIONA A AVALIAÇÃO - a tolerância é pequena de propósito,
+// não é "em qualquer lugar visível").
 //
 //   // rolar até o meio, com folga generosa (iniciante)
 //   <ScrollAteUmPontoGame reportResult={reportResult}
@@ -25,15 +25,15 @@
 // como erro em si, só parar fora da zona-alvo conta.
 //
 // "Acertar" é definido pelo que a pessoa efetivamente VÊ na tela: o
-// PONTO MÉDIO da zona-alvo precisa estar dentro de uma faixa central
-// da área visível (com ~15% de margem em cada borda, pra não contar
-// "só uma pontinha apareceu" como acerto). Importante: isso NÃO é a
-// mesma coisa que comparar o topo do scroll com a faixa da zona -
-// aquela conta ingênua permite casos em que a zona já saiu inteira de
-// vista mas ainda seria marcada como "certo" (foi exatamente o bug
-// corrigido aqui). O destaque visual em tempo real (zona pisca de
-// amarelo mais forte) usa essa mesma fórmula, então o que acende como
-// "quase lá" é sempre consistente com o que de fato conta como acerto.
+// PONTO MÉDIO da zona-alvo precisa estar a poucos pixels do CENTRO
+// exato da área visível (ver `toleranciaCentroPx`) - não só "em algum
+// lugar dentro da tela". Importante: isso NÃO é a mesma coisa que
+// comparar o topo do scroll com a faixa da zona - aquela conta
+// ingênua permite casos em que a zona já saiu inteira de vista mas
+// ainda seria marcada como "certo" (foi exatamente o bug corrigido
+// aqui). O destaque visual em tempo real (zona pisca de amarelo mais
+// forte) usa essa mesma fórmula, então o que acende como "quase lá" é
+// sempre consistente com o que de fato conta como acerto.
 //
 // ACESSIBILIDADE: o container é focável (tabIndex=0) e scrollável nativamente,
 // então setas/Page Down/Page Up do teclado já funcionam sem código
@@ -52,6 +52,10 @@
 //     (a "viewport" de scroll em si).
 //   debounceMs        (number, padrão 500) - quanto tempo sem rolar até
 //     considerar que a pessoa "parou" e avaliar a tentativa.
+//   toleranciaCentroPx (number, padrão 16) - quantos pixels de folga
+//     em torno do centro exato da área visível ainda contam como
+//     "centralizado". Quanto menor, mais perto do meio exato a pessoa
+//     precisa parar.
 //   rotuloAlvo        (string, padrão 'Pare aqui') - texto dentro da
 //     zona-alvo, pra ela ser reconhecível mesmo antes de "acertar".
 
@@ -64,6 +68,7 @@ export function ScrollAteUmPontoGame({
   alturaConteudoPx = 1000,
   alturaVisivelPx = 220,
   debounceMs = 500,
+  toleranciaCentroPx = 16,
   rotuloAlvo = 'Pare aqui',
 }) {
   const viewportRef = useRef(null);
@@ -95,15 +100,17 @@ export function ScrollAteUmPontoGame({
     );
   }
 
-  // "Acertou" = o MEIO da zona-alvo está visível dentro de uma faixa
-  // central da área visível (não só encostando na borda - por isso a
-  // margem). Isso garante que o que a pessoa VÊ na tela (a zona
-  // marcada, mais ou menos centralizada) é exatamente o que conta como
-  // acerto - antes essa checagem comparava só o topo do scroll com a
-  // faixa, o que podia dar "certo" com a zona inteira fora da tela.
-  const margem = alturaVisivelPx * 0.15;
-  const zonaCentralizada = (scrollTop) =>
-    zonaMeioPx >= scrollTop + margem && zonaMeioPx <= scrollTop + alturaVisivelPx - margem;
+  // "Acertou" = o MEIO da zona-alvo está a no máximo `toleranciaCentroPx`
+  // pixels do centro exato da área visível - não "em algum lugar
+  // central", mas praticamente no meio mesmo. Antes essa checagem
+  // aceitava qualquer ponto dentro dos 70% centrais da área visível
+  // (margem de 15% em cada borda), o que passava mesmo bem
+  // descentralizado - por isso trocamos por uma distância fixa ao
+  // centro exato.
+  const zonaCentralizada = (scrollTop) => {
+    const centroViewport = scrollTop + alturaVisivelPx / 2;
+    return Math.abs(zonaMeioPx - centroViewport) <= toleranciaCentroPx;
+  };
 
   const avaliarPosicaoAtual = useCallback(() => {
     const viewport = viewportRef.current;

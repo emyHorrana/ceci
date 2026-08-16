@@ -1,0 +1,102 @@
+.area {
+  position: relative;
+  width: 100%;
+  padding: 1.5rem;
+  border-radius: var(--radius-lg);
+  /* pointer events próprios cuidam do arraste - impede o navegador de
+     tentar rolar/dar zoom/selecionar texto nativamente no meio do
+     gesto (essencial em touch e no modo 'texto') */
+  touch-action: none;
+  user-select: none;
+}
+
+/* modo 'arquivos': grade de ícones, parecido com um explorador de
+   arquivos */
+.grade {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.icone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 96px;
+  min-height: 96px;
+  padding: 0.75rem;
+  font-size: 1.75rem;
+  text-align: center;
+  background: var(--color-surface);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  transition: border-color var(--transition-fast), background var(--transition-fast), transform var(--transition-fast);
+}
+
+/* modo 'texto': palavras em linha, como uma frase normal */
+.textoLinha {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4em;
+  justify-content: center;
+  font-size: 1.25rem;
+  line-height: 2.4;
+}
+
+.palavra {
+  padding: 0.1em 0.3em;
+  border-radius: var(--radius-sm, 4px);
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+/* Estado "tocado" pelo laço - mesma cor em ambos os modos, só muda o
+   formato de destaque (borda no ícone, fundo na palavra) */
+.icone.tocado {
+  border-color: rgba(37, 99, 235, 0.8);
+  background: rgba(37, 99, 235, 0.1);
+  transform: scale(1.04);
+}
+
+.palavra.tocado {
+  background: rgba(37, 99, 235, 0.25);
+  color: var(--color-text);
+}
+
+/* O retângulo de "laço" que acompanha o gesto - mesma linguagem visual
+   de seleção de texto/ícones (fundo azul translúcido, borda sólida). */
+.laco {
+  position: absolute;
+  pointer-events: none;
+  background: rgba(37, 99, 235, 0.15);
+  border: 1.5px solid rgba(37, 99, 235, 0.8);
+  border-radius: 2px;
+  z-index: 10;
+}
+
+/* Feedback de acerto/erro no grupo inteiro (a própria .area pisca),
+   já que aqui não faz sentido destacar zona nenhuma - o resultado
+   depende do conjunto de itens tocados, não de 1 alvo fixo. */
+.erro {
+  border: 2px solid var(--color-error);
+  background: var(--color-error-bg);
+  animation: tremer 0.3s;
+}
+
+.acerto {
+  border: 2px solid var(--color-success);
+  background: var(--color-success-bg);
+  animation: comemorar 0.5s ease-out;
+}
+
+@keyframes tremer {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+@keyframes comemorar {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+  100% { transform: scale(1); }
+}

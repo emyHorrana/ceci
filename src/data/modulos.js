@@ -21,38 +21,65 @@ export const MODULOS = [
     titulo: 'Uso do Mouse',
     descricao: 'Aprenda a reconhecer, segurar e usar o mouse com confiança.',
     miniModulos: [
+    {
+      id: '1-1',
+      titulo: 'Reconhecendo o mouse',
+      etapas: [
       {
-        id: '1-1',
-        titulo: 'Reconhecendo o mouse',
-        etapas: [
-          {
-            titulo: 'Bem-vindo(a) ao mouse',
-            conteudo: `<p>Aqui vamos falar sobre um instrumento simples, mas muito importante para quem está começando a usar o computador: o <strong>mouse</strong>.</p>
-<p>Talvez você já tenha usado um mouse antes, ainda que rapidamente, ou talvez esta seja a primeira vez que vai se aproximar dele com atenção. De qualquer forma, não se preocupe: cada movimento novo, no início, exige um pouco de prática - assim como aprender a usar um controle remoto novo ou uma máquina de lavar diferente da que você já conhecia. Com o tempo, o gesto se torna natural.</p>
-<p>Vamos passo a passo. Sinta-se à vontade para repetir cada parte quantas vezes precisar.</p>`,
-            dica: 'Vamos com calma - não existe pressa nesse aprendizado. 💛',
-          },
-          {
-            titulo: 'O que é o mouse',
-            conteudo: `<p>O mouse é aquele pequeno objeto que fica ao lado do teclado e que você segura com uma das mãos para "conversar" com o computador. Pense nele como um ponteiro: por meio dele, você indica ao computador o que deseja fazer, aponta para o que quer abrir ou selecionar.</p>
-<p>Existem também os <strong>touchpads</strong>, que são as superfícies planas encontradas em notebooks, onde se usa o dedo em vez do mouse. O princípio é parecido, mas aqui vamos focar no mouse tradicional, aquele que se segura com a mão.</p>`,
-          },
-          {
-            titulo: 'Conhecendo as partes do mouse',
-            conteudo: `<ul>
-  <li><strong>Botão esquerdo</strong>: é o botão mais usado. Serve para selecionar, abrir e confirmar ações. Fica sob o dedo indicador (para quem é destro).</li>
-  <li><strong>Botão direito</strong>: abre um menu com opções extras sobre o que você clicou.</li>
-  <li><strong>Roda (scroll)</strong>: fica entre os dois botões e serve para rolar a tela para cima ou para baixo.</li>
-</ul>`,
-          },
-          {
-            titulo: 'Como segurar o mouse',
-            conteudo: `<p>Apoie a palma da mão suavemente sobre o mouse, deixando os dedos levemente curvados sobre os botões - sem apertar. Pense em como você seguraria um controle remoto: com firmeza o suficiente para não deixar cair, mas sem tensão.</p>
-<p>Se sua mão ficar cansada ou dolorida, é sinal de que está segurando com força demais. Relaxe os ombros e o punho: essa postura mais tranquila facilita o controle e evita desconforto.</p>`,
-            dica: 'Você já usou algum aparelho com botões, como um controle de TV ou um caixa eletrônico? O que foi mais fácil ou mais difícil na primeira vez?',
-          },
-        ],
+        titulo: 'Bem-vindo(a) ao mouse',
+        conteudo: `<p>Aqui vamos falar sobre um instrumento simples, mas muito importante para quem está começando a usar o computador: o <strong>mouse</strong>.</p> <p>Talvez você já tenha usado um mouse antes, ainda que rapidamente, ou talvez esta seja a primeira vez que vai se aproximar dele com atenção. De qualquer forma, não se preocupe: cada movimento novo, no início, exige um pouco de prática - assim como aprender a usar um controle remoto novo ou uma máquina de lavar diferente da que você já conhecia. Com o tempo, o gesto se torna natural.</p> <p>Vamos passo a passo. Sinta-se à vontade para repetir cada parte quantas vezes precisar.</p>`,
+        dica: 'Vamos com calma - não existe pressa nesse aprendizado. 💛',
       },
+      {
+        titulo: 'O que é o mouse',
+        conteudo: `<p>O mouse é aquele pequeno objeto que fica ao lado do teclado e que você segura com uma das mãos para "conversar" com o computador. Pense nele como um ponteiro: por meio dele, você indica ao computador o que deseja fazer, aponta para o que quer abrir ou selecionar.</p> <p>Existem também os <strong>touchpads</strong>, que são as superfícies planas encontradas em notebooks, onde se usa o dedo em vez do mouse. O princípio é parecido, mas aqui vamos focar no mouse tradicional, aquele que se segura com a mão.</p>`,
+      },
+      {
+        titulo: 'Como segurar o mouse',
+        conteudo: `<p>Apoie a palma da mão suavemente sobre o mouse, deixando os dedos levemente curvados sobre os botões - sem apertar. Pense em como você seguraria um controle remoto: com firmeza o suficiente para não deixar cair, mas sem tensão.</p> <p>Se sua mão ficar cansada ou dolorida, é sinal de que está segurando com força demais. Relaxe os ombros e o punho: essa postura mais tranquila facilita o controle e evita desconforto.</p>`,
+        dica: 'Você já usou algum aparelho com botões, como um controle de TV ou um caixa eletrônico? O que foi mais fácil ou mais difícil na primeira vez?',
+      },
+
+      // Botão esquerdo: texto + jogo logo em seguida
+      {
+        titulo: 'O botão esquerdo',
+        conteudo: `<p>O <strong>botão esquerdo</strong> é o mais usado de todos. Fica sob o dedo indicador (para quem é destro) e serve para selecionar, abrir e confirmar ações.</p>`,
+      },
+      {
+        tipo: 'jogo',
+        titulo: 'Encontre o botão esquerdo',
+        instructions: 'Clique no botão esquerdo do mouse na ilustração abaixo.',
+        jogo: 'mouse',
+        jogoProps: { alvoCorreto: 'esquerdo' },
+      },
+
+      // Botão direito: texto + jogo logo em seguida
+      {
+        titulo: 'O botão direito',
+        conteudo: `<p>O <strong>botão direito</strong> abre um menu com opções extras sobre o que você clicou - é uma forma do computador dizer "aqui estão outras coisas que você pode fazer com isso".</p>`,
+      },
+      {
+        tipo: 'jogo',
+        titulo: 'Encontre o botão direito',
+        instructions: 'Clique no botão direito do mouse na ilustração abaixo.',
+        jogo: 'mouse',
+        jogoProps: { alvoCorreto: 'direito' },
+      },
+
+      // Roda: texto + jogo logo em seguida
+      {
+        titulo: 'A roda (scroll)',
+        conteudo: `<p>A <strong>roda</strong> (também chamada de scroll) fica entre os dois botões e serve para rolar a tela para cima ou para baixo, revelando o que está fora da tela no momento.</p>`,
+      },
+      {
+        tipo: 'jogo',
+        titulo: 'Encontre a roda',
+        instructions: 'Clique na roda (scroll) do mouse na ilustração abaixo.',
+        jogo: 'mouse',
+        jogoProps: { alvoCorreto: 'roda' },
+      },
+      ],
+    },
       {
         id: '1-2',
         titulo: 'Movimento do cursor',
@@ -85,6 +112,19 @@ export const MODULOS = [
             jogo: 'clicar',
             jogoProps: {
               alvos: [{ id: 'aqui', label: '👆 Clique aqui', correto: true }],
+            },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Mais uma vez, com atenção',
+            instructions: 'Dessa vez tem mais de uma opção na tela - clique só na certa.',
+            jogo: 'clicar',
+            jogoProps: {
+              layout: 'grade',
+              alvos: [
+                { id: 'errado', label: '👆 Não é aqui', correto: false },
+                { id: 'certo', label: '👆 Clique aqui', correto: true },
+              ],
             },
           },
         ],
@@ -179,6 +219,72 @@ export const MODULOS = [
               zonas: [{ id: 'pasta', label: '📁 Solte aqui', correta: true }],
             },
           },
+          {
+            tipo: 'jogo',
+            titulo: 'Mais uma vez',
+            instructions: 'Agora arraste a foto até a lixeira, pra apagá-la.',
+            jogo: 'arrastar',
+            jogoProps: {
+              item: { id: 'foto', label: '🖼️ Foto' },
+              zonas: [{ id: 'lixeira', label: '🗑️ Lixeira', correta: true }],
+            },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Com atenção: tem duas opções agora',
+            instructions: 'Arraste a música até a lixeira - repare que agora tem mais de um lugar na tela.',
+            jogo: 'arrastar',
+            jogoProps: {
+              item: { id: 'musica', label: '🎵 Música' },
+              zonas: [
+                { id: 'pasta', label: '📁 Pasta', correta: false },
+                { id: 'lixeira', label: '🗑️ Lixeira', correta: true },
+              ],
+            },
+          },
+          {
+            titulo: 'Selecionando vários itens ao mesmo tempo',
+            conteudo: `<p>Às vezes você quer mover, copiar ou apagar vários arquivos de uma vez, em vez de um por um. Uma forma simples de fazer isso: clique numa área vazia perto dos arquivos e arraste - como se estivesse "jogando uma rede" por cima dos itens que quer pegar. Tudo que a rede tocar fica selecionado.</p>
+<p>Depois de selecionados, qualquer ação que você fizer (arrastar pra lixeira, copiar, etc.) vale para todos de uma vez.</p>`,
+            dica: 'Existe também outra forma, segurando uma tecla (geralmente Ctrl) e clicando em cada arquivo individualmente - mas arrastar costuma ser mais rápido quando os itens estão pertinho um do outro.',
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Selecione as fotos',
+            instructions: 'Arraste sobre as 3 fotos (sem incluir os documentos) para selecioná-las todas de uma vez.',
+            jogo: 'selecionar-arrastando',
+            jogoProps: {
+              modo: 'arquivos',
+              itens: [
+                { id: 'doc1', rotulo: '📄 Documento', alvoSelecao: false },
+                { id: 'foto1', rotulo: '🖼️ Foto', alvoSelecao: true },
+                { id: 'foto2', rotulo: '🖼️ Foto', alvoSelecao: true },
+                { id: 'foto3', rotulo: '🖼️ Foto', alvoSelecao: true },
+                { id: 'doc2', rotulo: '📄 Documento', alvoSelecao: false },
+              ],
+            },
+          },
+          {
+            titulo: 'Selecionando um trecho de texto',
+            conteudo: `<p>O mesmo gesto de arrastar também serve para marcar parte de um texto - por exemplo, antes de copiar ou apagar só um trecho, sem mexer no resto.</p>
+<p>Clique bem no início do trecho que você quer, segure o botão, arraste até o final dele e solte. As palavras por onde o cursor passou ficam destacadas (geralmente em azul), mostrando o que está selecionado.</p>`,
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Selecione o trecho certo',
+            instructions: `Arraste sobre as palavras "computador está lento" para selecioná-las.`,
+            jogo: 'selecionar-arrastando',
+            jogoProps: {
+              modo: 'texto',
+              itens: [
+                { id: 'hoje', rotulo: 'Hoje', alvoSelecao: false },
+                { id: 'o', rotulo: 'o', alvoSelecao: false },
+                { id: 'computador', rotulo: 'computador', alvoSelecao: true },
+                { id: 'esta', rotulo: 'está', alvoSelecao: true },
+                { id: 'lento', rotulo: 'lento', alvoSelecao: true },
+              ],
+            },
+          },
         ],
       },
       {
@@ -204,18 +310,17 @@ export const MODULOS = [
 <p>Se em algum momento você clicar no lugar errado, não há problema: basta clicar novamente no local correto. Errar faz parte do processo de aprender.</p>`,
           },
           {
+            titulo: 'Hora de treinar de verdade',
+            conteudo: `<p>Até agora o alvo ficou parado - mas na vida real, às vezes você precisa acompanhar algo que está se movendo na tela, como o cursor de um jogo ou uma janela sendo arrastada.</p>
+<p>Sem pressa: o alvo abaixo vai se mover bem devagar. É só ir seguindo com o olhar e clicar quando sentir que consegue alcançá-lo.</p>`,
+            dica: 'Se for mais fácil, mova o mouse na direção geral do alvo em vez de tentar prever exatamente onde ele vai estar.',
+          },
+          {
             tipo: 'jogo',
             titulo: 'Desafio de precisão',
-            instructions: 'Entre as opções abaixo, clique só na que estiver certa.',
-            jogo: 'clicar',
-            jogoProps: {
-              layout: 'grade',
-              alvos: [
-                { id: 'errado-1', label: '❌', correto: false },
-                { id: 'certo',    label: '✅ Clique aqui', correto: true },
-                { id: 'errado-2', label: '❌', correto: false },
-              ],
-            },
+            instructions: 'Clique no alvo assim que conseguir alcançá-lo - ele vai se mover devagar pela área.',
+            jogo: 'alvo-movel',
+            jogoProps: { velocidade: 50 },
           },
           {
             titulo: 'Para lembrar',

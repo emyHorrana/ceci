@@ -1,0 +1,38 @@
+.area {
+  position: relative;
+  width: 100%;
+  max-width: 360px;
+  height: 220px;
+  margin: 0 auto;
+  background: var(--color-bg);
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.alvo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  border-radius: 50%;
+  background: var(--color-yellow-bg);
+  border: 3px solid var(--color-yellow-deep);
+  cursor: pointer;
+  /* Sem transition no transform - senão o movimento do requestAnimationFrame
+     fica "atrasado" tentando animar cada micro-passo. */
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+
+.alvo:hover {
+  background: var(--color-yellow-pale);
+}
+
+.alvo[data-capturado='true'] {
+  background: var(--color-success-bg);
+  border-color: var(--color-success);
+  cursor: default;
+}

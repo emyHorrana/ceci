@@ -153,11 +153,11 @@ export default function UnidadeCheckpoint() {
         {resultado === 'reforco' && (
           <div className={styles.desfecho} data-tipo="reforco">
             <span className={styles.desfechoEmoji}>🌱</span>
-            <h2>Sem problemas, vamos reforçar isso</h2>
-            <p>&quot;{unidade.titulo}&quot; vai ficar marcada pra você revisar - não é o fim, é só mais uma volta.</p>
+            <h2>Sem problemas, vamos praticar mais um pouco!</h2>
+            <p>&quot;{unidade.titulo}&quot; vai continuar na sua trilha pra você treinar no seu tempo — cada repetição ajuda a fixar com segurança! 💪</p>
             {proximoDestino ? (
               <ButtonPrimary onClick={() => navigate(proximoDestino)}>
-                Continuar: {proxima.unidade.titulo}
+                Continuar praticando: {proxima.unidade.titulo}
               </ButtonPrimary>
             ) : (
               <ButtonPrimary onClick={() => navigate('/dashboard')}>

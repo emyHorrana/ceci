@@ -24,7 +24,7 @@ import styles from './UnidadeCard.module.css';
 const STATUS_LABEL = {
   atual: 'Recomendada agora',
   concluida: 'Concluída',
-  pendente: 'Precisa reforçar',
+  pendente: 'Em prática',
 };
 
 export function UnidadeCard({ unidade, status }) {

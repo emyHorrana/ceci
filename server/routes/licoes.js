@@ -1,85 +1,139 @@
 const express = require('express');
 const router = express.Router();
-const supabase = require('../lib/supabaseClient');
+const supabaseModule = require('../../supabaseClient');
+const supabase = supabaseModule.supabase || supabaseModule;
+const { BKTAdaptativo, FilaDePendencias, Classificador, ParametrosAdaptativos } = require('../index');
+const unidades = require('../data/unidades');
 
-// Listar todas as lições com progresso do usuário
-router.get('/', async (req, res) => {
-  const { usuario_id } = req.query;
+router.post('/responder', async (req, res) => {
+  try {
+    const {
+      correto,
+      dadosEvento,
+      tempoIdeal,
+      tentativas,
+      tentativasAposErro,
+      moduleId,
+      etapaId,
+      biasModulo,
+    } = req.body;
 
-  const { data: licoes, error: licaoError } = await supabase
-    .from('licoes')
-    .select('*')
-    .order('created_at');
+    const userId = req.user?.id || req.body.userId;
 
-  if (licaoError) return res.status(500).json({ error: licaoError.message });
+    if (!userId) {
+      return res.status(401).json({ error: 'Usuário não autenticado (userId ausente).' });
+    }
+    if (!moduleId) {
+      return res.status(400).json({ error: 'moduleId é obrigatório.' });
+    }
+    if (!etapaId) {
+      return res.status(400).json({ error: 'etapaId é obrigatório.' });
+    }
+    if (correto === undefined || !dadosEvento || !tempoIdeal) {
+      return res.status(400).json({ error: 'correto, dadosEvento e tempoIdeal são obrigatórios.' });
+    }
 
-  // Se tiver usuario_id, busca o progresso dele
-  let progressos = [];
-  if (usuario_id) {
-    const { data } = await supabase
-      .from('progresso_usuario')
-      .select('*')
-      .eq('usuario_id', usuario_id);
-    progressos = data || [];
+    const bkt = new BKTAdaptativo({ supabase, userId, moduleId });
+    await bkt.iniciar();
+
+    const resultado = await bkt.finalizarQuestao({
+      correto,
+      dadosEvento,
+      tempoIdeal,
+      tentativas,
+      tentativasAposErro,
+      biasModulo,
+      etapaId,
+    });
+
+    res.json(resultado);
+  } catch (err) {
+    console.error('[POST /api/licao/responder]', err);
+    res.status(500).json({ error: 'Erro ao processar resposta.' });
   }
-
-  const result = licoes.map((licao, index) => {
-    const prog = progressos.find(p => p.licao_id === licao.id);
-    const prevCompleted = index === 0 ||
-      progressos.find(p => p.licao_id === licoes[index - 1]?.id && p.completed);
-
-    return {
-      id: licao.id,
-      title: licao.title,
-      description: licao.description,
-      emoji: licao.emoji || '📘',
-      progress: prog?.progress || 0,
-      lessonCount: 10,
-      completed: prog?.completed || false,
-      status: prog?.completed   ? 'featured'
-            : (prevCompleted || index === 0) ? 'inprogress'
-            : 'locked',
-    };
-  });
-
-  res.json(result);
 });
 
-// Buscar etapas de uma lição específica
-router.get('/:id/etapas', async (req, res) => {
-  const { id } = req.params;
+/*
+  Devolve o domínio (L do BKT) de TODAS as Unidades já tentadas pelo
+  aluno - { 'U1.1': 0.82, 'U1.2': 0.31, ... }. Unidades nunca tentadas
+  simplesmente não aparecem no objeto.
 
-  const { data, error } = await supabase
-    .from('etapas')
-    .select('*')
-    .eq('licao_id', id)
-    .order('ordem');
+  Existia só a versão interna disso dentro do handler de
+  /proxima-unidade (pra alimentar a FilaDePendencias) - esta rota
+  expõe o mesmo dado pro front, que precisa da visão completa (pintar
+  cada Unidade da trilha como concluída/pendente/não tentada), não só
+  da próxima única recomendação.
 
-  if (error) return res.status(500).json({ error: error.message });
-  res.json(data);
+  Também devolve `classificacaoPorUnidade` - o nível (Iniciante/
+  Básico/Intermediário/Avançado) de CADA Unidade, já calculado com o
+  MESMO Classificador que o backend usa no resto do algoritmo (evita
+  duplicar os limiares 0.30/0.60/0.85 em JS do front, que dessincroniza
+  fácil). Unidades nunca tentadas entram com o mesmo L0 padrão que o
+  BKT usaria na primeira tentativa (ParametrosAdaptativos.calcularL0),
+  não com um valor arbitrário escolhido só pra essa tela - garante que
+  o nível mostrado ANTES de jogar bate com o que o algoritmo real
+  assumiria ao processar a primeira resposta.
+ */
+router.get('/perfis/:userId', async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const { data: perfis, error } = await supabase
+        .from('perfis_aluno')
+        .select('module_id, dominio')
+        .eq('user_id', userId);
+
+    if (error) throw error;
+
+    const dominiosPorUnidade = Object.fromEntries(
+        (perfis || []).map((p) => [p.module_id, p.dominio])
+    );
+
+    const classificacaoPorUnidade = Object.fromEntries(
+        unidades.map((u) => {
+          const L = ParametrosAdaptativos.calcularL0(dominiosPorUnidade[u.id]);
+          return [u.id, Classificador.classificar(L)];
+        })
+    );
+
+    res.json({ dominiosPorUnidade, classificacaoPorUnidade, limiar: FilaDePendencias.LIMIAR_PADRAO });
+  } catch (err) {
+    console.error('[GET /api/licao/perfis/:userId]', err);
+    res.status(500).json({ error: 'Erro ao buscar perfis do aluno.' });
+  }
 });
 
-// Marcar lição como concluída
-router.post('/:id/concluir', async (req, res) => {
-  const { id } = req.params;
-  const { usuario_id } = req.body;
+/*
+  Devolve a próxima Unidade que o aluno deveria estudar: uma pendência
+  (Unidade já tentada e abaixo do limiar) tem prioridade sobre a
+  próxima Unidade nova da sequência - ver FilaDePendencias.js.
+ */
+router.get('/proxima-unidade/:userId', async (req, res) => {
+  try {
+    const { userId } = req.params;
 
-  if (!usuario_id) return res.status(400).json({ error: 'usuario_id obrigatório' });
+    const { data: perfis, error } = await supabase
+        .from('perfis_aluno')
+        .select('module_id, dominio')
+        .eq('user_id', userId);
 
-  const { data, error } = await supabase
-    .from('progresso_usuario')
-    .upsert({
-      usuario_id,
-      licao_id: id,
-      completed: true,
-      progress: 100,
-      updated_at: new Date().toISOString(),
-    }, { onConflict: 'usuario_id,licao_id' })
-    .select()
-    .single();
+    if (error) throw error;
 
-  if (error) return res.status(500).json({ error: error.message });
-  res.json({ success: true, data });
+    const dominiosPorUnidade = Object.fromEntries(
+        (perfis || []).map((p) => [p.module_id, p.dominio])
+    );
+
+    const proxima = FilaDePendencias.decidirProximaUnidade(unidades, dominiosPorUnidade);
+
+    if (!proxima) {
+      return res.json({ unidade: null, motivo: null, mensagem: 'Nada pendente - currículo concluído.' });
+    }
+
+    res.json(proxima);
+  } catch (err) {
+    console.error('[GET /api/licao/proxima-unidade/:userId]', err);
+    res.status(500).json({ error: 'Erro ao calcular a próxima unidade.' });
+  }
 });
 
 module.exports = router;

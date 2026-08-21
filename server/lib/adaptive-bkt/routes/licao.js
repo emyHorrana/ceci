@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const supabaseModule = require('../../supabaseClient');
 const supabase = supabaseModule.supabase || supabaseModule;
-const { BKTAdaptativo, FilaDePendencias } = require('../index');
+const { BKTAdaptativo, FilaDePendencias, Classificador } = require('../index');
 const unidades = require('../data/unidades');
 
 router.post('/responder', async (req, res) => {
@@ -54,15 +54,8 @@ router.post('/responder', async (req, res) => {
 });
 
 /*
-  Devolve o domínio (L do BKT) de TODAS as Unidades já tentadas pelo
-  aluno - { 'U1.1': 0.82, 'U1.2': 0.31, ... }. Unidades nunca tentadas
-  simplesmente não aparecem no objeto.
-
-  Existia só a versão interna disso dentro do handler de
-  /proxima-unidade (pra alimentar a FilaDePendencias) - esta rota
-  expõe o mesmo dado pro front, que precisa da visão completa (pintar
-  cada Unidade da trilha como concluída/pendente/não tentada), não só
-  da próxima única recomendação.
+  Devolve o domínio (L do BKT) e a classificação categórica (Iniciante/Básico/Intermediário/Avançado)
+  de TODAS as Unidades já tentadas pelo aluno.
  */
 router.get('/perfis/:userId', async (req, res) => {
   try {
@@ -79,7 +72,11 @@ router.get('/perfis/:userId', async (req, res) => {
       (perfis || []).map((p) => [p.module_id, p.dominio])
     );
 
-    res.json({ dominiosPorUnidade, limiar: FilaDePendencias.LIMIAR_PADRAO });
+    const classificacaoPorUnidade = Object.fromEntries(
+      (perfis || []).map((p) => [p.module_id, Classificador.classificar(p.dominio)])
+    );
+
+    res.json({ dominiosPorUnidade, classificacaoPorUnidade, limiar: FilaDePendencias.LIMIAR_PADRAO });
   } catch (err) {
     console.error('[GET /api/licao/perfis/:userId]', err);
     res.status(500).json({ error: 'Erro ao buscar perfis do aluno.' });

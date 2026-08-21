@@ -86,7 +86,7 @@ export default function Dashboard() {
     // botão sem destino nenhum.
     : `/mini-modulo/${MODULOS[0].miniModulos[0].id}`;
 
-  const proximaAulaLabel = recomendacao?.motivo === 'reforco' ? 'Reforçar' : 'Próxima aula';
+  const proximaAulaLabel = recomendacao?.motivo === 'reforco' ? 'Praticar' : 'Próxima aula';
 
   // Distingue "ainda não buscou" (recomendacao === undefined) de
   // "buscou e o currículo está inteiro concluído" (recomendacao =

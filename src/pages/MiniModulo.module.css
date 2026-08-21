@@ -85,6 +85,33 @@
   border-radius: var(--radius-pill);
 }
 
+/* Toggle de "modo revisão" (ver MiniModulo.jsx) - mesma forma de
+   pílula do etapaInfo, mas clicável e com um estado 'ativo' bem
+   marcado, já que alterar isso muda o que a pessoa vê. */
+.modoRevisaoBtn {
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid var(--color-border);
+  background: var(--color-white);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  font-family: var(--font-body);
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+
+.modoRevisaoBtn:hover {
+  border-color: var(--color-yellow-deep);
+}
+
+.modoRevisaoBtn[data-ativo] {
+  background: var(--color-yellow-bg);
+  border-color: var(--color-yellow-deep);
+  color: var(--color-yellow-deep);
+}
+
 /* Barra de progresso */
 
 .progressBar {

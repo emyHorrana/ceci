@@ -1,5 +1,7 @@
-/* CECI - MiniModulo
-   Página de estudo de um mini-módulo (teoria) */
+/* ==========================================================================
+   CECI - MiniModulo
+   Página de estudo de um mini-módulo (teoria)
+   ========================================================================== */
 
 /* Página */
 
@@ -357,6 +359,218 @@
   font-size: 1.25rem;
   font-weight: 700;
   margin: 0;
+}
+
+/* ==========================================================================
+   Reformulação com IA da Ceci (Gemini 2.0 Flash)
+   ========================================================================== */
+
+.aiTriggerContainer {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1.5px dashed var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.aiTriggerBtn {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.4rem;
+  background: linear-gradient(135deg, #FFF9E6 0%, #F5EEFD 100%);
+  border: 2px solid #E8DCF8;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  text-align: left;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
+  box-shadow: 0 2px 8px rgba(142, 68, 173, 0.08);
+}
+
+.aiTriggerBtn:hover {
+  transform: translateY(-2px);
+  border-color: #8E44AD;
+  box-shadow: 0 4px 14px rgba(142, 68, 173, 0.16);
+}
+
+.aiTriggerIcon {
+  font-size: 1.6rem;
+  flex-shrink: 0;
+}
+
+.aiTriggerText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.aiTriggerText strong {
+  font-size: 1.05rem;
+  color: #4A154B;
+  font-weight: 700;
+}
+
+.aiTriggerText small {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+}
+
+.aiLinkVerNovamente {
+  align-self: flex-start;
+  background: none;
+  border: none;
+  color: #8E44AD;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  text-decoration: underline;
+  transition: color var(--transition-fast);
+}
+
+.aiLinkVerNovamente:hover {
+  color: #5C2374;
+}
+
+.aiLoadingBox {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: #FAF7FE;
+  border: 1.5px solid #E8DCF8;
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  color: #5C2374;
+  font-weight: 600;
+  animation: pulse 1.8s infinite ease-in-out;
+}
+
+.aiLoadingSpinner {
+  font-size: 1.8rem;
+  animation: floatEmoji 1.5s infinite ease-in-out alternate;
+}
+
+@keyframes floatEmoji {
+  from { transform: translateY(0) scale(1); }
+  to { transform: translateY(-4px) scale(1.1); }
+}
+
+@keyframes pulse {
+  0% { opacity: 0.7; }
+  50% { opacity: 1; }
+  100% { opacity: 0.7; }
+}
+
+.aiErroText {
+  color: #D32F2F;
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+/* Card Principal da Explicação Reformulada */
+.aiCard {
+  background: #FCFAFF;
+  border: 2px solid #8E44AD;
+  border-radius: var(--radius-lg);
+  padding: 1.75rem 2rem;
+  margin-top: 0.5rem;
+  box-shadow: 0 4px 20px rgba(142, 68, 173, 0.12);
+  animation: cardIn 0.35s ease-out both;
+}
+
+.aiHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 1rem;
+  margin-bottom: 1.25rem;
+  border-bottom: 1.5px solid #E8DCF8;
+}
+
+.aiHeaderTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #4A154B;
+  font-size: 1.15rem;
+}
+
+.aiIcon {
+  font-size: 1.3rem;
+}
+
+.aiBadge {
+  background: #E8DCF8;
+  color: #5C2374;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+}
+
+.aiConteudo {
+  font-size: 1.0625rem;
+  line-height: 1.8;
+  color: #2D2D2D;
+}
+
+.aiConteudo p {
+  margin: 0 0 1rem;
+}
+
+.aiConteudo p:last-child {
+  margin-bottom: 0;
+}
+
+.aiConteudo strong {
+  color: #8E44AD;
+  font-weight: 700;
+}
+
+.aiActions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.75rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid #E8DCF8;
+  flex-wrap: wrap;
+}
+
+.aiBtnSecondary,
+.aiBtnOutra {
+  padding: 8px 16px;
+  border-radius: var(--radius-pill);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font-body);
+  transition: all var(--transition-fast);
+}
+
+.aiBtnSecondary {
+  background: var(--color-white);
+  border: 1.5px solid var(--color-border);
+  color: var(--color-text-secondary);
+}
+
+.aiBtnSecondary:hover {
+  border-color: #8E44AD;
+  color: #8E44AD;
+}
+
+.aiBtnOutra {
+  background: #F4EBFB;
+  border: 1.5px solid #8E44AD;
+  color: #5C2374;
+}
+
+.aiBtnOutra:hover {
+  background: #8E44AD;
+  color: var(--color-white);
 }
 
 /* Responsivo */

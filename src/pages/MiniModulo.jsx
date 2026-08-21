@@ -16,6 +16,7 @@ import { getUnidadeByMiniModulo } from '../data/unidades';
 import { UserContext } from '../context/UserContext';
 import { ProgressContext } from '../context/ProgressContext';
 import { getPerfisAluno } from '../services/algorithmService';
+import { reformularExplicacao } from '../services/aiService';
 import { ButtonPrimary } from '../components/Buttons/ButtonPrimary';
 import { ButtonOutline } from '../components/Buttons/ButtonOutline';
 import { GameMoment } from '../components/Game/GameMoment';
@@ -117,6 +118,12 @@ export default function MiniModulo() {
   // decide quais etapas de jogo aparecem (ver DIFICULDADES_POR_NIVEL
   // acima). Busca uma vez por Unidade/usuário, não por etapa.
   const [classificacaoPorUnidade, setClassificacaoPorUnidade] = useState({});
+
+  // Reformulação de explicações com IA (Gemini 2.0 Flash)
+  const [explicacoesIA, setExplicacoesIA] = useState({});
+  const [mostrarExplicacaoIA, setMostrarExplicacaoIA] = useState({});
+  const [carregandoIA, setCarregandoIA] = useState(false);
+  const [erroIA, setErroIA] = useState(null);
 
   // "Modo revisão": bypass do filtro por nível, mostra TODAS as
   // etapas de jogo independente da dificuldade - pra quem constrói o
@@ -280,6 +287,42 @@ export default function MiniModulo() {
     botaoConcluirLabel = 'Ir para o Desafio da Unidade 🏁';
   }
 
+  const handlePedirExplicacaoIA = async (forcarNovo = false) => {
+    if (!etapa || ehJogo) return;
+    if (!forcarNovo && explicacoesIA[indiceSeguro]) {
+      setMostrarExplicacaoIA((prev) => ({ ...prev, [indiceSeguro]: true }));
+      return;
+    }
+
+    setCarregandoIA(true);
+    setErroIA(null);
+
+    try {
+      const res = await reformularExplicacao({
+        contexto: etapa.conteudo,
+        titulo: `${modulo?.titulo || ''} - ${etapa?.titulo || ''}`,
+        nivel,
+        motivo: 'duvida',
+      });
+
+      if (res?.explicacao) {
+        setExplicacoesIA((prev) => ({ ...prev, [indiceSeguro]: res.explicacao }));
+        setMostrarExplicacaoIA((prev) => ({ ...prev, [indiceSeguro]: true }));
+      } else {
+        throw new Error('Nenhuma explicação gerada');
+      }
+    } catch (err) {
+      console.error('Erro ao solicitar reformulação com IA:', err);
+      setErroIA('Não foi possível gerar uma nova explicação no momento. Tente novamente mais tarde.');
+    } finally {
+      setCarregandoIA(false);
+    }
+  };
+
+  const handleVerOriginal = () => {
+    setMostrarExplicacaoIA((prev) => ({ ...prev, [indiceSeguro]: false }));
+  };
+
   const concluir = async () => {
     if (user?.id && updateProgress) {
       try {
@@ -373,11 +416,84 @@ export default function MiniModulo() {
                 <div key={indiceSeguro} className={styles.card}>
                   <h1 className={styles.etapaTitulo}>{etapa.titulo}</h1>
 
-                  <div
-                      className={styles.etapaConteudo}
-                      /* o conteúdo é HTML controlado definido em modulos.js */
-                      dangerouslySetInnerHTML={{ __html: etapa.conteudo }}
-                  />
+                  {mostrarExplicacaoIA[indiceSeguro] && explicacoesIA[indiceSeguro] ? (
+                    <div className={styles.aiCard}>
+                      <div className={styles.aiHeader}>
+                        <div className={styles.aiHeaderTitle}>
+                          <span className={styles.aiIcon}>✨</span>
+                          <strong>Explicação com a Ceci</strong>
+                        </div>
+                        <span className={styles.aiBadge}>Exemplo adaptado</span>
+                      </div>
+
+                      <div
+                        className={styles.aiConteudo}
+                        dangerouslySetInnerHTML={{ __html: explicacoesIA[indiceSeguro] }}
+                      />
+
+                      <div className={styles.aiActions}>
+                        <button
+                          type="button"
+                          className={styles.aiBtnSecondary}
+                          onClick={handleVerOriginal}
+                        >
+                          📖 Ver texto do curso
+                        </button>
+                        <button
+                          type="button"
+                          className={styles.aiBtnOutra}
+                          onClick={() => handlePedirExplicacaoIA(true)}
+                          disabled={carregandoIA}
+                        >
+                          {carregandoIA ? 'Pensando... 💭' : '🔄 Outro exemplo'}
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <div
+                        className={styles.etapaConteudo}
+                        /* o conteúdo é HTML controlado definido em modulos.js */
+                        dangerouslySetInnerHTML={{ __html: etapa.conteudo }}
+                      />
+
+                      {carregandoIA ? (
+                        <div className={styles.aiLoadingBox}>
+                          <span className={styles.aiLoadingSpinner}>💭</span>
+                          <p>A Ceci está preparando um exemplo bem simples para você...</p>
+                        </div>
+                      ) : (
+                        <div className={styles.aiTriggerContainer}>
+                          {erroIA && (
+                            <p className={styles.aiErroText}>
+                              {erroIA}
+                            </p>
+                          )}
+                          <button
+                            type="button"
+                            className={styles.aiTriggerBtn}
+                            onClick={() => handlePedirExplicacaoIA(false)}
+                          >
+                            <span className={styles.aiTriggerIcon}>✨</span>
+                            <div className={styles.aiTriggerText}>
+                              <strong>Ceci, me explica de outro jeito?</strong>
+                              <small>Clique para ver uma analogia simples e prática do dia a dia</small>
+                            </div>
+                          </button>
+
+                          {explicacoesIA[indiceSeguro] && (
+                            <button
+                              type="button"
+                              className={styles.aiLinkVerNovamente}
+                              onClick={() => setMostrarExplicacaoIA((prev) => ({ ...prev, [indiceSeguro]: true }))}
+                            >
+                              Ver a explicação que a Ceci preparou antes ✨
+                            </button>
+                          )}
+                        </div>
+                      )}
+                    </>
+                  )}
                 </div>
             )}
           </section>

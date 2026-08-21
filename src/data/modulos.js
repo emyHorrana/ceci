@@ -2,10 +2,7 @@
  * modulos.js
  * Fonte da verdade local para a estrutura de módulos e mini-módulos do CECI.
  * Não precisa estar no banco de dados - é conteúdo estático do currículo.
- *
- * Módulo 1 (Mouse), Módulo 2 (Teclado) e Módulo 3 (Hardware e Periféricos).
- * "Pergunta para refletir" virou o campo `dica` (fala da Ceci) - reforça a
- * conexão com o que a pessoa já vive fora do computador, sem soar como teste.
+ * Novo: campo `dificuldade: 'demonstracao' | 'padrao' | 'desafio'` em cada etapa tipo 'jogo' 
  *
  * Estrutura:
  *  modulos[]
@@ -15,183 +12,256 @@
  */
 
 export const MODULOS = [
-  {
-    id: '1',
-    emoji: '🖱️',
-    titulo: 'Uso do Mouse',
-    descricao: 'Aprenda a reconhecer, segurar e usar o mouse com confiança.',
-    miniModulos: [
+{
+  id: '1',
+  emoji: '🖱️',
+  titulo: 'Uso do Mouse',
+  descricao: 'Aprenda a reconhecer, segurar e usar o mouse com confiança.',
+  miniModulos: [
     {
       id: '1-1',
       titulo: 'Reconhecendo o mouse',
       etapas: [
-      {
-        titulo: 'Bem-vindo(a) ao mouse',
-        conteudo: `<p>Aqui vamos falar sobre um instrumento simples, mas muito importante para quem está começando a usar o computador: o <strong>mouse</strong>.</p> <p>Talvez você já tenha usado um mouse antes, ainda que rapidamente, ou talvez esta seja a primeira vez que vai se aproximar dele com atenção. De qualquer forma, não se preocupe: cada movimento novo, no início, exige um pouco de prática - assim como aprender a usar um controle remoto novo ou uma máquina de lavar diferente da que você já conhecia. Com o tempo, o gesto se torna natural.</p> <p>Vamos passo a passo. Sinta-se à vontade para repetir cada parte quantas vezes precisar.</p>`,
-        dica: 'Vamos com calma - não existe pressa nesse aprendizado. 💛',
-      },
-      {
-        titulo: 'O que é o mouse',
-        conteudo: `<p>O mouse é aquele pequeno objeto que fica ao lado do teclado e que você segura com uma das mãos para "conversar" com o computador. Pense nele como um ponteiro: por meio dele, você indica ao computador o que deseja fazer, aponta para o que quer abrir ou selecionar.</p> <p>Existem também os <strong>touchpads</strong>, que são as superfícies planas encontradas em notebooks, onde se usa o dedo em vez do mouse. O princípio é parecido, mas aqui vamos focar no mouse tradicional, aquele que se segura com a mão.</p>`,
-      },
-      {
-        titulo: 'Como segurar o mouse',
-        conteudo: `<p>Apoie a palma da mão suavemente sobre o mouse, deixando os dedos levemente curvados sobre os botões - sem apertar. Pense em como você seguraria um controle remoto: com firmeza o suficiente para não deixar cair, mas sem tensão.</p> <p>Se sua mão ficar cansada ou dolorida, é sinal de que está segurando com força demais. Relaxe os ombros e o punho: essa postura mais tranquila facilita o controle e evita desconforto.</p>`,
-        dica: 'Você já usou algum aparelho com botões, como um controle de TV ou um caixa eletrônico? O que foi mais fácil ou mais difícil na primeira vez?',
-      },
+        {
+          titulo: 'Bem-vindo(a) ao mouse',
+          conteudo: `<p>Aqui vamos falar sobre um instrumento simples, mas muito importante para quem está começando a usar o computador: o <strong>mouse</strong>.</p> <p>Talvez você já tenha usado um mouse antes, ainda que rapidamente, ou talvez esta seja a primeira vez que vai se aproximar dele com atenção. De qualquer forma, não se preocupe: cada movimento novo, no início, exige um pouco de prática - assim como aprender a usar um controle remoto novo ou uma máquina de lavar diferente da que você já conhecia. Com o tempo, o gesto se torna natural.</p> <p>Vamos passo a passo. Sinta-se à vontade para repetir cada parte quantas vezes precisar.</p>`,
+          dica: 'Vamos com calma - não existe pressa nesse aprendizado. 💛',
+        },
+        {
+          titulo: 'O que é o mouse',
+          conteudo: `<p>O mouse é aquele pequeno objeto que fica ao lado do teclado e que você segura com uma das mãos para "conversar" com o computador. Pense nele como um ponteiro: por meio dele, você indica ao computador o que deseja fazer, aponta para o que quer abrir ou selecionar.</p> <p>Existem também os <strong>touchpads</strong>, que são as superfícies planas encontradas em notebooks, onde se usa o dedo em vez do mouse. O princípio é parecido, mas aqui vamos focar no mouse tradicional, aquele que se segura com a mão.</p>`,
+        },
+        {
+          titulo: 'Como segurar o mouse',
+          conteudo: `<p>Apoie a palma da mão suavemente sobre o mouse, deixando os dedos levemente curvados sobre os botões - sem apertar. Pense em como você seguraria um controle remoto: com firmeza o suficiente para não deixar cair, mas sem tensão.</p> <p>Se sua mão ficar cansada ou dolorida, é sinal de que está segurando com força demais. Relaxe os ombros e o punho: essa postura mais tranquila facilita o controle e evita desconforto.</p>`,
+          dica: 'Você já usou algum aparelho com botões, como um controle de TV ou um caixa eletrônico? O que foi mais fácil ou mais difícil na primeira vez?',
+        },
 
-      // Botão esquerdo: texto + jogo logo em seguida
-      {
-        titulo: 'O botão esquerdo',
-        conteudo: `<p>O <strong>botão esquerdo</strong> é o mais usado de todos. Fica sob o dedo indicador (para quem é destro) e serve para selecionar, abrir e confirmar ações.</p>`,
-      },
-      {
-        tipo: 'jogo',
-        titulo: 'Encontre o botão esquerdo',
-        instructions: 'Clique no botão esquerdo do mouse na ilustração abaixo.',
-        jogo: 'mouse',
-        jogoProps: { alvoCorreto: 'esquerdo' },
-      },
+        // Botão esquerdo: texto + jogo logo em seguida
+        {
+          titulo: 'O botão esquerdo',
+          conteudo: `<p>O <strong>botão esquerdo</strong> é o mais usado de todos. Fica sob o dedo indicador (para quem é destro) e serve para selecionar, abrir e confirmar ações.</p>`,
+        },
+        {
+          tipo: 'jogo',
+          titulo: 'Encontre o botão esquerdo',
+          instructions: 'Clique no botão esquerdo do mouse na ilustração abaixo.',
+          jogo: 'mouse',
+          dificuldade: 'padrao', // mostra os 3 botões clicáveis - os outros 2 já são distrator real
+          jogoProps: { alvoCorreto: 'esquerdo' },
+        },
 
-      // Botão direito: texto + jogo logo em seguida
-      {
-        titulo: 'O botão direito',
-        conteudo: `<p>O <strong>botão direito</strong> abre um menu com opções extras sobre o que você clicou - é uma forma do computador dizer "aqui estão outras coisas que você pode fazer com isso".</p>`,
-      },
-      {
-        tipo: 'jogo',
-        titulo: 'Encontre o botão direito',
-        instructions: 'Clique no botão direito do mouse na ilustração abaixo.',
-        jogo: 'mouse',
-        jogoProps: { alvoCorreto: 'direito' },
-      },
+        // Botão direito: texto + jogo logo em seguida
+        {
+          titulo: 'O botão direito',
+          conteudo: `<p>O <strong>botão direito</strong> abre um menu com opções extras sobre o que você clicou - é uma forma do computador dizer "aqui estão outras coisas que você pode fazer com isso".</p>`,
+        },
+        {
+          tipo: 'jogo',
+          titulo: 'Encontre o botão direito',
+          instructions: 'Clique no botão direito do mouse na ilustração abaixo.',
+          jogo: 'mouse',
+          dificuldade: 'padrao',
+          jogoProps: { alvoCorreto: 'direito' },
+        },
 
-      // Roda: texto + jogo logo em seguida
-      {
-        titulo: 'A roda (scroll)',
-        conteudo: `<p>A <strong>roda</strong> (também chamada de scroll) fica entre os dois botões e serve para rolar a tela para cima ou para baixo, revelando o que está fora da tela no momento.</p>`,
-      },
-      {
-        tipo: 'jogo',
-        titulo: 'Encontre a roda',
-        instructions: 'Clique na roda (scroll) do mouse na ilustração abaixo.',
-        jogo: 'mouse',
-        jogoProps: { alvoCorreto: 'roda' },
-      },
+        // Roda: texto + jogo logo em seguida
+        {
+          titulo: 'A roda (scroll)',
+          conteudo: `<p>A <strong>roda</strong> (também chamada de scroll) fica entre os dois botões e serve para rolar a tela para cima ou para baixo, revelando o que está fora da tela no momento.</p>`,
+        },
+        {
+          tipo: 'jogo',
+          titulo: 'Encontre a roda',
+          instructions: 'Clique na roda (scroll) do mouse na ilustração abaixo.',
+          jogo: 'mouse',
+          dificuldade: 'padrao',
+          jogoProps: { alvoCorreto: 'roda' },
+        },
+
+        // NOVO - fechava sem nenhum `desafio`: revisão dos 3 juntos,
+        // sem a dica visual de qual parte acabou de ser explicada.
+        // Reaproveita o jogo 'quiz' (já registrado), sem componente novo.
+        {
+          tipo: 'jogo',
+          titulo: 'Revisão: os 3 botões',
+          instructions: 'Escolha a resposta certa.',
+          jogo: 'quiz',
+          dificuldade: 'desafio',
+          jogoProps: {
+            pergunta: 'Você clicou com o botão direito num ícone e apareceu um menu com mais opções. Isso é normal?',
+            alternativas: [
+              { id: 'sim', texto: 'Sim, é exatamente pra isso que o botão direito serve', correta: true },
+              { id: 'nao', texto: 'Não, isso é um erro do computador', correta: false },
+              { id: 'reiniciar', texto: 'Não, é melhor reiniciar o computador', correta: false },
+            ],
+          },
+        },
       ],
     },
-      {
-        id: '1-2',
-        titulo: 'Movimento do cursor',
-        etapas: [
-          {
-            titulo: 'O cursor: seu dedo virtual',
-            conteudo: `<p>Quando você move o mouse sobre a mesa, uma pequena seta se move na tela do computador. Essa seta é chamada de <strong>cursor</strong>, e ela é o seu "dedo virtual" - é por meio dela que você aponta para tudo o que deseja fazer.</p>
+    {
+      id: '1-2',
+      titulo: 'Movimento do cursor',
+      etapas: [
+        {
+          titulo: 'O cursor: seu dedo virtual',
+          conteudo: `<p>Quando você move o mouse sobre a mesa, uma pequena seta se move na tela do computador. Essa seta é chamada de <strong>cursor</strong>, e ela é o seu "dedo virtual" - é por meio dela que você aponta para tudo o que deseja fazer.</p>
 <ul>
   <li>Se você mover o mouse para cima, o cursor sobe.</li>
   <li>Se mover para baixo, o cursor desce.</li>
   <li>Para a esquerda, o cursor vai para a esquerda da tela.</li>
   <li>Para a direita, o cursor vai para a direita.</li>
 </ul>`,
-          },
-          {
-            titulo: 'Ajustando o ritmo',
-            conteudo: `<p>No começo, é comum que a mão queira ir mais rápido do que o cursor consegue acompanhar, ou o contrário. Isso é absolutamente normal - é uma questão de costume, parecida com aprender a dosar a força ao mexer em uma torneira nova até descobrir o ponto certo.</p>
+        },
+        {
+          titulo: 'Ajustando o ritmo',
+          conteudo: `<p>No começo, é comum que a mão queira ir mais rápido do que o cursor consegue acompanhar, ou o contrário. Isso é absolutamente normal - é uma questão de costume, parecida com aprender a dosar a força ao mexer em uma torneira nova até descobrir o ponto certo.</p>
 <p>Uma dica valiosa: mova o mouse devagar no início. Você pode até levantar o mouse do lugar e reposicioná-lo no centro da mesa se sentir que "ficou sem espaço" - isso não afeta nada no computador, só o cursor não se move enquanto o mouse está no ar.</p>`,
-            dica: 'Pensando em apontar para algo numa prateleira ou indicar um lugar num mapa: você percebe alguma semelhança com apontar o cursor na tela?',
-          },
-          {
-            titulo: 'O clique simples',
-            conteudo: `<p>Depois de conseguir mover o cursor com tranquilidade, vem o próximo passo: parar o cursor exatamente onde você quer e fazer um <strong>clique simples</strong>, apertando levemente o botão esquerdo uma única vez.</p>
+          dica: 'Pensando em apontar para algo numa prateleira ou indicar um lugar num mapa: você percebe alguma semelhança com apontar o cursor na tela?',
+        },
+        {
+          titulo: 'O clique simples',
+          conteudo: `<p>Depois de conseguir mover o cursor com tranquilidade, vem o próximo passo: parar o cursor exatamente onde você quer e fazer um <strong>clique simples</strong>, apertando levemente o botão esquerdo uma única vez.</p>
 <p>É esse clique que você vai usar para selecionar algo na tela ou confirmar uma escolha.</p>`,
+        },
+        {
+          tipo: 'jogo',
+          titulo: 'Agora é sua vez!',
+          instructions: 'Clique no botão abaixo com o botão esquerdo do mouse.',
+          jogo: 'clicar',
+          dificuldade: 'demonstracao', // 1 alvo só, zero distrator
+          jogoProps: {
+            alvos: [{ id: 'aqui', label: '👆 Clique aqui', correto: true }],
           },
-          {
-            tipo: 'jogo',
-            titulo: 'Agora é sua vez!',
-            instructions: 'Clique no botão abaixo com o botão esquerdo do mouse.',
-            jogo: 'clicar',
-            jogoProps: {
-              alvos: [{ id: 'aqui', label: '👆 Clique aqui', correto: true }],
-            },
+        },
+        {
+          tipo: 'jogo',
+          titulo: 'Mais uma vez, com atenção',
+          instructions: 'Dessa vez tem mais de uma opção na tela - clique só na certa.',
+          jogo: 'clicar',
+          dificuldade: 'padrao',
+          jogoProps: {
+            layout: 'grade',
+            alvos: [
+              { id: 'errado', label: '👆 Não é aqui', correto: false },
+              { id: 'certo', label: '👆 Clique aqui', correto: true },
+            ],
           },
-          {
-            tipo: 'jogo',
-            titulo: 'Mais uma vez, com atenção',
-            instructions: 'Dessa vez tem mais de uma opção na tela - clique só na certa.',
-            jogo: 'clicar',
-            jogoProps: {
-              layout: 'grade',
-              alvos: [
-                { id: 'errado', label: '👆 Não é aqui', correto: false },
-                { id: 'certo', label: '👆 Clique aqui', correto: true },
-              ],
-            },
+        },
+        // NOVO - faltava um `desafio`: mesma mecânica, mais distratores.
+        {
+          tipo: 'jogo',
+          titulo: 'Com mais opções na tela',
+          instructions: 'Agora tem 4 opções - clique só na certa, sem demora.',
+          jogo: 'clicar',
+          dificuldade: 'desafio',
+          jogoProps: {
+            layout: 'grade',
+            alvos: [
+              { id: 'errado1', label: '👆 Não é aqui', correto: false },
+              { id: 'errado2', label: '👆 Também não', correto: false },
+              { id: 'certo', label: '👆 Clique aqui', correto: true },
+              { id: 'errado3', label: '👆 Nem aqui', correto: false },
+            ],
           },
-        ],
-      },
-      {
-        id: '1-3',
-        titulo: 'Duplo clique',
-        etapas: [
-          {
-            titulo: 'O que é o duplo clique',
-            conteudo: `<p>O duplo clique é simplesmente dois cliques rápidos, um logo em seguida do outro, feitos com o botão esquerdo, sem mover o mouse entre eles.</p>
+        },
+      ],
+    },
+    {
+      id: '1-3',
+      titulo: 'Duplo clique',
+      etapas: [
+        {
+          titulo: 'O que é o duplo clique',
+          conteudo: `<p>O duplo clique é simplesmente dois cliques rápidos, um logo em seguida do outro, feitos com o botão esquerdo, sem mover o mouse entre eles.</p>
 <p>Ele é usado, por exemplo, para abrir arquivos, pastas ou programas - é como "bater duas vezes na porta" para avisar que você quer entrar.</p>`,
-          },
-          {
-            titulo: 'Pegando o ritmo',
-            conteudo: `<p>O desafio, no início, costuma ser o ritmo: se os cliques forem devagar demais, o computador entende como dois cliques separados, e não como um duplo clique. Se vier com muita força ou muito rápido, pode acontecer de sair do lugar.</p>
+        },
+        {
+          titulo: 'Pegando o ritmo',
+          conteudo: `<p>O desafio, no início, costuma ser o ritmo: se os cliques forem devagar demais, o computador entende como dois cliques separados, e não como um duplo clique. Se vier com muita força ou muito rápido, pode acontecer de sair do lugar.</p>
 <p>Não existe problema em tentar novamente - praticar esse ritmo é como aprender a bater palmas em um compasso constante: no começo exige atenção, depois vem naturalmente.</p>`,
-            dica: 'Mantenha a mão parada sobre o mouse durante os dois cliques, sem deslizar. Isso ajuda bastante a acertar o duplo clique!',
+          dica: 'Mantenha a mão parada sobre o mouse durante os dois cliques, sem deslizar. Isso ajuda bastante a acertar o duplo clique!',
+        },
+        {
+          tipo: 'jogo',
+          titulo: 'Pratique o duplo clique',
+          instructions: 'Dê um duplo clique (dois cliques rápidos, sem mover o mouse) no ícone abaixo.',
+          jogo: 'clicar',
+          dificuldade: 'demonstracao', // 1 alvo só, zero distrator
+          jogoProps: {
+            duploClique: true,
+            alvos: [{ id: 'pasta', label: '📁 Duplo clique aqui', correto: true }],
           },
-          {
-            tipo: 'jogo',
-            titulo: 'Pratique o duplo clique',
-            instructions: 'Dê um duplo clique (dois cliques rápidos, sem mover o mouse) no ícone abaixo.',
-            jogo: 'clicar',
-            jogoProps: {
-              duploClique: true,
-              alvos: [{ id: 'pasta', label: '📁 Duplo clique aqui', correto: true }],
-            },
+        },
+        // NOVO - faltava `padrao`: agora tem um ícone perto que não é
+        // o alvo, pra reforçar que é preciso mirar certo, não só
+        // acertar o ritmo do duplo clique.
+        {
+          tipo: 'jogo',
+          titulo: 'Duplo clique no ícone certo',
+          instructions: 'Dê um duplo clique só no ícone da pasta - não no arquivo ao lado.',
+          jogo: 'clicar',
+          dificuldade: 'padrao',
+          jogoProps: {
+            duploClique: true,
+            layout: 'grade',
+            alvos: [
+              { id: 'arquivo', label: '📄 Arquivo', correto: false },
+              { id: 'pasta', label: '📁 Duplo clique aqui', correto: true },
+            ],
           },
-        ],
-      },
-      {
-        id: '1-4',
-        titulo: 'Scroll (a rodinha do mouse)',
-        etapas: [
-          {
-            titulo: 'Rolando a página',
-            conteudo: `<p>O scroll é a rodinha que fica entre os dois botões do mouse. Ela serve para rolar a página na tela, revelando conteúdos que estão acima ou abaixo do que você está vendo no momento - como quando você folheia as páginas de uma revista para ver o que vem a seguir.</p>
+        },
+      ],
+    },
+    {
+      id: '1-4',
+      titulo: 'Scroll (a rodinha do mouse)',
+      etapas: [
+        {
+          titulo: 'Rolando a página',
+          conteudo: `<p>O scroll é a rodinha que fica entre os dois botões do mouse. Ela serve para rolar a página na tela, revelando conteúdos que estão acima ou abaixo do que você está vendo no momento - como quando você folheia as páginas de uma revista para ver o que vem a seguir.</p>
 <ul>
   <li>Girar a roda para baixo faz a página rolar para baixo, mostrando o conteúdo que estava mais abaixo.</li>
   <li>Girar a roda para cima faz a página voltar, mostrando o que estava mais acima.</li>
 </ul>`,
-          },
-          {
-            titulo: 'Controlando a velocidade',
-            conteudo: `<p>Você pode controlar a velocidade da rolagem: gire devagar para ler com calma, ou um pouco mais rápido quando quiser passar por um conteúdo já conhecido.</p>
+        },
+        {
+          titulo: 'Controlando a velocidade',
+          conteudo: `<p>Você pode controlar a velocidade da rolagem: gire devagar para ler com calma, ou um pouco mais rápido quando quiser passar por um conteúdo já conhecido.</p>
 <p>O importante é girar aos poucos e observar como a tela responde, até sentir confiança para parar exatamente no ponto que deseja ler.</p>`,
-            dica: 'Essa ação de "rolar" pra ver mais conteúdo lembra alguma outra situação da sua vida, como desenrolar um tecido ou passar as páginas de um álbum de fotos?',
+          dica: 'Essa ação de "rolar" pra ver mais conteúdo lembra alguma outra situação da sua vida, como desenrolar um tecido ou passar as páginas de um álbum de fotos?',
+        },
+        // NOVO - faltava `demonstracao`: zona bem larga antes da etapa
+        // que já existia (que já exige uma precisão de padrão).
+        {
+          tipo: 'jogo',
+          titulo: 'Primeiro contato com o scroll',
+          instructions: 'Role a área abaixo até parar em qualquer ponto dentro da faixa marcada - ela é bem larga.',
+          jogo: 'scroll',
+          dificuldade: 'demonstracao',
+          jogoProps: {
+            zonaAlvo: { inicio: 20, fim: 80 },
           },
-          {
-            tipo: 'jogo',
-            titulo: 'Pratique o scroll',
-            instructions: 'Role a área abaixo (com a rodinha do mouse) até parar dentro da faixa marcada.',
-            jogo: 'scroll',
-            jogoProps: {
-              zonaAlvo: { inicio: 47, fim: 57 },
-            },
+        },
+        {
+          tipo: 'jogo',
+          titulo: 'Pratique o scroll',
+          instructions: 'Role a área abaixo (com a rodinha do mouse) até parar dentro da faixa marcada.',
+          jogo: 'scroll',
+          dificuldade: 'padrao',
+          jogoProps: {
+            zonaAlvo: { inicio: 47, fim: 57 },
           },
-        ],
-      },
-      {
-        id: '1-5',
-        titulo: 'Arrastar e soltar',
-        etapas: [
-          {
-            titulo: 'Como arrastar e soltar',
-            conteudo: `<p>Arrastar e soltar é uma ação um pouco mais completa, que reúne tudo o que vimos até aqui:</p>
+        },
+      ],
+    },
+    {
+      id: '1-5',
+      titulo: 'Arrastar e soltar',
+      etapas: [
+        {
+          titulo: 'Como arrastar e soltar',
+          conteudo: `<p>Arrastar e soltar é uma ação um pouco mais completa, que reúne tudo o que vimos até aqui:</p>
 <ol>
   <li>Você posiciona o cursor sobre um item na tela (um ícone, por exemplo).</li>
   <li>Clica e segura o botão esquerdo, sem soltar.</li>
@@ -199,101 +269,106 @@ export const MODULOS = [
   <li>Solta o botão no lugar certo, "largando" o item ali.</li>
 </ol>
 <p>É parecido com pegar um objeto da mesa e carregá-lo até outro lugar antes de soltá-lo: enquanto você o segura, ele se move junto com sua mão; quando você abre a mão, ele fica onde foi deixado.</p>`,
+        },
+        {
+          titulo: 'Pra que serve',
+          conteudo: `<p>Esse recurso é útil, por exemplo, para mover ícones de lugar na tela ou para selecionar um trecho de texto (arrastando o cursor sobre as palavras que você deseja marcar).</p>`,
+        },
+        {
+          titulo: 'Atenção ao soltar',
+          conteudo: `<p>O ponto de maior atenção aqui é não soltar o botão antes da hora. Se isso acontecer, o item cai em um lugar diferente do pretendido - mas não é motivo para preocupação, pois basta repetir o processo e arrastá-lo novamente para o lugar certo.</p>`,
+          dica: 'Você consegue pensar numa tarefa manual do dia a dia - como carregar uma xícara até a pia - parecida com o movimento de "segurar e soltar"?',
+        },
+        {
+          tipo: 'jogo',
+          titulo: 'Pratique arrastar e soltar',
+          instructions: 'Arraste o documento abaixo até a pasta.',
+          jogo: 'arrastar',
+          dificuldade: 'demonstracao',
+          jogoProps: {
+            item: { id: 'documento', label: '📄 Documento' },
+            zonas: [{ id: 'pasta', label: '📁 Solte aqui', correta: true }],
           },
-          {
-            titulo: 'Pra que serve',
-            conteudo: `<p>Esse recurso é útil, por exemplo, para mover ícones de lugar na tela ou para selecionar um trecho de texto (arrastando o cursor sobre as palavras que você deseja marcar).</p>`,
+        },
+        {
+          tipo: 'jogo',
+          titulo: 'Mais uma vez',
+          instructions: 'Agora arraste a foto até a lixeira, pra apagá-la.',
+          jogo: 'arrastar',
+          dificuldade: 'demonstracao',
+          jogoProps: {
+            item: { id: 'foto', label: '🖼️ Foto' },
+            zonas: [{ id: 'lixeira', label: '🗑️ Lixeira', correta: true }],
           },
-          {
-            titulo: 'Atenção ao soltar',
-            conteudo: `<p>O ponto de maior atenção aqui é não soltar o botão antes da hora. Se isso acontecer, o item cai em um lugar diferente do pretendido - mas não é motivo para preocupação, pois basta repetir o processo e arrastá-lo novamente para o lugar certo.</p>`,
-            dica: 'Você consegue pensar numa tarefa manual do dia a dia - como carregar uma xícara até a pia - parecida com o movimento de "segurar e soltar"?',
+        },
+        {
+          tipo: 'jogo',
+          titulo: 'Com atenção: tem duas opções agora',
+          instructions: 'Arraste a música até a lixeira - repare que agora tem mais de um lugar na tela.',
+          jogo: 'arrastar',
+          dificuldade: 'padrao',
+          jogoProps: {
+            item: { id: 'musica', label: '🎵 Música' },
+            zonas: [
+              { id: 'pasta', label: '📁 Pasta', correta: false },
+              { id: 'lixeira', label: '🗑️ Lixeira', correta: true },
+            ],
           },
-          {
-            tipo: 'jogo',
-            titulo: 'Pratique arrastar e soltar',
-            instructions: 'Arraste o documento abaixo até a pasta.',
-            jogo: 'arrastar',
-            jogoProps: {
-              item: { id: 'documento', label: '📄 Documento' },
-              zonas: [{ id: 'pasta', label: '📁 Solte aqui', correta: true }],
-            },
-          },
-          {
-            tipo: 'jogo',
-            titulo: 'Mais uma vez',
-            instructions: 'Agora arraste a foto até a lixeira, pra apagá-la.',
-            jogo: 'arrastar',
-            jogoProps: {
-              item: { id: 'foto', label: '🖼️ Foto' },
-              zonas: [{ id: 'lixeira', label: '🗑️ Lixeira', correta: true }],
-            },
-          },
-          {
-            tipo: 'jogo',
-            titulo: 'Com atenção: tem duas opções agora',
-            instructions: 'Arraste a música até a lixeira - repare que agora tem mais de um lugar na tela.',
-            jogo: 'arrastar',
-            jogoProps: {
-              item: { id: 'musica', label: '🎵 Música' },
-              zonas: [
-                { id: 'pasta', label: '📁 Pasta', correta: false },
-                { id: 'lixeira', label: '🗑️ Lixeira', correta: true },
-              ],
-            },
-          },
-          {
-            titulo: 'Selecionando vários itens ao mesmo tempo',
-            conteudo: `<p>Às vezes você quer mover, copiar ou apagar vários arquivos de uma vez, em vez de um por um. Uma forma simples de fazer isso: clique numa área vazia perto dos arquivos e arraste - como se estivesse "jogando uma rede" por cima dos itens que quer pegar. Tudo que a rede tocar fica selecionado.</p>
+        },
+        {
+          titulo: 'Selecionando vários itens ao mesmo tempo',
+          conteudo: `<p>Às vezes você quer mover, copiar ou apagar vários arquivos de uma vez, em vez de um por um. Uma forma simples de fazer isso: clique numa área vazia perto dos arquivos e arraste - como se estivesse "jogando uma rede" por cima dos itens que quer pegar. Tudo que a rede tocar fica selecionado.</p>
 <p>Depois de selecionados, qualquer ação que você fizer (arrastar pra lixeira, copiar, etc.) vale para todos de uma vez.</p>`,
-            dica: 'Existe também outra forma, segurando uma tecla (geralmente Ctrl) e clicando em cada arquivo individualmente - mas arrastar costuma ser mais rápido quando os itens estão pertinho um do outro.',
+          dica: 'Existe também outra forma, segurando uma tecla (geralmente Ctrl) e clicando em cada arquivo individualmente - mas arrastar costuma ser mais rápido quando os itens estão pertinho um do outro.',
+        },
+        {
+          tipo: 'jogo',
+          titulo: 'Selecione as fotos',
+          instructions: 'Arraste sobre as 3 fotos (sem incluir os documentos) para selecioná-las todas de uma vez.',
+          jogo: 'selecionar-arrastando',
+          dificuldade: 'desafio',
+          jogoProps: {
+            modo: 'arquivos',
+            itens: [
+              { id: 'doc1', rotulo: '📄 Documento', alvoSelecao: false },
+              { id: 'foto1', rotulo: '🖼️ Foto', alvoSelecao: true },
+              { id: 'foto2', rotulo: '🖼️ Foto', alvoSelecao: true },
+              { id: 'foto3', rotulo: '🖼️ Foto', alvoSelecao: true },
+              { id: 'doc2', rotulo: '📄 Documento', alvoSelecao: false },
+            ],
           },
-          {
-            tipo: 'jogo',
-            titulo: 'Selecione as fotos',
-            instructions: 'Arraste sobre as 3 fotos (sem incluir os documentos) para selecioná-las todas de uma vez.',
-            jogo: 'selecionar-arrastando',
-            jogoProps: {
-              modo: 'arquivos',
-              itens: [
-                { id: 'doc1', rotulo: '📄 Documento', alvoSelecao: false },
-                { id: 'foto1', rotulo: '🖼️ Foto', alvoSelecao: true },
-                { id: 'foto2', rotulo: '🖼️ Foto', alvoSelecao: true },
-                { id: 'foto3', rotulo: '🖼️ Foto', alvoSelecao: true },
-                { id: 'doc2', rotulo: '📄 Documento', alvoSelecao: false },
-              ],
-            },
-          },
-          {
-            titulo: 'Selecionando um trecho de texto',
-            conteudo: `<p>O mesmo gesto de arrastar também serve para marcar parte de um texto - por exemplo, antes de copiar ou apagar só um trecho, sem mexer no resto.</p>
+        },
+        {
+          titulo: 'Selecionando um trecho de texto',
+          conteudo: `<p>O mesmo gesto de arrastar também serve para marcar parte de um texto - por exemplo, antes de copiar ou apagar só um trecho, sem mexer no resto.</p>
 <p>Clique bem no início do trecho que você quer, segure o botão, arraste até o final dele e solte. As palavras por onde o cursor passou ficam destacadas (geralmente em azul), mostrando o que está selecionado.</p>`,
+        },
+        {
+          tipo: 'jogo',
+          titulo: 'Selecione o trecho certo',
+          instructions: `Arraste sobre as palavras "computador está lento" para selecioná-las.`,
+          jogo: 'selecionar-arrastando',
+          dificuldade: 'desafio',
+          jogoProps: {
+            modo: 'texto',
+            itens: [
+              { id: 'hoje', rotulo: 'Hoje', alvoSelecao: false },
+              { id: 'o', rotulo: 'o', alvoSelecao: false },
+              { id: 'computador', rotulo: 'computador', alvoSelecao: true },
+              { id: 'esta', rotulo: 'está', alvoSelecao: true },
+              { id: 'lento', rotulo: 'lento', alvoSelecao: true },
+            ],
           },
-          {
-            tipo: 'jogo',
-            titulo: 'Selecione o trecho certo',
-            instructions: `Arraste sobre as palavras "computador está lento" para selecioná-las.`,
-            jogo: 'selecionar-arrastando',
-            jogoProps: {
-              modo: 'texto',
-              itens: [
-                { id: 'hoje', rotulo: 'Hoje', alvoSelecao: false },
-                { id: 'o', rotulo: 'o', alvoSelecao: false },
-                { id: 'computador', rotulo: 'computador', alvoSelecao: true },
-                { id: 'esta', rotulo: 'está', alvoSelecao: true },
-                { id: 'lento', rotulo: 'lento', alvoSelecao: true },
-              ],
-            },
-          },
-        ],
-      },
-      {
-        id: '1-6',
-        titulo: 'Coordenação e precisão',
-        etapas: [
-          {
-            titulo: 'Juntando tudo o que você aprendeu',
-            conteudo: `<p>Este último tópico não traz uma habilidade nova, mas um convite para juntar tudo o que foi aprendido - mover o cursor, clicar, dar duplo clique, rolar a tela e arrastar - em situações práticas do dia a dia, como:</p>
+        },
+      ],
+    },
+    {
+      id: '1-6',
+      titulo: 'Coordenação e precisão',
+      etapas: [
+        {
+          titulo: 'Juntando tudo o que você aprendeu',
+          conteudo: `<p>Este último tópico não traz uma habilidade nova, mas um convite para juntar tudo o que foi aprendido - mover o cursor, clicar, dar duplo clique, rolar a tela e arrastar - em situações práticas do dia a dia, como:</p>
 <ul>
   <li>Clicar em botões pequenos ou em links</li>
   <li>Fechar, maximizar ou minimizar uma janela</li>
@@ -303,26 +378,27 @@ export const MODULOS = [
   <li>Usar a barra de rolagem lateral da tela</li>
   <li>Corrigir um clique feito no lugar errado</li>
 </ul>`,
-          },
-          {
-            titulo: 'A precisão vem com a prática',
-            conteudo: `<p>É natural que, no começo, a mão precise de mais tempo para apontar com exatidão em áreas pequenas da tela. Isso melhora com a prática, da mesma forma que qualquer habilidade manual - como costurar um botão ou encaixar uma chave na fechadura - fica mais precisa quanto mais vezes é repetida.</p>
+        },
+        {
+          titulo: 'A precisão vem com a prática',
+          conteudo: `<p>É natural que, no começo, a mão precise de mais tempo para apontar com exatidão em áreas pequenas da tela. Isso melhora com a prática, da mesma forma que qualquer habilidade manual - como costurar um botão ou encaixar uma chave na fechadura - fica mais precisa quanto mais vezes é repetida.</p>
 <p>Se em algum momento você clicar no lugar errado, não há problema: basta clicar novamente no local correto. Errar faz parte do processo de aprender.</p>`,
-          },
-          {
-            titulo: 'Hora de treinar de verdade',
-            conteudo: `<p>Até agora o alvo ficou parado - mas na vida real, às vezes você precisa acompanhar algo que está se movendo na tela, como o cursor de um jogo ou uma janela sendo arrastada.</p>
+        },
+        {
+          titulo: 'Hora de treinar de verdade',
+          conteudo: `<p>Até agora o alvo ficou parado - mas na vida real, às vezes você precisa acompanhar algo que está se movendo na tela, como o cursor de um jogo ou uma janela sendo arrastada.</p>
 <p>Sem pressa: o alvo abaixo vai se mover bem devagar. É só ir seguindo com o olhar e clicar quando sentir que consegue alcançá-lo.</p>`,
-            dica: 'Se for mais fácil, mova o mouse na direção geral do alvo em vez de tentar prever exatamente onde ele vai estar.',
-          },
-          {
-            tipo: 'jogo',
-            titulo: 'Desafio de precisão',
-            instructions: 'Clique no alvo assim que conseguir alcançá-lo - ele vai se mover devagar pela área.',
-            jogo: 'alvo-movel',
-            jogoProps: { velocidade: 50 },
-          },
-          {
+          dica: 'Se for mais fácil, mova o mouse na direção geral do alvo em vez de tentar prever exatamente onde ele vai estar.',
+        },
+        {
+          tipo: 'jogo',
+          titulo: 'Desafio de precisão',
+          instructions: 'Clique no alvo assim que conseguir alcançá-lo - ele vai se mover devagar pela área.',
+          jogo: 'alvo-movel',
+          dificuldade: 'desafio',
+          jogoProps: { velocidade: 50 },
+        },
+        {
             titulo: 'Para lembrar',
             conteudo: `<ul>
   <li>O mouse é a sua forma de "apontar e escolher" no computador.</li>
@@ -338,6 +414,50 @@ export const MODULOS = [
       },
     ],
   },
+
+/**
+ * RASCUNHO - Módulo 2 (Teclado) com o campo `dificuldade` adicionado.
+ *
+ * Mesmo espírito do rascunho do Módulo 1: nenhum texto pedagógico foi
+ * reescrito, só foi adicionado:
+ *
+ *   1. O campo `dificuldade` em todas as 39 etapas tipo 'jogo' que já
+ *      existiam.
+ *   2. 1 etapa nova (marcada "// NOVO"), fechando a única lacuna real
+ *      encontrada.
+ *
+ * Diferença importante em relação ao Módulo 1: aqui quase não faltava
+ * nada. As 15 Unidades que cobrem o Módulo 2 (U2.1 a U2.8, ver
+ * data/unidades.js) já têm um `checkpoint` no fim de cada uma - e
+ * esse checkpoint já cumpre o papel de `desafio` na maioria dos
+ * casos. Então, diferente do Módulo 1 (onde eu inventei etapas de
+ * `desafio` dentro do mini-módulo), aqui o padrão
+ * demonstração → padrão → (checkpoint da Unidade = desafio) já
+ * aparece organicamente na maior parte dos mini-módulos:
+ *
+ *   - 2-1/2-2 (U2.1), 2-6/2-7 (U2.3), 2-8/2-9 (U2.4),
+ *     2-12/2-13 (U2.6): arco completo, nenhuma lacuna.
+ *   - 2-3/2-4/2-5 (U2.2): arco completo (2-3 e o "Pratique a barra de
+ *     espaço" de 2-4 fazem as vezes de demonstração; "Pratique duas
+ *     palavras" e o quiz do Enter já são padrão real).
+ *   - 2-14 (Atalhos, U2.7, tier 2): os 4 atalhos são demonstração
+ *     (sem distrator - escuta o teclado físico, não tem nada clicável
+ *     na tela) e o quiz final já funciona como desafio dentro do
+ *     próprio mini-módulo, além do checkpoint da Unidade.
+ *   - 2-15 (Prática funcional, U2.8): igual ao 1-6 do mouse - é o
+ *     mini-módulo de fechamento, então as 2 etapas já nascem
+ *     `desafio` mesmo (os próprios títulos já diziam "Desafio:").
+ *   - 2-10/2-11 (Números e símbolos, U2.5): ÚNICA lacuna real - as
+ *     duas mini-módulos pulavam direto pra prática com validação
+ *     (mín. 2 dígitos, CEP com hífen etc), sem nenhum primeiro
+ *     contato sem risco. Adicionei 1 etapa `demonstracao` no início
+ *     de 2-10 (reaproveitando o jogo 'digitar', sem `validar` -
+ *     mesmo padrão que "Pratique mais uma vez" em 2-3).
+ *
+ * Isso é uma boa notícia: mostra que a estrutura de vocês já nasceu
+ * bem desenhada nesse sentido - a maior parte do trabalho aqui foi
+ * só nomear o que já existia, não consertar.
+ */
 
   {
     id: '2',
@@ -355,14 +475,37 @@ export const MODULOS = [
 <p>Pode parecer que existem teclas demais, e é natural sentir um pouco de insegurança no início - mas você não precisa decorar tudo de uma vez. Vamos avançar aos poucos, uma tecla de cada vez.</p>`,
           },
           {
-            titulo: 'O que você vai encontrar',
-            conteudo: `<ul>
-  <li><strong>Letras</strong>: organizadas de um jeito que pode parecer estranho no começo (não seguem a ordem do alfabeto), mas que logo se torna familiar.</li>
-  <li><strong>Números</strong>: aparecem na fileira de cima e também, em muitos teclados, em um bloco à direita.</li>
-  <li><strong>Símbolos</strong>: como @ (arroba), ponto e vírgula, usados em situações específicas que veremos mais adiante.</li>
-  <li><strong>Teclas grandes e pequenas</strong>: teclas maiores, como a barra de espaço e o Enter, são pensadas para serem fáceis de encontrar.</li>
-</ul>`,
+            titulo: 'O que você vai encontrar: as letras',
+            conteudo: `<p>As letras ficam concentradas bem no <strong>centro</strong> do teclado, no bloco principal - é ali que você vai passar a maior parte do tempo digitando.</p>
+<p>Um detalhe que costuma surpreender: elas não seguem a ordem do alfabeto (A, B, C...). O motivo é histórico, vem de máquinas de escrever antigas - mas não se preocupe em decorar a ordem agora, seus dedos vão aprender o caminho naturalmente com a prática.</p>
+<svg viewBox="0 0 480 190" style="width:100%;max-width:420px;height:auto;display:block;margin:0.75rem auto;" role="img" aria-label="Esquema de teclado destacando a área de letras"><rect x="4" y="40" width="336" height="100" rx="8" fill="var(--color-yellow-bg)" stroke="var(--color-yellow-deep)" stroke-width="2" /><rect x="10" y="15" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="41" y="15" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="72" y="15" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="103" y="15" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="134" y="15" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="165" y="15" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="196" y="15" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="227" y="15" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="258" y="15" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="289" y="15" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="25" y="45" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="56" y="45" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="87" y="45" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="118" y="45" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="149" y="45" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="180" y="45" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="211" y="45" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="242" y="45" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="273" y="45" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="304" y="45" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="35" y="75" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="66" y="75" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="97" y="75" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="128" y="75" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="159" y="75" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="190" y="75" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="221" y="75" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="252" y="75" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="283" y="75" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="45" y="105" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="76" y="105" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="107" y="105" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="138" y="105" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="169" y="105" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="200" y="105" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="231" y="105" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="288" y="105" width="24" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="315" y="105" width="24" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="60" y="135" width="220" height="24" rx="6" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="366" y="18" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="398" y="18" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="430" y="18" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="366" y="53" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="398" y="53" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="430" y="53" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="366" y="88" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="398" y="88" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="430" y="88" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="366" y="123" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="398" y="123" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="430" y="123" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /></svg>`,
+          },
+          {
+            titulo: 'O que você vai encontrar: os números',
+            conteudo: `<p>Os números aparecem em <strong>dois lugares</strong>: numa fileira ao longo do topo do teclado, e também - em muitos teclados de computador de mesa - num bloco separado do lado direito, parecido com uma calculadora.</p>
+<p>Esse bloco à direita nem sempre existe (notebooks costumam não ter), mas quando existe, é uma forma rápida de digitar números em sequência, como um valor ou uma data.</p>
+<svg viewBox="0 0 480 190" style="width:100%;max-width:420px;height:auto;display:block;margin:0.75rem auto;" role="img" aria-label="Esquema de teclado destacando a área de numeros"><rect x="4" y="10" width="336" height="34" rx="8" fill="var(--color-yellow-bg)" stroke="var(--color-yellow-deep)" stroke-width="2" /><rect x="358" y="10" width="106" height="150" rx="8" fill="var(--color-yellow-bg)" stroke="var(--color-yellow-deep)" stroke-width="2" /><rect x="10" y="15" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="41" y="15" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="72" y="15" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="103" y="15" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="134" y="15" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="165" y="15" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="196" y="15" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="227" y="15" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="258" y="15" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="289" y="15" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="25" y="45" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="56" y="45" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="87" y="45" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="118" y="45" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="149" y="45" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="180" y="45" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="211" y="45" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="242" y="45" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="273" y="45" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="304" y="45" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="35" y="75" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="66" y="75" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="97" y="75" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="128" y="75" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="159" y="75" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="190" y="75" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="221" y="75" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="252" y="75" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="283" y="75" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="45" y="105" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="76" y="105" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="107" y="105" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="138" y="105" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="169" y="105" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="200" y="105" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="231" y="105" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="288" y="105" width="24" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="315" y="105" width="24" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="60" y="135" width="220" height="24" rx="6" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="366" y="18" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="398" y="18" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="430" y="18" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="366" y="53" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="398" y="53" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="430" y="53" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="366" y="88" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="398" y="88" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="430" y="88" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="366" y="123" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="398" y="123" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="430" y="123" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /></svg>`,
+          },
+          {
+            titulo: 'O que você vai encontrar: os símbolos',
+            conteudo: `<p>Símbolos como @ (arroba), ponto e vírgula ficam <strong>acessíveis</strong> por combinações de teclas, principalmente em cima da fileira de números e em algumas teclas específicas próximas ao Enter - você vai aprender a digitar os mais usados mais adiante, com calma.</p>
+<p>Por enquanto, só vale saber que eles existem e mais ou menos onde procurar.</p>
+<svg viewBox="0 0 480 190" style="width:100%;max-width:420px;height:auto;display:block;margin:0.75rem auto;" role="img" aria-label="Esquema de teclado destacando a área de simbolos"><rect x="4" y="10" width="336" height="34" rx="8" fill="var(--color-yellow-bg)" stroke="var(--color-yellow-deep)" stroke-width="2" /><rect x="288" y="100" width="52" height="24" rx="6" fill="var(--color-yellow-bg)" stroke="var(--color-yellow-deep)" stroke-width="2" /><rect x="10" y="15" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="41" y="15" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="72" y="15" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="103" y="15" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="134" y="15" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="165" y="15" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="196" y="15" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="227" y="15" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="258" y="15" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="289" y="15" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="25" y="45" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="56" y="45" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="87" y="45" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="118" y="45" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="149" y="45" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="180" y="45" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="211" y="45" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="242" y="45" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="273" y="45" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="304" y="45" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="35" y="75" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="66" y="75" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="97" y="75" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="128" y="75" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="159" y="75" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="190" y="75" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="221" y="75" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="252" y="75" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="283" y="75" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="45" y="105" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="76" y="105" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="107" y="105" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="138" y="105" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="169" y="105" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="200" y="105" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="231" y="105" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="288" y="105" width="24" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="315" y="105" width="24" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="60" y="135" width="220" height="24" rx="6" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="366" y="18" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="398" y="18" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="430" y="18" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="366" y="53" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="398" y="53" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="430" y="53" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="366" y="88" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="398" y="88" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="430" y="88" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="366" y="123" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="398" y="123" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="430" y="123" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /></svg><p>Uma última observação sobre o teclado como um todo: teclas maiores, como a barra de espaço e o Enter, são pensadas de propósito pra serem fáceis de encontrar sem precisar olhar.</p>`,
             dica: 'Você já usou algum teclado antes, como o de um caixa eletrônico ou de um telefone antigo? O que foi parecido ou diferente do teclado do computador?',
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Você reparou nas letras?',
+            instructions: 'Escolha a resposta certa.',
+            jogo: 'quiz',
+            dificuldade: 'padrao',
+            jogoProps: {
+              pergunta: 'Verdadeiro ou falso: as letras do teclado seguem a ordem do alfabeto (A, B, C...), como num abecedário.',
+              alternativas: [
+                { id: 'falso', texto: 'Falso', correta: true },
+                { id: 'verdadeiro', texto: 'Verdadeiro', correta: false },
+              ],
+            },
           },
         ],
       },
@@ -378,6 +521,92 @@ export const MODULOS = [
           {
             titulo: 'Um toque leve já basta',
             conteudo: `<p>Pressione as teclas suavemente. Elas não precisam de força para responder - assim como o controle remoto de uma televisão, um toque leve já é suficiente. Apertar com força só cansa os dedos, sem necessidade.</p>`,
+          },
+          {
+            titulo: 'Se quiser digitar mais rápido, no seu tempo',
+            conteudo: `<p>Isso aqui é opcional - lembre-se, não existe obrigação de usar todos os dedos. Mas se um dia você quiser ganhar velocidade, existe um truque usado por quem digita bastante: cada dedo tem uma "casinha" numa fileira central do teclado, chamada de <strong>fileira base</strong>. Ele sai dali pra apertar outras teclas e sempre volta pra essa posição de descanso.</p>
+<svg viewBox="0 0 366 62" style="width:100%;max-width:360px;height:auto;display:block;margin:0.75rem auto;" role="img" aria-label="Fileira base do teclado, mão esquerda em amarelo, mão direita em âmbar"><rect x="10" y="10" width="38" height="42" rx="6" fill="var(--color-yellow-bg)" stroke="var(--color-yellow-deep)" stroke-width="2" /><text x="29.0" y="37" font-family="sans-serif" font-size="17" font-weight="700" fill="var(--color-text-primary)" text-anchor="middle">A</text><rect x="54" y="10" width="38" height="42" rx="6" fill="var(--color-yellow-bg)" stroke="var(--color-yellow-deep)" stroke-width="2" /><text x="73.0" y="37" font-family="sans-serif" font-size="17" font-weight="700" fill="var(--color-text-primary)" text-anchor="middle">S</text><rect x="98" y="10" width="38" height="42" rx="6" fill="var(--color-yellow-bg)" stroke="var(--color-yellow-deep)" stroke-width="2" /><text x="117.0" y="37" font-family="sans-serif" font-size="17" font-weight="700" fill="var(--color-text-primary)" text-anchor="middle">D</text><rect x="142" y="10" width="38" height="42" rx="6" fill="var(--color-yellow-bg)" stroke="var(--color-yellow-deep)" stroke-width="2" /><text x="161.0" y="37" font-family="sans-serif" font-size="17" font-weight="700" fill="var(--color-text-primary)" text-anchor="middle">F</text><rect x="186" y="10" width="38" height="42" rx="6" fill="var(--color-warning-bg)" stroke="var(--color-warning)" stroke-width="2" /><text x="205.0" y="37" font-family="sans-serif" font-size="17" font-weight="700" fill="var(--color-text-primary)" text-anchor="middle">J</text><rect x="230" y="10" width="38" height="42" rx="6" fill="var(--color-warning-bg)" stroke="var(--color-warning)" stroke-width="2" /><text x="249.0" y="37" font-family="sans-serif" font-size="17" font-weight="700" fill="var(--color-text-primary)" text-anchor="middle">K</text><rect x="274" y="10" width="38" height="42" rx="6" fill="var(--color-warning-bg)" stroke="var(--color-warning)" stroke-width="2" /><text x="293.0" y="37" font-family="sans-serif" font-size="17" font-weight="700" fill="var(--color-text-primary)" text-anchor="middle">L</text><rect x="318" y="10" width="38" height="42" rx="6" fill="var(--color-warning-bg)" stroke="var(--color-warning)" stroke-width="2" /><text x="337.0" y="37" font-family="sans-serif" font-size="17" font-weight="700" fill="var(--color-text-primary)" text-anchor="middle">;</text></svg><p><strong>Mão esquerda</strong> (fileira em amarelo): mindinho no A, anelar no S, médio no D, indicador no F.</p>
+<p><strong>Mão direita</strong> (fileira em âmbar): indicador no J, médio no K, anelar no L, mindinho no ponto e vírgula.</p>
+<p>Com o tempo, esses dedos aprendem o caminho sozinhos, sem você precisar olhar pra baixo - é exatamente isso que faz digitar ficar mais rápido.</p>`,
+            dica: 'Não se preocupe em decorar agora - as próximas etapas são só pra ir pegando o jeito, uma tecla de cada vez, sem pressa nenhuma.',
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Pratique: A',
+            instructions: 'Aperte a tecla A no seu teclado.',
+            jogo: 'pressionar-letra',
+            dificuldade: 'demonstracao',
+            jogoProps: { letra: 'a', dedo: 'mindinho esquerdo' },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Pratique: S',
+            instructions: 'Aperte a tecla S no seu teclado.',
+            jogo: 'pressionar-letra',
+            dificuldade: 'demonstracao',
+            jogoProps: { letra: 's', dedo: 'anelar esquerdo' },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Pratique: D',
+            instructions: 'Aperte a tecla D no seu teclado.',
+            jogo: 'pressionar-letra',
+            dificuldade: 'demonstracao',
+            jogoProps: { letra: 'd', dedo: 'médio esquerdo' },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Pratique: F',
+            instructions: 'Aperte a tecla F no seu teclado.',
+            jogo: 'pressionar-letra',
+            dificuldade: 'demonstracao',
+            jogoProps: { letra: 'f', dedo: 'indicador esquerdo' },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Pratique: J',
+            instructions: 'Aperte a tecla J no seu teclado.',
+            jogo: 'pressionar-letra',
+            dificuldade: 'demonstracao',
+            jogoProps: { letra: 'j', dedo: 'indicador direito' },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Pratique: K',
+            instructions: 'Aperte a tecla K no seu teclado.',
+            jogo: 'pressionar-letra',
+            dificuldade: 'demonstracao',
+            jogoProps: { letra: 'k', dedo: 'médio direito' },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Pratique: L',
+            instructions: 'Aperte a tecla L no seu teclado.',
+            jogo: 'pressionar-letra',
+            dificuldade: 'demonstracao',
+            jogoProps: { letra: 'l', dedo: 'anelar direito' },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Pratique: ;',
+            instructions: 'Aperte a tecla ; no seu teclado.',
+            jogo: 'pressionar-letra',
+            dificuldade: 'demonstracao',
+            jogoProps: { letra: ';', dedo: 'mindinho direito' },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Sobre os dedos',
+            instructions: 'Escolha a resposta certa.',
+            jogo: 'quiz',
+            dificuldade: 'padrao',
+            jogoProps: {
+              pergunta: 'Verdadeiro ou falso: para digitar corretamente, é obrigatório usar os dez dedos.',
+              alternativas: [
+                { id: 'falso', texto: 'Falso', correta: true },
+                { id: 'verdadeiro', texto: 'Verdadeiro', correta: false },
+              ],
+            },
           },
         ],
       },
@@ -396,11 +625,27 @@ export const MODULOS = [
             titulo: 'Pratique digitando',
             instructions: 'Digite a palavra "gato" e confirme.',
             jogo: 'digitar',
+            dificuldade: 'demonstracao',
             jogoProps: {
               label: 'Digite a palavra "gato"',
               placeholder: 'Digite aqui',
               validar: (valor) => valor.toLowerCase() === 'gato',
               mensagemErro: 'Quase lá! Confere se digitou "gato" certinho.',
+            },
+          },
+          {
+            titulo: 'Agora sem exemplo pronto',
+            conteudo: `<p>Dessa vez não vamos dizer exatamente o que digitar - a ideia é só sentir o teclado respondendo aos seus dedos, sem uma resposta "certa" pra acertar.</p>`,
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Pratique mais uma vez',
+            instructions: 'Digite uma palavra qualquer que você goste - pode ser o nome de alguém da família, uma comida, o que vier à cabeça.',
+            jogo: 'digitar',
+            dificuldade: 'demonstracao',
+            jogoProps: {
+              label: 'Digite uma palavra qualquer',
+              placeholder: 'Digite aqui',
             },
           },
         ],
@@ -422,7 +667,25 @@ export const MODULOS = [
             titulo: 'Pratique a barra de espaço',
             instructions: 'Aperte a barra de espaço (a tecla comprida, destacada abaixo).',
             jogo: 'pressionar',
+            dificuldade: 'demonstracao',
             jogoProps: { tecla: 'espaco' },
+          },
+          {
+            titulo: 'Usando o espaço numa frase de verdade',
+            conteudo: `<p>Agora vamos juntar a barra de espaço com o que você já sabe: digitar. Escreva duas palavras separadas por um espaço, como se estivesse escrevendo o começo de uma frase.</p>`,
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Pratique duas palavras',
+            instructions: 'Digite duas palavras separadas por um espaço, por exemplo "bom dia".',
+            jogo: 'digitar',
+            dificuldade: 'padrao',
+            jogoProps: {
+              label: 'Digite duas palavras separadas por espaço',
+              placeholder: 'Ex: bom dia',
+              validar: (valor) => valor.trim().split(/\s+/).length >= 2,
+              mensagemErro: 'Faltou o espaço entre as palavras - tenta digitar duas palavras separadas por ele.',
+            },
           },
         ],
       },
@@ -446,7 +709,24 @@ export const MODULOS = [
             titulo: 'Pratique o Enter',
             instructions: 'Aperte a tecla Enter (destacada abaixo).',
             jogo: 'pressionar',
+            dificuldade: 'demonstracao',
             jogoProps: { tecla: 'enter' },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Enter no dia a dia',
+            instructions: 'Escolha a resposta certa.',
+            jogo: 'quiz',
+            dificuldade: 'padrao',
+            jogoProps: {
+              pergunta: 'Você terminou de escrever uma mensagem para um familiar num aplicativo de conversa. Qual tecla costuma enviá-la?',
+              alternativas: [
+                { id: 'enter', texto: 'Enter', correta: true },
+                { id: 'tab', texto: 'Tab', correta: false },
+                { id: 'esc', texto: 'Esc', correta: false },
+                { id: 'seta', texto: 'Uma seta direcional', correta: false },
+              ],
+            },
           },
         ],
       },
@@ -465,7 +745,22 @@ export const MODULOS = [
             titulo: 'Pratique o Backspace',
             instructions: 'Aperte a tecla Backspace (destacada abaixo).',
             jogo: 'pressionar',
+            dificuldade: 'demonstracao',
             jogoProps: { tecla: 'backspace' },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Pra qual lado o Backspace apaga?',
+            instructions: 'Escolha a resposta certa.',
+            jogo: 'quiz',
+            dificuldade: 'padrao',
+            jogoProps: {
+              pergunta: 'Verdadeiro ou falso: o Backspace apaga a letra que vem DEPOIS do cursor.',
+              alternativas: [
+                { id: 'falso', texto: 'Falso - ele apaga a de ANTES', correta: true },
+                { id: 'verdadeiro', texto: 'Verdadeiro', correta: false },
+              ],
+            },
           },
         ],
       },
@@ -487,7 +782,22 @@ export const MODULOS = [
             titulo: 'Pratique o Delete',
             instructions: 'Aperte a tecla Delete (destacada abaixo - repare que ela fica um pouco separada do bloco principal).',
             jogo: 'pressionar',
+            dificuldade: 'demonstracao',
             jogoProps: { tecla: 'delete' },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Backspace e Delete são a mesma coisa?',
+            instructions: 'Escolha a resposta certa.',
+            jogo: 'quiz',
+            dificuldade: 'padrao',
+            jogoProps: {
+              pergunta: 'Verdadeiro ou falso: Backspace e Delete fazem exatamente a mesma coisa, só que uma fica de um lado do teclado e a outra do outro.',
+              alternativas: [
+                { id: 'falso', texto: 'Falso - cada uma apaga de um lado do cursor', correta: true },
+                { id: 'verdadeiro', texto: 'Verdadeiro', correta: false },
+              ],
+            },
           },
         ],
       },
@@ -509,7 +819,25 @@ export const MODULOS = [
             titulo: 'Pratique o Shift',
             instructions: 'Aperte a tecla Shift (destacada abaixo - existem duas, uma de cada lado, e as duas funcionam).',
             jogo: 'pressionar',
+            dificuldade: 'demonstracao',
             jogoProps: { tecla: 'shift' },
+          },
+          {
+            titulo: 'Juntando o Shift com uma letra',
+            conteudo: `<p>Agora vamos usar o Shift do jeito que ele é usado de verdade: segurando ele e apertando uma letra ao mesmo tempo, pra ela sair maiúscula.</p>`,
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Pratique uma maiúscula',
+            instructions: 'Segurando o Shift, digite a letra "A" maiúscula e confirme.',
+            jogo: 'digitar',
+            dificuldade: 'padrao',
+            jogoProps: {
+              label: 'Digite a letra A maiúscula',
+              placeholder: 'Digite aqui',
+              validar: (valor) => valor === 'A',
+              mensagemErro: 'Segure o Shift e, com ele segurado, aperte a tecla A.',
+            },
           },
         ],
       },
@@ -532,7 +860,22 @@ export const MODULOS = [
             titulo: 'Pratique o Caps Lock',
             instructions: 'Aperte a tecla Caps Lock (destacada abaixo, no início da fileira do meio).',
             jogo: 'pressionar',
+            dificuldade: 'demonstracao',
             jogoProps: { tecla: 'capslock' },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Como o Caps Lock se comporta',
+            instructions: 'Escolha a resposta certa.',
+            jogo: 'quiz',
+            dificuldade: 'padrao',
+            jogoProps: {
+              pergunta: 'Verdadeiro ou falso: uma vez ativado, o Caps Lock continua deixando tudo em maiúsculas até você apertá-lo de novo pra desativar.',
+              alternativas: [
+                { id: 'verdadeiro', texto: 'Verdadeiro', correta: true },
+                { id: 'falso', texto: 'Falso', correta: false },
+              ],
+            },
           },
         ],
       },
@@ -548,16 +891,48 @@ export const MODULOS = [
 </ul>
 <p>Essa habilidade é útil para digitar telefones, datas e documentos como o CPF - situações comuns no dia a dia, como preencher um cadastro.</p>`,
           },
+          // NOVO - U2.5 (Números e símbolos) pulava direto pra prática
+          // validada (mín. 2 dígitos) sem nenhum primeiro contato sem
+          // risco - faltava demonstração antes do padrão que já existia.
+          {
+            tipo: 'jogo',
+            titulo: 'Primeiro contato com os números',
+            instructions: 'Digite qualquer número que quiser, sem regra nenhuma, só pra sentir as teclas.',
+            jogo: 'digitar',
+            dificuldade: 'demonstracao',
+            jogoProps: {
+              label: 'Digite um número qualquer',
+              placeholder: 'Digite aqui',
+            },
+          },
           {
             tipo: 'jogo',
             titulo: 'Pratique os números',
             instructions: 'Digite alguns números (o que você quiser, com pelo menos 2 dígitos) e confirme.',
             jogo: 'digitar',
+            dificuldade: 'padrao',
             jogoProps: {
               label: 'Digite alguns números',
               placeholder: 'Ex: 2024',
               validar: (valor) => /^\d{2,}$/.test(valor),
               mensagemErro: 'Tenta digitar só números, com pelo menos 2 dígitos.',
+            },
+          },
+          {
+            titulo: 'Números em situações reais',
+            conteudo: `<p>Uma das situações mais comuns é digitar um número de telefone, com o DDD na frente. Vamos praticar isso agora.</p>`,
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Pratique um telefone',
+            instructions: 'Digite um número de telefone (pode ser fictício), só com os números, tipo 11987654321.',
+            jogo: 'digitar',
+            dificuldade: 'desafio',
+            jogoProps: {
+              label: 'Digite um número de telefone',
+              placeholder: 'Ex: 11987654321',
+              validar: (valor) => /^\d{8,}$/.test(valor),
+              mensagemErro: 'Tenta digitar só números, com DDD e o telefone, tipo 11987654321.',
             },
           },
         ],
@@ -584,11 +959,29 @@ export const MODULOS = [
             titulo: 'Pratique um símbolo',
             instructions: 'Digite o símbolo @ (arroba) e confirme.',
             jogo: 'digitar',
+            dificuldade: 'padrao',
             jogoProps: {
               label: 'Digite o símbolo @ (arroba)',
               placeholder: 'Digite aqui',
               validar: (valor) => valor.includes('@'),
               mensagemErro: 'Tenta encontrar o símbolo @ no teclado e digitar de novo.',
+            },
+          },
+          {
+            titulo: 'Outro símbolo bem comum: o hífen',
+            conteudo: `<p>O hífen (-) aparece bastante em documentos e endereços - por exemplo, no meio de um CEP. Vamos praticar ele também.</p>`,
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Pratique o hífen',
+            instructions: 'Digite um CEP fictício com hífen, tipo 00000-000, e confirme.',
+            jogo: 'digitar',
+            dificuldade: 'padrao',
+            jogoProps: {
+              label: 'Digite um CEP com hífen',
+              placeholder: 'Ex: 00000-000',
+              validar: (valor) => valor.includes('-'),
+              mensagemErro: 'Tenta encontrar o símbolo - (hífen) no teclado e digitar de novo.',
             },
           },
         ],
@@ -612,7 +1005,24 @@ export const MODULOS = [
             titulo: 'Pratique o Esc',
             instructions: 'Aperte a tecla Esc (destacada abaixo, sozinha, acima da fileira de números).',
             jogo: 'pressionar',
+            dificuldade: 'demonstracao',
             jogoProps: { tecla: 'esc' },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'E a tecla Tab?',
+            instructions: 'Escolha a resposta certa.',
+            jogo: 'quiz',
+            dificuldade: 'padrao',
+            jogoProps: {
+              pergunta: 'Você está preenchendo um formulário na tela e terminou de escrever num campo. Qual tecla leva para o próximo campo, sem precisar clicar com o mouse?',
+              alternativas: [
+                { id: 'tab', texto: 'Tab', correta: true },
+                { id: 'esc', texto: 'Esc', correta: false },
+                { id: 'capslock', texto: 'Caps Lock', correta: false },
+                { id: 'backspace', texto: 'Backspace', correta: false },
+              ],
+            },
           },
         ],
       },
@@ -634,7 +1044,22 @@ export const MODULOS = [
             titulo: 'Pratique as setas',
             instructions: 'Aperte a seta para baixo (destacada abaixo, num grupo separado do restante do teclado).',
             jogo: 'pressionar',
+            dificuldade: 'demonstracao',
             jogoProps: { tecla: 'seta-baixo' },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Setas e seleção',
+            instructions: 'Escolha a resposta certa.',
+            jogo: 'quiz',
+            dificuldade: 'padrao',
+            jogoProps: {
+              pergunta: 'Verdadeiro ou falso: segurando o Shift e apertando as setas, é possível selecionar um trecho de texto, sem usar o mouse.',
+              alternativas: [
+                { id: 'verdadeiro', texto: 'Verdadeiro', correta: true },
+                { id: 'falso', texto: 'Falso', correta: false },
+              ],
+            },
           },
         ],
       },
@@ -658,6 +1083,7 @@ export const MODULOS = [
             titulo: 'Pratique o Ctrl + C',
             instructions: 'Segure Ctrl e aperte a tecla C ao mesmo tempo (em Mac, use Cmd no lugar do Ctrl).',
             jogo: 'atalho',
+            dificuldade: 'demonstracao',
             jogoProps: { letra: 'c' },
           },
           {
@@ -665,6 +1091,7 @@ export const MODULOS = [
             titulo: 'Pratique o Ctrl + V',
             instructions: 'Segure Ctrl e aperte a tecla V ao mesmo tempo (em Mac, use Cmd no lugar do Ctrl).',
             jogo: 'atalho',
+            dificuldade: 'demonstracao',
             jogoProps: { letra: 'v' },
           },
           {
@@ -672,6 +1099,7 @@ export const MODULOS = [
             titulo: 'Pratique o Ctrl + Z',
             instructions: 'Segure Ctrl e aperte a tecla Z ao mesmo tempo (em Mac, use Cmd no lugar do Ctrl).',
             jogo: 'atalho',
+            dificuldade: 'demonstracao',
             jogoProps: { letra: 'z' },
           },
           {
@@ -679,7 +1107,24 @@ export const MODULOS = [
             titulo: 'Pratique o Ctrl + A',
             instructions: 'Segure Ctrl e aperte a tecla A ao mesmo tempo (em Mac, use Cmd no lugar do Ctrl).',
             jogo: 'atalho',
+            dificuldade: 'demonstracao',
             jogoProps: { letra: 'a' },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Juntando os quatro atalhos',
+            instructions: 'Escolha a resposta certa.',
+            jogo: 'quiz',
+            dificuldade: 'desafio',
+            jogoProps: {
+              pergunta: 'Você apagou por engano uma frase inteira que tinha acabado de escrever. Qual atalho desfaz isso rapidamente?',
+              alternativas: [
+                { id: 'ctrl-z', texto: 'Ctrl + Z', correta: true },
+                { id: 'ctrl-c', texto: 'Ctrl + C', correta: false },
+                { id: 'ctrl-v', texto: 'Ctrl + V', correta: false },
+                { id: 'ctrl-a', texto: 'Ctrl + A', correta: false },
+              ],
+            },
           },
         ],
       },
@@ -711,6 +1156,23 @@ export const MODULOS = [
 <p>São os erros mais comuns entre quem está aprendendo, e cada um deles tem uma solução simples, como já vimos ao longo deste módulo.</p>`,
           },
           {
+            titulo: 'Hora de juntar tudo numa frase só',
+            conteudo: `<p>Uma frase curta já usa várias das teclas que você praticou até aqui: uma letra maiúscula no início (Shift), o espaço entre as palavras, e um símbolo de pontuação no final.</p>`,
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Desafio: digite a frase',
+            instructions: 'Digite exatamente: Bom dia!',
+            jogo: 'digitar',
+            dificuldade: 'desafio',
+            jogoProps: {
+              label: 'Digite a frase "Bom dia!"',
+              placeholder: 'Digite aqui',
+              validar: (valor) => valor === 'Bom dia!',
+              mensagemErro: 'Confere se digitou certinho, com o B maiúsculo, o espaço e o ponto de exclamação no final: Bom dia!',
+            },
+          },
+          {
             titulo: 'Para lembrar',
             conteudo: `<ul>
   <li>O teclado é organizado em letras, números, símbolos e teclas especiais.</li>
@@ -726,6 +1188,7 @@ export const MODULOS = [
             titulo: 'Desafio: juntando tudo',
             instructions: 'Digite um e-mail (pode ser fictício, tipo exemplo@email.com) e confirme.',
             jogo: 'digitar',
+            dificuldade: 'desafio',
             jogoProps: {
               label: 'Digite um e-mail',
               placeholder: 'exemplo@email.com',
@@ -737,7 +1200,6 @@ export const MODULOS = [
       },
     ],
   },
-
   {
     id: '3',
     emoji: '🔌',
@@ -751,9 +1213,28 @@ export const MODULOS = [
           {
             titulo: 'Reconhecendo as peças',
             conteudo: `<p>Depois de conhecer o mouse e o teclado, chegou o momento de olhar para o computador como um todo. Você não precisa se tornar um técnico em informática - o objetivo é bem mais simples: reconhecer os equipamentos ao seu redor e ganhar confiança para usá-los no dia a dia.</p>
-<p>"Hardware" é o nome dado a tudo aquilo que é físico no computador: as peças que você pode tocar, ver e segurar - diferente do que aparece na tela, que chamamos de "digital" ou "software".</p>
+<p>"Hardware" é o nome dado a tudo aquilo que é físico no computador: as peças que você pode tocar, ver e segurar - diferente do que aparece na tela, que chamamos de "software" (os programas e aplicativos).</p>
 <p>Pense assim: o hardware é como o corpo do computador, e os programas são como os pensamentos e ações que esse corpo realiza. O monitor, o teclado, o mouse, as caixas de som - tudo isso é hardware.</p>`,
             dica: 'Em sua casa, quais equipamentos você já reconhece como parte do computador? Talvez você já conheça mais peças do que imagina.',
+          },
+          {
+            titulo: 'Por que isso importa no dia a dia',
+            conteudo: `<p>É comum ouvir alguém dizer "meu computador não liga" quando, na verdade, o problema é só um cabo solto ou o monitor apagado. Saber separar "hardware" (a peça física) de "software" (o programa) já ajuda bastante a entender onde pode estar um problema - e a explicar isso, com calma, pra quem for te ajudar.</p>`,
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Hardware ou software?',
+            instructions: 'Destas três opções, apenas uma é hardware (algo físico, que dá pra tocar). Clique nela.',
+            jogo: 'clicar',
+            dificuldade: 'padrao',
+            jogoProps: {
+              layout: 'grade',
+              alvos: [
+                { id: 'navegador', label: '🌐 Navegador de internet', correto: false },
+                { id: 'impressora', label: '🖨️ Impressora', correto: true },
+                { id: 'aplicativo-fotos', label: '🖼️ Aplicativo de fotos', correto: false },
+              ],
+            },
           },
         ],
       },
@@ -765,10 +1246,23 @@ export const MODULOS = [
             titulo: 'A tela do computador',
             conteudo: `<p>O monitor é a tela onde aparecem as imagens, textos e vídeos - é por meio dele que "conversamos" visualmente com o computador.</p>
 <ul>
-  <li><strong>Ligar o monitor</strong>: geralmente existe um botão específico, separado do botão que liga o computador todo.</li>
   <li><strong>Ajustar a posição</strong>: vale a pena posicionar o monitor na altura dos olhos, para evitar desconforto no pescoço.</li>
   <li><strong>Entender o que aparece na tela</strong>: ícones, janelas e textos mudam a cada clique ou tecla digitada.</li>
 </ul>`,
+          },
+          {
+            titulo: 'O botão que muita gente esquece',
+            conteudo: `<p>Aqui vai um detalhe que confunde bastante gente no começo: o <strong>monitor tem um botão de ligar só dele</strong>, separado do botão que liga o gabinete (a caixa que guarda as peças internas).</p>
+<p>Isso quer dizer que às vezes o computador está ligado e funcionando normalmente, mas a tela aparece preta - porque só o monitor foi desligado, sem querer, ou nunca foi ligado. Antes de se preocupar com "o computador quebrou", vale sempre checar esse botãozinho primeiro.</p>`,
+            dica: 'Imagine que você senta pra usar o computador e a tela está preta. Antes de qualquer coisa, o que você vai checar primeiro agora que sabe desse detalhe?',
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Encontre o botão de ligar do monitor',
+            instructions: 'Entre as duas peças abaixo, clique no botão que liga a TELA (o monitor) - repare que não é o pedestal, e não é o botão da outra peça ao lado.',
+            jogo: 'monitor-gabinete',
+            dificuldade: 'padrao', // agora com 5 alvos (2 peças) em vez de 2 - deixou de ser fácil demais
+            jogoProps: { alvoCorreto: 'monitor' },
           },
         ],
       },
@@ -778,15 +1272,21 @@ export const MODULOS = [
         etapas: [
           {
             titulo: 'O "cérebro" da máquina',
-            conteudo: `<p>O gabinete (também chamado de CPU) é a caixa que guarda as peças internas do computador - é como o "cérebro" da máquina, guardado dentro de uma estrutura protegida.</p>
-<p>Vale a pena reconhecer o botão de ligar, geralmente localizado na parte da frente do gabinete. Um cuidado importante: evite desligar o gabinete de forma incorreta, como tirando o cabo de energia diretamente da tomada enquanto o computador está em uso.</p>`,
+            conteudo: `<p>O gabinete (também chamado de CPU) é a caixa que guarda as peças internas do computador - é como o "cérebro" da máquina, guardado dentro de uma estrutura protegida, parecido com uma caixa de ferramentas fechada: você não precisa abrir pra usar, só reconhecer onde fica e o que tem por fora.</p>
+<p>Vale a pena reconhecer o botão de ligar, geralmente localizado na parte da frente do gabinete.</p>`,
           },
           {
             tipo: 'jogo',
-            titulo: 'Encontre o botão de ligar',
-            instructions: 'Clique no botão de ligar do gabinete.',
-            jogo: 'gabinete-frente',
-            jogoProps: {},
+            titulo: 'Encontre o botão de ligar do gabinete',
+            instructions: 'Agora clique no botão que liga o COMPUTADOR (o gabinete) - repare que é diferente do botão do monitor que você acabou de usar.',
+            jogo: 'monitor-gabinete',
+            dificuldade: 'padrao',
+            jogoProps: { alvoCorreto: 'gabinete' },
+          },
+          {
+            titulo: 'Um cuidado importante',
+            conteudo: `<p>Evite desligar o gabinete de forma incorreta, como tirando o cabo de energia diretamente da tomada enquanto o computador está em uso - é parecido com fechar um livro no meio de uma frase: o computador pode não ter terminado de "guardar" o que estava fazendo, e isso pode causar problemas.</p>
+<p>O jeito certo de desligar é sempre pelo menu do próprio sistema - isso é assunto do mini-tópico "Botão de ligar e desligar", mais adiante.</p>`,
           },
         ],
       },
@@ -801,13 +1301,31 @@ export const MODULOS = [
   <li>Ambos podem ser <strong>com fio</strong> (conectados por um cabo) ou <strong>sem fio</strong> (conectados por um sinal).</li>
   <li>Se pararem de responder, muitas vezes o motivo é simples: um cabo solto, uma pilha descarregada ou uma conexão que precisa ser refeita.</li>
 </ul>`,
+            dica: 'Já aconteceu de um controle remoto parar de funcionar e, no fim, era só a pilha? Com mouse e teclado sem fio é bem parecido.',
           },
           {
             tipo: 'jogo',
             titulo: 'Pratique a conexão',
             instructions: 'Arraste o cabo do mouse até a porta certa - repare no formato de cada uma.',
             jogo: 'porta-traseira',
+            dificuldade: 'padrao',
             jogoProps: {},
+          },
+          // NOVO - reforço conceitual, sem mecânica nova: reusa 'quiz'.
+          {
+            tipo: 'jogo',
+            titulo: 'Parou de responder - e agora?',
+            instructions: 'Escolha a resposta certa.',
+            jogo: 'quiz',
+            dificuldade: 'padrao',
+            jogoProps: {
+              pergunta: 'Seu mouse sem fio parou de responder do nada. O que vale mais a pena checar primeiro?',
+              alternativas: [
+                { id: 'pilha', texto: 'Se a pilha não descarregou, ou se a conexão precisa ser refeita', correta: true },
+                { id: 'reinstalar', texto: 'Reinstalar o sistema operacional inteiro', correta: false },
+                { id: 'comprar', texto: 'Já ir comprando um mouse novo', correta: false },
+              ],
+            },
           },
         ],
       },
@@ -821,11 +1339,34 @@ export const MODULOS = [
 <p>Elas se conectam por um cabo específico, ligado à saída de som, que costuma ficar na parte de trás ou na lateral do gabinete ou do notebook.</p>`,
           },
           {
+            titulo: 'Uma situação comum',
+            conteudo: `<p>Imagine que você está numa videochamada com a família e ninguém consegue te ouvir direito, ou você não consegue ouvir quem está falando. Antes de se preocupar, vale sempre checar uma coisa simples primeiro: o volume não está baixo demais ou no mudo?</p>
+<p>No exercício a seguir, o som que você vai ouvir é real - vai tocar de verdade pelas caixas de som ou fone do seu computador, e os botões - e + realmente controlam o quanto ele toca alto ou baixo, exatamente como um controle de volume de verdade.</p>`,
+          },
+          {
             tipo: 'jogo',
             titulo: 'Ajuste o volume',
             instructions: 'Use os botões - e + até o volume chegar exatamente no nível 6. Se passar do ponto, é só usar o - pra voltar - não tem problema.',
             jogo: 'volume',
+            dificuldade: 'padrao',
             jogoProps: { alvo: 6, min: 0, max: 10 },
+          },
+          // NOVO - reforço conceitual da "situação comum" que a teoria
+          // acabou de descrever, sem mecânica nova.
+          {
+            tipo: 'jogo',
+            titulo: 'Ninguém te ouve na chamada',
+            instructions: 'Escolha a resposta certa.',
+            jogo: 'quiz',
+            dificuldade: 'desafio',
+            jogoProps: {
+              pergunta: 'Você está numa videochamada e ninguém consegue te ouvir. O que checar primeiro?',
+              alternativas: [
+                { id: 'volume', texto: 'Se o volume não está baixo demais ou no mudo', correta: true },
+                { id: 'internet', texto: 'Trocar de provedor de internet', correta: false },
+                { id: 'reiniciar', texto: 'Desligar o computador na tomada direto', correta: false },
+              ],
+            },
           },
         ],
       },
@@ -835,8 +1376,35 @@ export const MODULOS = [
         etapas: [
           {
             titulo: 'Som de forma individual',
-            conteudo: `<p>Os fones de ouvido cumprem uma função parecida com a das caixas de som, mas de forma mais individual e discreta - úteis, por exemplo, para ouvir uma videochamada sem incomodar outras pessoas na casa.</p>
-<p>Existem diferentes tipos de conexão, dependendo do modelo: alguns usam um cabo com entrada específica, outros se conectam sem fio.</p>`,
+            conteudo: `<p>Os fones de ouvido cumprem uma função parecida com a das caixas de som, mas de forma mais individual e discreta - úteis, por exemplo, para ouvir uma videochamada tarde da noite sem incomodar quem está dormindo na casa.</p>
+<p>Existem diferentes tipos de conexão, dependendo do modelo: alguns usam um cabo com entrada específica (chamada de P2), outros se conectam sem fio, como o mouse e o teclado sem fio que você já conheceu.</p>`,
+          },
+          // NOVO - o FoneGame (abaixo) não aceita configuração de fora
+          // (ver observação no cabeçalho do arquivo), então não dá pra
+          // criar uma versão "fácil" dele. Esse quiz funciona como
+          // aquecimento conceitual antes do desafio visual de verdade.
+          {
+            tipo: 'jogo',
+            titulo: 'De olho no detalhe',
+            instructions: 'Escolha a resposta certa.',
+            jogo: 'quiz',
+            dificuldade: 'demonstracao',
+            jogoProps: {
+              pergunta: 'A entrada do fone (P2) e a entrada de energia do notebook costumam ser parecidas. O que ajuda a diferenciar as duas?',
+              alternativas: [
+                { id: 'simbolo', texto: 'O símbolo de fone de ouvido gravado ao lado da entrada certa', correta: true },
+                { id: 'cor', texto: 'A cor do plástico do notebook', correta: false },
+                { id: 'tamanho', texto: 'Não tem como saber, é só tentar', correta: false },
+              ],
+            },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Encontre a entrada certa',
+            instructions: 'Arraste o plugue do fone até a entrada certa - repare no símbolo de fone de ouvido ao lado dela, bem parecido com a entrada de energia, que é redonda também.',
+            jogo: 'fone',
+            dificuldade: 'desafio',
+            jogoProps: {},
           },
         ],
       },
@@ -847,7 +1415,32 @@ export const MODULOS = [
           {
             titulo: 'Vendo e sendo ouvido',
             conteudo: `<p>A webcam é uma pequena câmera, geralmente localizada na parte de cima do monitor ou embutida no notebook, usada para videochamadas e fotos. O microfone capta o som da sua voz, permitindo que outras pessoas te ouçam durante uma chamada.</p>
-<p>Um cuidado importante: muitos aparelhos têm uma pequena luz que acende quando a câmera ou o microfone estão em uso - vale a pena conferir essa luz, pra ter mais tranquilidade sobre sua privacidade.</p>`,
+<p>Um cuidado importante: muitos aparelhos têm uma pequena luz que acende quando a câmera está em uso - vale a pena conferir essa luz antes de uma chamada, ou sempre que quiser ter mais tranquilidade sobre sua privacidade.</p>`,
+            dica: 'Da próxima vez que abrir um aplicativo de videochamada, repare nessa luzinha acendendo - é um bom hábito conferir isso sempre.',
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Ache a luz indicadora',
+            instructions: 'Clique na luzinha que indica que a webcam está ligada - não na lente da câmera.',
+            jogo: 'webcam-luz',
+            dificuldade: 'padrao',
+            jogoProps: {},
+          },
+          // NOVO - reforço do hábito descrito na teoria, sem mecânica nova.
+          {
+            tipo: 'jogo',
+            titulo: 'Antes de uma chamada',
+            instructions: 'Escolha a resposta certa.',
+            jogo: 'quiz',
+            dificuldade: 'desafio',
+            jogoProps: {
+              pergunta: 'Você vai entrar numa videochamada. O que vale a pena conferir antes, por privacidade?',
+              alternativas: [
+                { id: 'luz', texto: 'Se a luzinha da webcam só acende quando ela está mesmo em uso', correta: true },
+                { id: 'senha', texto: 'Trocar a senha do computador', correta: false },
+                { id: 'reiniciar', texto: 'Reiniciar o roteador de internet', correta: false },
+              ],
+            },
           },
         ],
       },
@@ -857,13 +1450,14 @@ export const MODULOS = [
         etapas: [
           {
             titulo: 'Aos poucos, sem pressa',
-            conteudo: `<p>Existem diversos tipos de cabos e conexões diferentes no universo dos computadores, cada um com uma função específica - não é necessário conhecer todos de uma vez. Aos poucos, à medida que for usando o computador no dia a dia, você vai naturalmente identificando qual cabo serve para qual finalidade.</p>`,
+            conteudo: `<p>Existem diversos tipos de cabos e conexões diferentes no universo dos computadores, cada um com uma função específica - não é necessário conhecer todos de uma vez. Aos poucos, à medida que for usando o computador no dia a dia, você vai naturalmente identificando qual cabo serve para qual finalidade, só de reparar no formato de cada conector.</p>`,
           },
           {
             tipo: 'jogo',
             titulo: 'Reconhecendo cabos',
             instructions: 'Clique no cabo USB entre as opções abaixo.',
             jogo: 'identificar-cabo',
+            dificuldade: 'padrao',
             jogoProps: {},
           },
         ],
@@ -878,8 +1472,26 @@ export const MODULOS = [
   <li><strong>Ligar</strong>: aperte o botão indicado no gabinete ou notebook e aguarde o computador carregar - esse processo pode levar alguns instantes, e isso é normal.</li>
   <li><strong>Desligar corretamente</strong>: o ideal é usar a opção de desligar disponível nos menus do sistema, em vez de apertar o botão físico ou tirar da tomada.</li>
   <li><strong>Reiniciar</strong>: às vezes o computador precisa ser desligado e ligado novamente para resolver pequenos travamentos.</li>
-  <li><strong>Identificar quando travou</strong>: se a tela parar de responder por um tempo, vale esperar um pouco antes de tomar qualquer decisão mais drástica.</li>
 </ul>`,
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Qual é a forma certa?',
+            instructions: 'Escolha a forma correta de desligar o computador.',
+            jogo: 'clicar',
+            dificuldade: 'padrao',
+            jogoProps: {
+              layout: 'grade',
+              alvos: [
+                { id: 'menu', label: '🖥️ Usar o menu Desligar do sistema', correto: true },
+                { id: 'tomada', label: '🔌 Tirar o cabo da tomada direto', correto: false },
+                { id: 'segurar', label: '⏻ Segurar o botão de ligar até apagar', correto: false },
+              ],
+            },
+          },
+          {
+            titulo: 'Quando a tela "trava"',
+            conteudo: `<p>Se a tela parar de responder por um tempo, vale esperar um pouco antes de tomar qualquer decisão mais drástica, como desligar na força - muitas vezes o computador só está processando algo mais pesado e volta a responder sozinho em instantes.</p>`,
             dica: 'Você já teve alguma experiência com um aparelho eletrônico que "travou" temporariamente, como uma TV ou um controle remoto? Como resolveu?',
           },
         ],
@@ -895,8 +1507,26 @@ export const MODULOS = [
   <li><strong>Wi-Fi</strong>: conexão sem fio à internet, muito comum em casas e estabelecimentos.</li>
   <li><strong>Cabo de rede</strong>: uma conexão física à internet, usada em alguns computadores de mesa.</li>
   <li>O sistema costuma indicar se você está conectado com um ícone específico, geralmente num cantinho da tela.</li>
-  <li>Se páginas não carregam ou mensagens não são enviadas, pode ser sinal de que a conexão caiu - algo que acontece até com os usuários mais experientes.</li>
 </ul>`,
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Reconhecendo o ícone de conexão',
+            instructions: 'Dentre as opções, escolha o ícone que indica que você está conectado à internet (o de sinal cheio e colorido).',
+            jogo: 'clicar',
+            dificuldade: 'padrao',
+            jogoProps: {
+              layout: 'linha',
+              alvos: [
+                { id: 'sem-sinal', label: '📶 Sinal apagado/fraco', correto: false },
+                { id: 'conectado', label: '📶 Sinal cheio e ativo', correto: true },
+                { id: 'bateria', label: '🔋 Ícone de bateria', correto: false },
+              ],
+            },
+          },
+          {
+            titulo: 'Quando a conexão cai',
+            conteudo: `<p>Se páginas não carregam ou mensagens não são enviadas, pode ser sinal de que a conexão caiu - algo que acontece até com os usuários mais experientes. Normalmente, esperar um instante ou reiniciar o roteador (o aparelho que distribui o Wi-Fi em casa) já resolve.</p>`,
           },
         ],
       },
@@ -913,6 +1543,56 @@ export const MODULOS = [
   <li><strong>Organizar os fios</strong>: evita tropeços e conexões soltas sem querer.</li>
   <li><strong>Transportar o notebook com cuidado</strong>: vale usar uma bolsa ou capa protetora.</li>
 </ul>`,
+          },
+          // SUBSTITUÍDO - a versão anterior pedia pra "laçar" vários
+          // itens certos ao mesmo tempo (selecionar-arrastando), o que
+          // exige entender uma mecânica de seleção múltipla ANTES de
+          // conseguir pensar no conteúdo - carga cognitiva dupla,
+          // ruim pro público. Trocado por associação simples (mesma
+          // mecânica 'arrastar' já usada e comprovada em 1-1 a 1-5):
+          // um hábito de cada vez, arrasta pro rótulo "certo" ou
+          // "errado". Foco fica só na dúvida real, não na mecânica.
+          {
+            tipo: 'jogo',
+            titulo: 'Esse hábito está certo?',
+            instructions: 'Arraste o hábito abaixo até o rótulo certo.',
+            jogo: 'arrastar',
+            dificuldade: 'demonstracao',
+            jogoProps: {
+              item: { id: 'pano-seco', label: '🧽 Limpar com pano seco e macio' },
+              zonas: [
+                { id: 'certo', label: '✅ Jeito certo', correta: true },
+                { id: 'errado', label: '❌ Jeito errado', correta: false },
+              ],
+            },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'E esse outro?',
+            instructions: 'Arraste o hábito abaixo até o rótulo certo.',
+            jogo: 'arrastar',
+            dificuldade: 'padrao',
+            jogoProps: {
+              item: { id: 'puxar-fio', label: '🪢 Puxar o cabo pelo fio' },
+              zonas: [
+                { id: 'certo', label: '✅ Jeito certo', correta: false },
+                { id: 'errado', label: '❌ Jeito errado', correta: true },
+              ],
+            },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Mais um',
+            instructions: 'Arraste o hábito abaixo até o rótulo certo.',
+            jogo: 'arrastar',
+            dificuldade: 'desafio',
+            jogoProps: {
+              item: { id: 'liquido-perto', label: '🥤 Deixar um copo de líquido do lado' },
+              zonas: [
+                { id: 'certo', label: '✅ Jeito certo', correta: false },
+                { id: 'errado', label: '❌ Jeito errado', correta: true },
+              ],
+            },
           },
           {
             titulo: 'Para lembrar',

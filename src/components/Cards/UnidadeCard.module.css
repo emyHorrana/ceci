@@ -74,6 +74,39 @@
   border: 1.5px solid var(--color-border);
 }
 
+/* Selo de status pro aluno atual (ver UnidadeCard.jsx) - visualmente
+   separado do tierBadge (que é fixo, sobre a Unidade em si; este é
+   sobre O ALUNO em relação a ela). */
+.statusBadge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 2px 10px;
+  border-radius: var(--radius-pill);
+  white-space: nowrap;
+}
+
+.statusBadge[data-status='atual'] {
+  background: var(--color-yellow-deep);
+  color: var(--color-white);
+}
+
+.statusBadge[data-status='concluida'] {
+  background: var(--color-success-bg);
+  color: var(--color-success);
+}
+
+.statusBadge[data-status='pendente'] {
+  background: var(--color-warning-bg);
+  color: var(--color-warning);
+}
+
+/* Borda de destaque no card inteiro quando é a Unidade recomendada
+   agora - reforça o selo sem depender só da cor do texto. */
+.card[data-status='atual'] {
+  border-color: var(--color-yellow-deep);
+  box-shadow: 0 0 0 2px var(--color-yellow-bg);
+}
+
 .meta {
   font-size: 0.875rem;
   color: var(--color-text-muted);

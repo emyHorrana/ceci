@@ -5,6 +5,15 @@
   gap: 1.75rem;
 }
 
+.avisoSomReal {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  text-align: center;
+  max-width: 320px;
+  margin: 0;
+}
+
 .painel {
   display: flex;
   align-items: flex-end;

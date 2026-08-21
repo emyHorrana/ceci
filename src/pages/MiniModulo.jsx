@@ -29,6 +29,11 @@ import { IdentificarCaboGame } from '../components/Game/games/IdentificarCaboGam
 import { QuizGame } from '../components/Game/games/QuizGame';
 import { AlvoMovelGame } from '../components/Game/games/AlvoMovelGame';
 import { SelecionarArrastandoGame } from '../components/Game/games/SelecionarArrastandoGame';
+import { PressionarLetraGame } from '../components/Game/games/PressionarLetraGame';
+import { MonitorGame } from '../components/Game/games/MonitorGame';
+import { FoneGame } from '../components/Game/games/FoneGame';
+import { WebcamLuzGame } from '../components/Game/games/WebcamLuzGame';
+import { MonitorEGabineteGame } from '../components/Game/games/MonitorEGabineteGame';
 import styles from './MiniModulo.module.css';
 
 // Registro das mecânicas disponíveis pro campo `jogo` de uma etapa em
@@ -50,6 +55,11 @@ const JOGOS = {
   quiz: QuizGame,
   'alvo-movel': AlvoMovelGame,
   'selecionar-arrastando': SelecionarArrastandoGame,
+  'pressionar-letra': PressionarLetraGame,
+  monitor: MonitorGame,
+  fone: FoneGame,
+  'webcam-luz': WebcamLuzGame,
+  'monitor-gabinete': MonitorEGabineteGame,
 };
 
 export default function MiniModulo() {

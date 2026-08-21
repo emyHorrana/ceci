@@ -54,6 +54,39 @@ router.post('/responder', async (req, res) => {
 });
 
 /*
+  Devolve o domínio (L do BKT) de TODAS as Unidades já tentadas pelo
+  aluno - { 'U1.1': 0.82, 'U1.2': 0.31, ... }. Unidades nunca tentadas
+  simplesmente não aparecem no objeto.
+
+  Existia só a versão interna disso dentro do handler de
+  /proxima-unidade (pra alimentar a FilaDePendencias) - esta rota
+  expõe o mesmo dado pro front, que precisa da visão completa (pintar
+  cada Unidade da trilha como concluída/pendente/não tentada), não só
+  da próxima única recomendação.
+ */
+router.get('/perfis/:userId', async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const { data: perfis, error } = await supabase
+      .from('perfis_aluno')
+      .select('module_id, dominio')
+      .eq('user_id', userId);
+
+    if (error) throw error;
+
+    const dominiosPorUnidade = Object.fromEntries(
+      (perfis || []).map((p) => [p.module_id, p.dominio])
+    );
+
+    res.json({ dominiosPorUnidade, limiar: FilaDePendencias.LIMIAR_PADRAO });
+  } catch (err) {
+    console.error('[GET /api/licao/perfis/:userId]', err);
+    res.status(500).json({ error: 'Erro ao buscar perfis do aluno.' });
+  }
+});
+
+/*
   Devolve a próxima Unidade que o aluno deveria estudar: uma pendência
   (Unidade já tentada e abaixo do limiar) tem prioridade sobre a
   próxima Unidade nova da sequência - ver FilaDePendencias.js.

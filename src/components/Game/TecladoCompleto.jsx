@@ -5,7 +5,7 @@
 //
 // CONVIVE com o Teclado.jsx simplificado, não o substitui: o
 // simplificado continua sendo o certo pra quem está vendo um teclado
-// pela primeira vez (menos informação na tela, mais fácil de not se
+// pela primeira vez (menos informação na tela, mais fácil de não se
 // perder) - ver EspacoParaAvancar/PressionarTeclaGame. Este aqui entra
 // onde é preciso apontar uma tecla específica de letra/número/símbolo,
 // como nos atalhos (AtalhoTecladoGame), que precisam mostrar Ctrl E a
@@ -21,6 +21,13 @@
 //
 // PLACEHOLDER DE ARTE: mesma lógica do Teclado.jsx - são só retângulos
 // em CSS, esperando ilustração de verdade da designer.
+//
+// IMPORTANTE sobre proporção: cada `.linha` é um flex row onde as
+// teclas dividem 100% da largura entre si (peso = flex-grow). Isso só
+// fica fiel à realidade se cada fileira tiver VÁRIAS teclas - uma
+// fileira com uma tecla só "engole" a largura inteira. Por isso a Esc
+// mora na MESMA fileira que F1-F12 (nunca sozinha), e todo o cluster
+// de navegação também fica em grupos de 2-3 teclas, nunca isolado.
 //
 // Props:
 //   teclasDestacadas (array de e.code, obrigatório) - quais teclas
@@ -40,7 +47,19 @@ import styles from './TecladoCompleto.module.css';
 // mais largas; Espaço é a mais larga de todas).
 const FILEIRAS = [
   [
-    { code: 'Escape', label: 'esc', peso: 1 },
+    { code: 'Escape', label: 'esc', peso: 1.4 },
+    { code: 'F1', label: 'F1', peso: 1 },
+    { code: 'F2', label: 'F2', peso: 1 },
+    { code: 'F3', label: 'F3', peso: 1 },
+    { code: 'F4', label: 'F4', peso: 1 },
+    { code: 'F5', label: 'F5', peso: 1 },
+    { code: 'F6', label: 'F6', peso: 1 },
+    { code: 'F7', label: 'F7', peso: 1 },
+    { code: 'F8', label: 'F8', peso: 1 },
+    { code: 'F9', label: 'F9', peso: 1 },
+    { code: 'F10', label: 'F10', peso: 1 },
+    { code: 'F11', label: 'F11', peso: 1 },
+    { code: 'F12', label: 'F12', peso: 1 },
   ],
   [
     { code: 'Backquote', label: "' `", peso: 1 },
@@ -113,69 +132,145 @@ const FILEIRAS = [
   ],
 ];
 
-// Numpad - fica à direita do bloco principal num teclado completo de
-// verdade. Simplificado: sem NumLock/operadores/Enter próprio, grid
-// simples de 3 colunas em vez do formato real (que tem o 0 ocupando
-// duas colunas e o + ocupando duas linhas) - o objetivo é mostrar que
-// "tem números dos dois lados", não replicar cada tecla à risca.
-const NUMPAD = [
+// Cluster de navegação - antes só existia no Teclado.jsx simplificado
+// (Delete + setas). Aqui é o bloco completo, como num teclado
+// completo de verdade: Insert/Delete e Home/End numa dupla de
+// fileiras, PgUp/PgDn embaixo delas, e as setas em T invertido por
+// último. Fica ENTRE o bloco principal e o numpad.
+const NAVEGACAO = [
   [
-    { code: 'Numpad7', label: '7' },
-    { code: 'Numpad8', label: '8' },
-    { code: 'Numpad9', label: '9' },
+    { code: 'Insert', label: 'ins' },
+    { code: 'Home', label: 'home' },
+    { code: 'PageUp', label: 'pg↑' },
   ],
   [
-    { code: 'Numpad4', label: '4' },
-    { code: 'Numpad5', label: '5' },
-    { code: 'Numpad6', label: '6' },
-  ],
-  [
-    { code: 'Numpad1', label: '1' },
-    { code: 'Numpad2', label: '2' },
-    { code: 'Numpad3', label: '3' },
-  ],
-  [
-    { code: 'Numpad0', label: '0' },
-    { code: 'NumpadDecimal', label: ',' },
+    { code: 'Delete', label: 'del' },
+    { code: 'End', label: 'end' },
+    { code: 'PageDown', label: 'pg↓' },
   ],
 ];
+
+// Numpad - fica à direita de tudo, como num teclado completo de
+// verdade. Layout de 4 colunas x 5 fileiras: NumLock/operadores em
+// cima, "+" e Enter ocupando duas fileiras de altura (como nos
+// numpads reais), e "0" ocupando duas colunas na última fileira.
+const NUMPAD_TOPO = [
+  { code: 'NumLock', label: 'num' },
+  { code: 'NumpadDivide', label: '/' },
+  { code: 'NumpadMultiply', label: '*' },
+  { code: 'NumpadSubtract', label: '-' },
+];
+const NUMPAD_MEIO = [
+  { code: 'Numpad7', label: '7' },
+  { code: 'Numpad8', label: '8' },
+  { code: 'Numpad9', label: '9' },
+  { code: 'Numpad4', label: '4' },
+  { code: 'Numpad5', label: '5' },
+  { code: 'Numpad6', label: '6' },
+  { code: 'Numpad1', label: '1' },
+  { code: 'Numpad2', label: '2' },
+  { code: 'Numpad3', label: '3' },
+];
+
+function Tecla({ tecla, destacadas, className = '' }) {
+  return (
+    <span
+      className={`${styles.tecla} ${className} ${destacadas.includes(tecla.code) ? styles.destacada : ''}`}
+      style={tecla.peso ? { flexGrow: tecla.peso } : undefined}
+    >
+      {tecla.label}
+    </span>
+  );
+}
 
 export function TecladoCompleto({ teclasDestacadas = [] }) {
   return (
     <div className={styles.wrapper}>
+      {/* Bloco principal - fileiras de largura total, cada tecla
+          dividindo espaço proporcionalmente (peso) com suas vizinhas
+          na MESMA fileira. Nunca deixar uma fileira com 1 tecla só. */}
       <div className={styles.teclado} aria-hidden>
         {FILEIRAS.map((fileira, i) => (
           <div key={i} className={styles.linha}>
             {fileira.map((tecla) => (
-              <span
-                key={tecla.code}
-                className={`${styles.tecla} ${teclasDestacadas.includes(tecla.code) ? styles.destacada : ''}`}
-                style={{ flexGrow: tecla.peso }}
-              >
-                {tecla.label}
-              </span>
+              <Tecla key={tecla.code} tecla={tecla} destacadas={teclasDestacadas} />
             ))}
           </div>
         ))}
       </div>
 
-      {/* Numpad - números "do outro lado" também, como num teclado
-          completo de verdade. Simplificado (sem NumLock/operadores/
-          Enter próprio, sem espalhar o 0 por duas colunas) - o
-          objetivo aqui é mostrar que existe, não replicar cada tecla. */}
-      <div className={styles.numpad} aria-hidden>
-        {NUMPAD.map((fileira, i) => (
-          <div key={i} className={styles.numpadLinha}>
+      {/* Cluster de navegação - entre o bloco principal e o numpad,
+          como num teclado completo de verdade. */}
+      <div className={styles.navegacao} aria-hidden>
+        {NAVEGACAO.map((fileira, i) => (
+          <div key={i} className={styles.navLinha}>
             {fileira.map((tecla) => (
-              <span
-                key={tecla.code}
-                className={`${styles.tecla} ${teclasDestacadas.includes(tecla.code) ? styles.destacada : ''}`}
-              >
-                {tecla.label}
-              </span>
+              <Tecla key={tecla.code} tecla={tecla} destacadas={teclasDestacadas} className={styles.navTecla} />
             ))}
           </div>
         ))}
+
+        {/* Setas em T invertido: cima sozinha em cima, esquerda/baixo/
+            direita numa fileira embaixo - é assim de verdade. */}
+        <div className={styles.setasBloco}>
+          <div className={styles.setasLinhaCima}>
+            <Tecla
+              tecla={{ code: 'ArrowUp', label: '↑' }}
+              destacadas={teclasDestacadas}
+              className={styles.navTecla}
+            />
+          </div>
+          <div className={styles.setasLinhaBaixo}>
+            <Tecla tecla={{ code: 'ArrowLeft', label: '←' }} destacadas={teclasDestacadas} className={styles.navTecla} />
+            <Tecla tecla={{ code: 'ArrowDown', label: '↓' }} destacadas={teclasDestacadas} className={styles.navTecla} />
+            <Tecla tecla={{ code: 'ArrowRight', label: '→' }} destacadas={teclasDestacadas} className={styles.navTecla} />
+          </div>
+        </div>
+      </div>
+
+      {/* Numpad - grid 4x5 de verdade (não fileiras isoladas), pra dar
+          conta do "+" e do Enter ocupando duas linhas, e do "0"
+          ocupando duas colunas, como num numpad real. */}
+      <div className={styles.numpad} aria-hidden>
+        {NUMPAD_TOPO.map((tecla) => (
+          <span
+            key={tecla.code}
+            className={`${styles.tecla} ${styles.numpadTecla} ${teclasDestacadas.includes(tecla.code) ? styles.destacada : ''}`}
+          >
+            {tecla.label}
+          </span>
+        ))}
+
+        {NUMPAD_MEIO.map((tecla) => (
+          <span
+            key={tecla.code}
+            className={`${styles.tecla} ${styles.numpadTecla} ${teclasDestacadas.includes(tecla.code) ? styles.destacada : ''}`}
+          >
+            {tecla.label}
+          </span>
+        ))}
+
+        <span
+          className={`${styles.tecla} ${styles.numpadTecla} ${styles.numpadAdd} ${teclasDestacadas.includes('NumpadAdd') ? styles.destacada : ''}`}
+        >
+          +
+        </span>
+
+        <span
+          className={`${styles.tecla} ${styles.numpadTecla} ${styles.numpadZero} ${teclasDestacadas.includes('Numpad0') ? styles.destacada : ''}`}
+        >
+          0
+        </span>
+        <span
+          className={`${styles.tecla} ${styles.numpadTecla} ${teclasDestacadas.includes('NumpadDecimal') ? styles.destacada : ''}`}
+        >
+          ,
+        </span>
+        <span
+          className={`${styles.tecla} ${styles.numpadTecla} ${styles.numpadEnter} ${teclasDestacadas.includes('NumpadEnter') ? styles.destacada : ''}`}
+        >
+          ↵
+        </span>
       </div>
     </div>
   );

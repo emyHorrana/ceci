@@ -1,21 +1,24 @@
 .wrapper {
   display: flex;
   align-items: flex-start;
-  gap: 12px;
+  gap: 10px;
   width: 100%;
-  max-width: 38rem;
-  padding: 1.5rem;
+  max-width: 52rem;
+  padding: 1.25rem;
   background: var(--color-yellow-bg);
   border-radius: var(--radius-lg);
   box-sizing: border-box;
+  overflow-x: auto;
 }
+
+/* Bloco principal */
 
 .teclado {
   display: flex;
   flex-direction: column;
   gap: 5px;
-  flex: 1;
-  min-width: 0;
+  flex: 3;
+  min-width: 30rem;
 }
 
 .linha {
@@ -26,7 +29,8 @@
 .tecla {
   flex-grow: 1;
   flex-basis: 0;
-  height: 24px;
+  min-width: 22px;
+  height: 26px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -34,36 +38,97 @@
   border: 1px solid var(--color-border);
   border-radius: 5px;
   font-family: var(--font-body);
-  font-size: 0.6rem;
+  font-size: 0.62rem;
   font-weight: 600;
   color: var(--color-text-secondary);
   text-transform: uppercase;
   white-space: nowrap;
   overflow: hidden;
+  padding: 0 2px;
 }
 
-/* Numpad - bloco separado à direita, como num teclado completo de
-   verdade (não fica junto do bloco principal). */
-.numpad {
+/* Fileira de função (Esc + F1-F12) fica um pouco mais baixa e com
+   fonte menor, do jeito que ela é numa fileira de teclado real. */
+.linha:first-child .tecla {
+  height: 20px;
+  font-size: 0.55rem;
+}
+
+/* Cluster de navegação (Insert/Delete, Home/End, PgUp/PgDn, setas) */
+
+.navegacao {
   display: flex;
   flex-direction: column;
   gap: 5px;
-  padding-left: 12px;
-  padding-top: 24px;
-  border-left: 1px dashed var(--color-border);
+  flex: 0 0 auto;
+  padding-top: 20px;
 }
 
-.numpadLinha {
+.navLinha {
   display: flex;
   gap: 4px;
 }
 
-.numpadLinha .tecla {
-  width: 24px;
-  height: 24px;
+.navTecla {
+  width: 34px;
+  height: 26px;
   flex-grow: 0;
   flex-basis: auto;
   text-transform: none;
+}
+
+.setasBloco {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.setasLinhaCima {
+  display: flex;
+  justify-content: center;
+}
+
+.setasLinhaBaixo {
+  display: flex;
+  gap: 4px;
+}
+
+/* Numpad */
+/* Grid 4x5 de verdade (não fileiras isoladas), pra dar conta do "+" e
+   do Enter ocupando duas linhas, e do "0" ocupando duas colunas -
+   igual a um numpad real, não só "números dos dois lados". */
+
+.numpad {
+  display: grid;
+  grid-template-columns: repeat(4, 26px);
+  grid-auto-rows: 26px;
+  grid-auto-flow: row dense;
+  gap: 4px;
+  padding-left: 10px;
+  padding-top: 20px;
+  border-left: 1px dashed var(--color-border);
+  flex: 0 0 auto;
+}
+
+.numpadTecla {
+  flex-grow: 0;
+  flex-basis: auto;
+  text-transform: none;
+}
+
+.numpadAdd {
+  grid-column: 4;
+  grid-row: 2 / span 2;
+}
+
+.numpadEnter {
+  grid-column: 4;
+  grid-row: 4 / span 2;
+}
+
+.numpadZero {
+  grid-column: 1 / span 2;
 }
 
 /* Estado destacado - a(s) tecla(s) que a pessoa deve apertar agora.

@@ -292,7 +292,7 @@ export function GameMoment({
       {attempts > 0 && status === 'jogando' && (
         <div className={styles.attemptsRow}>
           <span className={styles.attemptsText}>
-            Tentativa {attempts + 1}
+            Tentativa {attempts} de {maxAttempts}
           </span>
           {canSkip && (
             <ButtonOutline size="small" onClick={handleSkip}>

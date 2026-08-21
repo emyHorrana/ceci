@@ -92,8 +92,20 @@ export default function UnidadeCheckpoint() {
 
   // Pra onde o botão "Continuar" leva: o primeiro mini-módulo da Unidade
   // recomendada, se houver uma - senão cai no fallback (dashboard).
-  const proximoDestino = proxima?.unidade?.miniModulos?.[0]?.id
-    ? `/mini-modulo/${proxima.unidade.miniModulos[0].id}`
+  //
+  // CORRIGIDO (21/08): `proxima.unidade` vem do espelho do backend
+  // (server/lib/adaptive-bkt/data/unidades.js), onde `miniModulos` é
+  // um array de STRINGS (ex: ['1-3', '1-5']) - não dos objetos
+  // completos que a `UNIDADES` do front tem. `miniModulos[0].id`
+  // sempre dava `undefined` (string não tem `.id`), então esse botão
+  // nunca navegava de verdade - sempre caía no fallback. Resolvendo
+  // pela `UNIDADES` local (já importada) em vez de confiar no shape
+  // do backend pra isso.
+  const unidadeRecomendada = proxima?.unidade?.id
+    ? UNIDADES.find((u) => u.id === proxima.unidade.id)
+    : null;
+  const proximoDestino = unidadeRecomendada?.miniModulos?.[0]?.id
+    ? `/mini-modulo/${unidadeRecomendada.miniModulos[0].id}`
     : null;
 
   return (

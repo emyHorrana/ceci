@@ -54,3 +54,11 @@ export async function responderQuestao({
 export async function getProximaUnidade(userId) {
   return await apiClient.get(`/licao/proxima-unidade/${userId}`);
 }
+
+// Retorna o domínio (L do BKT) de todas as Unidades já tentadas pelo
+// aluno - { dominiosPorUnidade: { 'U1.1': 0.82, ... }, limiar: 0.5 }.
+// Usado pra pintar a trilha inteira (concluída/pendente/não tentada),
+// não só a próxima Unidade recomendada.
+export async function getPerfisAluno(userId) {
+  return await apiClient.get(`/licao/perfis/${userId}`);
+}

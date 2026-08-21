@@ -8,7 +8,8 @@ import { ModuleCard } from '../components/Cards/ModuleCard';
 import { UnidadeCard } from '../components/Cards/UnidadeCard';
 import { ButtonPrimary } from '../components/Buttons/ButtonPrimary';
 import { MODULOS } from '../data/modulos';
-import { UNIDADES_POR_MODULO } from '../data/unidades';
+import { UNIDADES, UNIDADES_POR_MODULO } from '../data/unidades';
+import { getProximaUnidade, getPerfisAluno } from '../services/algorithmService';
 import styles from './Dashboard.module.css';
 
 const MOTIVATIONAL = [
@@ -24,9 +25,85 @@ export default function Dashboard() {
   const navigate                            = useNavigate();
   const [message]                           = useState(() => MOTIVATIONAL[Math.floor(Math.random() * MOTIVATIONAL.length)]);
 
+  // Trilha adaptativa: antes disso, esta tela só listava
+  // UNIDADES_POR_MODULO estático, sem nenhuma noção de progresso ou
+  // algoritmo (era literalmente o comentário que tinha aqui). Agora
+  // busca a recomendação de verdade (mesma chamada que
+  // UnidadeCheckpoint.jsx já usa) e o domínio de todas as Unidades já
+  // tentadas, pra pintar a trilha inteira - não só decidir uma única
+  // "próxima aula".
+  //
+  // `recomendacao` começa como `undefined` (ainda não buscou) e não
+  // `null`, de propósito - `null` é um resultado válido do algoritmo
+  // (currículo inteiro concluído, ver getProximaUnidade), então
+  // precisa de um terceiro estado pra "ainda carregando" não ser
+  // confundido com "tudo concluído".
+  const [recomendacao, setRecomendacao]         = useState(undefined);
+  const [dominiosPorUnidade, setDominiosPorUnidade] = useState({});
+  const [limiar, setLimiar]                     = useState(0.5);
+
   useEffect(() => {
     if (user?.id) fetchModules(user.id);
   }, [user?.id]);
+
+  useEffect(() => {
+    if (!user?.id) return;
+
+    let ativo = true;
+
+    Promise.all([getProximaUnidade(user.id), getPerfisAluno(user.id)])
+      .then(([proxima, perfis]) => {
+        if (!ativo) return;
+        setRecomendacao(proxima);
+        setDominiosPorUnidade(perfis?.dominiosPorUnidade || {});
+        setLimiar(perfis?.limiar ?? 0.5);
+      })
+      .catch((err) => {
+        // Se a trilha adaptativa falhar (rede, servidor fora), a tela
+        // não trava - só fica sem destaque/selo de status, do jeito
+        // que era antes desta mudança. As outras seções do dashboard
+        // (meta diária, módulos, conquistas) não dependem disso.
+        console.error('Erro ao buscar recomendação adaptativa:', err);
+      });
+
+    return () => { ativo = false; };
+  }, [user?.id]);
+
+  // Resolve o id fino que o backend devolve (server/lib/adaptive-bkt/
+  // data/unidades.js, miniModulos como array de strings) contra a
+  // UNIDADES rica do front (titulo, checkpoint, mini-módulos com
+  // etapas) - mesmo ajuste que fiz em UnidadeCheckpoint.jsx, mesmo
+  // motivo (ver comentário lá).
+  const unidadeRecomendada = recomendacao?.unidade?.id
+    ? UNIDADES.find((u) => u.id === recomendacao.unidade.id)
+    : null;
+
+  const proximaAulaDestino = unidadeRecomendada?.miniModulos?.[0]?.id
+    ? `/mini-modulo/${unidadeRecomendada.miniModulos[0].id}`
+    // enquanto a recomendação ainda não voltou (ou se a Unidade
+    // recomendada não tiver mini-módulo por algum motivo), cai no
+    // mesmo fallback fixo que a tela sempre teve - nunca deixa o
+    // botão sem destino nenhum.
+    : `/mini-modulo/${MODULOS[0].miniModulos[0].id}`;
+
+  const proximaAulaLabel = recomendacao?.motivo === 'reforco' ? 'Reforçar' : 'Próxima aula';
+
+  // Distingue "ainda não buscou" (recomendacao === undefined) de
+  // "buscou e o currículo está inteiro concluído" (recomendacao =
+  // { unidade: null, motivo: null, mensagem }, um objeto de verdade,
+  // não `null` puro - ver GET /api/licao/proxima-unidade/:userId).
+  const trilhaCarregada = recomendacao !== undefined;
+  const curriculoConcluido = trilhaCarregada && recomendacao.unidade === null;
+
+  // 'atual' pra Unidade recomendada agora, 'concluida'/'pendente' pra
+  // quem já foi tentada, e nada (undefined) pra quem ainda não foi -
+  // UnidadeCard só mostra o selo quando existe.
+  function statusDaUnidade(unidadeId) {
+    if (unidadeId === unidadeRecomendada?.id) return 'atual';
+    const dominio = dominiosPorUnidade[unidadeId];
+    if (dominio === undefined) return undefined;
+    return dominio >= limiar ? 'concluida' : 'pendente';
+  }
 
   // Antes, essa checagem era só "if (!user)" - o que prendia a pessoa
   // num "Carregando..." pra sempre quando a sessão não estava mais em
@@ -71,12 +148,20 @@ export default function Dashboard() {
             <div className={styles.mascoteSlotSmall} aria-hidden />
             <div className={styles.welcomeText}>
               <h2>Olá, {user.nome || 'Aluno(a)'}!</h2>
-              <p className={styles.welcomeMessage}>{message}</p>
+              {/* curriculoConcluido é o único momento em que a mensagem
+                  motivacional dá lugar ao parabéns - o botão de baixo
+                  cai no fallback fixo nesse caso (não tem "próxima" de
+                  verdade pra oferecer). */}
+              <p className={styles.welcomeMessage}>
+                {curriculoConcluido
+                  ? (recomendacao.mensagem || 'Você concluiu todo o currículo disponível até agora! 🎉')
+                  : message}
+              </p>
               <ButtonPrimary
-                onClick={() => navigate(`/mini-modulo/${MODULOS[0].miniModulos[0].id}`)}
+                onClick={() => navigate(proximaAulaDestino)}
                 size="small"
               >
-                Próxima aula
+                {proximaAulaLabel}
               </ButtonPrimary>
             </div>
           </div>
@@ -100,9 +185,13 @@ export default function Dashboard() {
           </div>
 
           {/* Trilha de aprendizagem: Módulo → Unidade → mini-módulos.
-              Ver data/unidades.js - agrupamento vindo da arquitetura
-              adaptativa (documento), só listagem por enquanto: não
-              depende de progresso nem do algoritmo (ainda não existe). */}
+              Ver data/unidades.js pro agrupamento em si. Cada
+              UnidadeCard agora recebe o `status` calculado a partir
+              da recomendação real do algoritmo adaptativo
+              (getProximaUnidade/getPerfisAluno, buscados no topo
+              deste componente) - 'atual' destaca a Unidade
+              recomendada, 'concluida'/'pendente' vêm do domínio (BKT)
+              já registrado, sem status nenhum = ainda não tentada. */}
           <div>
             <div className={styles.sectionHeader}>
               <h2>Trilha de aprendizagem</h2>
@@ -116,7 +205,7 @@ export default function Dashboard() {
                   </div>
                   <div className={styles.licoesGrid}>
                     {grupo.unidades.map((unidade) => (
-                      <UnidadeCard key={unidade.id} unidade={unidade} />
+                      <UnidadeCard key={unidade.id} unidade={unidade} status={statusDaUnidade(unidade.id)} />
                     ))}
                   </div>
                 </div>

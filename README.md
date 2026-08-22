@@ -26,7 +26,7 @@ A personagem guia **Ceci** atua como mediadora da experiência, tornando o apren
   O sistema identifica o nível do usuário por meio de interações (tempo de resposta, cliques, tentativas), sem necessidade de testes formais.
 
 - **IA como suporte pedagógico** *(via Gemini API)*
-  Reformulação de explicações, exemplos adicionais e adaptação de analogias conforme o perfil do usuário. Rota `/api/conteudo/reformular` integrada ao Gemini 2.0 Flash.
+  Reformulação de explicações, exemplos adicionais e adaptação de analogias conforme o perfil do usuário. Rota `/api/conteudo/reformular` integrada ao Gemini Flash (Gemini 3.6 Flash).
 
 ---
 
@@ -129,7 +129,7 @@ ceci/
 | `/api/licoes`                  | Listagem e desbloqueio de lições                   |
 | `/api/progresso`               | Registro de progresso e histórico                  |
 | `/api/conteudo`                | Etapas, desafios e revisões                        |
-| `/api/conteudo/reformular`     | Reformulação de explicações via Gemini 2.0 Flash   |
+| `/api/conteudo/reformular`     | Reformulação de explicações via Gemini Flash       |
 
 ### Banco de Dados
 - **Supabase** (PostgreSQL gerenciado)

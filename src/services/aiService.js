@@ -1,5 +1,5 @@
 // aiService.js
-// Serviço de integração com o Gemini 2.0 Flash (via backend CECI)
+// Serviço de integração com o Gemini Flash (via backend CECI)
 // para reformulação de explicações com analogias do cotidiano e tom acolhedor.
 
 import apiClient from './api';
@@ -15,12 +15,16 @@ import apiClient from './api';
  */
 export async function reformularExplicacao({ contexto, titulo, nivel, motivo = 'duvida' }) {
   try {
-    const data = await apiClient.post('/conteudo/reformular', {
-      contexto,
-      titulo,
-      nivel,
-      motivo,
-    });
+    const data = await apiClient.post(
+      '/conteudo/reformular',
+      {
+        contexto,
+        titulo,
+        nivel,
+        motivo,
+      },
+      { timeout: 45000 }
+    );
     return data;
   } catch (err) {
     console.error('[aiService.reformularExplicacao]', err);

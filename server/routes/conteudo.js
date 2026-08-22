@@ -53,8 +53,9 @@ Instruções para a sua resposta:
 4. Termine com uma frase curta de incentivo e carinho.
 5. Formate o texto usando HTML simples (<p>, <strong> para termos-chave). NÃO inclua blocos de código com crases (\`\`\`html) nem tags <html>/<body>.`;
 
+    const modelName = process.env.GEMINI_MODEL || 'gemini-3.5-flash-lite';
     const response = await ai.models.generateContent({
-      model: 'gemini-2.0-flash',
+      model: modelName,
       contents: prompt,
     });
 

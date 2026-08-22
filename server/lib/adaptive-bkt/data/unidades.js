@@ -12,12 +12,12 @@
 // passaram a ter etapas de jogo.
 
 const unidades = [
-  // Módulo 1 — Mouse (Tier 0)
+  // Módulo 1 - Mouse (Tier 0)
   { id: 'U1.1', moduloId: '1', tier: 0, ordem: 0, prerequisitos: [], miniModulos: ['1-1', '1-2'], temJogo: true },
   { id: 'U1.2', moduloId: '1', tier: 0, ordem: 1, prerequisitos: ['U1.1'], miniModulos: ['1-3', '1-5'], temJogo: true },
   { id: 'U1.3', moduloId: '1', tier: 0, ordem: 2, prerequisitos: ['U1.2'], miniModulos: ['1-4', '1-6'], temJogo: true },
 
-  // Módulo 2 — Teclado (Tier 1, exceto U2.7)
+  // Módulo 2 - Teclado (Tier 1, exceto U2.7)
   { id: 'U2.1', moduloId: '2', tier: 1, ordem: 0, prerequisitos: [], miniModulos: ['2-1', '2-2'], temJogo: true },
   { id: 'U2.2', moduloId: '2', tier: 1, ordem: 1, prerequisitos: ['U2.1'], miniModulos: ['2-3', '2-4', '2-5'], temJogo: true },
   { id: 'U2.3', moduloId: '2', tier: 1, ordem: 2, prerequisitos: ['U2.2'], miniModulos: ['2-6', '2-7'], temJogo: true },
@@ -27,7 +27,7 @@ const unidades = [
   { id: 'U2.7', moduloId: '2', tier: 2, ordem: 6, prerequisitos: [], miniModulos: ['2-14'], temJogo: true }, // Atalhos: extra, não bloqueia
   { id: 'U2.8', moduloId: '2', tier: 1, ordem: 7, prerequisitos: ['U2.6'], miniModulos: ['2-15'], temJogo: true },
 
-  // Módulo 3 — Hardware (Tier 2)
+  // Módulo 3 - Hardware (Tier 2)
   { id: 'U3.1', moduloId: '3', tier: 2, ordem: 0, prerequisitos: [], miniModulos: ['3-1', '3-2'], temJogo: true },
   { id: 'U3.2', moduloId: '3', tier: 2, ordem: 1, prerequisitos: ['U3.1'], miniModulos: ['3-3', '3-9'], temJogo: true },
   { id: 'U3.3', moduloId: '3', tier: 2, ordem: 2, prerequisitos: ['U3.1'], miniModulos: ['3-4'], temJogo: true },

@@ -8,7 +8,7 @@ const PerfilAluno = require('./PerfilAluno');
 
 /*
   Junta as 7 classes de backend numa única API.
-  (RastreadorEventos fica de fora — roda só no front-end.)
+  (RastreadorEventos fica de fora - roda só no front-end.)
  
   Uso (dentro do server, ex: server/routes/licao.js):
  

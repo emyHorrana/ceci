@@ -119,7 +119,7 @@ export default function MiniModulo() {
   // acima). Busca uma vez por Unidade/usuário, não por etapa.
   const [classificacaoPorUnidade, setClassificacaoPorUnidade] = useState({});
 
-  // Reformulação de explicações com IA (Gemini 2.0 Flash)
+  // Reformulação de explicações com IA (Gemini)
   const [explicacoesIA, setExplicacoesIA] = useState({});
   const [mostrarExplicacaoIA, setMostrarExplicacaoIA] = useState({});
   const [carregandoIA, setCarregandoIA] = useState(false);

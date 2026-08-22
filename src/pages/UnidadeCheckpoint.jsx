@@ -154,7 +154,7 @@ export default function UnidadeCheckpoint() {
           <div className={styles.desfecho} data-tipo="reforco">
             <span className={styles.desfechoEmoji}>🌱</span>
             <h2>Sem problemas, vamos praticar mais um pouco!</h2>
-            <p>&quot;{unidade.titulo}&quot; vai continuar na sua trilha pra você treinar no seu tempo — cada repetição ajuda a fixar com segurança! 💪</p>
+            <p>&quot;{unidade.titulo}&quot; vai continuar na sua trilha pra você treinar no seu tempo. Cada repetição ajuda a fixar com segurança! 💪</p>
             {proximoDestino ? (
               <ButtonPrimary onClick={() => navigate(proximoDestino)}>
                 Continuar praticando: {proxima.unidade.titulo}

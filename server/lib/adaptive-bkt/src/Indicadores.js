@@ -22,7 +22,7 @@ class Indicadores {
    abandonado
    */
   static calcularPersistencia(tentativas, tentativasAposErro, abandonado) {
-    if (abandonado) return 0.2; // desistiu, mas não zera — pode ter tentado antes
+    if (abandonado) return 0.2; // desistiu, mas não zera - pode ter tentado antes
     const base = 0.6;
     const bonus = Math.min(tentativasAposErro, 3) * 0.1; // até +0.3 por insistir
     return Indicadores.normalizar(base + bonus, 0, 1);

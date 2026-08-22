@@ -1,6 +1,6 @@
 /*
 Decide a próxima ação pedagógica com base no nível classificado.
-Isso é o que o BKT clássico NÃO faz sozinho — ele só estima
+Isso é o que o BKT clássico NÃO faz sozinho - ele só estima
 probabilidade de domínio, não decide o que fazer com isso.
  */
 

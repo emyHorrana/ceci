@@ -8,8 +8,37 @@
 
 import { createContext, useState, useCallback, useEffect } from 'react';
 import * as authService from '../services/auth';
+import { getUsuario } from '../services/usuarioService';
 
 export const UserContext = createContext();
+
+// Garante que o nome do usuário esteja normalizado e acessível em `user.nome`
+async function enrichUserData(userData, fallbackNome = '') {
+  if (!userData) return null;
+  let nome = fallbackNome
+    || userData.user_metadata?.nome
+    || userData.user_metadata?.name
+    || userData.user_metadata?.full_name
+    || userData.nome;
+
+  if (!nome && userData.id) {
+    try {
+      const perfil = await getUsuario(userData.id);
+      if (perfil?.nome) {
+        nome = perfil.nome;
+      }
+    } catch (err) {
+      console.warn('Erro ao carregar nome do perfil:', err);
+    }
+  }
+
+  const finalNome = nome || (userData.email ? userData.email.split('@')[0] : '');
+
+  return {
+    ...userData,
+    nome: finalNome,
+  };
+}
 
 export function UserProvider({ children }) {
   const [user, setUser] = useState(null);
@@ -27,8 +56,11 @@ export function UserProvider({ children }) {
     let ativo = true;
 
     authService.getCurrentUser()
-      .then((userData) => {
-        if (ativo) setUser(userData);
+      .then(async (userData) => {
+        if (ativo) {
+          const enriched = await enrichUserData(userData);
+          if (ativo) setUser(enriched);
+        }
       })
       .catch(() => {
         if (ativo) setUser(null);
@@ -37,10 +69,13 @@ export function UserProvider({ children }) {
         if (ativo) setInitializing(false);
       });
 
-    const unsubscribe = authService.onAuthStateChange((userData) => {
+    const unsubscribe = authService.onAuthStateChange(async (userData) => {
       if (ativo) {
-        setUser(userData);
-        setInitializing(false);
+        const enriched = await enrichUserData(userData);
+        if (ativo) {
+          setUser(enriched);
+          setInitializing(false);
+        }
       }
     });
 
@@ -56,8 +91,9 @@ export function UserProvider({ children }) {
     setError(null);
     try {
       const userData = await authService.login(email, password);
-      setUser(userData);
-      return userData;
+      const enriched = await enrichUserData(userData);
+      setUser(enriched);
+      return enriched;
     } catch (err) {
       setError(err.message);
       throw err;
@@ -78,8 +114,9 @@ export function UserProvider({ children }) {
     setError(null);
     try {
       const newUser = await authService.register(userData);
-      setUser(newUser);
-      return newUser;
+      const enriched = await enrichUserData(newUser, userData?.nome);
+      setUser(enriched);
+      return enriched;
     } catch (err) {
       setError(err.message);
       throw err;

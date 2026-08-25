@@ -52,8 +52,77 @@ export async function getUserModules(userId) {
   });
 }
 
-// Busca o progresso geral do aluno: pontos totais, meta diária e conquistas.
+// Chave de armazenamento das datas de atividade do usuário
+const ACTIVITY_STORAGE_KEY_PREFIX = 'ceci_activity_log_';
+
+// Formata uma data para YYYY-MM-DD em fuso horário local
+export function toLocalDateStr(dateInput) {
+  if (!dateInput) return null;
+  const d = dateInput instanceof Date ? dateInput : new Date(dateInput);
+  if (isNaN(d.getTime())) return null;
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+// Registra atividade no dia de hoje para o usuário (login, acesso, exercício)
+export function recordDailyActivity(userId) {
+  if (!userId) return;
+  try {
+    const key = `${ACTIVITY_STORAGE_KEY_PREFIX}${userId}`;
+    const today = toLocalDateStr(new Date());
+    const stored = localStorage.getItem(key);
+    let dates = stored ? JSON.parse(stored) : [];
+    if (!Array.isArray(dates)) dates = [];
+    if (!dates.includes(today)) {
+      dates.push(today);
+      if (dates.length > 365) dates = dates.slice(-365);
+      localStorage.setItem(key, JSON.stringify(dates));
+    }
+  } catch (err) {
+    console.warn('Erro ao salvar data de atividade:', err);
+  }
+}
+
+// Calcula a quantidade de dias consecutivos (streak)
+export function calculateStreak(dateStrings) {
+  if (!dateStrings || dateStrings.length === 0) return 0;
+  const dateSet = new Set(dateStrings.filter(Boolean));
+
+  const now = new Date();
+  const todayStr = toLocalDateStr(now);
+  const yesterday = new Date(now);
+  yesterday.setDate(yesterday.getDate() - 1);
+  const yesterdayStr = toLocalDateStr(yesterday);
+
+  let streak = 0;
+  let checkDate = new Date(now);
+
+  if (dateSet.has(todayStr)) {
+    // Se esteve ativo hoje, começa de hoje e retrocede dia a dia
+    while (dateSet.has(toLocalDateStr(checkDate))) {
+      streak++;
+      checkDate.setDate(checkDate.getDate() - 1);
+    }
+  } else if (dateSet.has(yesterdayStr)) {
+    // Se ainda não logou atividade hoje mas teve ontem, preserva a sequência ativa
+    checkDate = yesterday;
+    while (dateSet.has(toLocalDateStr(checkDate))) {
+      streak++;
+      checkDate.setDate(checkDate.getDate() - 1);
+    }
+  }
+
+  return streak;
+}
+
+// Busca o progresso geral do aluno: pontos totais, dias seguidos, meta diária e conquistas.
 export async function getUserProgress(userId) {
+  if (userId) {
+    recordDailyActivity(userId);
+  }
+
   const { data: progresso } = await supabase
     .from('progresso_usuario')
     .select('progress, completed, updated_at')
@@ -66,14 +135,34 @@ export async function getUserProgress(userId) {
 
   const totalPoints = (progresso || []).reduce((acc, p) => acc + (p.progress || 0), 0);
 
-  const hoje = new Date().toDateString();
+  const hoje = toLocalDateStr(new Date());
   const dailyProgress = (progresso || []).filter(
-    (p) => new Date(p.updated_at).toDateString() === hoje
+    (p) => toLocalDateStr(p.updated_at) === hoje
   ).length;
+
+  // Reúne todas as datas de atividade: do Supabase + do log local
+  const activityDates = new Set();
+  (progresso || []).forEach((p) => {
+    const dStr = toLocalDateStr(p.updated_at);
+    if (dStr) activityDates.add(dStr);
+  });
+
+  if (userId) {
+    try {
+      const localDates = JSON.parse(localStorage.getItem(`${ACTIVITY_STORAGE_KEY_PREFIX}${userId}`) || '[]');
+      if (Array.isArray(localDates)) {
+        localDates.forEach((d) => activityDates.add(d));
+      }
+    } catch (e) {
+      // ignore
+    }
+  }
+
+  const streak = calculateStreak(Array.from(activityDates));
 
   return {
     totalPoints,
-    streak: 0,
+    streak,
     dailyProgress,
     achievements: (conquistas || []).map((c) => ({
       id: c.id,

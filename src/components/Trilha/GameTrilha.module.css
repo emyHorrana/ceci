@@ -1,0 +1,518 @@
+/* GameTrilha.module.css
+   Level Design / Game Map limpo e focado no aluno.
+   - Títulos centralizados de forma harmoniosa.
+   - Espaçamento equilibrado no início e fim de cada unidade.
+   - Cores da Mascote Cecília (Rosa, Roxo, Lavanda) para dar vida e diversidade sobre o fundo amarelo.
+   - Linhas pontilhadas finas de mapa com voltas circulares (loops ➰). */
+
+.trilhaContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  width: 100%;
+  margin: 0;
+}
+
+/* =========================================================================
+   CARD GRANDE DO MÓDULO (100% da largura da tela/conteúdo)
+   ========================================================================= */
+
+.moduloCardGrande {
+  width: 100%;
+  background: var(--color-white);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  transition: box-shadow var(--transition-fast), border-color var(--transition-fast);
+}
+
+.moduloCardGrande:hover {
+  box-shadow: var(--shadow-lg);
+  border-color: rgba(170, 139, 245, 0.45);
+}
+
+/* Header superior do Card do Módulo (Centralizado) */
+.moduloHeaderGrande {
+  width: 100%;
+  background: var(--gradient-hero);
+  border-bottom: 1.5px solid var(--color-border);
+  padding: 1.25rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  text-align: center;
+}
+
+.moduloHeaderInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.moduloHeaderTitulo {
+  font-family: var(--font-display);
+  font-size: 1.375rem;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  margin: 0;
+  text-align: center;
+}
+
+.moduloHeaderEmoji {
+  font-size: 2.5rem;
+  line-height: 1;
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.1));
+  flex-shrink: 0;
+}
+
+/* =========================================================================
+   CONTAINER DE UNIDADES
+   ========================================================================= */
+
+.unidadesContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  padding: 1.75rem 2rem 2.5rem;
+}
+
+.unidadeSecao {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+/* =========================================================================
+   BANNER DE ASSUNTO / TÓPICO (Centralizado, limpo e direto)
+   ========================================================================= */
+
+.unidadeBanner {
+  width: 100%;
+  background: var(--color-yellow-bg);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 0.875rem 1.5rem;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
+}
+
+.unidadeBanner:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.unidadeBannerAtual {
+  background: #FFFDF2;
+  border-color: var(--color-yellow-deep);
+  box-shadow: 0 4px 18px rgba(255, 202, 26, 0.22);
+}
+
+.unidadeTitulo {
+  font-size: 1.125rem;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  margin: 0;
+  text-align: center;
+}
+
+/* =========================================================================
+   CAMPO DE TRILHA DE FASES COM LINHAS PONTILHADAS
+   ========================================================================= */
+
+.unidadeTrilhaFases {
+  position: relative;
+  width: 100%;
+  overflow: visible;
+}
+
+.caminhoTracejadoSvg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.linhaTracejadaDelicada {
+  stroke-dasharray: 4 5;
+  stroke-linecap: round;
+}
+
+/* =========================================================================
+   NÓS CIRCULARES 3D (Cores da Mascote Cecília: Rosa, Roxo e Lavanda)
+   ========================================================================= */
+
+.nodeWrapper {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 3;
+}
+
+.nodeButton {
+  position: relative;
+  width: 74px;
+  height: 74px;
+  border-radius: 50%;
+  border: 3.5px solid rgba(255, 255, 255, 0.95);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  outline: none;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), filter var(--transition-fast);
+  user-select: none;
+  overflow: hidden;
+}
+
+/* Efeito Glossy (Brilho do topo do botão) */
+.nodeGlossy {
+  position: absolute;
+  top: 2px;
+  left: 12%;
+  right: 12%;
+  height: 38%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0.05) 100%);
+  border-radius: 50% 50% 40% 40% / 60% 60% 30% 30%;
+  pointer-events: none;
+}
+
+/* --- PALETA DA MASCOTE CECÍLIA (Rosa / Roxo / Lavanda) --- */
+
+/* 1. Rosa Cecília Vibrante */
+.nodeCeciRosa {
+  background: linear-gradient(180deg, #FBCFE8 0%, #F472B6 50%, #DB2777 100%);
+  box-shadow: 0 7px 0 #9D174D, 0 10px 20px rgba(219, 39, 119, 0.35);
+  color: white;
+}
+.nodeCeciRosa:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 9px 0 #9D174D, 0 14px 24px rgba(219, 39, 119, 0.5);
+}
+.nodeCeciRosa:active {
+  transform: translateY(5px);
+  box-shadow: 0 2px 0 #9D174D;
+}
+
+/* 2. Roxo Cecília Aveludado */
+.nodeCeciRoxo {
+  background: linear-gradient(180deg, #DDD6FE 0%, #A78BFA 50%, #7C3AED 100%);
+  box-shadow: 0 7px 0 #5B21B6, 0 10px 20px rgba(124, 58, 237, 0.35);
+  color: white;
+}
+.nodeCeciRoxo:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 9px 0 #5B21B6, 0 14px 24px rgba(124, 58, 237, 0.5);
+}
+.nodeCeciRoxo:active {
+  transform: translateY(5px);
+  box-shadow: 0 2px 0 #5B21B6;
+}
+
+/* 3. Lavanda Radiante */
+.nodeCeciLavanda {
+  background: linear-gradient(180deg, #EDE9FE 0%, #C4B5FD 50%, #8B5CF6 100%);
+  box-shadow: 0 7px 0 #6D28D9, 0 10px 20px rgba(139, 92, 246, 0.35);
+  color: white;
+}
+.nodeCeciLavanda:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 9px 0 #6D28D9, 0 14px 24px rgba(139, 92, 246, 0.5);
+}
+.nodeCeciLavanda:active {
+  transform: translateY(5px);
+  box-shadow: 0 2px 0 #6D28D9;
+}
+
+/* 4. Nível Concluído / Dominado (Lavanda / Roxo Real com Estrela) */
+.nodeConcluido {
+  background: linear-gradient(180deg, #F5D0FE 0%, #C084FC 50%, #9333EA 100%);
+  box-shadow: 0 7px 0 #6B21A8, 0 12px 22px rgba(147, 51, 234, 0.45);
+  color: #2B2140;
+}
+.nodeConcluido:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 9px 0 #6B21A8, 0 16px 26px rgba(147, 51, 234, 0.6);
+  filter: brightness(1.05);
+}
+.nodeConcluido:active {
+  transform: translateY(5px);
+  box-shadow: 0 2px 0 #6B21A8;
+}
+
+/* 5. Nível Ativo / Recomendado Agora (Rosa Choque / Magenta Cecília com Pulso) */
+.nodeAtivo {
+  background: linear-gradient(180deg, #FFE4E6 0%, #F43F5E 50%, #E11D48 100%);
+  border: 4px solid #FFFFFF;
+  box-shadow: 0 7px 0 #9F1239, 0 12px 24px rgba(244, 63, 94, 0.6);
+  color: white;
+  animation: floatActiveNode 3s ease-in-out infinite;
+}
+.nodeAtivo:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 9px 0 #9F1239, 0 16px 28px rgba(244, 63, 94, 0.7);
+}
+.nodeAtivo:active {
+  transform: translateY(5px);
+  box-shadow: 0 2px 0 #9F1239;
+}
+
+/* 6. Nível em Reforço / Prática */
+.nodePendente {
+  background: linear-gradient(180deg, #FFD1DC 0%, #FF80AB 50%, #C51162 100%);
+  box-shadow: 0 7px 0 #880E4F, 0 10px 18px rgba(197, 17, 98, 0.4);
+  color: white;
+}
+
+/* 7. Checkpoint / Desafio Final (Troféu com Gradiente Cecília Rosa ➔ Roxo) */
+.nodeCheckpoint {
+  background: linear-gradient(135deg, #FDE8F1 0%, #F48AB8 50%, #AA8BF5 100%);
+  box-shadow: 0 8px 0 #581C87, 0 14px 28px rgba(170, 139, 245, 0.45);
+}
+
+.nodeCheckpointButton {
+  width: 82px;
+  height: 82px;
+  border-radius: 26px;
+}
+.nodeCheckpointButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 0 #581C87, 0 18px 30px rgba(170, 139, 245, 0.65);
+}
+.nodeCheckpointButton:active {
+  transform: translateY(5px);
+  box-shadow: 0 3px 0 #581C87;
+}
+
+.nodeIcone {
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  font-weight: 900;
+  line-height: 1;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.trofeuSvg {
+  width: 32px;
+  height: 32px;
+  fill: #2B2140;
+  filter: drop-shadow(0 1px 2px rgba(255, 255, 255, 0.5));
+}
+
+/* Tag flutuante "JOGAR" no nó ativo */
+.badgeSuaVez {
+  position: absolute;
+  top: -18px;
+  background: var(--color-ceci-pink);
+  color: var(--color-white);
+  font-size: 0.6875rem;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  padding: 2px 10px;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  animation: bounceBadge 2s infinite;
+  z-index: 5;
+}
+
+@keyframes bounceBadge {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+/* Rótulo da etapa */
+.nodeRotulo {
+  margin-top: 8px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  text-align: center;
+  max-width: 140px;
+  line-height: 1.25;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--color-border);
+}
+
+/* Aura de pulso de radar (Rosa/Roxo Cecília) */
+.auraPulso {
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  right: -8px;
+  bottom: -8px;
+  border-radius: 50%;
+  border: 3.5px solid var(--color-ceci-pink);
+  pointer-events: none;
+  animation: pulseAura 2s cubic-bezier(0.24, 0, 0.38, 1) infinite;
+}
+
+@keyframes pulseAura {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.9;
+  }
+  70% {
+    transform: scale(1.38);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.42);
+    opacity: 0;
+  }
+}
+
+@keyframes floatActiveNode {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+/* =========================================================================
+   POPOVER / CARD DE DETALHES AO CLICAR NO NÓ
+   ========================================================================= */
+
+.popoverCard {
+  position: absolute;
+  top: calc(100% + 14px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 250px;
+  background: var(--color-white);
+  border: 2px solid var(--color-ceci-purple);
+  border-radius: var(--radius-lg);
+  padding: 1.125rem;
+  box-shadow: var(--shadow-lg), 0 12px 32px rgba(170, 139, 245, 0.25);
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: left;
+  animation: popoverFadeIn 0.2s ease-out;
+}
+
+.popoverCard::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 8px solid var(--color-ceci-purple);
+}
+
+@keyframes popoverFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.popoverHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.popoverFechar {
+  background: none;
+  border: none;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.popoverFechar:hover {
+  color: var(--color-text-primary);
+  background: var(--color-bg);
+}
+
+.popoverTitulo {
+  font-size: 1.0625rem;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  margin: 0;
+  line-height: 1.3;
+}
+
+.popoverAcao {
+  display: flex;
+}
+
+.popoverAcao button {
+  width: 100%;
+}
+
+/* =========================================================================
+   RESPONSIVIDADE
+   ========================================================================= */
+
+@media (max-width: 768px) {
+  .unidadesContainer {
+    padding: 1.25rem 1rem 2rem;
+  }
+
+  .moduloHeaderGrande {
+    padding: 1.25rem 1.5rem;
+  }
+
+  .unidadeBanner {
+    padding: 0.75rem 1.25rem;
+  }
+
+  .nodeButton {
+    width: 66px;
+    height: 66px;
+  }
+
+  .nodeCheckpointButton {
+    width: 74px;
+    height: 74px;
+  }
+
+  .nodeIcone {
+    font-size: 1.5rem;
+  }
+
+  .nodeRotulo {
+    font-size: 0.8125rem;
+    max-width: 110px;
+  }
+
+  .popoverCard {
+    width: 220px;
+  }
+}

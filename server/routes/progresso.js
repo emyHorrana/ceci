@@ -26,6 +26,41 @@ router.post('/', async (req, res) => {
   res.json({ success: true, data });
 });
 
+function calculateStreakFromDates(dates) {
+  if (!dates || dates.length === 0) return 0;
+  const toYMD = (d) => {
+    const date = new Date(d);
+    if (isNaN(date.getTime())) return null;
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  const dateSet = new Set(dates.map(toYMD).filter(Boolean));
+  const now = new Date();
+  const todayStr = toYMD(now);
+  const yesterday = new Date(now);
+  yesterday.setDate(yesterday.getDate() - 1);
+  const yesterdayStr = toYMD(yesterday);
+
+  let streak = 0;
+  let check = new Date(now);
+  if (dateSet.has(todayStr)) {
+    while (dateSet.has(toYMD(check))) {
+      streak++;
+      check.setDate(check.getDate() - 1);
+    }
+  } else if (dateSet.has(yesterdayStr)) {
+    check = yesterday;
+    while (dateSet.has(toYMD(check))) {
+      streak++;
+      check.setDate(check.getDate() - 1);
+    }
+  }
+  return streak;
+}
+
 // Buscar progresso geral do usuário (para o dashboard)
 router.get('/:usuarioId', async (req, res) => {
   const { usuarioId } = req.params;
@@ -45,13 +80,19 @@ router.get('/:usuarioId', async (req, res) => {
     .limit(4);
 
   const licoesConcluidas = progressos?.filter(p => p.completed).length || 0;
+  const streak = calculateStreakFromDates(progressos?.map(p => p.updated_at) || []);
+
+  const hoje = new Date().toDateString();
+  const dailyProgress = (progressos || []).filter(
+    (p) => new Date(p.updated_at).toDateString() === hoje
+  ).length;
 
   res.json({
     licoesConcluidas,
     totalPoints: licoesConcluidas * 50,
-    streak: 0,          // futuramente calculado por data
+    streak,
     coins: licoesConcluidas * 10,
-    dailyProgress: Math.min(licoesConcluidas, 10),
+    dailyProgress,
     achievements: (conquistas || []).map(c => ({
       id: c.id,
       title: c.title,

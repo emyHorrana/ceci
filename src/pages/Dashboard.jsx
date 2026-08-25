@@ -4,8 +4,7 @@ import { UserContext } from '../context/UserContext';
 import { ProgressContext } from '../context/ProgressContext';
 import { AppLayout, PageHeader } from '../components/Layout/AppLayout';
 import appStyles from '../components/Layout/AppLayout.module.css';
-import { ModuleCard } from '../components/Cards/ModuleCard';
-import { UnidadeCard } from '../components/Cards/UnidadeCard';
+import { GameTrilha } from '../components/Trilha/GameTrilha';
 import { ButtonPrimary } from '../components/Buttons/ButtonPrimary';
 import { MODULOS } from '../data/modulos';
 import { UNIDADES, UNIDADES_POR_MODULO } from '../data/unidades';
@@ -21,7 +20,7 @@ const MOTIVATIONAL = [
 
 export default function Dashboard() {
   const { user, initializing }              = useContext(UserContext);
-  const { modules, progress, fetchModules } = useContext(ProgressContext);
+  const { progress, fetchModules }          = useContext(ProgressContext);
   const navigate                            = useNavigate();
   const [message]                           = useState(() => MOTIVATIONAL[Math.floor(Math.random() * MOTIVATIONAL.length)]);
 
@@ -62,7 +61,7 @@ export default function Dashboard() {
         // Se a trilha adaptativa falhar (rede, servidor fora), a tela
         // não trava - só fica sem destaque/selo de status, do jeito
         // que era antes desta mudança. As outras seções do dashboard
-        // (meta diária, módulos, conquistas) não dependem disso.
+        // (meta diária) não dependem disso.
         console.error('Erro ao buscar recomendação adaptativa:', err);
       });
 
@@ -95,16 +94,6 @@ export default function Dashboard() {
   const trilhaCarregada = recomendacao !== undefined;
   const curriculoConcluido = trilhaCarregada && recomendacao.unidade === null;
 
-  // 'atual' pra Unidade recomendada agora, 'concluida'/'pendente' pra
-  // quem já foi tentada, e nada (undefined) pra quem ainda não foi -
-  // UnidadeCard só mostra o selo quando existe.
-  function statusDaUnidade(unidadeId) {
-    if (unidadeId === unidadeRecomendada?.id) return 'atual';
-    const dominio = dominiosPorUnidade[unidadeId];
-    if (dominio === undefined) return undefined;
-    return dominio >= limiar ? 'concluida' : 'pendente';
-  }
-
   // Antes, essa checagem era só "if (!user)" - o que prendia a pessoa
   // num "Carregando..." pra sempre quando a sessão não estava mais em
   // memória (voltar pelo navegador, recarregar a página), porque nada
@@ -122,6 +111,8 @@ export default function Dashboard() {
     </div>
   );
 
+  const userName = user?.nome || user?.user_metadata?.nome || user?.user_metadata?.name || user?.user_metadata?.full_name || (user?.email ? user.email.split('@')[0] : 'Estudante');
+  const streakCount = progress?.streak || 0;
   const dailyPct = Math.min(((progress?.dailyProgress || 0) / 10) * 100, 100);
 
   return (
@@ -129,12 +120,12 @@ export default function Dashboard() {
         <PageHeader>
           <div className={styles.greeting}>
             <span className={styles.greetingHello}>Bem-vindo(a) de volta</span>
-            <span className={styles.greetingName}>{user.nome || 'Aluno(a)'}</span>
+            <span className={styles.greetingName}>{userName}</span>
           </div>
 
           <div className={styles.topbarStats}>
             <div className={`${styles.statBadge} ${styles.streak}`}>
-              {progress?.streak || 0} dias seguidos
+              {streakCount} {streakCount === 1 ? 'dia seguido' : 'dias seguidos'}
             </div>
             <div className={`${styles.statBadge} ${styles.points}`}>
               {progress?.totalPoints || 0} pontos
@@ -147,7 +138,7 @@ export default function Dashboard() {
           <div className={styles.welcomeCard}>
             <div className={styles.mascoteSlotSmall} aria-hidden />
             <div className={styles.welcomeText}>
-              <h2>Olá, {user.nome || 'Aluno(a)'}!</h2>
+              <h2>Olá, {userName}!</h2>
               {/* curriculoConcluido é o único momento em que a mensagem
                   motivacional dá lugar ao parabéns - o botão de baixo
                   cai no fallback fixo nesse caso (não tem "próxima" de
@@ -196,60 +187,15 @@ export default function Dashboard() {
             <div className={styles.sectionHeader}>
               <h2>Trilha de aprendizagem</h2>
             </div>
-            <div className={styles.trilhaModulos}>
-              {UNIDADES_POR_MODULO.map((grupo) => (
-                <div key={grupo.moduloId} className={styles.trilhaModulo}>
-                  <div className={styles.trilhaModuloHeader}>
-                    <span className={styles.licaoEmoji}>{grupo.moduloEmoji}</span>
-                    <h3 className={styles.trilhaModuloTitulo}>{grupo.moduloTitulo}</h3>
-                  </div>
-                  <div className={styles.licoesGrid}>
-                    {grupo.unidades.map((unidade) => (
-                      <UnidadeCard key={unidade.id} unidade={unidade} status={statusDaUnidade(unidade.id)} />
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
 
-          {/* Módulos */}
-          <div>
-            <div className={styles.sectionHeader}>
-              <h2>Módulos em progresso</h2>
-              <a href="/modulos" className={styles.sectionLink}>Ver todos</a>
-            </div>
-            <div className={styles.modulesGrid}>
-              {modules?.map((mod) => (
-                <ModuleCard
-                  key={mod.id}
-                  title={mod.title}
-                  emoji={mod.emoji}
-                  progress={mod.progress || 0}
-                  lessonCount={mod.lessonCount || 10}
-                  status={mod.status}
-                  onContinueClick={() => navigate(`/mini-modulo/${mod.id}`)}
-                />
-              ))}
-            </div>
-          </div>
-
-          {/* Conquistas */}
-          <div className={styles.achievementsCard}>
-            <div className={styles.sectionHeader}>
-              <h2>Últimas conquistas</h2>
-              <a href="/conquistas" className={styles.sectionLink}>Ver todas</a>
-            </div>
-            <div className={styles.achievementsList}>
-              {progress?.achievements?.slice(0, 6).map((a) => (
-                <div key={a.id} className={styles.achievementItem}>
-                  <span className={styles.achievementIcon}>{a.emoji}</span>
-                  <span className={styles.achievementTitle}>{a.title}</span>
-                </div>
-              ))}
-            </div>
+            <GameTrilha
+              unidadesPorModulo={UNIDADES_POR_MODULO}
+              unidadeRecomendada={unidadeRecomendada}
+              dominiosPorUnidade={dominiosPorUnidade}
+              limiar={limiar}
+            />
           </div>
         </div>
     </AppLayout>
   );
-}
+}

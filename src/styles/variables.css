@@ -123,6 +123,10 @@
   --color-ceci-lavender:      #D0C2FF;
   --color-ceci-lavender-pale: #F4F1FF;
 
+  /* Barra de tarefas simulada (jogos de mouse com fundo "área de
+     trabalho") - mesmo lilás que já existia na arte de fundo.png. */
+  --color-taskbar: #DFCEE6;
+
   --gradient-ceci:
     linear-gradient(
       135deg,

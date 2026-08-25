@@ -15,7 +15,7 @@
 }
 
 .zonaAtiva {
-  fill: var(--color-yellow-bg);
+  fill: rgba(255, 217, 77, 0.35);
   stroke: var(--color-yellow-deep);
   stroke-dasharray: none;
 }
@@ -41,4 +41,4 @@
 
 .item[data-arrastando='true'] {
   cursor: grabbing;
-}
+}

@@ -4,7 +4,7 @@
    fundo levemente lilás, pra reforçar "aqui é modo ação". */
 
 .gameMoment {
-  background: var(--color-yellow-pale);
+  background: var(--color-surface, #ffffff);
   border: 2px dashed var(--color-yellow);
   border-radius: var(--radius-xl);
   padding: 2rem 2.25rem;
@@ -13,6 +13,7 @@
   align-items: center;
   gap: 1.25rem;
   text-align: center;
+  box-shadow: var(--shadow-md);
   animation: gameIn 0.35s cubic-bezier(0.4, 0, 0.2, 1) both;
 }
 

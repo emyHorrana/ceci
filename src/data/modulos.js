@@ -2,7 +2,7 @@
  * modulos.js
  * Fonte da verdade local para a estrutura de módulos e mini-módulos do CECI.
  * Não precisa estar no banco de dados - é conteúdo estático do currículo.
- * Novo: campo `dificuldade: 'demonstracao' | 'padrao' | 'desafio'` em cada etapa tipo 'jogo' 
+ * Novo: campo `dificuldade: 'demonstracao' | 'padrao' | 'desafio'` em cada etapa tipo 'jogo'
  *
  * Estrutura:
  *  modulos[]
@@ -11,257 +11,370 @@
  *                            { titulo, conteudo (HTML/texto), dica? }
  */
 
+// Artes da designer para os jogos de arraste/clique (substituem os emojis
+// nos pontos em que já temos ícone pronto). `iconeFundo` imita a tela do
+// Windows por trás dos jogos de "ícone de app" (duplo clique, arrastar).
+import iconeExplorador from '../assets/explorador.png';
+import iconeLixeira from '../assets/lixeira.png';
+import iconeGoogle from '../assets/google.png';
+import iconeFundo from '../assets/fundo.png';
+
 export const MODULOS = [
-{
-  id: '1',
-  emoji: '🖱️',
-  titulo: 'Uso do Mouse',
-  descricao: 'Aprenda a reconhecer, segurar e usar o mouse com confiança.',
-  miniModulos: [
-    {
-      id: '1-1',
-      titulo: 'Reconhecendo o mouse',
-      etapas: [
-        {
-          titulo: 'Bem-vindo(a) ao mouse',
-          conteudo: `<p>Aqui vamos falar sobre um instrumento simples, mas muito importante para quem está começando a usar o computador: o <strong>mouse</strong>.</p> <p>Talvez você já tenha usado um mouse antes, ainda que rapidamente, ou talvez esta seja a primeira vez que vai se aproximar dele com atenção. De qualquer forma, não se preocupe: cada movimento novo, no início, exige um pouco de prática - assim como aprender a usar um controle remoto novo ou uma máquina de lavar diferente da que você já conhecia. Com o tempo, o gesto se torna natural.</p> <p>Vamos passo a passo. Sinta-se à vontade para repetir cada parte quantas vezes precisar.</p>`,
-          dica: 'Vamos com calma - não existe pressa nesse aprendizado. 💛',
-        },
-        {
-          titulo: 'O que é o mouse',
-          conteudo: `<p>O mouse é aquele pequeno objeto que fica ao lado do teclado e que você segura com uma das mãos para "conversar" com o computador. Pense nele como um ponteiro: por meio dele, você indica ao computador o que deseja fazer, aponta para o que quer abrir ou selecionar.</p> <p>Existem também os <strong>touchpads</strong>, que são as superfícies planas encontradas em notebooks, onde se usa o dedo em vez do mouse. O princípio é parecido, mas aqui vamos focar no mouse tradicional, aquele que se segura com a mão.</p>`,
-        },
-        {
-          titulo: 'Como segurar o mouse',
-          conteudo: `<p>Apoie a palma da mão suavemente sobre o mouse, deixando os dedos levemente curvados sobre os botões - sem apertar. Pense em como você seguraria um controle remoto: com firmeza o suficiente para não deixar cair, mas sem tensão.</p> <p>Se sua mão ficar cansada ou dolorida, é sinal de que está segurando com força demais. Relaxe os ombros e o punho: essa postura mais tranquila facilita o controle e evita desconforto.</p>`,
-          dica: 'Você já usou algum aparelho com botões, como um controle de TV ou um caixa eletrônico? O que foi mais fácil ou mais difícil na primeira vez?',
-        },
-
-        // Botão esquerdo: texto + jogo logo em seguida
-        {
-          titulo: 'O botão esquerdo',
-          conteudo: `<p>O <strong>botão esquerdo</strong> é o mais usado de todos. Fica sob o dedo indicador (para quem é destro) e serve para selecionar, abrir e confirmar ações.</p>`,
-        },
-        {
-          tipo: 'jogo',
-          titulo: 'Encontre o botão esquerdo',
-          instructions: 'Clique no botão esquerdo do mouse na ilustração abaixo.',
-          jogo: 'mouse',
-          dificuldade: 'padrao', // mostra os 3 botões clicáveis - os outros 2 já são distrator real
-          jogoProps: { alvoCorreto: 'esquerdo' },
-        },
-
-        // Botão direito: texto + jogo logo em seguida
-        {
-          titulo: 'O botão direito',
-          conteudo: `<p>O <strong>botão direito</strong> abre um menu com opções extras sobre o que você clicou - é uma forma do computador dizer "aqui estão outras coisas que você pode fazer com isso".</p>`,
-        },
-        {
-          tipo: 'jogo',
-          titulo: 'Encontre o botão direito',
-          instructions: 'Clique no botão direito do mouse na ilustração abaixo.',
-          jogo: 'mouse',
-          dificuldade: 'padrao',
-          jogoProps: { alvoCorreto: 'direito' },
-        },
-
-        // Roda: texto + jogo logo em seguida
-        {
-          titulo: 'A roda (scroll)',
-          conteudo: `<p>A <strong>roda</strong> (também chamada de scroll) fica entre os dois botões e serve para rolar a tela para cima ou para baixo, revelando o que está fora da tela no momento.</p>`,
-        },
-        {
-          tipo: 'jogo',
-          titulo: 'Encontre a roda',
-          instructions: 'Clique na roda (scroll) do mouse na ilustração abaixo.',
-          jogo: 'mouse',
-          dificuldade: 'padrao',
-          jogoProps: { alvoCorreto: 'roda' },
-        },
-
-        // NOVO - fechava sem nenhum `desafio`: revisão dos 3 juntos,
-        // sem a dica visual de qual parte acabou de ser explicada.
-        // Reaproveita o jogo 'quiz' (já registrado), sem componente novo.
-        {
-          tipo: 'jogo',
-          titulo: 'Revisão: os 3 botões',
-          instructions: 'Escolha a resposta certa.',
-          jogo: 'quiz',
-          dificuldade: 'desafio',
-          jogoProps: {
-            pergunta: 'Você clicou com o botão direito num ícone e apareceu um menu com mais opções. Isso é normal?',
-            alternativas: [
-              { id: 'sim', texto: 'Sim, é exatamente pra isso que o botão direito serve', correta: true },
-              { id: 'nao', texto: 'Não, isso é um erro do computador', correta: false },
-              { id: 'reiniciar', texto: 'Não, é melhor reiniciar o computador', correta: false },
-            ],
+  {
+    id: '1',
+    emoji: '🖱️',
+    titulo: 'Uso do Mouse',
+    descricao: 'Aprenda a reconhecer, segurar e usar o mouse com confiança.',
+    miniModulos: [
+      {
+        id: '1-1',
+        titulo: 'Reconhecendo o mouse',
+        etapas: [
+          {
+            titulo: 'Bem-vindo(a) ao mouse',
+            conteudo: `<p>Aqui vamos falar sobre um instrumento simples, mas muito importante para quem está começando a usar o computador: o <strong>mouse</strong>.</p> <p>Talvez você já tenha usado um mouse antes, ainda que rapidamente, ou talvez esta seja a primeira vez que vai se aproximar dele com atenção. De qualquer forma, não se preocupe: cada movimento novo, no início, exige um pouco de prática - assim como aprender a usar um controle remoto novo ou uma máquina de lavar diferente da que você já conhecia. Com o tempo, o gesto se torna natural.</p> <p>Vamos passo a passo. Sinta-se à vontade para repetir cada parte quantas vezes precisar.</p>`,
+            dica: 'Vamos com calma - não existe pressa nesse aprendizado. 💛',
           },
-        },
-      ],
-    },
-    {
-      id: '1-2',
-      titulo: 'Movimento do cursor',
-      etapas: [
-        {
-          titulo: 'O cursor: seu dedo virtual',
-          conteudo: `<p>Quando você move o mouse sobre a mesa, uma pequena seta se move na tela do computador. Essa seta é chamada de <strong>cursor</strong>, e ela é o seu "dedo virtual" - é por meio dela que você aponta para tudo o que deseja fazer.</p>
+          {
+            titulo: 'O que é o mouse',
+            conteudo: `<p>O mouse é aquele pequeno objeto que fica ao lado do teclado e que você segura com uma das mãos para "conversar" com o computador. Pense nele como um ponteiro: por meio dele, você indica ao computador o que deseja fazer, aponta para o que quer abrir ou selecionar.</p> <p>Existem também os <strong>touchpads</strong>, que são as superfícies planas encontradas em notebooks, onde se usa o dedo em vez do mouse. O princípio é parecido, mas aqui vamos focar no mouse tradicional, aquele que se segura com a mão.</p>`,
+          },
+          {
+            titulo: 'Como segurar o mouse',
+            conteudo: `<p>Apoie a palma da mão suavemente sobre o mouse, deixando os dedos levemente curvados sobre os botões - sem apertar. Pense em como você seguraria um controle remoto: com firmeza o suficiente para não deixar cair, mas sem tensão.</p> <p>Se sua mão ficar cansada ou dolorida, é sinal de que está segurando com força demais. Relaxe os ombros e o punho: essa postura mais tranquila facilita o controle e evita desconforto.</p>`,
+            dica: 'Você já usou algum aparelho com botões, como um controle de TV ou um caixa eletrônico? O que foi mais fácil ou mais difícil na primeira vez?',
+          },
+
+          // Botão esquerdo: texto + demonstração
+          {
+            titulo: 'O botão esquerdo',
+            conteudo: `<p>O <strong>botão esquerdo</strong> é o mais usado de todos. Fica sob o dedo indicador (para quem é destro) e serve para selecionar, abrir programas e confirmar ações (como clicar em botões).</p>`,
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Demonstração: O botão esquerdo',
+            instructions: 'Clique em qualquer lugar da área abaixo com o botão ESQUERDO do seu mouse.',
+            jogo: 'mouse-demonstracao',
+            dificuldade: 'demonstracao',
+            jogoProps: { acao: 'esquerdo' },
+          },
+
+          // Botão direito: texto + demonstração
+          {
+            titulo: 'O botão direito',
+            conteudo: `<p>O <strong>botão direito</strong> abre um menu com opções extras sobre o que você clicou - é uma forma do computador dizer "aqui estão outras coisas que você pode fazer com isso".</p>`,
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Demonstração: O botão direito',
+            instructions: 'Clique em qualquer lugar da área abaixo com o botão DIREITO do seu mouse.',
+            jogo: 'mouse-demonstracao',
+            dificuldade: 'demonstracao',
+            jogoProps: { acao: 'direito' },
+          },
+
+          // Roda (scroll): texto + demonstração
+          {
+            titulo: 'A roda (scroll)',
+            conteudo: `<p>A <strong>roda</strong> (também chamada de scroll) fica entre os dois botões e serve para rolar a tela para cima ou para baixo, revelando o que está fora da tela no momento.</p>`,
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Demonstração: A roda (scroll)',
+            instructions: 'Gire a rodinha (scroll) do seu mouse para cima ou para baixo.',
+            jogo: 'mouse-demonstracao',
+            dificuldade: 'demonstracao',
+            jogoProps: { acao: 'scroll' },
+          },
+
+          // Práticas de clique
+          {
+            tipo: 'jogo',
+            titulo: 'Prática: Selecionar com botão esquerdo',
+            instructions: 'Clique com o botão ESQUERDO do mouse no ícone do aplicativo "Fotos" para selecioná-lo.',
+            jogo: 'clicar',
+            dificuldade: 'padrao',
+            jogoProps: {
+              tipoClique: 'esquerdo',
+              layout: 'grade',
+              alvos: [
+                { id: 'musica', label: '🎵 Músicas', correto: false },
+                { id: 'fotos', label: '🖼️ Fotos', correto: true },
+                { id: 'calculadora', label: '🔢 Calculadora', correto: false },
+              ],
+            },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Prática: Opções com botão direito',
+            instructions: 'Clique com o botão DIREITO do mouse sobre o arquivo para ver as opções extras.',
+            jogo: 'clicar',
+            dificuldade: 'padrao',
+            jogoProps: {
+              tipoClique: 'direito',
+              alvos: [
+                { id: 'doc', label: '📄 Meus Documentos.docx', correto: true },
+              ],
+            },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Prática: Abrindo um documento',
+            instructions: 'Clique com o botão DIREITO no arquivo para abrir o menu e depois clique com o botão ESQUERDO na opção "Abrir".',
+            jogo: 'clicar',
+            dificuldade: 'desafio',
+            jogoProps: {
+              alvos: [
+                { id: 'arquivo', label: '📄 Relatório.pdf', correto: true },
+              ],
+              menuContexto: {
+                instrucaoMenu: 'Escolha a ação desejada com o botão esquerdo:',
+                opcoes: [
+                  { id: 'abrir', label: 'Abrir', correto: true },
+                  { id: 'renomear', label: 'Renomear', correto: false },
+                  { id: 'excluir', label: 'Excluir', correto: false },
+                ],
+              },
+            },
+          },
+
+          // Revisões
+          {
+            tipo: 'jogo',
+            titulo: 'Revisão: Abrindo aplicativos',
+            instructions: 'Escolha a resposta certa.',
+            jogo: 'quiz',
+            dificuldade: 'padrao',
+            jogoProps: {
+              pergunta: 'No dia a dia, qual ação você usa para clicar em um botão ou abrir um aplicativo na tela?',
+              alternativas: [
+                { id: 'esquerdo', texto: 'Clicar com o botão esquerdo (ou duplo clique)', correta: true },
+                { id: 'desligar', texto: 'Apenas passar o mouse por cima sem clicar', correta: false },
+                { id: 'roda', texto: 'Girar a rodinha do mouse cinco vezes', correta: false },
+              ],
+            },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Revisão: O botão direito',
+            instructions: 'Escolha a resposta certa.',
+            jogo: 'quiz',
+            dificuldade: 'desafio',
+            jogoProps: {
+              pergunta: 'Você clicou com o botão direito num arquivo e apareceu uma lista com opções ("Abrir", "Renomear", "Excluir"). Isso é normal?',
+              alternativas: [
+                { id: 'sim', texto: 'Sim, o botão direito serve exatamente para abrir o menu de opções extras', correta: true },
+                { id: 'nao', texto: 'Não, isso é um defeito do mouse', correta: false },
+                { id: 'desligar', texto: 'Não, o computador vai travar', correta: false },
+              ],
+            },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Revisão: A rodinha (scroll)',
+            instructions: 'Escolha a resposta certa.',
+            jogo: 'quiz',
+            dificuldade: 'padrao',
+            jogoProps: {
+              pergunta: 'Quando uma página ou documento é muito comprido e não cabe inteiro na tela, o que você usa para ver o resto do texto?',
+              alternativas: [
+                { id: 'scroll', texto: 'Girar a rodinha (scroll) do mouse para cima ou para baixo', correta: true },
+                { id: 'direito', texto: 'Clicar com o botão direito repetidas vezes', correta: false },
+                { id: 'desligar', texto: 'Desligar o monitor', correta: false },
+              ],
+            },
+          },
+        ],
+      },
+      {
+        id: '1-2',
+        titulo: 'Movimento do cursor',
+        etapas: [
+          {
+            titulo: 'O cursor: seu dedo virtual',
+            conteudo: `<p>Quando você move o mouse sobre a mesa, uma pequena seta se move na tela do computador. Essa seta é chamada de <strong>cursor</strong>, e ela é o seu "dedo virtual" - é por meio dela que você aponta para tudo o que deseja fazer.</p>
 <ul>
   <li>Se você mover o mouse para cima, o cursor sobe.</li>
   <li>Se mover para baixo, o cursor desce.</li>
   <li>Para a esquerda, o cursor vai para a esquerda da tela.</li>
   <li>Para a direita, o cursor vai para a direita.</li>
 </ul>`,
-        },
-        {
-          titulo: 'Ajustando o ritmo',
-          conteudo: `<p>No começo, é comum que a mão queira ir mais rápido do que o cursor consegue acompanhar, ou o contrário. Isso é absolutamente normal - é uma questão de costume, parecida com aprender a dosar a força ao mexer em uma torneira nova até descobrir o ponto certo.</p>
+          },
+          {
+            titulo: 'Ajustando o ritmo',
+            conteudo: `<p>No começo, é comum que a mão queira ir mais rápido do que o cursor consegue acompanhar, ou o contrário. Isso é absolutamente normal - é uma questão de costume, parecida com aprender a dosar a força ao mexer em uma torneira nova até descobrir o ponto certo.</p>
 <p>Uma dica valiosa: mova o mouse devagar no início. Você pode até levantar o mouse do lugar e reposicioná-lo no centro da mesa se sentir que "ficou sem espaço" - isso não afeta nada no computador, só o cursor não se move enquanto o mouse está no ar.</p>`,
-          dica: 'Pensando em apontar para algo numa prateleira ou indicar um lugar num mapa: você percebe alguma semelhança com apontar o cursor na tela?',
-        },
-        {
-          titulo: 'O clique simples',
-          conteudo: `<p>Depois de conseguir mover o cursor com tranquilidade, vem o próximo passo: parar o cursor exatamente onde você quer e fazer um <strong>clique simples</strong>, apertando levemente o botão esquerdo uma única vez.</p>
+            dica: 'Pensando em apontar para algo numa prateleira ou indicar um lugar num mapa: você percebe alguma semelhança com apontar o cursor na tela?',
+          },
+          {
+            titulo: 'O clique simples',
+            conteudo: `<p>Depois de conseguir mover o cursor com tranquilidade, vem o próximo passo: parar o cursor exatamente onde você quer e fazer um <strong>clique simples</strong>, apertando levemente o botão esquerdo uma única vez.</p>
 <p>É esse clique que você vai usar para selecionar algo na tela ou confirmar uma escolha.</p>`,
-        },
-        {
-          tipo: 'jogo',
-          titulo: 'Agora é sua vez!',
-          instructions: 'Clique no botão abaixo com o botão esquerdo do mouse.',
-          jogo: 'clicar',
-          dificuldade: 'demonstracao', // 1 alvo só, zero distrator
-          jogoProps: {
-            alvos: [{ id: 'aqui', label: '👆 Clique aqui', correto: true }],
           },
-        },
-        {
-          tipo: 'jogo',
-          titulo: 'Mais uma vez, com atenção',
-          instructions: 'Dessa vez tem mais de uma opção na tela - clique só na certa.',
-          jogo: 'clicar',
-          dificuldade: 'padrao',
-          jogoProps: {
-            layout: 'grade',
-            alvos: [
-              { id: 'errado', label: '👆 Não é aqui', correto: false },
-              { id: 'certo', label: '👆 Clique aqui', correto: true },
-            ],
+          {
+            tipo: 'jogo',
+            titulo: 'Agora é sua vez!',
+            instructions: 'Clique no botão abaixo com o botão esquerdo do mouse.',
+            jogo: 'clicar',
+            dificuldade: 'demonstracao', // 1 alvo só, zero distrator
+            jogoProps: {
+              alvos: [{ id: 'aqui', label: '👆 Clique aqui', correto: true }],
+            },
           },
-        },
-        // NOVO - faltava um `desafio`: mesma mecânica, mais distratores.
-        {
-          tipo: 'jogo',
-          titulo: 'Com mais opções na tela',
-          instructions: 'Agora tem 4 opções - clique só na certa, sem demora.',
-          jogo: 'clicar',
-          dificuldade: 'desafio',
-          jogoProps: {
-            layout: 'grade',
-            alvos: [
-              { id: 'errado1', label: '👆 Não é aqui', correto: false },
-              { id: 'errado2', label: '👆 Também não', correto: false },
-              { id: 'certo', label: '👆 Clique aqui', correto: true },
-              { id: 'errado3', label: '👆 Nem aqui', correto: false },
-            ],
+          {
+            tipo: 'jogo',
+            titulo: 'Mais uma vez, com atenção',
+            instructions: 'Dessa vez tem mais de uma opção na tela - clique só na certa.',
+            jogo: 'clicar',
+            dificuldade: 'padrao',
+            jogoProps: {
+              layout: 'grade',
+              alvos: [
+                { id: 'errado', label: '👆 Não é aqui', correto: false },
+                { id: 'certo', label: '👆 Clique aqui', correto: true },
+              ],
+            },
           },
-        },
-      ],
-    },
-    {
-      id: '1-3',
-      titulo: 'Duplo clique',
-      etapas: [
-        {
-          titulo: 'O que é o duplo clique',
-          conteudo: `<p>O duplo clique é simplesmente dois cliques rápidos, um logo em seguida do outro, feitos com o botão esquerdo, sem mover o mouse entre eles.</p>
+          // NOVO - faltava um `desafio`: mesma mecânica, mais distratores.
+          {
+            tipo: 'jogo',
+            titulo: 'Com mais opções na tela',
+            instructions: 'Agora tem 4 opções - clique só na certa, sem demora.',
+            jogo: 'clicar',
+            dificuldade: 'desafio',
+            jogoProps: {
+              layout: 'grade',
+              alvos: [
+                { id: 'errado1', label: '👆 Não é aqui', correto: false },
+                { id: 'errado2', label: '👆 Também não', correto: false },
+                { id: 'certo', label: '👆 Clique aqui', correto: true },
+                { id: 'errado3', label: '👆 Nem aqui', correto: false },
+              ],
+            },
+          },
+        ],
+      },
+      {
+        id: '1-3',
+        titulo: 'Duplo clique',
+        etapas: [
+          {
+            titulo: 'O que é o duplo clique',
+            conteudo: `<p>O duplo clique é simplesmente dois cliques rápidos, um logo em seguida do outro, feitos com o botão esquerdo, sem mover o mouse entre eles.</p>
 <p>Ele é usado, por exemplo, para abrir arquivos, pastas ou programas - é como "bater duas vezes na porta" para avisar que você quer entrar.</p>`,
-        },
-        {
-          titulo: 'Pegando o ritmo',
-          conteudo: `<p>O desafio, no início, costuma ser o ritmo: se os cliques forem devagar demais, o computador entende como dois cliques separados, e não como um duplo clique. Se vier com muita força ou muito rápido, pode acontecer de sair do lugar.</p>
+          },
+          {
+            titulo: 'Pegando o ritmo',
+            conteudo: `<p>O desafio, no início, costuma ser o ritmo: se os cliques forem devagar demais, o computador entende como dois cliques separados, e não como um duplo clique. Se vier com muita força ou muito rápido, pode acontecer de sair do lugar.</p>
 <p>Não existe problema em tentar novamente - praticar esse ritmo é como aprender a bater palmas em um compasso constante: no começo exige atenção, depois vem naturalmente.</p>`,
-          dica: 'Mantenha a mão parada sobre o mouse durante os dois cliques, sem deslizar. Isso ajuda bastante a acertar o duplo clique!',
-        },
-        {
-          tipo: 'jogo',
-          titulo: 'Pratique o duplo clique',
-          instructions: 'Dê um duplo clique (dois cliques rápidos, sem mover o mouse) no ícone abaixo.',
-          jogo: 'clicar',
-          dificuldade: 'demonstracao', // 1 alvo só, zero distrator
-          jogoProps: {
-            duploClique: true,
-            alvos: [{ id: 'pasta', label: '📁 Duplo clique aqui', correto: true }],
+            dica: 'Mantenha a mão parada sobre o mouse durante os dois cliques, sem deslizar. Isso ajuda bastante a acertar o duplo clique!',
           },
-        },
-        // NOVO - faltava `padrao`: agora tem um ícone perto que não é
-        // o alvo, pra reforçar que é preciso mirar certo, não só
-        // acertar o ritmo do duplo clique.
-        {
-          tipo: 'jogo',
-          titulo: 'Duplo clique no ícone certo',
-          instructions: 'Dê um duplo clique só no ícone da pasta - não no arquivo ao lado.',
-          jogo: 'clicar',
-          dificuldade: 'padrao',
-          jogoProps: {
-            duploClique: true,
-            layout: 'grade',
-            alvos: [
-              { id: 'arquivo', label: '📄 Arquivo', correto: false },
-              { id: 'pasta', label: '📁 Duplo clique aqui', correto: true },
-            ],
+          {
+            tipo: 'jogo',
+            titulo: 'Pratique o duplo clique',
+            instructions: 'Dê um duplo clique (dois cliques rápidos, sem mover o mouse) no ícone do Google, para abri-lo.',
+            jogo: 'clicar',
+            dificuldade: 'demonstracao', // 1 alvo só, zero distrator
+            jogoProps: {
+              duploClique: true,
+              fundo: iconeFundo,
+              alvos: [{ id: 'google', label: 'Google', icone: iconeGoogle, correto: true }],
+            },
           },
-        },
-      ],
-    },
-    {
-      id: '1-4',
-      titulo: 'Scroll (a rodinha do mouse)',
-      etapas: [
-        {
-          titulo: 'Rolando a página',
-          conteudo: `<p>O scroll é a rodinha que fica entre os dois botões do mouse. Ela serve para rolar a página na tela, revelando conteúdos que estão acima ou abaixo do que você está vendo no momento - como quando você folheia as páginas de uma revista para ver o que vem a seguir.</p>
+          // NOVO - faltava `padrao`: agora tem um ícone perto que não é
+          // o alvo, pra reforçar que é preciso mirar certo, não só
+          // acertar o ritmo do duplo clique.
+          {
+            tipo: 'jogo',
+            titulo: 'Duplo clique no ícone certo',
+            instructions: 'Dê um duplo clique só no ícone do Google - não no Explorador de Arquivos ao lado.',
+            jogo: 'clicar',
+            dificuldade: 'padrao',
+            jogoProps: {
+              duploClique: true,
+              layout: 'grade',
+              fundo: iconeFundo,
+              alvos: [
+                { id: 'explorador', label: 'Explorador de Arquivos', icone: iconeExplorador, correto: false },
+                { id: 'google', label: 'Google', icone: iconeGoogle, correto: true },
+              ],
+            },
+          },
+        ],
+      },
+      {
+        id: '1-4',
+        titulo: 'Scroll (a rodinha do mouse)',
+        etapas: [
+          {
+            titulo: 'Rolando a página',
+            conteudo: `<p>O scroll é a rodinha que fica entre os dois botões do mouse. Ela serve para rolar a página na tela, revelando conteúdos que estão acima ou abaixo do que você está vendo no momento - como quando você folheia as páginas de uma revista para ver o que vem a seguir.</p>
 <ul>
   <li>Girar a roda para baixo faz a página rolar para baixo, mostrando o conteúdo que estava mais abaixo.</li>
   <li>Girar a roda para cima faz a página voltar, mostrando o que estava mais acima.</li>
 </ul>`,
-        },
-        {
-          titulo: 'Controlando a velocidade',
-          conteudo: `<p>Você pode controlar a velocidade da rolagem: gire devagar para ler com calma, ou um pouco mais rápido quando quiser passar por um conteúdo já conhecido.</p>
+          },
+          {
+            titulo: 'Controlando a velocidade',
+            conteudo: `<p>Você pode controlar a velocidade da rolagem: gire devagar para ler com calma, ou um pouco mais rápido quando quiser passar por um conteúdo já conhecido.</p>
 <p>O importante é girar aos poucos e observar como a tela responde, até sentir confiança para parar exatamente no ponto que deseja ler.</p>`,
-          dica: 'Essa ação de "rolar" pra ver mais conteúdo lembra alguma outra situação da sua vida, como desenrolar um tecido ou passar as páginas de um álbum de fotos?',
-        },
-        // NOVO - faltava `demonstracao`: zona bem larga antes da etapa
-        // que já existia (que já exige uma precisão de padrão).
-        {
-          tipo: 'jogo',
-          titulo: 'Primeiro contato com o scroll',
-          instructions: 'Role a área abaixo até parar em qualquer ponto dentro da faixa marcada - ela é bem larga.',
-          jogo: 'scroll',
-          dificuldade: 'demonstracao',
-          jogoProps: {
-            zonaAlvo: { inicio: 20, fim: 80 },
+            dica: 'Essa ação de "rolar" pra ver mais conteúdo lembra alguma outra situação da sua vida, como desenrolar um tecido ou passar as páginas de um álbum de fotos?',
           },
-        },
-        {
-          tipo: 'jogo',
-          titulo: 'Pratique o scroll',
-          instructions: 'Role a área abaixo (com a rodinha do mouse) até parar dentro da faixa marcada.',
-          jogo: 'scroll',
-          dificuldade: 'padrao',
-          jogoProps: {
-            zonaAlvo: { inicio: 47, fim: 57 },
+          {
+            tipo: 'jogo',
+            titulo: 'Primeiro contato com o scroll',
+            instructions: 'Role a área abaixo até parar em qualquer ponto dentro da faixa marcada - ela é bem larga.',
+            jogo: 'scroll',
+            dificuldade: 'demonstracao',
+            jogoProps: {
+              zonaAlvo: { inicio: 20, fim: 80 },
+            },
           },
-        },
-      ],
-    },
-    {
-      id: '1-5',
-      titulo: 'Arrastar e soltar',
-      etapas: [
-        {
-          titulo: 'Como arrastar e soltar',
-          conteudo: `<p>Arrastar e soltar é uma ação um pouco mais completa, que reúne tudo o que vimos até aqui:</p>
+          {
+            tipo: 'jogo',
+            titulo: 'Pratique o scroll para baixo',
+            instructions: 'Role a área abaixo (com a rodinha do mouse) até parar dentro da faixa marcada no meio.',
+            jogo: 'scroll',
+            dificuldade: 'padrao',
+            jogoProps: {
+              zonaAlvo: { inicio: 45, fim: 55 },
+            },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Pratique o scroll com precisão',
+            instructions: 'Role com mais calma até parar exatamente na faixa mais estreita abaixo.',
+            jogo: 'scroll',
+            dificuldade: 'desafio',
+            jogoProps: {
+              zonaAlvo: { inicio: 70, fim: 76 },
+              alturaConteudoPx: 1200,
+            },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Revisão: Subir e descer páginas',
+            instructions: 'Escolha a resposta certa.',
+            jogo: 'quiz',
+            dificuldade: 'padrao',
+            jogoProps: {
+              pergunta: 'Você rolou uma página da internet até o fim e quer voltar ao início do texto. Para qual direção você gira a rodinha do mouse?',
+              alternativas: [
+                { id: 'cima', texto: 'Girar a rodinha para cima', correta: true },
+                { id: 'baixo', texto: 'Girar a rodinha para baixo', correta: false },
+                { id: 'clique-duplo', texto: 'Dar um clique duplo no teclado', correta: false },
+              ],
+            },
+          },
+        ],
+      },
+      {
+        id: '1-5',
+        titulo: 'Arrastar e soltar',
+        etapas: [
+          {
+            titulo: 'Como arrastar e soltar',
+            conteudo: `<p>Arrastar e soltar é uma ação um pouco mais completa, que reúne tudo o que vimos até aqui:</p>
 <ol>
   <li>Você posiciona o cursor sobre um item na tela (um ícone, por exemplo).</li>
   <li>Clica e segura o botão esquerdo, sem soltar.</li>
@@ -269,195 +382,229 @@ export const MODULOS = [
   <li>Solta o botão no lugar certo, "largando" o item ali.</li>
 </ol>
 <p>É parecido com pegar um objeto da mesa e carregá-lo até outro lugar antes de soltá-lo: enquanto você o segura, ele se move junto com sua mão; quando você abre a mão, ele fica onde foi deixado.</p>`,
-        },
-        {
-          titulo: 'Pra que serve',
-          conteudo: `<p>Esse recurso é útil, por exemplo, para mover ícones de lugar na tela ou para selecionar um trecho de texto (arrastando o cursor sobre as palavras que você deseja marcar).</p>`,
-        },
-        {
-          titulo: 'Atenção ao soltar',
-          conteudo: `<p>O ponto de maior atenção aqui é não soltar o botão antes da hora. Se isso acontecer, o item cai em um lugar diferente do pretendido - mas não é motivo para preocupação, pois basta repetir o processo e arrastá-lo novamente para o lugar certo.</p>`,
-          dica: 'Você consegue pensar numa tarefa manual do dia a dia - como carregar uma xícara até a pia - parecida com o movimento de "segurar e soltar"?',
-        },
-        {
-          tipo: 'jogo',
-          titulo: 'Pratique arrastar e soltar',
-          instructions: 'Arraste o documento abaixo até a pasta.',
-          jogo: 'arrastar',
-          dificuldade: 'demonstracao',
-          jogoProps: {
-            item: { id: 'documento', label: '📄 Documento' },
-            zonas: [{ id: 'pasta', label: '📁 Solte aqui', correta: true }],
           },
-        },
-        {
-          tipo: 'jogo',
-          titulo: 'Mais uma vez',
-          instructions: 'Agora arraste a foto até a lixeira, pra apagá-la.',
-          jogo: 'arrastar',
-          dificuldade: 'demonstracao',
-          jogoProps: {
-            item: { id: 'foto', label: '🖼️ Foto' },
-            zonas: [{ id: 'lixeira', label: '🗑️ Lixeira', correta: true }],
+          {
+            titulo: 'Pra que serve',
+            conteudo: `<p>Esse recurso é útil, por exemplo, para mover ícones de lugar na tela ou para selecionar um trecho de texto (arrastando o cursor sobre as palavras que você deseja marcar).</p>`,
           },
-        },
-        {
-          tipo: 'jogo',
-          titulo: 'Com atenção: tem duas opções agora',
-          instructions: 'Arraste a música até a lixeira - repare que agora tem mais de um lugar na tela.',
-          jogo: 'arrastar',
-          dificuldade: 'padrao',
-          jogoProps: {
-            item: { id: 'musica', label: '🎵 Música' },
-            zonas: [
-              { id: 'pasta', label: '📁 Pasta', correta: false },
-              { id: 'lixeira', label: '🗑️ Lixeira', correta: true },
-            ],
+          {
+            titulo: 'Atenção ao soltar',
+            conteudo: `<p>O ponto de maior atenção aqui é não soltar o botão antes da hora. Se isso acontecer, o item cai em um lugar diferente do pretendido - mas não é motivo para preocupação, pois basta repetir o processo e arrastá-lo novamente para o lugar certo.</p>`,
+            dica: 'Você consegue pensar numa tarefa manual do dia a dia - como carregar uma xícara até a pia - parecida com o movimento de "segurar e soltar"?',
           },
-        },
-        {
-          titulo: 'Selecionando vários itens ao mesmo tempo',
-          conteudo: `<p>Às vezes você quer mover, copiar ou apagar vários arquivos de uma vez, em vez de um por um. Uma forma simples de fazer isso: clique numa área vazia perto dos arquivos e arraste - como se estivesse "jogando uma rede" por cima dos itens que quer pegar. Tudo que a rede tocar fica selecionado.</p>
+          {
+            tipo: 'jogo',
+            titulo: 'Pratique arrastar e soltar',
+            instructions: 'Arraste o documento abaixo até a pasta do Explorador de Arquivos.',
+            jogo: 'arrastar',
+            dificuldade: 'demonstracao',
+            jogoProps: {
+              fundo: iconeFundo,
+              item: { id: 'documento', label: '📄 Documento' },
+              zonas: [{ id: 'pasta', label: 'Explorador de Arquivos', icone: iconeExplorador, correta: true }],
+            },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Mais uma vez',
+            instructions: 'Agora arraste a foto até a lixeira, pra apagá-la.',
+            jogo: 'arrastar',
+            dificuldade: 'demonstracao',
+            jogoProps: {
+              fundo: iconeFundo,
+              item: { id: 'foto', label: '🖼️ Foto' },
+              zonas: [{ id: 'lixeira', label: 'Lixeira', icone: iconeLixeira, correta: true }],
+            },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Com atenção: tem duas opções agora',
+            instructions: 'Arraste a música até a lixeira - repare que agora tem mais de um lugar na tela.',
+            jogo: 'arrastar',
+            dificuldade: 'padrao',
+            jogoProps: {
+              fundo: iconeFundo,
+              item: { id: 'musica', label: '🎵 Música' },
+              zonas: [
+                { id: 'pasta', label: 'Explorador de Arquivos', icone: iconeExplorador, correta: false },
+                { id: 'lixeira', label: 'Lixeira', icone: iconeLixeira, correta: true },
+              ],
+            },
+          },
+          {
+            titulo: 'Selecionando vários itens ao mesmo tempo',
+            conteudo: `<p>Às vezes você quer mover, copiar ou apagar vários arquivos de uma vez, em vez de um por um. Uma forma simples de fazer isso: clique numa área vazia perto dos arquivos e arraste - como se estivesse "jogando uma rede" por cima dos itens que quer pegar. Tudo que a rede tocar fica selecionado.</p>
 <p>Depois de selecionados, qualquer ação que você fizer (arrastar pra lixeira, copiar, etc.) vale para todos de uma vez.</p>`,
-          dica: 'Existe também outra forma, segurando uma tecla (geralmente Ctrl) e clicando em cada arquivo individualmente - mas arrastar costuma ser mais rápido quando os itens estão pertinho um do outro.',
-        },
-        {
-          tipo: 'jogo',
-          titulo: 'Selecione as fotos',
-          instructions: 'Arraste sobre as 3 fotos (sem incluir os documentos) para selecioná-las todas de uma vez.',
-          jogo: 'selecionar-arrastando',
-          dificuldade: 'desafio',
-          jogoProps: {
-            modo: 'arquivos',
-            itens: [
-              { id: 'doc1', rotulo: '📄 Documento', alvoSelecao: false },
-              { id: 'foto1', rotulo: '🖼️ Foto', alvoSelecao: true },
-              { id: 'foto2', rotulo: '🖼️ Foto', alvoSelecao: true },
-              { id: 'foto3', rotulo: '🖼️ Foto', alvoSelecao: true },
-              { id: 'doc2', rotulo: '📄 Documento', alvoSelecao: false },
-            ],
+            dica: 'Existe também outra forma, segurando uma tecla (geralmente Ctrl) e clicando em cada arquivo individualmente - mas arrastar costuma ser mais rápido quando os itens estão pertinho um do outro.',
           },
-        },
-        {
-          titulo: 'Selecionando um trecho de texto',
-          conteudo: `<p>O mesmo gesto de arrastar também serve para marcar parte de um texto - por exemplo, antes de copiar ou apagar só um trecho, sem mexer no resto.</p>
+          {
+            tipo: 'jogo',
+            titulo: 'Selecione as fotos',
+            instructions: 'Arraste sobre as 3 fotos (sem incluir os documentos) para selecioná-las todas de uma vez.',
+            jogo: 'selecionar-arrastando',
+            dificuldade: 'desafio',
+            jogoProps: {
+              modo: 'arquivos',
+              itens: [
+                { id: 'doc1', rotulo: '📄 Documento', alvoSelecao: false },
+                { id: 'foto1', rotulo: '🖼️ Foto', alvoSelecao: true },
+                { id: 'foto2', rotulo: '🖼️ Foto', alvoSelecao: true },
+                { id: 'foto3', rotulo: '🖼️ Foto', alvoSelecao: true },
+                { id: 'doc2', rotulo: '📄 Documento', alvoSelecao: false },
+              ],
+            },
+          },
+          {
+            titulo: 'Selecionando um trecho de texto',
+            conteudo: `<p>O mesmo gesto de arrastar também serve para marcar parte de um texto - por exemplo, antes de copiar ou apagar só um trecho, sem mexer no resto.</p>
 <p>Clique bem no início do trecho que você quer, segure o botão, arraste até o final dele e solte. As palavras por onde o cursor passou ficam destacadas (geralmente em azul), mostrando o que está selecionado.</p>`,
-        },
-        {
-          tipo: 'jogo',
-          titulo: 'Selecione o trecho certo',
-          instructions: `Arraste sobre as palavras "computador está lento" para selecioná-las.`,
-          jogo: 'selecionar-arrastando',
-          dificuldade: 'desafio',
-          jogoProps: {
-            modo: 'texto',
-            itens: [
-              { id: 'hoje', rotulo: 'Hoje', alvoSelecao: false },
-              { id: 'o', rotulo: 'o', alvoSelecao: false },
-              { id: 'computador', rotulo: 'computador', alvoSelecao: true },
-              { id: 'esta', rotulo: 'está', alvoSelecao: true },
-              { id: 'lento', rotulo: 'lento', alvoSelecao: true },
-            ],
           },
-        },
-      ],
-    },
-    {
-      id: '1-6',
-      titulo: 'Coordenação e precisão',
-      etapas: [
-        {
-          titulo: 'Juntando tudo o que você aprendeu',
-          conteudo: `<p>Este último tópico não traz uma habilidade nova, mas um convite para juntar tudo o que foi aprendido - mover o cursor, clicar, dar duplo clique, rolar a tela e arrastar - em situações práticas do dia a dia, como:</p>
+          {
+            tipo: 'jogo',
+            titulo: 'Selecione o trecho certo',
+            instructions: `Arraste sobre as palavras "computador está lento" para selecioná-las.`,
+            jogo: 'selecionar-arrastando',
+            dificuldade: 'desafio',
+            jogoProps: {
+              modo: 'texto',
+              itens: [
+                { id: 'hoje', rotulo: 'Hoje', alvoSelecao: false },
+                { id: 'o', rotulo: 'o', alvoSelecao: false },
+                { id: 'computador', rotulo: 'computador', alvoSelecao: true },
+                { id: 'esta', rotulo: 'está', alvoSelecao: true },
+                { id: 'lento', rotulo: 'lento', alvoSelecao: true },
+              ],
+            },
+          },
+        ],
+      },
+      {
+        id: '1-6',
+        titulo: 'Coordenação e precisão',
+        etapas: [
+          {
+            titulo: 'Juntando tudo o que você aprendeu',
+            conteudo: `<p>Este último tópico traz um convite para exercitar tudo o que foi aprendido - mover o cursor, clicar com o esquerdo e direito, dar duplo clique, rolar a tela e arrastar - em situações práticas do dia a dia, como:</p>
 <ul>
-  <li>Clicar em botões pequenos ou em links</li>
+  <li>Clicar em botões menores ou links</li>
   <li>Fechar, maximizar ou minimizar uma janela</li>
   <li>Abrir e fechar programas</li>
-  <li>Selecionar arquivos</li>
+  <li>Selecionar arquivos com precisão</li>
   <li>Navegar por menus</li>
-  <li>Usar a barra de rolagem lateral da tela</li>
-  <li>Corrigir um clique feito no lugar errado</li>
 </ul>`,
-        },
-        {
-          titulo: 'A precisão vem com a prática',
-          conteudo: `<p>É natural que, no começo, a mão precise de mais tempo para apontar com exatidão em áreas pequenas da tela. Isso melhora com a prática, da mesma forma que qualquer habilidade manual - como costurar um botão ou encaixar uma chave na fechadura - fica mais precisa quanto mais vezes é repetida.</p>
-<p>Se em algum momento você clicar no lugar errado, não há problema: basta clicar novamente no local correto. Errar faz parte do processo de aprender.</p>`,
-        },
-        {
-          titulo: 'Hora de treinar de verdade',
-          conteudo: `<p>Até agora o alvo ficou parado - mas na vida real, às vezes você precisa acompanhar algo que está se movendo na tela, como o cursor de um jogo ou uma janela sendo arrastada.</p>
-<p>Sem pressa: o alvo abaixo vai se mover bem devagar. É só ir seguindo com o olhar e clicar quando sentir que consegue alcançá-lo.</p>`,
-          dica: 'Se for mais fácil, mova o mouse na direção geral do alvo em vez de tentar prever exatamente onde ele vai estar.',
-        },
-        {
-          tipo: 'jogo',
-          titulo: 'Desafio de precisão',
-          instructions: 'Clique no alvo assim que conseguir alcançá-lo - ele vai se mover devagar pela área.',
-          jogo: 'alvo-movel',
-          dificuldade: 'desafio',
-          jogoProps: { velocidade: 50 },
-        },
-        {
+          },
+          {
+            titulo: 'A precisão vem com a prática',
+            conteudo: `<p>É natural que, no começo, a mão precise de mais tempo para apontar com exatidão em áreas menores da tela. Isso melhora com a repetição tranquila, da mesma forma que qualquer habilidade manual - como costurar um botão ou encaixar uma chave na fechadura.</p>
+<p>Se em algum momento você clicar fora do lugar, não há problema: basta clicar novamente no local correto. Errar faz parte do processo de aprender.</p>`,
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Prática: Fechar janela (botão pequeno)',
+            instructions: 'Com calma e precisão, clique no botão de fechar (✕) no canto superior da janela.',
+            jogo: 'clicar',
+            dificuldade: 'padrao',
+            jogoProps: {
+              layout: 'linha',
+              alvos: [
+                { id: 'minimizar', label: '— Minimizar', correto: false },
+                { id: 'maximizar', label: '□ Maximizar', correto: false },
+                { id: 'fechar', label: '✕ Fechar janela', correto: true },
+              ],
+            },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Prática: Mira e precisão em grade',
+            instructions: 'Clique com precisão apenas no ícone do "Navegador de Internet" entre os vários programas.',
+            jogo: 'clicar',
+            dificuldade: 'padrao',
+            jogoProps: {
+              layout: 'grade',
+              alvos: [
+                { id: 'calculadora', label: '🔢 Calculadora', correto: false },
+                { id: 'navegador', label: '🌐 Navegador', correto: true },
+                { id: 'relogio', label: '⏰ Relógio', correto: false },
+                { id: 'notas', label: '📝 Bloco de notas', correto: false },
+                { id: 'lixeira', label: '🗑️ Lixeira', correto: false },
+                { id: 'painel', label: '⚙️ Configurações', correto: false },
+              ],
+            },
+          },
+          {
+            titulo: 'Hora de treinar com movimento',
+            conteudo: `<p>Na vida real, às vezes você precisa acompanhar algo que se move na tela. O exercício a seguir ajuda a treinar essa coordenação olho-mão.</p>
+<p>Sem pressa: o alvo vai se mover suavemente pela área. Vá acompanhando com o olhar e clique quando sentir que posicionou o cursor sobre ele.</p>`,
+            dica: 'Mova o mouse na direção geral do alvo com calma, sem fazer movimentos bruscos.',
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Desafio: Coordenação com alvo móvel',
+            instructions: 'Acompanhe o alvo com o cursor e clique nele quando conseguir alcançá-lo.',
+            jogo: 'alvo-movel',
+            dificuldade: 'desafio',
+            jogoProps: { velocidade: 35, rotulo: '🎯 Clique aqui' },
+          },
+          {
             titulo: 'Para lembrar',
             conteudo: `<ul>
-  <li>O mouse é a sua forma de "apontar e escolher" no computador.</li>
+  <li>O mouse é a sua forma de apontar e escolher no computador.</li>
   <li>O cursor (a seta na tela) segue o movimento da sua mão.</li>
-  <li>Clique simples seleciona; duplo clique abre; o botão direito mostra mais opções.</li>
+  <li>Clique simples seleciona; duplo clique abre; o botão direito mostra opções extras.</li>
   <li>A rodinha (scroll) rola a página para cima ou para baixo.</li>
   <li>Arrastar e soltar é clicar, segurar, mover e soltar no lugar certo.</li>
-  <li>A precisão vem com a prática - não existe pressa nem cobrança nesse caminho.</li>
+  <li>A precisão vem com o tempo e com a prática - continue sempre no seu ritmo!</li>
 </ul>`,
-            dica: 'Você está construindo, um clique de cada vez, uma habilidade que vai abrir muitas portas. Continue no seu ritmo: ele é o certo. 💛',
+            dica: 'Você está construindo, um clique de cada vez, uma habilidade que vai abrir muitas portas. Parabéns pelo empenho!',
           },
         ],
       },
     ],
   },
 
-/**
- * RASCUNHO - Módulo 2 (Teclado) com o campo `dificuldade` adicionado.
- *
- * Mesmo espírito do rascunho do Módulo 1: nenhum texto pedagógico foi
- * reescrito, só foi adicionado:
- *
- *   1. O campo `dificuldade` em todas as 39 etapas tipo 'jogo' que já
- *      existiam.
- *   2. 1 etapa nova (marcada "// NOVO"), fechando a única lacuna real
- *      encontrada.
- *
- * Diferença importante em relação ao Módulo 1: aqui quase não faltava
- * nada. As 15 Unidades que cobrem o Módulo 2 (U2.1 a U2.8, ver
- * data/unidades.js) já têm um `checkpoint` no fim de cada uma - e
- * esse checkpoint já cumpre o papel de `desafio` na maioria dos
- * casos. Então, diferente do Módulo 1 (onde eu inventei etapas de
- * `desafio` dentro do mini-módulo), aqui o padrão
- * demonstração → padrão → (checkpoint da Unidade = desafio) já
- * aparece organicamente na maior parte dos mini-módulos:
- *
- *   - 2-1/2-2 (U2.1), 2-6/2-7 (U2.3), 2-8/2-9 (U2.4),
- *     2-12/2-13 (U2.6): arco completo, nenhuma lacuna.
- *   - 2-3/2-4/2-5 (U2.2): arco completo (2-3 e o "Pratique a barra de
- *     espaço" de 2-4 fazem as vezes de demonstração; "Pratique duas
- *     palavras" e o quiz do Enter já são padrão real).
- *   - 2-14 (Atalhos, U2.7, tier 2): os 4 atalhos são demonstração
- *     (sem distrator - escuta o teclado físico, não tem nada clicável
- *     na tela) e o quiz final já funciona como desafio dentro do
- *     próprio mini-módulo, além do checkpoint da Unidade.
- *   - 2-15 (Prática funcional, U2.8): igual ao 1-6 do mouse - é o
- *     mini-módulo de fechamento, então as 2 etapas já nascem
- *     `desafio` mesmo (os próprios títulos já diziam "Desafio:").
- *   - 2-10/2-11 (Números e símbolos, U2.5): ÚNICA lacuna real - as
- *     duas mini-módulos pulavam direto pra prática com validação
- *     (mín. 2 dígitos, CEP com hífen etc), sem nenhum primeiro
- *     contato sem risco. Adicionei 1 etapa `demonstracao` no início
- *     de 2-10 (reaproveitando o jogo 'digitar', sem `validar` -
- *     mesmo padrão que "Pratique mais uma vez" em 2-3).
- *
- * Isso é uma boa notícia: mostra que a estrutura de vocês já nasceu
- * bem desenhada nesse sentido - a maior parte do trabalho aqui foi
- * só nomear o que já existia, não consertar.
- */
+  /**
+   * RASCUNHO - Módulo 2 (Teclado) com o campo `dificuldade` adicionado.
+   *
+   * Mesmo espírito do rascunho do Módulo 1: nenhum texto pedagógico foi
+   * reescrito, só foi adicionado:
+   *
+   *   1. O campo `dificuldade` em todas as 39 etapas tipo 'jogo' que já
+   *      existiam.
+   *   2. 1 etapa nova (marcada "// NOVO"), fechando a única lacuna real
+   *      encontrada.
+   *
+   * Diferença importante em relação ao Módulo 1: aqui quase não faltava
+   * nada. As 15 Unidades que cobrem o Módulo 2 (U2.1 a U2.8, ver
+   * data/unidades.js) já têm um `checkpoint` no fim de cada uma - e
+   * esse checkpoint já cumpre o papel de `desafio` na maioria dos
+   * casos. Então, diferente do Módulo 1 (onde eu inventei etapas de
+   * `desafio` dentro do mini-módulo), aqui o padrão
+   * demonstração → padrão → (checkpoint da Unidade = desafio) já
+   * aparece organicamente na maior parte dos mini-módulos:
+   *
+   *   - 2-1/2-2 (U2.1), 2-6/2-7 (U2.3), 2-8/2-9 (U2.4),
+   *     2-12/2-13 (U2.6): arco completo, nenhuma lacuna.
+   *   - 2-3/2-4/2-5 (U2.2): arco completo (2-3 e o "Pratique a barra de
+   *     espaço" de 2-4 fazem as vezes de demonstração; "Pratique duas
+   *     palavras" e o quiz do Enter já são padrão real).
+   *   - 2-14 (Atalhos, U2.7, tier 2): os 4 atalhos são demonstração
+   *     (sem distrator - escuta o teclado físico, não tem nada clicável
+   *     na tela) e o quiz final já funciona como desafio dentro do
+   *     próprio mini-módulo, além do checkpoint da Unidade.
+   *   - 2-15 (Prática funcional, U2.8): igual ao 1-6 do mouse - é o
+   *     mini-módulo de fechamento, então as 2 etapas já nascem
+   *     `desafio` mesmo (os próprios títulos já diziam "Desafio:").
+   *   - 2-10/2-11 (Números e símbolos, U2.5): ÚNICA lacuna real - as
+   *     duas mini-módulos pulavam direto pra prática com validação
+   *     (mín. 2 dígitos, CEP com hífen etc), sem nenhum primeiro
+   *     contato sem risco. Adicionei 1 etapa `demonstracao` no início
+   *     de 2-10 (reaproveitando o jogo 'digitar', sem `validar` -
+   *     mesmo padrão que "Pratique mais uma vez" em 2-3).
+   *
+   * Isso é uma boa notícia: mostra que a estrutura de vocês já nasceu
+   * bem desenhada nesse sentido - a maior parte do trabalho aqui foi
+   * só nomear o que já existia, não consertar.
+   */
 
   {
     id: '2',

@@ -9,11 +9,13 @@
 .header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 1rem;
   padding: 1.1rem 2rem;
   background: var(--color-surface);
   border-bottom: 1px solid var(--color-border);
+  position: sticky;
+  top: var(--a11y-bar-height);
+  z-index: 10;
 }
 
 .backBtn {
@@ -25,11 +27,53 @@
   cursor: pointer;
   padding: 6px 10px;
   border-radius: var(--radius-sm);
-  transition: background var(--transition-fast);
+  transition: background var(--transition-fast), color var(--transition-fast);
+  white-space: nowrap;
 }
 
 .backBtn:hover {
-  background: var(--color-bg);
+  background: var(--color-yellow-pale);
+  color: var(--color-border-focus);
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  font-size: 0.875rem;
+  overflow: hidden;
+}
+
+.breadcrumbModulo {
+  color: var(--color-text-secondary);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.breadcrumbSep {
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+}
+
+.breadcrumbMini {
+  color: var(--color-border-focus);
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.etapaInfo {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  background: var(--color-yellow-pale);
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
 }
 
 .badge {
@@ -37,8 +81,22 @@
   font-weight: 700;
   color: var(--color-yellow-deep);
   background: var(--color-yellow-bg);
-  padding: 4px 14px;
+  padding: 6px 16px;
   border-radius: var(--radius-pill);
+  border: 1px solid rgba(234, 179, 8, 0.3);
+  white-space: nowrap;
+}
+
+/* Barra de progresso */
+.progressBar {
+  height: 5px;
+  background: var(--color-border);
+}
+
+.progressFill {
+  height: 100%;
+  background: var(--gradient-btn-primary, linear-gradient(90deg, #ffd94d, #ffca1a));
+  transition: width var(--transition-base);
 }
 
 .main {
@@ -46,17 +104,23 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
+  padding: 2rem 1.5rem;
 }
 
 .card {
   width: 100%;
-  max-width: 560px;
+  max-width: 600px;
   background: var(--color-white);
   border-radius: var(--radius-lg);
   border: 1.5px solid var(--color-border);
   box-shadow: var(--shadow-md);
   padding: 2rem;
+}
+
+.cardHeader {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .unidadeTitulo {
@@ -65,48 +129,112 @@
   font-weight: 700;
   color: var(--color-text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.03em;
-  margin-bottom: 1.25rem;
+  letter-spacing: 0.04em;
+  margin-bottom: 1rem;
 }
 
+/* Tracker de progresso do desafio */
+.trackerContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.trackerLabels {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.875rem;
+}
+
+.trackerText {
+  color: var(--color-text-secondary);
+}
+
+.trackerText strong {
+  color: var(--color-border-focus);
+}
+
+.trackerScore {
+  font-weight: 700;
+  color: var(--color-text-primary);
+  font-size: 0.8125rem;
+  background: var(--color-yellow-pale);
+  border: 1px solid var(--color-yellow-light);
+  padding: 2px 10px;
+  border-radius: var(--radius-pill);
+}
+
+
+.questaoSlot {
+  transition: opacity 0.3s ease;
+}
+
+.questaoTransicao {
+  opacity: 0.7;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+/* Telas de desfecho */
 .desfecho {
   width: 100%;
-  max-width: 480px;
+  max-width: 520px;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 0.75rem;
+  gap: 1rem;
   background: var(--color-white);
   border-radius: var(--radius-lg);
   border: 2px solid var(--color-border);
   padding: 2.5rem 2rem;
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-lg);
 }
 
 .desfecho[data-tipo='dominou'] {
   border-color: var(--color-success);
-  background: var(--color-success-bg);
+  background: linear-gradient(180deg, #f0fdf4 0%, #ffffff 100%);
 }
 
 .desfecho[data-tipo='reforco'] {
   border-color: var(--color-yellow);
-  background: var(--color-yellow-bg);
+  background: linear-gradient(180deg, #fefce8 0%, #ffffff 100%);
 }
 
 .desfechoEmoji {
-  font-size: 3rem;
+  font-size: 3.5rem;
 }
 
 .desfecho h2 {
-  font-size: 1.25rem;
+  font-size: 1.35rem;
   color: var(--color-text-primary);
+  margin: 0;
+}
+
+.scoreBadge {
+  font-size: 0.9375rem;
+  color: var(--color-text-primary);
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  padding: 6px 16px;
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-sm);
 }
 
 .desfecho p {
-  font-size: 0.9375rem;
+  font-size: 0.95rem;
+  line-height: 1.5;
   color: var(--color-text-secondary);
-  margin-bottom: 0.5rem;
+  margin: 0;
+}
+
+.desfechoActions {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
 }
 
 .notFound {

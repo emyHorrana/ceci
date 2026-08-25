@@ -177,12 +177,20 @@
   }
 }
 
+.teoriaHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
 .etapaTitulo {
   font-family: var(--font-display);
   font-size: 1.6rem;
   font-weight: 800;
   color: var(--color-text-primary);
-  margin: 0 0 1.25rem;
+  margin: 0;
   line-height: 1.2;
 }
 

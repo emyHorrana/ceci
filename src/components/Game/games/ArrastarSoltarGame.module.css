@@ -2,28 +2,141 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.5rem;
+  gap: 1.75rem;
   width: 100%;
 }
 
+.comFundo {
+  position: relative;
+  background-size: cover;
+  background-position: center bottom;
+  background-repeat: no-repeat;
+  min-height: 260px;
+  border-radius: var(--radius-xl, 16px);
+  border: 2px solid var(--color-border, #e2e8f0);
+  box-shadow: var(--shadow-md);
+  padding: 1.5rem 1.5rem 6.5rem;
+  overflow: hidden;
+}
+
+/* Barra de tarefas "de verdade" (elemento real, não só decoração do
+   fundo): fica fixada na parte de baixo do card e é onde as zonas de
+   soltar com ícone de app (Explorador/Lixeira) pousam - imitando uma
+   barra de tarefas do Windows. O item arrastável continua livre lá em
+   cima, na "área de trabalho", pra ser puxado até a barra. */
+.taskbar {
+  position: absolute;
+  /* Troque os rems fixos por porcentagens para acompanhar o "cover" do fundo */
+  left: 6%; 
+  right: 6%;
+  /* Reduza a distância do fundo e a altura mínima */
+  bottom: -0.5rem;
+  min-height: 75px; /* Antes estava 100px, o que a deixava muito alta */
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.75rem;
+  padding: 0.5rem 1.25rem;
+  background: var(--color-taskbar, #dfcee6);
+  border-radius: var(--radius-pill, 999px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.taskbar .zonas {
+  display: flex;
+  flex-direction: row;
+  width: auto;
+}
+
+.taskbar .zonaComIcone {
+  min-width: 72px;
+  min-height: 76px;
+  padding: 0.4rem;
+  flex: none;
+}
+
+.taskbar .zonaIcone {
+  width: 40px;
+  height: 40px;
+}
+
+.taskbar .zonaLabel {
+  font-size: 0.75rem;
+}
+
+.desktopBar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding-bottom: 0.75rem;
+  margin-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.desktopDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color-yellow-deep, #ffca1a);
+  opacity: 0.7;
+}
+
+.desktopTitle {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-text-secondary, #475569);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-left: 6px;
+}
+
 .item {
-  font-size: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
   padding: 1rem 1.5rem;
-  background: var(--color-surface);
-  border: 2px solid var(--color-yellow-light);
+  background: rgba(255, 255, 255, 0.95);
+  border: 2.5px solid var(--color-yellow-deep, #ffca1a);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-md);
   cursor: grab;
   user-select: none;
+  backdrop-filter: blur(4px);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast), background var(--transition-fast);
+}
+
+.itemIcone {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.12));
+}
+
+.itemLabel {
+  text-align: center;
+}
+
+.item:hover {
+  transform: translateY(-3px);
+  border-color: var(--color-border-focus, #e0a100);
+  background: var(--color-yellow-bg, #fffdf0);
+  box-shadow: var(--shadow-yellow);
 }
 
 .item:active {
   cursor: grabbing;
+  transform: scale(0.97);
 }
 
 .zonas {
   display: flex;
-  gap: 1rem;
+  gap: 1.25rem;
   flex-wrap: wrap;
   justify-content: center;
   width: 100%;
@@ -31,29 +144,76 @@
 
 .zona {
   flex: 1;
-  min-width: 140px;
-  min-height: 90px;
+  min-width: 150px;
+  min-height: 110px;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 0.5rem;
   text-align: center;
-  padding: 1rem;
-  font-size: 0.95rem;
-  color: var(--color-text-secondary);
-  background: var(--color-yellow-pale);
-  border: 2px dashed var(--color-border);
+  padding: 1.25rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  background: rgba(255, 255, 255, 0.9);
+  border: 2.5px dashed var(--color-border-focus, #e0a100);
   border-radius: var(--radius-lg);
-  transition: border-color var(--transition-fast), background var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+  backdrop-filter: blur(4px);
+  transition: all var(--transition-fast);
+}
+
+/* Zona com ícone de app (ex: Explorador/Lixeira sobre o fundo estilo
+   desktop): sem cartão/tracejado por trás - o ícone fica "pousado" na
+   área de trabalho, como um app de verdade, em vez de dentro de uma
+   caixa de soltar genérica. */
+.zonaComIcone {
+  min-height: auto;
+  padding: 0.5rem;
+  background: transparent;
+  border: 2.5px solid transparent;
+  border-radius: var(--radius-lg);
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.zonaComIcone[data-sobre='true'],
+.zona.zonaComIcone[data-sobre='true'] {
+  border-color: transparent;
+  background: rgba(255, 255, 255, 0.25);
+  color: var(--color-text-primary);
+  box-shadow: none;
+  transform: scale(1.06);
+}
+
+.zona.zonaComIcone.erro {
+  background: var(--color-error-bg) !important;
+}
+
+.zona.zonaComIcone.acerto {
+  background: var(--color-success-bg) !important;
+}
+
+.zonaIcone {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.zonaLabel {
+  font-size: 0.95rem;
 }
 
 .zona[data-sobre='true'] {
-  border-color: var(--color-yellow-deep);
-  background: var(--color-yellow-soft);
+  border-color: var(--color-yellow-deep, #ffca1a);
+  background: var(--color-yellow-pale, #ffffcc);
+  color: var(--color-text-primary);
+  transform: scale(1.04);
+  box-shadow: var(--shadow-yellow);
 }
 
-/* composes só é permitido num seletor de classe única - por isso essa
-   classe fica separada e é aplicada via className condicional no JS
-   (não via data-attribute no CSS, que quebraria o composes) */
 .erro {
   composes: erro from '../GameMoment.module.css';
 }

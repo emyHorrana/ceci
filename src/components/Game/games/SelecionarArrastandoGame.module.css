@@ -3,15 +3,11 @@
   width: 100%;
   padding: 1.5rem;
   border-radius: var(--radius-lg);
-  /* pointer events próprios cuidam do arraste - impede o navegador de
-     tentar rolar/dar zoom/selecionar texto nativamente no meio do
-     gesto (essencial em touch e no modo 'texto') */
   touch-action: none;
   user-select: none;
 }
 
-/* modo 'arquivos': grade de ícones, parecido com um explorador de
-   arquivos */
+/* modo 'arquivos': grade de ícones, parecido com um explorador de arquivos */
 .grade {
   display: flex;
   flex-wrap: wrap;
@@ -50,33 +46,30 @@
   transition: background var(--transition-fast), color var(--transition-fast);
 }
 
-/* Estado "tocado" pelo laço - mesma cor em ambos os modos, só muda o
-   formato de destaque (borda no ícone, fundo na palavra) */
+/* Estado "tocado" pelo laço - usando a paleta acolhedora CECI (amarelo ouro/suave) */
 .icone.tocado {
-  border-color: rgba(37, 99, 235, 0.8);
-  background: rgba(37, 99, 235, 0.1);
+  border-color: var(--color-yellow-deep, #ffca1a);
+  background: var(--color-yellow-soft, #fff099);
   transform: scale(1.04);
+  box-shadow: var(--shadow-sm);
 }
 
 .palavra.tocado {
-  background: rgba(37, 99, 235, 0.25);
-  color: var(--color-text);
+  background: var(--color-yellow-soft, #fff099);
+  color: var(--color-text-primary);
+  font-weight: 600;
 }
 
-/* O retângulo de "laço" que acompanha o gesto - mesma linguagem visual
-   de seleção de texto/ícones (fundo azul translúcido, borda sólida). */
+/* O retângulo de "laço" que acompanha o gesto */
 .laco {
   position: absolute;
   pointer-events: none;
-  background: rgba(37, 99, 235, 0.15);
-  border: 1.5px solid rgba(37, 99, 235, 0.8);
-  border-radius: 2px;
+  background: rgba(255, 202, 26, 0.22);
+  border: 2px solid var(--color-yellow-deep, #ffca1a);
+  border-radius: 4px;
   z-index: 10;
 }
 
-/* Feedback de acerto/erro no grupo inteiro (a própria .area pisca),
-   já que aqui não faz sentido destacar zona nenhuma - o resultado
-   depende do conjunto de itens tocados, não de 1 alvo fixo. */
 .erro {
   border: 2px solid var(--color-error);
   background: var(--color-error-bg);
@@ -99,4 +92,4 @@
   0% { transform: scale(1); }
   50% { transform: scale(1.02); }
   100% { transform: scale(1); }
-}
+}

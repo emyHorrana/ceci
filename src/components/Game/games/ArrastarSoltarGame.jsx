@@ -35,7 +35,7 @@
 import { useState } from 'react';
 import styles from './ArrastarSoltarGame.module.css';
 
-export function ArrastarSoltarGame({ reportResult, item, zonas }) {
+export function ArrastarSoltarGame({ reportResult, item, zonas, fundo = null }) {
   const [zonaSobre, setZonaSobre] = useState(null);
   const [zonaErrada, setZonaErrada] = useState(null);
   const [zonaCerta, setZonaCerta] = useState(null);
@@ -60,33 +60,65 @@ export function ArrastarSoltarGame({ reportResult, item, zonas }) {
   };
 
   return (
-    <div className={styles.area}>
       <div
-        className={styles.item}
-        draggable
-        onDragStart={handleDragStart}
-        aria-label={`Arraste: ${item.label}`}
+          className={`${styles.area} ${fundo ? styles.comFundo : ''}`}
+          style={
+            fundo
+                ? {
+                  backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), url(${typeof fundo === 'string' ? fundo : '/fundo.png'})`,
+                }
+                : undefined
+          }
       >
-        {item.label}
-      </div>
+        {fundo && (
+            <div className={styles.desktopBar}>
+              <span className={styles.desktopDot} />
+              <span className={styles.desktopDot} />
+              <span className={styles.desktopDot} />
+              <span className={styles.desktopTitle}>Área de Trabalho</span>
+            </div>
+        )}
 
-      <div className={styles.zonas}>
-        {zonas.map((zona) => (
-          <div
-            key={zona.id}
-            className={`${styles.zona} ${zonaErrada === zona.id ? styles.erro : ''} ${zonaCerta === zona.id ? styles.acerto : ''}`}
-            data-sobre={zonaSobre === zona.id}
-            onDragOver={(e) => {
-              e.preventDefault();
-              setZonaSobre(zona.id);
-            }}
-            onDragLeave={() => setZonaSobre(null)}
-            onDrop={(e) => handleDrop(e, zona)}
-          >
-            {zona.label}
-          </div>
-        ))}
+        <div
+            className={styles.item}
+            draggable
+            onDragStart={handleDragStart}
+            aria-label={`Arraste: ${item.label}`}
+        >
+          {item.icone && (
+              <img src={item.icone} alt="" className={styles.itemIcone} draggable={false} />
+          )}
+          <span className={styles.itemLabel}>{item.label}</span>
+        </div>
+
+        {(() => {
+          const zonasEl = (
+              <div className={styles.zonas}>
+                {zonas.map((zona) => (
+                    <div
+                        key={zona.id}
+                        className={`${styles.zona} ${zona.icone ? styles.zonaComIcone : ''} ${zonaErrada === zona.id ? styles.erro : ''} ${zonaCerta === zona.id ? styles.acerto : ''}`}
+                        data-sobre={zonaSobre === zona.id}
+                        onDragOver={(e) => {
+                          e.preventDefault();
+                          setZonaSobre(zona.id);
+                        }}
+                        onDragLeave={() => setZonaSobre(null)}
+                        onDrop={(e) => handleDrop(e, zona)}
+                    >
+                      {zona.icone && (
+                          <img src={zona.icone} alt="" className={styles.zonaIcone} draggable={false} />
+                      )}
+                      <span className={styles.zonaLabel}>{zona.label}</span>
+                    </div>
+                ))}
+              </div>
+          );
+
+          // Com fundo de "área de trabalho", as zonas são ícones de app
+          // e devem pousar na barra de tarefas simulada, não flutuar soltas.
+          return fundo ? <div className={styles.taskbar}>{zonasEl}</div> : zonasEl;
+        })()}
       </div>
-    </div>
   );
 }

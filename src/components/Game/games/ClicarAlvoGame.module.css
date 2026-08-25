@@ -1,43 +1,270 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  width: 100%;
+}
+
+.comFundo {
+  position: relative;
+  background-size: cover;
+  background-position: center bottom;
+  background-repeat: no-repeat;
+  min-height: 250px;
+  border-radius: var(--radius-xl, 16px);
+  border: 2px solid var(--color-border, #e2e8f0);
+  box-shadow: var(--shadow-md);
+  padding: 1.5rem 1.5rem 6.5rem;
+  overflow: hidden;
+}
+
+/* Barra de tarefas "de verdade" (elemento real, não só decoração do
+   fundo): fica fixada na parte de baixo do card e é onde os ícones de
+   app (Google/Explorador/Lixeira) pousam - imitando uma barra de
+   tarefas do Windows. Fica sempre com a mesma cor/posição
+   independente da largura do card, então os ícones nunca "flutuam"
+   soltos como quando dependiam só da imagem de fundo. */
+.taskbar {
+  position: absolute;
+  left: 1rem;
+  right: 1rem;
+  bottom: 1rem;
+  min-height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  padding: 0.5rem 1.25rem;
+  background: var(--color-taskbar, #dfcee6);
+  border-radius: var(--radius-pill, 999px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Especificidade extra (2 classes + atributo) de propósito: precisa
+   ganhar de `.grupo[data-layout='grade']` mesmo esse vindo depois no
+   arquivo, senão o grid do layout "grade" empilha os ícones em vez de
+   deixá-los lado a lado na barra. */
+.taskbar .grupo,
+.taskbar .grupo[data-layout='grade'] {
+  display: flex;
+  flex-direction: row;
+  width: auto;
+}
+
+.taskbar .alvoComIcone {
+  min-width: 72px;
+  min-height: 76px;
+  padding: 0.4rem;
+}
+
+.taskbar .alvoIcone {
+  width: 40px;
+  height: 40px;
+}
+
+.taskbar .alvoLabel {
+  font-size: 0.75rem;
+}
+
+.desktopBar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding-bottom: 0.75rem;
+  margin-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.desktopDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color-yellow-deep, #ffca1a);
+  opacity: 0.7;
+}
+
+.desktopTitle {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-text-secondary, #475569);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-left: 6px;
+}
+
+.avisoBotao {
+  background: var(--color-warning-bg, #fef3c7);
+  border: 1.5px solid var(--color-warning, #f59e0b);
+  color: var(--color-text-primary);
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: var(--radius-pill);
+  text-align: center;
+  animation: deslizarAviso 0.25s ease-out;
+}
+
+@keyframes deslizarAviso {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 .grupo {
   display: flex;
   gap: 1rem;
   flex-wrap: wrap;
   justify-content: center;
+  width: 100%;
 }
 
 .grupo[data-layout='grade'] {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+}
+
+.alvoContainer {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .alvo {
   font-family: var(--font-body);
-  font-size: 1.5rem;
-  min-width: 90px;
-  min-height: 90px;
-  padding: 1rem;
+  font-size: 1.25rem;
+  min-width: 100px;
+  min-height: 80px;
+  padding: 1rem 1.25rem;
   display: flex;
   align-items: center;
   justify-content: center;
+  text-align: center;
   background: var(--color-surface);
   border: 2px solid var(--color-border);
   border-radius: var(--radius-lg);
   cursor: pointer;
+  user-select: none;
   transition: transform var(--transition-fast), border-color var(--transition-fast), background var(--transition-fast);
 }
 
 .alvo:hover {
   border-color: var(--color-yellow-deep);
   transform: translateY(-2px);
+  background: var(--color-yellow-bg);
 }
 
 .alvo:active {
   transform: translateY(0);
 }
 
-/* composes só é permitido num seletor de classe única - por isso essa
-   classe fica separada e é aplicada via className condicional no JS
-   (não via data-attribute no CSS, que quebraria o composes) */
+.alvoMenuAberto {
+  border-color: var(--color-yellow-deep);
+  background: var(--color-yellow-pale);
+}
+
+/* Alvo com imagem (ex: ícone de app tipo Google/Explorador): vira um
+   "ícone de área de trabalho" - imagem grande, sem cartão/borda, rótulo
+   pequeno embaixo - em vez do botão retangular padrão. */
+.alvoComIcone {
+  flex-direction: column;
+  gap: 0.4rem;
+  min-width: 90px;
+  min-height: 90px;
+  padding: 0.75rem 0.5rem;
+  background: transparent;
+  border: 2px solid transparent;
+  box-shadow: none;
+}
+
+.alvoComIcone:hover {
+  background: rgba(255, 255, 255, 0.35);
+  border-color: transparent;
+  transform: translateY(-2px);
+}
+
+.alvoComIcone.acerto,
+.alvoComIcone.erro {
+  border-radius: var(--radius-lg);
+}
+
+.alvoIcone {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.alvoLabel {
+  font-size: 0.85rem;
+  line-height: 1.2;
+}
+
+.comFundo .alvoComIcone .alvoLabel {
+  color: var(--color-text-primary);
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.6);
+}
+
+.contextMenu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 170px;
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  z-index: 20;
+  animation: surgirMenu 0.15s ease-out;
+}
+
+@keyframes surgirMenu {
+  from { opacity: 0; transform: translate(-50%, -4px); }
+  to   { opacity: 1; transform: translate(-50%, 0); }
+}
+
+.contextMenuHeader {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  padding: 4px 8px;
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: 2px;
+}
+
+.contextMenuItem {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  text-align: left;
+  padding: 8px 12px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.contextMenuItem:hover {
+  background: var(--color-yellow-soft);
+  border-color: var(--color-yellow-deep);
+}
+
+.dicaApoio {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  text-align: center;
+  margin: 0;
+}
+
 .erro {
   composes: erro from '../GameMoment.module.css';
 }

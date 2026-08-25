@@ -164,11 +164,20 @@ export default function MiniModulo() {
         (e) => e.tipo !== 'jogo' || dificuldades.includes(e.dificuldade ?? 'padrao')
       );
 
-  useEffect(() => {
-    setEtapaAtual((atual) => Math.min(atual, Math.max(0, etapas.length - 1)));
-  }, [etapas.length]);
-
   const abandonosRef = useRef([]);
+
+  // Reset completo de estado ao trocar de mini-módulo
+  useEffect(() => {
+    const salva = localStorage.getItem(`ceci_etapa_${miniModuloId}`);
+    const etapaInicial = salva ? parseInt(salva, 10) || 0 : 0;
+    setEtapaAtual(etapaInicial);
+    setResultadoJogo(null);
+    setEtapasCompletas(new Set());
+    setExplicacoesIA({});
+    setMostrarExplicacaoIA({});
+    setCarregandoIA(false);
+    setErroIA(null);
+  }, [miniModuloId]);
 
   useEffect(() => {
     setResultadoJogo(null);

@@ -18,6 +18,7 @@ import iconeExplorador from '../assets/explorador.png';
 import iconeLixeira from '../assets/lixeira.png';
 import iconeGoogle from '../assets/google.png';
 import iconeFundo from '../assets/fundo.png';
+import { gerarTecladoSvg, gerarFileiraBaseDetalhadaSvg } from '../utils/keyboardSvg';
 
 export const MODULOS = [
   {
@@ -625,19 +626,20 @@ export const MODULOS = [
             titulo: 'O que você vai encontrar: as letras',
             conteudo: `<p>As letras ficam concentradas bem no <strong>centro</strong> do teclado, no bloco principal - é ali que você vai passar a maior parte do tempo digitando.</p>
 <p>Um detalhe que costuma surpreender: elas não seguem a ordem do alfabeto (A, B, C...). O motivo é histórico, vem de máquinas de escrever antigas - mas não se preocupe em decorar a ordem agora, seus dedos vão aprender o caminho naturalmente com a prática.</p>
-<svg viewBox="0 0 480 190" style="width:100%;max-width:420px;height:auto;display:block;margin:0.75rem auto;" role="img" aria-label="Esquema de teclado destacando a área de letras"><rect x="4" y="40" width="336" height="100" rx="8" fill="var(--color-yellow-bg)" stroke="var(--color-yellow-deep)" stroke-width="2" /><rect x="10" y="15" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="41" y="15" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="72" y="15" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="103" y="15" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="134" y="15" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="165" y="15" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="196" y="15" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="227" y="15" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="258" y="15" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="289" y="15" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="25" y="45" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="56" y="45" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="87" y="45" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="118" y="45" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="149" y="45" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="180" y="45" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="211" y="45" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="242" y="45" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="273" y="45" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="304" y="45" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="35" y="75" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="66" y="75" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="97" y="75" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="128" y="75" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="159" y="75" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="190" y="75" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="221" y="75" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="252" y="75" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="283" y="75" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="45" y="105" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="76" y="105" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="107" y="105" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="138" y="105" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="169" y="105" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="200" y="105" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="231" y="105" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="288" y="105" width="24" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="315" y="105" width="24" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="60" y="135" width="220" height="24" rx="6" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="366" y="18" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="398" y="18" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="430" y="18" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="366" y="53" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="398" y="53" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="430" y="53" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="366" y="88" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="398" y="88" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="430" y="88" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="366" y="123" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="398" y="123" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="430" y="123" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /></svg>`,
+${gerarTecladoSvg('letras')}`,
           },
           {
             titulo: 'O que você vai encontrar: os números',
             conteudo: `<p>Os números aparecem em <strong>dois lugares</strong>: numa fileira ao longo do topo do teclado, e também - em muitos teclados de computador de mesa - num bloco separado do lado direito, parecido com uma calculadora.</p>
 <p>Esse bloco à direita nem sempre existe (notebooks costumam não ter), mas quando existe, é uma forma rápida de digitar números em sequência, como um valor ou uma data.</p>
-<svg viewBox="0 0 480 190" style="width:100%;max-width:420px;height:auto;display:block;margin:0.75rem auto;" role="img" aria-label="Esquema de teclado destacando a área de numeros"><rect x="4" y="10" width="336" height="34" rx="8" fill="var(--color-yellow-bg)" stroke="var(--color-yellow-deep)" stroke-width="2" /><rect x="358" y="10" width="106" height="150" rx="8" fill="var(--color-yellow-bg)" stroke="var(--color-yellow-deep)" stroke-width="2" /><rect x="10" y="15" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="41" y="15" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="72" y="15" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="103" y="15" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="134" y="15" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="165" y="15" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="196" y="15" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="227" y="15" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="258" y="15" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="289" y="15" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="25" y="45" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="56" y="45" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="87" y="45" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="118" y="45" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="149" y="45" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="180" y="45" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="211" y="45" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="242" y="45" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="273" y="45" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="304" y="45" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="35" y="75" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="66" y="75" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="97" y="75" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="128" y="75" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="159" y="75" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="190" y="75" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="221" y="75" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="252" y="75" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="283" y="75" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="45" y="105" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="76" y="105" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="107" y="105" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="138" y="105" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="169" y="105" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="200" y="105" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="231" y="105" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="288" y="105" width="24" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="315" y="105" width="24" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="60" y="135" width="220" height="24" rx="6" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="366" y="18" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="398" y="18" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="430" y="18" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="366" y="53" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="398" y="53" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="430" y="53" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="366" y="88" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="398" y="88" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="430" y="88" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="366" y="123" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="398" y="123" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="430" y="123" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /></svg>`,
+${gerarTecladoSvg('numeros')}`,
           },
           {
             titulo: 'O que você vai encontrar: os símbolos',
             conteudo: `<p>Símbolos como @ (arroba), ponto e vírgula ficam <strong>acessíveis</strong> por combinações de teclas, principalmente em cima da fileira de números e em algumas teclas específicas próximas ao Enter - você vai aprender a digitar os mais usados mais adiante, com calma.</p>
 <p>Por enquanto, só vale saber que eles existem e mais ou menos onde procurar.</p>
-<svg viewBox="0 0 480 190" style="width:100%;max-width:420px;height:auto;display:block;margin:0.75rem auto;" role="img" aria-label="Esquema de teclado destacando a área de simbolos"><rect x="4" y="10" width="336" height="34" rx="8" fill="var(--color-yellow-bg)" stroke="var(--color-yellow-deep)" stroke-width="2" /><rect x="288" y="100" width="52" height="24" rx="6" fill="var(--color-yellow-bg)" stroke="var(--color-yellow-deep)" stroke-width="2" /><rect x="10" y="15" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="41" y="15" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="72" y="15" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="103" y="15" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="134" y="15" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="165" y="15" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="196" y="15" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="227" y="15" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="258" y="15" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="289" y="15" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="25" y="45" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="56" y="45" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="87" y="45" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="118" y="45" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="149" y="45" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="180" y="45" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="211" y="45" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="242" y="45" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="273" y="45" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="304" y="45" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="35" y="75" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="66" y="75" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="97" y="75" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="128" y="75" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="159" y="75" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="190" y="75" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="221" y="75" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="252" y="75" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="283" y="75" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="45" y="105" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="76" y="105" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="107" y="105" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="138" y="105" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="169" y="105" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="200" y="105" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="231" y="105" width="28" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="288" y="105" width="24" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="315" y="105" width="24" height="24" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="60" y="135" width="220" height="24" rx="6" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="366" y="18" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="398" y="18" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="430" y="18" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="366" y="53" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="398" y="53" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="430" y="53" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="366" y="88" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="398" y="88" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="430" y="88" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="366" y="123" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="398" y="123" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /><rect x="430" y="123" width="28" height="28" rx="4" fill="var(--color-white)" stroke="var(--color-border)" stroke-width="2" /></svg><p>Uma última observação sobre o teclado como um todo: teclas maiores, como a barra de espaço e o Enter, são pensadas de propósito pra serem fáceis de encontrar sem precisar olhar.</p>`,
+${gerarTecladoSvg('simbolos')}
+<p>Uma última observação sobre o teclado como um todo: teclas maiores, como a barra de espaço e o Enter, são pensadas de propósito pra serem fáceis de encontrar sem precisar olhar.</p>`,
             dica: 'Você já usou algum teclado antes, como o de um caixa eletrônico ou de um telefone antigo? O que foi parecido ou diferente do teclado do computador?',
           },
           {
@@ -651,6 +653,36 @@ export const MODULOS = [
               alternativas: [
                 { id: 'falso', texto: 'Falso', correta: true },
                 { id: 'verdadeiro', texto: 'Verdadeiro', correta: false },
+              ],
+            },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Onde ficam as letras?',
+            instructions: 'Escolha a resposta certa.',
+            jogo: 'quiz',
+            dificuldade: 'padrao',
+            jogoProps: {
+              pergunta: 'Onde fica concentrada a maior parte das letras no teclado?',
+              alternativas: [
+                { id: 'centro', texto: 'No centro do teclado, no bloco principal', correta: true },
+                { id: 'direita', texto: 'No teclado numérico da lateral direita', correta: false },
+                { id: 'cima', texto: 'Apenas na fileira de cima junto aos números', correta: false },
+              ],
+            },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'O teclado numérico',
+            instructions: 'Escolha a resposta certa.',
+            jogo: 'quiz',
+            dificuldade: 'padrao',
+            jogoProps: {
+              pergunta: 'Para que serve o bloco de números localizado no lado direito de muitos teclados?',
+              alternativas: [
+                { id: 'calculadora', texto: 'Para digitar números com facilidade e rapidez, como numa calculadora', correta: true },
+                { id: 'desligar', texto: 'Para ligar e desligar o computador', correta: false },
+                { id: 'letras', texto: 'Para escrever palavras em letra maiúscula', correta: false },
               ],
             },
           },
@@ -672,8 +704,9 @@ export const MODULOS = [
           {
             titulo: 'Se quiser digitar mais rápido, no seu tempo',
             conteudo: `<p>Isso aqui é opcional - lembre-se, não existe obrigação de usar todos os dedos. Mas se um dia você quiser ganhar velocidade, existe um truque usado por quem digita bastante: cada dedo tem uma "casinha" numa fileira central do teclado, chamada de <strong>fileira base</strong>. Ele sai dali pra apertar outras teclas e sempre volta pra essa posição de descanso.</p>
-<svg viewBox="0 0 366 62" style="width:100%;max-width:360px;height:auto;display:block;margin:0.75rem auto;" role="img" aria-label="Fileira base do teclado, mão esquerda em amarelo, mão direita em âmbar"><rect x="10" y="10" width="38" height="42" rx="6" fill="var(--color-yellow-bg)" stroke="var(--color-yellow-deep)" stroke-width="2" /><text x="29.0" y="37" font-family="sans-serif" font-size="17" font-weight="700" fill="var(--color-text-primary)" text-anchor="middle">A</text><rect x="54" y="10" width="38" height="42" rx="6" fill="var(--color-yellow-bg)" stroke="var(--color-yellow-deep)" stroke-width="2" /><text x="73.0" y="37" font-family="sans-serif" font-size="17" font-weight="700" fill="var(--color-text-primary)" text-anchor="middle">S</text><rect x="98" y="10" width="38" height="42" rx="6" fill="var(--color-yellow-bg)" stroke="var(--color-yellow-deep)" stroke-width="2" /><text x="117.0" y="37" font-family="sans-serif" font-size="17" font-weight="700" fill="var(--color-text-primary)" text-anchor="middle">D</text><rect x="142" y="10" width="38" height="42" rx="6" fill="var(--color-yellow-bg)" stroke="var(--color-yellow-deep)" stroke-width="2" /><text x="161.0" y="37" font-family="sans-serif" font-size="17" font-weight="700" fill="var(--color-text-primary)" text-anchor="middle">F</text><rect x="186" y="10" width="38" height="42" rx="6" fill="var(--color-warning-bg)" stroke="var(--color-warning)" stroke-width="2" /><text x="205.0" y="37" font-family="sans-serif" font-size="17" font-weight="700" fill="var(--color-text-primary)" text-anchor="middle">J</text><rect x="230" y="10" width="38" height="42" rx="6" fill="var(--color-warning-bg)" stroke="var(--color-warning)" stroke-width="2" /><text x="249.0" y="37" font-family="sans-serif" font-size="17" font-weight="700" fill="var(--color-text-primary)" text-anchor="middle">K</text><rect x="274" y="10" width="38" height="42" rx="6" fill="var(--color-warning-bg)" stroke="var(--color-warning)" stroke-width="2" /><text x="293.0" y="37" font-family="sans-serif" font-size="17" font-weight="700" fill="var(--color-text-primary)" text-anchor="middle">L</text><rect x="318" y="10" width="38" height="42" rx="6" fill="var(--color-warning-bg)" stroke="var(--color-warning)" stroke-width="2" /><text x="337.0" y="37" font-family="sans-serif" font-size="17" font-weight="700" fill="var(--color-text-primary)" text-anchor="middle">;</text></svg><p><strong>Mão esquerda</strong> (fileira em amarelo): mindinho no A, anelar no S, médio no D, indicador no F.</p>
-<p><strong>Mão direita</strong> (fileira em âmbar): indicador no J, médio no K, anelar no L, mindinho no ponto e vírgula.</p>
+${gerarFileiraBaseDetalhadaSvg()}
+<p><strong>Mão esquerda</strong> (fileira em amarelo): mindinho no A, anelar no S, médio no D, indicador no F.</p>
+<p><strong>Mão direita</strong> (fileira em âmbar): indicador no J, médio no K, anelar no L, mindinho no Ç.</p>
 <p>Com o tempo, esses dedos aprendem o caminho sozinhos, sem você precisar olhar pra baixo - é exatamente isso que faz digitar ficar mais rápido.</p>`,
             dica: 'Não se preocupe em decorar agora - as próximas etapas são só pra ir pegando o jeito, uma tecla de cada vez, sem pressa nenhuma.',
           },
@@ -755,6 +788,36 @@ export const MODULOS = [
               ],
             },
           },
+          {
+            tipo: 'jogo',
+            titulo: 'A força ao digitar',
+            instructions: 'Escolha a resposta certa.',
+            jogo: 'quiz',
+            dificuldade: 'padrao',
+            jogoProps: {
+              pergunta: 'Qual é a forma correta de pressionar as teclas do teclado?',
+              alternativas: [
+                { id: 'suave', texto: 'Com toques leves e suaves, sem precisar de força', correta: true },
+                { id: 'forte', texto: 'Apertando com o máximo de força possível', correta: false },
+                { id: 'pancada', texto: 'Dando pancadas rápidas com os punhos', correta: false },
+              ],
+            },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'A fileira base',
+            instructions: 'Escolha a resposta certa.',
+            jogo: 'quiz',
+            dificuldade: 'padrao',
+            jogoProps: {
+              pergunta: 'O que é a "fileira base" (onde ficam as teclas A, S, D, F e J, K, L, Ç)?',
+              alternativas: [
+                { id: 'descanso', texto: 'A posição central de descanso e referência para onde os dedos retornam', correta: true },
+                { id: 'bloqueio', texto: 'Uma trava de segurança que bloqueia o teclado', correta: false },
+                { id: 'som', texto: 'A fileira que controla o volume do computador', correta: false },
+              ],
+            },
+          },
         ],
       },
       {
@@ -769,7 +832,7 @@ export const MODULOS = [
           },
           {
             tipo: 'jogo',
-            titulo: 'Pratique digitando',
+            titulo: 'Pratique digitando: gato',
             instructions: 'Digite a palavra "gato" e confirme.',
             jogo: 'digitar',
             dificuldade: 'demonstracao',
@@ -781,18 +844,64 @@ export const MODULOS = [
             },
           },
           {
-            titulo: 'Agora sem exemplo pronto',
-            conteudo: `<p>Dessa vez não vamos dizer exatamente o que digitar - a ideia é só sentir o teclado respondendo aos seus dedos, sem uma resposta "certa" pra acertar.</p>`,
+            titulo: 'Praticando outra palavra do dia a dia',
+            conteudo: `<p>Agora vamos praticar com outra palavra bem comum do nosso cotidiano: <strong>casa</strong>.</p>
+<p>Procure cada letra no teclado com calma: primeiro a letra C, depois A, depois S e por fim a letra A novamente.</p>`,
           },
           {
             tipo: 'jogo',
-            titulo: 'Pratique mais uma vez',
-            instructions: 'Digite uma palavra qualquer que você goste - pode ser o nome de alguém da família, uma comida, o que vier à cabeça.',
+            titulo: 'Pratique digitando: casa',
+            instructions: 'Digite a palavra "casa" e confirme.',
             jogo: 'digitar',
-            dificuldade: 'demonstracao',
+            dificuldade: 'padrao',
             jogoProps: {
-              label: 'Digite uma palavra qualquer',
+              label: 'Digite a palavra "casa"',
               placeholder: 'Digite aqui',
+              validar: (valor) => valor.toLowerCase() === 'casa',
+              mensagemErro: 'Confere se digitou "casa" certinho (C - A - S - A).',
+            },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Pratique digitando: sol',
+            instructions: 'Digite a palavra "sol" e confirme.',
+            jogo: 'digitar',
+            dificuldade: 'padrao',
+            jogoProps: {
+              label: 'Digite a palavra "sol"',
+              placeholder: 'Digite aqui',
+              validar: (valor) => valor.toLowerCase() === 'sol',
+              mensagemErro: 'Confere se digitou "sol" certinho (S - O - L).',
+            },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Ritmo e paciência',
+            instructions: 'Escolha a resposta certa.',
+            jogo: 'quiz',
+            dificuldade: 'padrao',
+            jogoProps: {
+              pergunta: 'Ao começar a digitar no computador, o que é mais recomendado?',
+              alternativas: [
+                { id: 'calma', texto: 'Digitar com calma e no seu próprio ritmo, sem pressa', correta: true },
+                { id: 'rapido', texto: 'Tentar digitar o mais rápido possível sem olhar', correta: false },
+                { id: 'forca', texto: 'Apertar as teclas com força para não errar', correta: false },
+              ],
+            },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Corrigindo letras erradas',
+            instructions: 'Escolha a resposta certa.',
+            jogo: 'quiz',
+            dificuldade: 'padrao',
+            jogoProps: {
+              pergunta: 'Se você errar uma letra ao digitar uma palavra, o que deve fazer?',
+              alternativas: [
+                { id: 'apagar', texto: 'Usar a tecla de apagar com tranquilidade e digitar a letra certa', correta: true },
+                { id: 'desligar', texto: 'Desligar o monitor e reiniciar o computador', correta: false },
+                { id: 'desistir', texto: 'Não é possível corrigir textos no computador', correta: false },
+              ],
             },
           },
         ],
@@ -819,19 +928,49 @@ export const MODULOS = [
           },
           {
             titulo: 'Usando o espaço numa frase de verdade',
-            conteudo: `<p>Agora vamos juntar a barra de espaço com o que você já sabe: digitar. Escreva duas palavras separadas por um espaço, como se estivesse escrevendo o começo de uma frase.</p>`,
+            conteudo: `<p>Agora vamos juntar a barra de espaço com o que você já sabe: digitar. Escreva duas palavras separadas por um espaço, como se estivesse escrevendo o começo de uma frase: <strong>bom dia</strong>.</p>`,
           },
           {
             tipo: 'jogo',
             titulo: 'Pratique duas palavras',
-            instructions: 'Digite duas palavras separadas por um espaço, por exemplo "bom dia".',
+            instructions: 'Digite as palavras "bom dia" separadas por um espaço e confirme.',
             jogo: 'digitar',
             dificuldade: 'padrao',
             jogoProps: {
-              label: 'Digite duas palavras separadas por espaço',
+              label: 'Digite "bom dia"',
               placeholder: 'Ex: bom dia',
-              validar: (valor) => valor.trim().split(/\s+/).length >= 2,
-              mensagemErro: 'Faltou o espaço entre as palavras - tenta digitar duas palavras separadas por ele.',
+              validar: (valor) => valor.trim().toLowerCase() === 'bom dia' || valor.trim().split(/\s+/).length >= 2,
+              mensagemErro: 'Faltou o espaço entre as palavras - digite "bom dia" com um espaço no meio.',
+            },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Espaçamento correto',
+            instructions: 'Escolha a resposta certa.',
+            jogo: 'quiz',
+            dificuldade: 'padrao',
+            jogoProps: {
+              pergunta: 'Quantas vezes devemos apertar a barra de espaço entre uma palavra e outra?',
+              alternativas: [
+                { id: 'uma', texto: 'Apenas 1 vez', correta: true },
+                { id: 'varias', texto: '5 vezes seguidas', correta: false },
+                { id: 'segurar', texto: 'Segurar apertado por vários segundos', correta: false },
+              ],
+            },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Localização da barra de espaço',
+            instructions: 'Escolha a resposta certa.',
+            jogo: 'quiz',
+            dificuldade: 'padrao',
+            jogoProps: {
+              pergunta: 'Como você pode identificar a barra de espaço no teclado com facilidade?',
+              alternativas: [
+                { id: 'comprida', texto: 'É a tecla mais comprida e fica na parte inferior central', correta: true },
+                { id: 'canto', texto: 'Fica no canto superior direito bem pequena', correta: false },
+                { id: 'redonda', texto: 'É uma tecla redonda que fica atrás do teclado', correta: false },
+              ],
             },
           },
         ],
@@ -875,6 +1014,21 @@ export const MODULOS = [
               ],
             },
           },
+          {
+            tipo: 'jogo',
+            titulo: 'Pulando de linha',
+            instructions: 'Escolha a resposta certa.',
+            jogo: 'quiz',
+            dificuldade: 'padrao',
+            jogoProps: {
+              pergunta: 'Ao escrever um bilhete ou mensagem, qual tecla você aperta para pular para a linha de baixo?',
+              alternativas: [
+                { id: 'enter', texto: 'Tecla Enter', correta: true },
+                { id: 'espaco', texto: 'Barra de espaço', correta: false },
+                { id: 'esc', texto: 'Tecla Esc', correta: false },
+              ],
+            },
+          },
         ],
       },
       {
@@ -904,8 +1058,23 @@ export const MODULOS = [
             jogoProps: {
               pergunta: 'Verdadeiro ou falso: o Backspace apaga a letra que vem DEPOIS do cursor.',
               alternativas: [
-                { id: 'falso', texto: 'Falso - ele apaga a de ANTES', correta: true },
+                { id: 'falso', texto: 'Falso - ele apaga a letra de ANTES (à esquerda)', correta: true },
                 { id: 'verdadeiro', texto: 'Verdadeiro', correta: false },
+              ],
+            },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Identificando o Backspace',
+            instructions: 'Escolha a resposta certa.',
+            jogo: 'quiz',
+            dificuldade: 'padrao',
+            jogoProps: {
+              pergunta: 'Como a tecla Backspace costuma ser identificada no teclado?',
+              alternativas: [
+                { id: 'seta-esq', texto: 'Pelo nome Backspace ou por uma setinha apontando para a esquerda (⌫)', correta: true },
+                { id: 'seta-cima', texto: 'Por uma seta para cima', correta: false },
+                { id: 'lixeira', texto: 'Por um desenho de lixeira', correta: false },
               ],
             },
           },
@@ -919,15 +1088,15 @@ export const MODULOS = [
             titulo: 'Backspace × Delete',
             conteudo: `<p>O Delete tem uma função parecida com o Backspace, mas com uma diferença importante:</p>
 <ul>
-  <li>O <strong>Backspace</strong> apaga o que está antes do cursor.</li>
-  <li>O <strong>Delete</strong> apaga o que está depois do cursor, ou apaga algo que você já selecionou na tela (um arquivo, por exemplo).</li>
+  <li>O <strong>Backspace</strong> apaga o que está antes do cursor (à esquerda).</li>
+  <li>O <strong>Delete</strong> apaga o que está depois do cursor (à direita), ou apaga algo que você já selecionou na tela (um arquivo ou foto, por exemplo).</li>
 </ul>
 <p>Não é preciso decorar isso de imediato - com a prática, a diferença fica clara naturalmente.</p>`,
           },
           {
             tipo: 'jogo',
             titulo: 'Pratique o Delete',
-            instructions: 'Aperte a tecla Delete (destacada abaixo - repare que ela fica um pouco separada do bloco principal).',
+            instructions: 'Aperte a tecla Delete (destacada abaixo - repare que ela fica no bloco de navegação).',
             jogo: 'pressionar',
             dificuldade: 'demonstracao',
             jogoProps: { tecla: 'delete' },
@@ -939,10 +1108,25 @@ export const MODULOS = [
             jogo: 'quiz',
             dificuldade: 'padrao',
             jogoProps: {
-              pergunta: 'Verdadeiro ou falso: Backspace e Delete fazem exatamente a mesma coisa, só que uma fica de um lado do teclado e a outra do outro.',
+              pergunta: 'Verdadeiro ou falso: Backspace e Delete fazem exatamente a mesma coisa, sem nenhuma diferença.',
               alternativas: [
-                { id: 'falso', texto: 'Falso - cada uma apaga de um lado do cursor', correta: true },
+                { id: 'falso', texto: 'Falso - Backspace apaga antes e Delete apaga depois do cursor', correta: true },
                 { id: 'verdadeiro', texto: 'Verdadeiro', correta: false },
+              ],
+            },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Apagando itens selecionados',
+            instructions: 'Escolha a resposta certa.',
+            jogo: 'quiz',
+            dificuldade: 'padrao',
+            jogoProps: {
+              pergunta: 'Se você clicar em um arquivo que não quer mais e apertar a tecla Delete, o que acontece?',
+              alternativas: [
+                { id: 'arquivo', texto: 'O arquivo selecionado é apagado e enviado para a Lixeira', correta: true },
+                { id: 'aumentar', texto: 'O arquivo dobra de tamanho', correta: false },
+                { id: 'desligar', texto: 'O monitor desliga imediatamente', correta: false },
               ],
             },
           },
@@ -954,24 +1138,32 @@ export const MODULOS = [
         etapas: [
           {
             titulo: 'Maiúsculas e símbolos',
-            conteudo: `<p>A tecla Shift, geralmente localizada nos dois lados do teclado, tem duas funções principais:</p>
+            conteudo: `<p>A tecla Shift, localizada nos <strong>dois lados do teclado</strong> (esquerdo e direito), tem duas funções principais:</p>
 <ul>
   <li>Permite escrever <strong>letras maiúsculas</strong>: basta segurar o Shift e, ao mesmo tempo, apertar a letra desejada.</li>
-  <li>Permite digitar os <strong>símbolos que ficam na parte de cima</strong> de algumas teclas (como o próprio @, em muitos teclados).</li>
+  <li>Permite digitar os <strong>símbolos que ficam na parte de cima</strong> de algumas teclas (como os números 1 a 0).</li>
 </ul>
-<p>O segredo para usá-la bem é a ordem: primeiro segure o Shift, depois aperte a outra tecla, mantendo as duas pressionadas por um instante e soltando em seguida.</p>`,
+<p>O segredo para usá-la bem é a ordem: primeiro segure o Shift, depois aperte a outra tecla, e solte as duas em seguida.</p>`,
           },
           {
             tipo: 'jogo',
-            titulo: 'Pratique o Shift',
-            instructions: 'Aperte a tecla Shift (destacada abaixo - existem duas, uma de cada lado, e as duas funcionam).',
+            titulo: 'Pratique o Shift ESQUERDO',
+            instructions: 'Aperte a tecla Shift do lado ESQUERDO do teclado (destacada abaixo).',
             jogo: 'pressionar',
             dificuldade: 'demonstracao',
-            jogoProps: { tecla: 'shift' },
+            jogoProps: { tecla: 'shift-esquerdo' },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Pratique o Shift DIREITO',
+            instructions: 'Aperte a tecla Shift do lado DIREITO do teclado (destacada abaixo).',
+            jogo: 'pressionar',
+            dificuldade: 'demonstracao',
+            jogoProps: { tecla: 'shift-direito' },
           },
           {
             titulo: 'Juntando o Shift com uma letra',
-            conteudo: `<p>Agora vamos usar o Shift do jeito que ele é usado de verdade: segurando ele e apertando uma letra ao mesmo tempo, pra ela sair maiúscula.</p>`,
+            conteudo: `<p>Agora vamos usar o Shift do jeito que ele é usado no dia a dia: segurando ele e apertando uma letra ao mesmo tempo para ela sair maiúscula.</p>`,
           },
           {
             tipo: 'jogo',
@@ -986,6 +1178,36 @@ export const MODULOS = [
               mensagemErro: 'Segure o Shift e, com ele segurado, aperte a tecla A.',
             },
           },
+          {
+            tipo: 'jogo',
+            titulo: 'Os dois lados do Shift',
+            instructions: 'Escolha a resposta certa.',
+            jogo: 'quiz',
+            dificuldade: 'padrao',
+            jogoProps: {
+              pergunta: 'Onde ficam as teclas Shift no teclado e quantas existem?',
+              alternativas: [
+                { id: 'duas', texto: 'Existem 2 teclas Shift: uma na ponta esquerda e outra na ponta direita', correta: true },
+                { id: 'uma', texto: 'Existe apenas 1 tecla Shift no meio do teclado', correta: false },
+                { id: 'nenhuma', texto: 'O teclado não possui teclas Shift', correta: false },
+              ],
+            },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Como fazer maiúscula com Shift',
+            instructions: 'Escolha a resposta certa.',
+            jogo: 'quiz',
+            dificuldade: 'padrao',
+            jogoProps: {
+              pergunta: 'Qual é a forma correta de usar o Shift para digitar uma letra maiúscula?',
+              alternativas: [
+                { id: 'segurar', texto: 'Segurar o Shift, apertar a letra desejada e depois soltar os dois', correta: true },
+                { id: 'depois', texto: 'Apertar a letra primeiro e depois o Shift', correta: false },
+                { id: 'clique-duplo', texto: 'Dar um clique duplo na barra de espaço', correta: false },
+              ],
+            },
+          },
         ],
       },
       {
@@ -994,7 +1216,7 @@ export const MODULOS = [
         etapas: [
           {
             titulo: 'Travando as maiúsculas',
-            conteudo: `<p>O Caps Lock é uma tecla que, quando ativada, faz com que todas as letras digitadas apareçam em maiúsculas, sem precisar segurar o Shift o tempo todo.</p>
+            conteudo: `<p>O Caps Lock (também chamado de Fixa) é uma tecla que, quando ativada, faz com que todas as letras digitadas apareçam em maiúsculas, sem precisar segurar o Shift o tempo todo.</p>
 <ul>
   <li>Para ativar, basta apertar a tecla uma vez.</li>
   <li>Para desativar, aperte novamente.</li>
@@ -1012,6 +1234,19 @@ export const MODULOS = [
           },
           {
             tipo: 'jogo',
+            titulo: 'Pratique digitando em maiúsculas',
+            instructions: 'Ative o Caps Lock (ou use o Shift) e digite a palavra "PAZ" em maiúsculas e confirme.',
+            jogo: 'digitar',
+            dificuldade: 'padrao',
+            jogoProps: {
+              label: 'Digite PAZ em maiúsculas',
+              placeholder: 'PAZ',
+              validar: (valor) => valor.trim() === 'PAZ',
+              mensagemErro: 'Confere se todas as letras saíram em MAIÚSCULAS: PAZ.',
+            },
+          },
+          {
+            tipo: 'jogo',
             titulo: 'Como o Caps Lock se comporta',
             instructions: 'Escolha a resposta certa.',
             jogo: 'quiz',
@@ -1024,6 +1259,21 @@ export const MODULOS = [
               ],
             },
           },
+          {
+            tipo: 'jogo',
+            titulo: 'Caps Lock versus Shift',
+            instructions: 'Escolha a resposta certa.',
+            jogo: 'quiz',
+            dificuldade: 'padrao',
+            jogoProps: {
+              pergunta: 'Quando é mais prático ligar o Caps Lock em vez de segurar o Shift?',
+              alternativas: [
+                { id: 'texto-todo', texto: 'Ao digitar um título ou uma frase inteira em maiúsculas', correta: true },
+                { id: 'uma-letra', texto: 'Ao digitar apenas a primeira letra de um nome', correta: false },
+                { id: 'espaco', texto: 'Para separar as palavras com espaço', correta: false },
+              ],
+            },
+          },
         ],
       },
       {
@@ -1033,53 +1283,85 @@ export const MODULOS = [
           {
             titulo: 'Duas formas de digitar números',
             conteudo: `<ul>
-  <li>Pela <strong>fileira de números</strong> na parte de cima do teclado, junto das letras.</li>
+  <li>Pela <strong>fileira de números</strong> na parte de cima do teclado, logo acima das letras.</li>
   <li>Pelo <strong>teclado numérico</strong>, um bloco à direita presente em muitos teclados de computador de mesa, organizado de forma parecida com uma calculadora.</li>
 </ul>
 <p>Essa habilidade é útil para digitar telefones, datas e documentos como o CPF - situações comuns no dia a dia, como preencher um cadastro.</p>`,
           },
-          // NOVO - U2.5 (Números e símbolos) pulava direto pra prática
-          // validada (mín. 2 dígitos) sem nenhum primeiro contato sem
-          // risco - faltava demonstração antes do padrão que já existia.
           {
             tipo: 'jogo',
-            titulo: 'Primeiro contato com os números',
-            instructions: 'Digite qualquer número que quiser, sem regra nenhuma, só pra sentir as teclas.',
+            titulo: 'Pratique os números: ano 2026',
+            instructions: 'Digite os quatro números do ano 2026 e confirme.',
             jogo: 'digitar',
             dificuldade: 'demonstracao',
             jogoProps: {
-              label: 'Digite um número qualquer',
-              placeholder: 'Digite aqui',
+              label: 'Digite o ano 2026',
+              placeholder: '2026',
+              validar: (valor) => valor.trim() === '2026',
+              mensagemErro: 'Digite os 4 números do ano 2026.',
             },
           },
           {
             tipo: 'jogo',
-            titulo: 'Pratique os números',
-            instructions: 'Digite alguns números (o que você quiser, com pelo menos 2 dígitos) e confirme.',
+            titulo: 'Pratique os números: valor 50',
+            instructions: 'Digite o número 50 e confirme.',
             jogo: 'digitar',
             dificuldade: 'padrao',
             jogoProps: {
-              label: 'Digite alguns números',
-              placeholder: 'Ex: 2024',
-              validar: (valor) => /^\d{2,}$/.test(valor),
-              mensagemErro: 'Tenta digitar só números, com pelo menos 2 dígitos.',
+              label: 'Digite o número 50',
+              placeholder: '50',
+              validar: (valor) => valor.trim() === '50',
+              mensagemErro: 'Digite o número 50.',
             },
           },
           {
             titulo: 'Números em situações reais',
-            conteudo: `<p>Uma das situações mais comuns é digitar um número de telefone, com o DDD na frente. Vamos praticar isso agora.</p>`,
+            conteudo: `<p>Uma das situações mais comuns é digitar um número de telefone com o código DDD da sua cidade na frente. Vamos praticar isso agora com validação completa.</p>`,
           },
           {
             tipo: 'jogo',
-            titulo: 'Pratique um telefone',
-            instructions: 'Digite um número de telefone (pode ser fictício), só com os números, tipo 11987654321.',
+            titulo: 'Pratique um telefone com DDD',
+            instructions: 'Digite um número de telefone completo com DDD (10 ou 11 números, tipo 11987654321 ou (11) 98765-4321) e confirme.',
             jogo: 'digitar',
             dificuldade: 'desafio',
             jogoProps: {
-              label: 'Digite um número de telefone',
-              placeholder: 'Ex: 11987654321',
-              validar: (valor) => /^\d{8,}$/.test(valor),
-              mensagemErro: 'Tenta digitar só números, com DDD e o telefone, tipo 11987654321.',
+              label: 'Digite um telefone com DDD',
+              placeholder: 'Ex: 11987654321 ou (11) 98765-4321',
+              validar: (valor) => {
+                const digitos = valor.replace(/\D/g, '');
+                return digitos.length === 10 || digitos.length === 11;
+              },
+              mensagemErro: 'O telefone precisa ter DDD e 8 ou 9 dígitos (total de 10 ou 11 números, ex: 11987654321 ou (11) 98765-4321).',
+            },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Onde estão os números',
+            instructions: 'Escolha a resposta certa.',
+            jogo: 'quiz',
+            dificuldade: 'padrao',
+            jogoProps: {
+              pergunta: 'Onde podemos encontrar teclas de números no teclado do computador?',
+              alternativas: [
+                { id: 'dois-lugares', texto: 'Na fileira superior acima das letras e no bloco numérico lateral', correta: true },
+                { id: 'apenas-espaco', texto: 'Apenas na barra de espaço', correta: false },
+                { id: 'nenhum', texto: 'O teclado não possui números', correta: false },
+              ],
+            },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Ativando o teclado numérico',
+            instructions: 'Escolha a resposta certa.',
+            jogo: 'quiz',
+            dificuldade: 'padrao',
+            jogoProps: {
+              pergunta: 'Se os números do bloco lateral direito não estiverem digitando, qual tecla deve estar ativada?',
+              alternativas: [
+                { id: 'numlock', texto: 'Tecla Num Lock (com a luz indicadora acesa)', correta: true },
+                { id: 'capslock', texto: 'Tecla Caps Lock', correta: false },
+                { id: 'esc', texto: 'Tecla Esc', correta: false },
+              ],
             },
           },
         ],
@@ -1094,7 +1376,7 @@ export const MODULOS = [
   <li><strong>@</strong> (arroba): muito usado em endereços de e-mail.</li>
   <li><strong>.</strong> (ponto): usado em sites, e-mails e valores.</li>
   <li><strong>-</strong> (hífen): usado em alguns documentos e endereços.</li>
-  <li><strong>/</strong> (barra): aparece em endereços de internet.</li>
+  <li><strong>/</strong> (barra): aparece em endereços de internet e datas.</li>
   <li><strong>?</strong> (interrogação): usado ao final de perguntas.</li>
   <li><strong>:</strong> e <strong>;</strong> (dois-pontos e ponto e vírgula): usados na escrita de frases.</li>
 </ul>
@@ -1116,19 +1398,49 @@ export const MODULOS = [
           },
           {
             titulo: 'Outro símbolo bem comum: o hífen',
-            conteudo: `<p>O hífen (-) aparece bastante em documentos e endereços - por exemplo, no meio de um CEP. Vamos praticar ele também.</p>`,
+            conteudo: `<p>O hífen (-) aparece bastante em documentos e endereços - por exemplo, no meio de um CEP. Vamos praticar ele também com a quantidade exata de dígitos de um CEP brasileiro.</p>`,
           },
           {
             tipo: 'jogo',
-            titulo: 'Pratique o hífen',
-            instructions: 'Digite um CEP fictício com hífen, tipo 00000-000, e confirme.',
+            titulo: 'Pratique o hífen no CEP',
+            instructions: 'Digite um CEP completo com hífen (5 números, hífen e 3 números, tipo 01310-100) e confirme.',
             jogo: 'digitar',
             dificuldade: 'padrao',
             jogoProps: {
               label: 'Digite um CEP com hífen',
-              placeholder: 'Ex: 00000-000',
-              validar: (valor) => valor.includes('-'),
-              mensagemErro: 'Tenta encontrar o símbolo - (hífen) no teclado e digitar de novo.',
+              placeholder: 'Ex: 01310-100',
+              validar: (valor) => /^\d{5}-\d{3}$/.test(valor.trim()),
+              mensagemErro: 'Digite o CEP com exatamente 5 números, o traço (-) e mais 3 números (ex: 01310-100).',
+            },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Símbolo essencial do e-mail',
+            instructions: 'Escolha a resposta certa.',
+            jogo: 'quiz',
+            dificuldade: 'padrao',
+            jogoProps: {
+              pergunta: 'Qual símbolo é obrigatório e exclusivo de todos os endereços de e-mail?',
+              alternativas: [
+                { id: 'arroba', texto: '@ (arroba)', correta: true },
+                { id: 'hashtag', texto: '# (jogo da velha)', correta: false },
+                { id: 'cifrao', texto: '$ (cifrão)', correta: false },
+              ],
+            },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Digitando símbolos superiores',
+            instructions: 'Escolha a resposta certa.',
+            jogo: 'quiz',
+            dificuldade: 'padrao',
+            jogoProps: {
+              pergunta: 'Para digitar os símbolos que aparecem na parte de CIMA das teclas de números (como !, @, #, $, %), o que devemos fazer?',
+              alternativas: [
+                { id: 'shift-num', texto: 'Segurar o Shift enquanto aperta o número correspondente', correta: true },
+                { id: 'caps-num', texto: 'Ligar o Caps Lock', correta: false },
+                { id: 'espaco-num', texto: 'Apertar a barra de espaço duas vezes', correta: false },
+              ],
             },
           },
         ],
@@ -1140,11 +1452,11 @@ export const MODULOS = [
           {
             titulo: 'Conhecendo as teclas especiais',
             conteudo: `<ul>
-  <li><strong>ESC</strong>: geralmente cancela uma ação ou fecha uma janela menor.</li>
-  <li><strong>TAB</strong>: move o cursor para o próximo campo em um formulário, por exemplo.</li>
-  <li><strong>Ctrl e Alt</strong>: usadas em conjunto com outras teclas para atalhos.</li>
-  <li><strong>Windows</strong>: abre o menu principal do computador.</li>
-  <li><strong>Setas direcionais</strong>: movem o cursor para cima, para baixo, para a esquerda ou para a direita dentro de um texto.</li>
+  <li><strong>ESC</strong>: cancela uma ação, fecha um menu aberto ou sai de tela cheia.</li>
+  <li><strong>TAB</strong>: pula para o próximo campo em formulários e cadastros.</li>
+  <li><strong>Windows (⊞)</strong>: abre o menu principal do computador com seus programas e arquivos.</li>
+  <li><strong>Ctrl e Alt</strong>: usadas em conjunto com outras teclas para atalhos e funções especiais.</li>
+  <li><strong>Alt Gr</strong>: localizada à direita do espaço, serve para digitar o terceiro símbolo de certas teclas (como o @ e o ª).</li>
 </ul>`,
           },
           {
@@ -1156,18 +1468,92 @@ export const MODULOS = [
             jogoProps: { tecla: 'esc' },
           },
           {
+            titulo: 'Avançando entre campos com o Tab',
+            conteudo: `<p>A tecla <strong>Tab</strong> (geralmente identificada pelo nome Tab ou por setinhas opostas ⇥) fica no início da fileira de letras. Ao preencher cadastros na internet, apertar Tab faz o cursor pular direto para o próximo campo (do Nome para o E-mail, por exemplo), sem precisar clicar com o mouse.</p>`,
+          },
+          {
             tipo: 'jogo',
-            titulo: 'E a tecla Tab?',
+            titulo: 'Pratique o Tab',
+            instructions: 'Aperte a tecla Tab (destacada abaixo, no início da fileira de letras).',
+            jogo: 'pressionar',
+            dificuldade: 'demonstracao',
+            jogoProps: { tecla: 'tab' },
+          },
+          {
+            titulo: 'O menu principal e a tecla Windows',
+            conteudo: `<p>A tecla <strong>Windows</strong> (com o símbolo de quatro quadradinhos ⊞) fica na fileira de baixo, ao lado do Ctrl e do Alt. Apertá-la abre o menu Iniciar do computador para pesquisar programas e arquivos.</p>`,
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Pratique a tecla Windows',
+            instructions: 'Aperte a tecla Windows (destacada abaixo, na fileira inferior com o símbolo ⊞).',
+            jogo: 'pressionar',
+            dificuldade: 'demonstracao',
+            jogoProps: { tecla: 'windows' },
+          },
+          {
+            titulo: 'As teclas Ctrl e Alt',
+            conteudo: `<p>As teclas <strong>Ctrl</strong> (Control) e <strong>Alt</strong> funcionam como ajudantes: você segura uma delas e aperta outra tecla para acionar atalhos úteis (como copiar, colar ou salvar).</p>`,
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Pratique a tecla Ctrl',
+            instructions: 'Aperte a tecla Ctrl (destacada abaixo).',
+            jogo: 'pressionar',
+            dificuldade: 'demonstracao',
+            jogoProps: { tecla: 'ctrl' },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Pratique a tecla Alt',
+            instructions: 'Aperte a tecla Alt (destacada abaixo).',
+            jogo: 'pressionar',
+            dificuldade: 'demonstracao',
+            jogoProps: { tecla: 'alt' },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Avançando entre campos de formulário',
             instructions: 'Escolha a resposta certa.',
             jogo: 'quiz',
             dificuldade: 'padrao',
             jogoProps: {
-              pergunta: 'Você está preenchendo um formulário na tela e terminou de escrever num campo. Qual tecla leva para o próximo campo, sem precisar clicar com o mouse?',
+              pergunta: 'Você está preenchendo um cadastro na internet e terminou de escrever no campo do Nome. Qual tecla leva para o campo seguinte sem usar o mouse?',
               alternativas: [
                 { id: 'tab', texto: 'Tab', correta: true },
                 { id: 'esc', texto: 'Esc', correta: false },
                 { id: 'capslock', texto: 'Caps Lock', correta: false },
                 { id: 'backspace', texto: 'Backspace', correta: false },
+              ],
+            },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Cancelando uma ação com Esc',
+            instructions: 'Escolha a resposta certa.',
+            jogo: 'quiz',
+            dificuldade: 'padrao',
+            jogoProps: {
+              pergunta: 'Você abriu um menu ou janela por engano e deseja fechar rapidamente. Qual tecla apertar?',
+              alternativas: [
+                { id: 'esc', texto: 'Tecla Esc (Escape)', correta: true },
+                { id: 'enter', texto: 'Tecla Enter', correta: false },
+                { id: 'espaco', texto: 'Barra de espaço', correta: false },
+              ],
+            },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Abrindo o menu principal',
+            instructions: 'Escolha a resposta certa.',
+            jogo: 'quiz',
+            dificuldade: 'padrao',
+            jogoProps: {
+              pergunta: 'Qual tecla abre o menu principal do computador com seus aplicativos e programas?',
+              alternativas: [
+                { id: 'windows', texto: 'Tecla Windows (com o símbolo ⊞)', correta: true },
+                { id: 'shift', texto: 'Tecla Shift', correta: false },
+                { id: 'tab', texto: 'Tecla Tab', correta: false },
               ],
             },
           },
@@ -1181,18 +1567,67 @@ export const MODULOS = [
             titulo: 'Se movendo dentro de um texto',
             conteudo: `<p>Além do mouse, o próprio teclado permite se movimentar dentro de um texto:</p>
 <ul>
-  <li>As setas direcionais movem o cursor pelo texto, letra por letra ou linha por linha.</li>
-  <li>É possível selecionar um trecho de texto combinando o Shift com as setas.</li>
-  <li>Existem atalhos para ir diretamente ao início ou ao final de uma linha.</li>
+  <li>As <strong>setas direcionais</strong> (⬅ ➡ ⬆ ⬇) movem o cursor pelo texto, letra por letra ou linha por linha, sem apagar nada.</li>
+  <li>As teclas <strong>Home</strong> e <strong>End</strong> levam direto ao início ou ao fim da linha atual.</li>
+  <li>As teclas <strong>Page Up</strong> (PgUp) e <strong>Page Down</strong> (PgDn) rolam uma página inteira para cima ou para baixo.</li>
+  <li>Segurando o Shift junto com as setas, é possível selecionar trechos de texto sem usar o mouse.</li>
 </ul>`,
           },
           {
             tipo: 'jogo',
-            titulo: 'Pratique as setas',
-            instructions: 'Aperte a seta para baixo (destacada abaixo, num grupo separado do restante do teclado).',
+            titulo: 'Pratique a seta para baixo',
+            instructions: 'Aperte a seta para baixo (destacada abaixo).',
             jogo: 'pressionar',
             dificuldade: 'demonstracao',
             jogoProps: { tecla: 'seta-baixo' },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Pratique a seta para a direita',
+            instructions: 'Aperte a seta para a direita (destacada abaixo).',
+            jogo: 'pressionar',
+            dificuldade: 'demonstracao',
+            jogoProps: { tecla: 'seta-direita' },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Pratique a seta para a esquerda',
+            instructions: 'Aperte a seta para a esquerda (destacada abaixo).',
+            jogo: 'pressionar',
+            dificuldade: 'demonstracao',
+            jogoProps: { tecla: 'seta-esquerda' },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Pratique a seta para cima',
+            instructions: 'Aperte a seta para cima (destacada abaixo).',
+            jogo: 'pressionar',
+            dificuldade: 'demonstracao',
+            jogoProps: { tecla: 'seta-cima' },
+          },
+          {
+            titulo: 'Teclas de salto rápido: Home e End',
+            conteudo: `<p>As teclas <strong>Home</strong> e <strong>End</strong> ficam no bloco de navegação acima das setas:</p>
+<ul>
+  <li><strong>Home</strong>: salta instantaneamente para o início da linha.</li>
+  <li><strong>End</strong>: salta instantaneamente para o final da linha.</li>
+</ul>`,
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Pratique a tecla Home',
+            instructions: 'Aperte a tecla Home (destacada abaixo no bloco de navegação).',
+            jogo: 'pressionar',
+            dificuldade: 'demonstracao',
+            jogoProps: { tecla: 'home' },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Pratique a tecla End',
+            instructions: 'Aperte a tecla End (destacada abaixo no bloco de navegação).',
+            jogo: 'pressionar',
+            dificuldade: 'demonstracao',
+            jogoProps: { tecla: 'end' },
           },
           {
             tipo: 'jogo',
@@ -1205,6 +1640,36 @@ export const MODULOS = [
               alternativas: [
                 { id: 'verdadeiro', texto: 'Verdadeiro', correta: true },
                 { id: 'falso', texto: 'Falso', correta: false },
+              ],
+            },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Navegando sem apagar',
+            instructions: 'Escolha a resposta certa.',
+            jogo: 'quiz',
+            dificuldade: 'padrao',
+            jogoProps: {
+              pergunta: 'Você percebeu que esqueceu de colocar uma letra no meio de uma palavra. Como mover o cursor até o ponto certo sem apagar o texto?',
+              alternativas: [
+                { id: 'setas', texto: 'Usando as setas direcionais para mover o cursor suavemente', correta: true },
+                { id: 'delete', texto: 'Apertando Delete até apagar a página toda', correta: false },
+                { id: 'desligar', texto: 'Desligando o computador e ligando novamente', correta: false },
+              ],
+            },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Início e fim da linha',
+            instructions: 'Escolha a resposta certa.',
+            jogo: 'quiz',
+            dificuldade: 'padrao',
+            jogoProps: {
+              pergunta: 'Quais teclas levam o cursor diretamente para o início ou para o final da linha atual de texto?',
+              alternativas: [
+                { id: 'home-end', texto: 'Home (início) e End (fim)', correta: true },
+                { id: 'esc-tab', texto: 'Esc e Tab', correta: false },
+                { id: 'ctrl-alt', texto: 'Ctrl e Alt', correta: false },
               ],
             },
           },
@@ -1259,7 +1724,7 @@ export const MODULOS = [
           },
           {
             tipo: 'jogo',
-            titulo: 'Juntando os quatro atalhos',
+            titulo: 'Desfazendo um erro com atalho',
             instructions: 'Escolha a resposta certa.',
             jogo: 'quiz',
             dificuldade: 'desafio',
@@ -1270,6 +1735,36 @@ export const MODULOS = [
                 { id: 'ctrl-c', texto: 'Ctrl + C', correta: false },
                 { id: 'ctrl-v', texto: 'Ctrl + V', correta: false },
                 { id: 'ctrl-a', texto: 'Ctrl + A', correta: false },
+              ],
+            },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'A dupla Copiar e Colar',
+            instructions: 'Escolha a resposta certa.',
+            jogo: 'quiz',
+            dificuldade: 'padrao',
+            jogoProps: {
+              pergunta: 'Qual combinação de teclas é usada para COPIAR e depois COLAR um texto ou imagem?',
+              alternativas: [
+                { id: 'copiar-colar', texto: 'Ctrl + C para copiar e Ctrl + V para colar', correta: true },
+                { id: 'apagar', texto: 'Ctrl + Z para copiar e Ctrl + A para colar', correta: false },
+                { id: 'fechar', texto: 'Alt + F4 para copiar e colar', correta: false },
+              ],
+            },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Selecionando todo o texto',
+            instructions: 'Escolha a resposta certa.',
+            jogo: 'quiz',
+            dificuldade: 'padrao',
+            jogoProps: {
+              pergunta: 'Qual atalho seleciona todo o conteúdo de um texto ou documento de uma só vez?',
+              alternativas: [
+                { id: 'ctrl-a', texto: 'Ctrl + A', correta: true },
+                { id: 'ctrl-v', texto: 'Ctrl + V', correta: false },
+                { id: 'ctrl-z', texto: 'Ctrl + Z', correta: false },
               ],
             },
           },
@@ -1284,8 +1779,8 @@ export const MODULOS = [
             conteudo: `<p>Todas essas habilidades se juntam em situações reais e úteis do cotidiano, como:</p>
 <ul>
   <li>Digitar uma senha para acessar um aplicativo ou site</li>
-  <li>Digitar um e-mail</li>
-  <li>Preencher um endereço</li>
+  <li>Digitar um e-mail com formato completo</li>
+  <li>Preencher um endereço com CEP e telefone</li>
   <li>Escrever uma mensagem para um familiar ou amigo</li>
   <li>Fazer uma pesquisa no Google</li>
 </ul>
@@ -1309,14 +1804,27 @@ export const MODULOS = [
           {
             tipo: 'jogo',
             titulo: 'Desafio: digite a frase',
-            instructions: 'Digite exatamente: Bom dia!',
+            instructions: 'Digite a frase com a primeira letra maiúscula: Bom dia!',
             jogo: 'digitar',
             dificuldade: 'desafio',
             jogoProps: {
               label: 'Digite a frase "Bom dia!"',
               placeholder: 'Digite aqui',
-              validar: (valor) => valor === 'Bom dia!',
-              mensagemErro: 'Confere se digitou certinho, com o B maiúsculo, o espaço e o ponto de exclamação no final: Bom dia!',
+              validar: (valor) => /^Bom dia!?$/.test(valor.trim()),
+              mensagemErro: 'Confere se digitou certinho: primeira letra B maiúscula (Shift+B), o resto minúsculo, espaço e exclamação: Bom dia!',
+            },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Desafio: frase em maiúsculas',
+            instructions: 'Ative o Caps Lock e digite a frase toda em maiúsculas: BOM DIA!',
+            jogo: 'digitar',
+            dificuldade: 'desafio',
+            jogoProps: {
+              label: 'Digite BOM DIA! em maiúsculas',
+              placeholder: 'BOM DIA!',
+              validar: (valor) => /^BOM DIA!?$/.test(valor.trim()),
+              mensagemErro: 'Ative o Caps Lock e digite toda a frase em MAIÚSCULAS: BOM DIA!',
             },
           },
           {
@@ -1324,23 +1832,53 @@ export const MODULOS = [
             conteudo: `<ul>
   <li>O teclado é organizado em letras, números, símbolos e teclas especiais.</li>
   <li>Um toque leve nas teclas já é suficiente - não é preciso força.</li>
-  <li>Backspace apaga para trás; Delete apaga para frente.</li>
-  <li>Shift escreve maiúsculas; Caps Lock mantém tudo em maiúsculas até ser desativado.</li>
-  <li>Os atalhos tornam algumas tarefas mais rápidas, mas podem ser aprendidos com calma.</li>
+  <li>Backspace apaga para trás; Delete apaga para frente ou apaga itens selecionados.</li>
+  <li>Shift escreve maiúsculas e símbolos superiores; Caps Lock mantém tudo em maiúsculas.</li>
+  <li>Os atalhos tornam tarefas mais rápidas, mas podem ser aprendidos com calma.</li>
 </ul>`,
             dica: 'Cada palavra digitada é um passo a mais na sua autonomia. Continue praticando no seu ritmo - a confiança vem da repetição, não da pressa. 💛',
           },
           {
             tipo: 'jogo',
-            titulo: 'Desafio: juntando tudo',
-            instructions: 'Digite um e-mail (pode ser fictício, tipo exemplo@email.com) e confirme.',
+            titulo: 'Desafio: juntando tudo com e-mail',
+            instructions: 'Digite um e-mail válido com @ e domínio (tipo maria@email.com ou exemplo@provedor.com.br) e confirme.',
             jogo: 'digitar',
             dificuldade: 'desafio',
             jogoProps: {
               label: 'Digite um e-mail',
               placeholder: 'exemplo@email.com',
-              validar: (valor) => /.+@.+\..+/.test(valor),
-              mensagemErro: 'Um e-mail sempre tem um @ e um ponto no meio, tipo exemplo@email.com.',
+              validar: (valor) => /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(valor.trim()),
+              mensagemErro: 'Digite um e-mail com formato válido contendo @ e ponto (ex: exemplo@email.com).',
+            },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'Texto todo maiúsculo por engano',
+            instructions: 'Escolha a resposta certa.',
+            jogo: 'quiz',
+            dificuldade: 'padrao',
+            jogoProps: {
+              pergunta: 'Se você estiver escrevendo e notar que todas as letras estão saindo maiúsculas sem você querer, o que aconteceu?',
+              alternativas: [
+                { id: 'capslock', texto: 'A tecla Caps Lock ficou ativada - basta apertá-la uma vez para desativar', correta: true },
+                { id: 'quebrou', texto: 'O teclado quebrou e precisa comprar outro', correta: false },
+                { id: 'virus', texto: 'O computador pegou um vírus', correta: false },
+              ],
+            },
+          },
+          {
+            tipo: 'jogo',
+            titulo: 'O caminho da autonomia',
+            instructions: 'Escolha a resposta certa.',
+            jogo: 'quiz',
+            dificuldade: 'padrao',
+            jogoProps: {
+              pergunta: 'Qual é o segredo para se sentir cada vez mais seguro(a) ao digitar no computador?',
+              alternativas: [
+                { id: 'pratica', texto: 'Praticar com calma no seu próprio ritmo, sabendo que errar e corrigir faz parte natural do aprendizado', correta: true },
+                { id: 'forca', texto: 'Apertar as teclas com mais força', correta: false },
+                { id: 'pressa', texto: 'Digitar correndo mesmo sem saber onde estão as teclas', correta: false },
+              ],
             },
           },
         ],

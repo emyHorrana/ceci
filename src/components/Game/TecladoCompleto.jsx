@@ -38,6 +38,7 @@
 //
 //   <TecladoCompleto teclasDestacadas={['ControlLeft', 'ControlRight', 'KeyC']} />
 
+import { TecladoSvg } from './TecladoSvg';
 import styles from './TecladoCompleto.module.css';
 
 // Cada fileira é uma lista de teclas: { code, label, peso }.
@@ -174,10 +175,10 @@ const NUMPAD_MEIO = [
 
 function Tecla({ tecla, destacadas, className = '' }) {
   return (
-    <span
-      className={`${styles.tecla} ${className} ${destacadas.includes(tecla.code) ? styles.destacada : ''}`}
-      style={tecla.peso ? { flexGrow: tecla.peso } : undefined}
-    >
+      <span
+          className={`${styles.tecla} ${className} ${destacadas.includes(tecla.code) ? styles.destacada : ''}`}
+          style={tecla.peso ? { flexGrow: tecla.peso } : undefined}
+      >
       {tecla.label}
     </span>
   );
@@ -185,93 +186,8 @@ function Tecla({ tecla, destacadas, className = '' }) {
 
 export function TecladoCompleto({ teclasDestacadas = [] }) {
   return (
-    <div className={styles.wrapper}>
-      {/* Bloco principal - fileiras de largura total, cada tecla
-          dividindo espaço proporcionalmente (peso) com suas vizinhas
-          na MESMA fileira. Nunca deixar uma fileira com 1 tecla só. */}
-      <div className={styles.teclado} aria-hidden>
-        {FILEIRAS.map((fileira, i) => (
-          <div key={i} className={styles.linha}>
-            {fileira.map((tecla) => (
-              <Tecla key={tecla.code} tecla={tecla} destacadas={teclasDestacadas} />
-            ))}
-          </div>
-        ))}
+      <div className={styles.wrapper}>
+        <TecladoSvg destaque={teclasDestacadas} maxWidth="1024px" />
       </div>
-
-      {/* Cluster de navegação - entre o bloco principal e o numpad,
-          como num teclado completo de verdade. */}
-      <div className={styles.navegacao} aria-hidden>
-        {NAVEGACAO.map((fileira, i) => (
-          <div key={i} className={styles.navLinha}>
-            {fileira.map((tecla) => (
-              <Tecla key={tecla.code} tecla={tecla} destacadas={teclasDestacadas} className={styles.navTecla} />
-            ))}
-          </div>
-        ))}
-
-        {/* Setas em T invertido: cima sozinha em cima, esquerda/baixo/
-            direita numa fileira embaixo - é assim de verdade. */}
-        <div className={styles.setasBloco}>
-          <div className={styles.setasLinhaCima}>
-            <Tecla
-              tecla={{ code: 'ArrowUp', label: '↑' }}
-              destacadas={teclasDestacadas}
-              className={styles.navTecla}
-            />
-          </div>
-          <div className={styles.setasLinhaBaixo}>
-            <Tecla tecla={{ code: 'ArrowLeft', label: '←' }} destacadas={teclasDestacadas} className={styles.navTecla} />
-            <Tecla tecla={{ code: 'ArrowDown', label: '↓' }} destacadas={teclasDestacadas} className={styles.navTecla} />
-            <Tecla tecla={{ code: 'ArrowRight', label: '→' }} destacadas={teclasDestacadas} className={styles.navTecla} />
-          </div>
-        </div>
-      </div>
-
-      {/* Numpad - grid 4x5 de verdade (não fileiras isoladas), pra dar
-          conta do "+" e do Enter ocupando duas linhas, e do "0"
-          ocupando duas colunas, como num numpad real. */}
-      <div className={styles.numpad} aria-hidden>
-        {NUMPAD_TOPO.map((tecla) => (
-          <span
-            key={tecla.code}
-            className={`${styles.tecla} ${styles.numpadTecla} ${teclasDestacadas.includes(tecla.code) ? styles.destacada : ''}`}
-          >
-            {tecla.label}
-          </span>
-        ))}
-
-        {NUMPAD_MEIO.map((tecla) => (
-          <span
-            key={tecla.code}
-            className={`${styles.tecla} ${styles.numpadTecla} ${teclasDestacadas.includes(tecla.code) ? styles.destacada : ''}`}
-          >
-            {tecla.label}
-          </span>
-        ))}
-
-        <span
-          className={`${styles.tecla} ${styles.numpadTecla} ${styles.numpadAdd} ${teclasDestacadas.includes('NumpadAdd') ? styles.destacada : ''}`}
-        >
-          +
-        </span>
-
-        <span
-          className={`${styles.tecla} ${styles.numpadTecla} ${styles.numpadZero} ${teclasDestacadas.includes('Numpad0') ? styles.destacada : ''}`}
-        >
-          0
-        </span>
-        <span
-          className={`${styles.tecla} ${styles.numpadTecla} ${teclasDestacadas.includes('NumpadDecimal') ? styles.destacada : ''}`}
-        >
-          ,
-        </span>
-        <span
-          className={`${styles.tecla} ${styles.numpadTecla} ${styles.numpadEnter} ${teclasDestacadas.includes('NumpadEnter') ? styles.destacada : ''}`}
-        >
-          ↵
-        </span>
-      </div>
-    </div>
   );
 }

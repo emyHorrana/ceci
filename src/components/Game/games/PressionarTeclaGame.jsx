@@ -28,30 +28,41 @@ import { useEffect, useState } from 'react';
 import { Teclado } from '../Teclado';
 import styles from './PressionarTeclaGame.module.css';
 
-// Cada tecla mapeia pra uma LISTA de e.code aceitos - a maioria tem só
-// um, mas o Shift existe em dobro (ShiftLeft/ShiftRight) e qualquer um
-// dos dois é uma resposta certa.
+// Cada tecla mapeia pra uma LISTA de e.code aceitos
 const CODIGOS_ESPERADOS = {
   espaco: ['Space'],
-  enter: ['Enter'],
+  enter: ['Enter', 'NumpadEnter'],
   backspace: ['Backspace'],
   delete: ['Delete'],
   capslock: ['CapsLock'],
   shift: ['ShiftLeft', 'ShiftRight'],
+  'shift-esquerdo': ['ShiftLeft'],
+  'shift-direito': ['ShiftRight'],
   esc: ['Escape'],
+  tab: ['Tab'],
+  ctrl: ['ControlLeft', 'ControlRight'],
+  'ctrl-esquerdo': ['ControlLeft'],
+  'ctrl-direito': ['ControlRight'],
+  alt: ['AltLeft', 'AltRight'],
+  'alt-esquerdo': ['AltLeft'],
+  altgr: ['AltRight'],
+  'alt-direito': ['AltRight'],
+  windows: ['MetaLeft', 'MetaRight', 'OSLeft', 'OSRight'],
+  meta: ['MetaLeft', 'MetaRight', 'OSLeft', 'OSRight'],
   'seta-cima': ['ArrowUp'],
   'seta-baixo': ['ArrowDown'],
   'seta-esquerda': ['ArrowLeft'],
   'seta-direita': ['ArrowRight'],
+  home: ['Home'],
+  end: ['End'],
+  pageup: ['PageUp'],
+  pagedown: ['PageDown'],
+  insert: ['Insert'],
+  numlock: ['NumLock'],
 };
 
 // Teclas "especiais" que contam como erro se apertadas na hora errada
-// (todas as que esta mecânica já ensina, hoje ou no futuro). NÃO
-// inclui letras/números de propósito - apertar uma tecla comum
-// enquanto se decide não deveria contar como tentativa errada, só
-// apertar outra tecla especial (sinal de confusão real entre elas,
-// tipo apertar Enter quando era pra apertar Backspace).
-const TECLAS_ESPECIAIS = Object.values(CODIGOS_ESPERADOS).flat().concat(['Tab']);
+const TECLAS_ESPECIAIS = Array.from(new Set(Object.values(CODIGOS_ESPERADOS).flat()));
 
 export function PressionarTeclaGame({ reportResult, tecla }) {
   const [errada, setErrada] = useState(false);

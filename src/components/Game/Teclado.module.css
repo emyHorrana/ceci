@@ -1,13 +1,14 @@
 .wrapper {
   display: flex;
-  align-items: flex-start;
-  gap: 14px;
+  align-items: center;
+  justify-content: center;
   width: 100%;
-  max-width: 30rem;
-  padding: 1.75rem;
-  background: var(--color-yellow-bg);
-  border-radius: var(--radius-lg);
+  max-width: 52rem;
+  padding: 0.75rem;
+  background: var(--color-yellow-bg, #fff9db);
+  border-radius: var(--radius-lg, 12px);
   box-sizing: border-box;
+  margin: 0 auto;
 }
 
 .teclado {
@@ -106,9 +107,34 @@
   color: var(--color-text-muted);
 }
 
+/* Tab: início da fileira de letras */
+.tab {
+  width: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+}
+
+/* Windows / Alt */
+.win, .alt {
+  width: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+
 .barraEspaco {
-  width: 70%;
-  height: 30px;
+  flex: 1;
+  min-width: 80px;
+  max-width: 180px;
+  height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -123,35 +149,47 @@
   border-radius: 6px;
 }
 
-/* Delete não fica no bloco principal - agrupamento à parte, alinhado
-   perto do topo (é mais ou menos onde ele fica de verdade). */
+/* Cluster extra: Navegação e Setas */
 .clusterExtra {
   display: flex;
   flex-direction: column;
-  padding-left: 18px;
-  padding-top: 32px;
+  align-items: center;
+  gap: 10px;
+  padding-left: 14px;
   border-left: 1px dashed var(--color-border);
 }
 
-.delete {
-  width: 30px;
-  height: 26px;
+.navGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 26px);
+  gap: 4px;
+}
+
+.navTecla {
+  width: 26px;
+  height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.6rem;
+  font-size: 0.55rem;
   font-weight: 700;
   text-transform: uppercase;
   color: var(--color-text-secondary);
 }
 
-/* Setas: T invertido, abaixo do Delete - mesmo agrupamento à parte. */
+.delete {
+  font-size: 0.55rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+/* Setas: T invertido, abaixo do bloco de navegação */
 .setasBloco {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 3px;
-  margin-top: 14px;
+  margin-top: 4px;
 }
 
 .setasLinhaCima {

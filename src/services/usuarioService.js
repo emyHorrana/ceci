@@ -30,3 +30,9 @@ export async function getUsuario(id) {
     return null;
   }
 }
+
+// Atualiza nome/e-mail/etc na tabela `usuarios` (PUT /api/usuario/:id/perfil,
+// rota que já existia no backend mas nunca era chamada por ninguém).
+export async function atualizarUsuario(id, updates) {
+  return await apiClient.put(`/usuario/${id}/perfil`, updates);
+}

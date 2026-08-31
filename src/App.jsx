@@ -8,6 +8,7 @@ import Cadastro   from './pages/Cadastro';
 import Dashboard  from './pages/Dashboard';
 import Modulos    from './pages/Modulos';
 import Conquistas from './pages/Conquistas';
+import Perfil     from './pages/Perfil';
 import Licao      from './pages/Licao';
 import MiniModulo from './pages/MiniModulo';
 import UnidadeCheckpoint from './pages/UnidadeCheckpoint';
@@ -51,6 +52,11 @@ function App() {
 
                 {/* Conquistas: catálogo completo (desbloqueadas e não) */}
                 <Route path="/conquistas" element={<Conquistas />} />
+
+                {/* Perfil: dados básicos (editáveis) + resumo de
+                    conquistas/streak. Já existia como item de
+                    navegação na sidebar (AppLayout.jsx), sem rota. */}
+                <Route path="/perfil" element={<Perfil />} />
 
                 {/* Mini-módulo: estudo de uma lição específica */}
                 {/* Ex: /mini-modulo/1-1  →  módulo 1, mini-módulo 1 */}

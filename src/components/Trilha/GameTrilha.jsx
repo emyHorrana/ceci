@@ -7,6 +7,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ButtonPrimary } from '../Buttons/ButtonPrimary';
+import { UNIDADES, estaDominada } from '../../data/unidades';
 import styles from './GameTrilha.module.css';
 
 // Padrão de oscilação senoidal suave para os nós (posições horizontais em %)
@@ -19,6 +20,14 @@ const PALETA_CECI = [
   'ceciRoxo',     // Roxo aveludado Cecília
   'ceciLavanda',  // Lavanda radiante Cecília
 ];
+
+// Junta os nomes de Unidades pendentes numa frase legível:
+// "X" | "X e Y" | "X, Y e Z"
+function formatarListaNomes(nomes = []) {
+  if (nomes.length === 0) return 'a Unidade anterior';
+  if (nomes.length === 1) return `"${nomes[0]}"`;
+  return `${nomes.slice(0, -1).map((n) => `"${n}"`).join(', ')} e "${nomes[nomes.length - 1]}"`;
+}
 
 // Ícone SVG de Troféu padronizado em preto/grafite
 function TrofeuIcon({ className }) {
@@ -109,6 +118,18 @@ export function GameTrilha({
               {grupo.unidades.map((unidade) => {
                 const status = getStatusUnidade(unidade.id);
 
+                // Uma Unidade fica travada se algum pré-requisito dela
+                // ainda não foi dominado (mesma definição de
+                // FilaDePendencias.estaDominada() no backend) - os nós
+                // continuam visíveis (dá pra ver o que vem depois),
+                // só não navegam.
+                const prerequisitosPendentes = (unidade.prerequisitos || [])
+                  .filter((pid) => !estaDominada(pid, dominiosPorUnidade, limiar));
+                const isBloqueada = prerequisitosPendentes.length > 0;
+                const nomesPendentes = prerequisitosPendentes
+                  .map((pid) => UNIDADES.find((u) => u.id === pid)?.titulo)
+                  .filter(Boolean);
+
                 // Monta a lista linear de nós desta unidade
                 const nosDaUnidade = [];
                 const NODE_SPACING = 140;
@@ -128,7 +149,9 @@ export function GameTrilha({
                     destino: `/mini-modulo/${mm.id}`,
                     icone: grupo.moduloEmoji || '▶',
                     status,
-                    isRecomendado: status === 'atual' && mmIdx === 0,
+                    isRecomendado: status === 'atual' && mmIdx === 0 && !isBloqueada,
+                    bloqueada: isBloqueada,
+                    nomesPendentes,
                     corTema,
                     posX,
                     posY,
@@ -151,7 +174,9 @@ export function GameTrilha({
                     destino: `/unidade/${unidade.id}/checkpoint`,
                     icone: 'trofeu',
                     status,
-                    isRecomendado: status === 'atual' && mmCount === 0,
+                    isRecomendado: status === 'atual' && mmCount === 0 && !isBloqueada,
+                    bloqueada: isBloqueada,
+                    nomesPendentes,
                     corTema: 'checkpoint',
                     posX,
                     posY,
@@ -214,13 +239,19 @@ export function GameTrilha({
                       {nosDaUnidade.map((etapa) => {
                         const isCheckpoint = etapa.tipo === 'checkpoint';
                         const isAtivo = etapa.isRecomendado;
+                        const isBloqueada = etapa.bloqueada;
                         const isConcluido = etapa.status === 'concluida';
                         const isPendente = etapa.status === 'pendente';
                         const isSelected = noSelecionado?.id === etapa.id;
 
                         // Determina a classe de cor com base na paleta da Cecília
-                        let nodeStyleClass = styles.nodeCeciRosa;
-                        if (isConcluido) {
+                        // - bloqueada tem prioridade sobre qualquer outro estado:
+                        // não faz sentido destacar como "pendente"/"concluída"
+                        // uma Unidade que a pessoa nem devia estar vendo ainda.
+                        let nodeStyleClass;
+                        if (isBloqueada) {
+                          nodeStyleClass = styles.nodeBloqueado;
+                        } else if (isConcluido) {
                           nodeStyleClass = styles.nodeConcluido;
                         } else if (isAtivo) {
                           nodeStyleClass = styles.nodeAtivo;
@@ -256,15 +287,17 @@ export function GameTrilha({
                               type="button"
                               className={`${styles.nodeButton} ${nodeStyleClass} ${isCheckpoint ? styles.nodeCheckpointButton : ''}`}
                               onClick={() => setNoSelecionado(noSelecionado?.id === etapa.id ? null : etapa)}
-                              aria-label={etapa.titulo}
-                              title={etapa.titulo}
+                              aria-label={isBloqueada ? `${etapa.titulo} (bloqueado)` : etapa.titulo}
+                              title={isBloqueada ? `${etapa.titulo} - ainda bloqueado` : etapa.titulo}
                             >
                               {/* Brilho Glossy / Reflexo Superior */}
                               <span className={styles.nodeGlossy} aria-hidden="true" />
 
-                              {/* Ícone (Troféu SVG preto, estrela ★ ou ícone temático) */}
+                              {/* Ícone (cadeado se bloqueado, Troféu SVG, estrela ★ ou ícone temático) */}
                               <span className={styles.nodeIcone} aria-hidden="true">
-                                {isCheckpoint ? (
+                                {isBloqueada ? (
+                                  '🔒'
+                                ) : isCheckpoint ? (
                                   <TrofeuIcon className={styles.trofeuSvg} />
                                 ) : isConcluido ? (
                                   '★'
@@ -298,12 +331,19 @@ export function GameTrilha({
                                 </div>
 
                                 <div className={styles.popoverAcao}>
-                                  <ButtonPrimary
-                                    size="small"
-                                    onClick={() => navigate(etapa.destino)}
-                                  >
-                                    {isConcluido ? 'Revisar aula' : isCheckpoint ? 'Fazer desafio' : 'Começar aula'}
-                                  </ButtonPrimary>
+                                  {isBloqueada ? (
+                                    <p className={styles.popoverBloqueadoTexto}>
+                                      🔒 Termine {formatarListaNomes(etapa.nomesPendentes)} primeiro
+                                      pra desbloquear essa parte.
+                                    </p>
+                                  ) : (
+                                    <ButtonPrimary
+                                      size="small"
+                                      onClick={() => navigate(etapa.destino)}
+                                    >
+                                      {isConcluido ? 'Revisar aula' : isCheckpoint ? 'Fazer desafio' : 'Começar aula'}
+                                    </ButtonPrimary>
+                                  )}
                                 </div>
                               </div>
                             )}

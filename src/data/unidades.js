@@ -27,7 +27,7 @@ const DEFINICOES_UNIDADES = [
   // MÓDULO 1 - MOUSE (Tier 0: Essencial)
   // =========================================================================
   {
-    id: 'U1.1', moduloId: '1', tier: 0, titulo: 'Fundamentos do mouse', miniModuloIds: ['1-1', '1-2'],
+    id: 'U1.1', moduloId: '1', tier: 0, titulo: 'Fundamentos do mouse', prerequisitos: [], miniModuloIds: ['1-1', '1-2'],
     checkpoint: {
       titulo: 'Desafio: Fundamentos do mouse',
       questoes: [
@@ -90,7 +90,7 @@ const DEFINICOES_UNIDADES = [
     },
   },
   {
-    id: 'U1.2', moduloId: '1', tier: 0, titulo: 'Cliques com timing', miniModuloIds: ['1-3', '1-5'],
+    id: 'U1.2', moduloId: '1', tier: 0, titulo: 'Cliques com timing', prerequisitos: ['U1.1'], miniModuloIds: ['1-3', '1-5'],
     checkpoint: {
       titulo: 'Desafio: Cliques com timing',
       questoes: [
@@ -153,7 +153,7 @@ const DEFINICOES_UNIDADES = [
     },
   },
   {
-    id: 'U1.3', moduloId: '1', tier: 0, titulo: 'Rolagem e precisão', miniModuloIds: ['1-4', '1-6'],
+    id: 'U1.3', moduloId: '1', tier: 0, titulo: 'Rolagem e precisão', prerequisitos: ['U1.2'], miniModuloIds: ['1-4', '1-6'],
     checkpoint: {
       titulo: 'Desafio: Rolagem e precisão',
       questoes: [
@@ -220,7 +220,7 @@ const DEFINICOES_UNIDADES = [
   // MÓDULO 2 - TECLADO (Tier 1: Importante)
   // =========================================================================
   {
-    id: 'U2.1', moduloId: '2', tier: 1, titulo: 'Fundamentos do teclado', miniModuloIds: ['2-1', '2-2'],
+    id: 'U2.1', moduloId: '2', tier: 1, titulo: 'Fundamentos do teclado', prerequisitos: [], miniModuloIds: ['2-1', '2-2'],
     checkpoint: {
       titulo: 'Desafio: Fundamentos do teclado',
       questoes: [
@@ -282,7 +282,7 @@ const DEFINICOES_UNIDADES = [
     },
   },
   {
-    id: 'U2.2', moduloId: '2', tier: 1, titulo: 'Escrever e confirmar', miniModuloIds: ['2-3', '2-4', '2-5'],
+    id: 'U2.2', moduloId: '2', tier: 1, titulo: 'Escrever e confirmar', prerequisitos: ['U2.1'], miniModuloIds: ['2-3', '2-4', '2-5'],
     checkpoint: {
       titulo: 'Desafio: Escrever e confirmar',
       questoes: [
@@ -347,7 +347,7 @@ const DEFINICOES_UNIDADES = [
     },
   },
   {
-    id: 'U2.3', moduloId: '2', tier: 1, titulo: 'Corrigindo erros', miniModuloIds: ['2-6', '2-7'],
+    id: 'U2.3', moduloId: '2', tier: 1, titulo: 'Corrigindo erros', prerequisitos: ['U2.2'], miniModuloIds: ['2-6', '2-7'],
     checkpoint: {
       titulo: 'Desafio: Corrigindo erros',
       questoes: [
@@ -411,7 +411,7 @@ const DEFINICOES_UNIDADES = [
     },
   },
   {
-    id: 'U2.4', moduloId: '2', tier: 1, titulo: 'Maiúsculas', miniModuloIds: ['2-8', '2-9'],
+    id: 'U2.4', moduloId: '2', tier: 1, titulo: 'Maiúsculas', prerequisitos: ['U2.3'], miniModuloIds: ['2-8', '2-9'],
     checkpoint: {
       titulo: 'Desafio: Maiúsculas e Minúsculas',
       questoes: [
@@ -475,7 +475,7 @@ const DEFINICOES_UNIDADES = [
     },
   },
   {
-    id: 'U2.5', moduloId: '2', tier: 1, titulo: 'Números e símbolos', miniModuloIds: ['2-10', '2-11'],
+    id: 'U2.5', moduloId: '2', tier: 1, titulo: 'Números e símbolos', prerequisitos: ['U2.4'], miniModuloIds: ['2-10', '2-11'],
     checkpoint: {
       titulo: 'Desafio: Números e símbolos',
       questoes: [
@@ -539,7 +539,7 @@ const DEFINICOES_UNIDADES = [
     },
   },
   {
-    id: 'U2.6', moduloId: '2', tier: 1, titulo: 'Teclas especiais e navegação', miniModuloIds: ['2-12', '2-13'],
+    id: 'U2.6', moduloId: '2', tier: 1, titulo: 'Teclas especiais e navegação', prerequisitos: ['U2.5'], miniModuloIds: ['2-12', '2-13'],
     checkpoint: {
       titulo: 'Desafio: Teclas especiais e navegação',
       questoes: [
@@ -604,7 +604,7 @@ const DEFINICOES_UNIDADES = [
     },
   },
   {
-    id: 'U2.7', moduloId: '2', tier: 2, titulo: 'Atalhos', miniModuloIds: ['2-14'],
+    id: 'U2.7', moduloId: '2', tier: 2, titulo: 'Atalhos', prerequisitos: [], miniModuloIds: ['2-14'],
     checkpoint: {
       titulo: 'Desafio: Atalhos de teclado',
       questoes: [
@@ -671,7 +671,7 @@ const DEFINICOES_UNIDADES = [
     },
   },
   {
-    id: 'U2.8', moduloId: '2', tier: 1, titulo: 'Prática funcional', miniModuloIds: ['2-15'],
+    id: 'U2.8', moduloId: '2', tier: 1, titulo: 'Prática funcional', prerequisitos: ['U2.6'], miniModuloIds: ['2-15'],
     checkpoint: {
       titulo: 'Desafio: Prática funcional',
       questoes: [
@@ -740,7 +740,7 @@ const DEFINICOES_UNIDADES = [
   // MÓDULO 3 - HARDWARE (Tier 2: Complementar)
   // =========================================================================
   {
-    id: 'U3.1', moduloId: '3', tier: 2, titulo: 'O que é hardware e o monitor', miniModuloIds: ['3-1', '3-2'],
+    id: 'U3.1', moduloId: '3', tier: 2, titulo: 'O que é hardware e o monitor', prerequisitos: [], miniModuloIds: ['3-1', '3-2'],
     checkpoint: {
       titulo: 'Desafio: Hardware e Monitor',
       questoes: [
@@ -803,7 +803,7 @@ const DEFINICOES_UNIDADES = [
     },
   },
   {
-    id: 'U3.2', moduloId: '3', tier: 2, titulo: 'Gabinete, ligar e desligar', miniModuloIds: ['3-3', '3-9'],
+    id: 'U3.2', moduloId: '3', tier: 2, titulo: 'Gabinete, ligar e desligar', prerequisitos: ['U3.1'], miniModuloIds: ['3-3', '3-9'],
     checkpoint: {
       titulo: 'Desafio: Gabinete, ligar e desligar',
       questoes: [
@@ -867,7 +867,7 @@ const DEFINICOES_UNIDADES = [
     },
   },
   {
-    id: 'U3.3', moduloId: '3', tier: 2, titulo: 'Periféricos de entrada', miniModuloIds: ['3-4'],
+    id: 'U3.3', moduloId: '3', tier: 2, titulo: 'Periféricos de entrada', prerequisitos: ['U3.1'], miniModuloIds: ['3-4'],
     checkpoint: {
       titulo: 'Desafio: Periféricos de entrada',
       questoes: [
@@ -930,7 +930,7 @@ const DEFINICOES_UNIDADES = [
     },
   },
   {
-    id: 'U3.4', moduloId: '3', tier: 2, titulo: 'Áudio e imagem', miniModuloIds: ['3-5', '3-6', '3-7'],
+    id: 'U3.4', moduloId: '3', tier: 2, titulo: 'Áudio e imagem', prerequisitos: ['U3.1'], miniModuloIds: ['3-5', '3-6', '3-7'],
     checkpoint: {
       titulo: 'Desafio: Áudio e Imagem',
       questoes: [
@@ -994,7 +994,7 @@ const DEFINICOES_UNIDADES = [
     },
   },
   {
-    id: 'U3.5', moduloId: '3', tier: 2, titulo: 'Cabos e conexões', miniModuloIds: ['3-8'],
+    id: 'U3.5', moduloId: '3', tier: 2, titulo: 'Cabos e conexões', prerequisitos: ['U3.1'], miniModuloIds: ['3-8'],
     checkpoint: {
       titulo: 'Desafio: Cabos e conexões',
       questoes: [
@@ -1057,7 +1057,7 @@ const DEFINICOES_UNIDADES = [
     },
   },
   {
-    id: 'U3.6', moduloId: '3', tier: 2, titulo: 'Internet e cuidados com o equipamento', miniModuloIds: ['3-10', '3-11'],
+    id: 'U3.6', moduloId: '3', tier: 2, titulo: 'Internet e cuidados com o equipamento', prerequisitos: ['U3.4', 'U3.5'], miniModuloIds: ['3-10', '3-11'],
     checkpoint: {
       titulo: 'Desafio: Internet e cuidados com o equipamento',
       questoes: [
@@ -1167,4 +1167,16 @@ export const UNIDADES_POR_MODULO = MODULOS.map((modulo) => ({
 // A que Unidade um mini-módulo pertence
 export function getUnidadeByMiniModulo(miniModuloId) {
   return UNIDADES.find((u) => u.miniModuloIds.includes(miniModuloId));
+}
+
+// Espelha FilaDePendencias.estaDominada() (server/lib/adaptive-bkt/src/) -
+// uma Unidade sem jogo conta como satisfeita automaticamente (não há
+// observação do BKT possível pra ela); as demais precisam de domínio
+// registrado e igual/acima do limiar. Usado pra decidir quais nós da
+// trilha ficam travados (ver GameTrilha.jsx).
+export function estaDominada(unidadeId, dominiosPorUnidade, limiar = 0.5) {
+  const unidade = UNIDADES.find((u) => u.id === unidadeId);
+  if (unidade && unidade.temJogo === false) return true;
+  const d = dominiosPorUnidade[unidadeId];
+  return d !== undefined && d !== null && d >= limiar;
 }

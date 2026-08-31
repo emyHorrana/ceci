@@ -275,6 +275,25 @@
   color: white;
 }
 
+/* 6.5. Bloqueado (pré-requisito ainda não dominado) - achatado, sem
+   brilho, cursor de "não permitido", pra ficar visualmente óbvio que
+   esse nó não está disponível ainda, sem escondê-lo da trilha. */
+.nodeBloqueado {
+  background: #E4DDF0;
+  box-shadow: 0 4px 0 #B8ABD1, 0 6px 10px rgba(139, 107, 224, 0.15);
+  color: #9B8FB5;
+  filter: grayscale(0.4);
+  cursor: not-allowed;
+}
+.nodeBloqueado:hover {
+  transform: none;
+  filter: grayscale(0.4);
+}
+.nodeBloqueado:active {
+  transform: none;
+  box-shadow: 0 4px 0 #B8ABD1, 0 6px 10px rgba(139, 107, 224, 0.15);
+}
+
 /* 7. Checkpoint / Desafio Final (Troféu com Gradiente Cecília Rosa ➔ Roxo) */
 .nodeCheckpoint {
   background: linear-gradient(135deg, #FDE8F1 0%, #F48AB8 50%, #AA8BF5 100%);
@@ -474,6 +493,13 @@
 
 .popoverAcao button {
   width: 100%;
+}
+
+.popoverBloqueadoTexto {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--color-text-secondary);
 }
 
 /* =========================================================================

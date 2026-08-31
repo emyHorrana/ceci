@@ -15,7 +15,8 @@ import { getMiniModulo } from '../data/modulos';
 import { getUnidadeByMiniModulo } from '../data/unidades';
 import { UserContext } from '../context/UserContext';
 import { ProgressContext } from '../context/ProgressContext';
-import { getPerfisAluno } from '../services/algorithmService';
+import { getPerfisAluno, responderQuestao } from '../services/algorithmService';
+import { getTempoIdealMs } from '../utils/jogoTempoIdeal';
 import { reformularExplicacao } from '../services/aiService';
 import { ButtonPrimary } from '../components/Buttons/ButtonPrimary';
 import { ButtonOutline } from '../components/Buttons/ButtonOutline';
@@ -242,7 +243,7 @@ export default function MiniModulo() {
     }
   }, [indiceSeguro, etapa]);
 
-  const handleGameComplete = (res) => {
+  const handleGameComplete = async (res) => {
     setResultadoJogo(res);
     if (res?.success || res?.skipped) {
       setEtapasCompletas((prev) => {
@@ -250,6 +251,47 @@ export default function MiniModulo() {
         next.add(indiceSeguro);
         return next;
       });
+    }
+
+    if (!user?.id || !unidade) return;
+
+    try {
+      const resposta = await responderQuestao({
+        userId: user.id,
+        moduleId: unidade.id,
+        etapaId: `${miniModuloId}#${etapa.id ?? indiceSeguro}`,
+        correto: res.success,
+        sinais: res.sinais,
+        tempoIdeal: getTempoIdealMs(etapa.jogo),
+        tentativas: (res.attempts ?? 0) + 1,
+        tentativasAposErro: res.attempts ?? 0,
+      });
+
+      // Se o nível mudou, recalcula o filtro de dificuldade na hora -
+      // sem isso, a trilha só se ajustaria na próxima vez que a
+      // pessoa entrasse no mini-módulo, não durante a mesma sessão.
+      if (resposta?.nivel && resposta.nivel !== nivel) {
+        const novasDificuldades =
+          DIFICULDADES_POR_NIVEL[resposta.nivel] || DIFICULDADES_POR_NIVEL[NIVEL_PADRAO];
+        const novasEtapas = modoRevisao
+          ? todasEtapas
+          : todasEtapas.filter(
+              (e) => e.tipo !== 'jogo' || novasDificuldades.includes(e.dificuldade ?? 'padrao')
+            );
+
+        setClassificacaoPorUnidade((prev) => ({ ...prev, [unidade.id]: resposta.nivel }));
+
+        // Resincroniza o índice pra continuar na mesma etapa (mesmo
+        // objeto) dentro da lista recém-filtrada - sem isso, o índice
+        // numérico atual passaria a apontar pra uma etapa diferente
+        // assim que o filtro mudasse o tamanho/ordem do array.
+        const novoIndex = novasEtapas.indexOf(etapa);
+        if (novoIndex !== -1) {
+          setEtapaAtual(novoIndex);
+        }
+      }
+    } catch (err) {
+      console.error('Erro ao reportar resposta pro algoritmo adaptativo:', err);
     }
   };
 

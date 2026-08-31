@@ -250,7 +250,7 @@ export default function Perfil() {
         <div className={styles.dominioSecao}>
           <div className={styles.sectionHeader}>
             <h2>Seu domínio por assunto</h2>
-            <span className={styles.sectionHint}>Calculado pelo algoritmo adaptativo</span>
+            <span className={styles.sectionHint}></span>
           </div>
 
           {carregandoDominio ? (

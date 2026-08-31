@@ -249,8 +249,8 @@
   color: var(--color-ceci-purple);
 }
 .nivelBadge[data-nivel='Avançado'] {
-  background: var(--gradient-ceci);
-  color: var(--color-white);
+  background: var(--gradient-btn-primary);
+  color: #5C4400;
 }
 
 .dominioBarraTrilho {
@@ -262,7 +262,7 @@
 
 .dominioBarraPreenchida {
   height: 100%;
-  background: var(--gradient-ceci);
+  background: var(--gradient-btn-primary);
   border-radius: var(--radius-pill);
   transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }

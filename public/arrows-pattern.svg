@@ -1,0 +1,22 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- CECI - padrão decorativo de setinhas (fundo transparente)
+       Grade fixa 2x2: linha 1 aponta p/ direita, linha 2 aponta p/ esquerda.
+       Feito para ser usado com background-repeat: repeat, mantendo a
+       sequência direita/esquerda/direita/esquerda ao se repetir. -->
+  <defs>
+    <symbol id="arrowRight" viewBox="0 0 90 60">
+      <rect x="0" y="18" width="42" height="24" rx="11" ry="11"/>
+      <polygon points="38,0 90,30 38,60"/>
+    </symbol>
+    <symbol id="arrowLeft" viewBox="0 0 90 60">
+      <rect x="48" y="18" width="42" height="24" rx="11" ry="11"/>
+      <polygon points="52,0 0,30 52,60"/>
+    </symbol>
+  </defs>
+
+  <use href="#arrowRight" x="17"  y="28"  width="66" height="44" fill="#FFD94D" opacity="0.12"/>
+  <use href="#arrowRight" x="117" y="28"  width="66" height="44" fill="#FFD94D" opacity="0.12"/>
+
+  <use href="#arrowLeft"  x="17"  y="128" width="66" height="44" fill="#FFD94D" opacity="0.12"/>
+  <use href="#arrowLeft"  x="117" y="128" width="66" height="44" fill="#FFD94D" opacity="0.12"/>
+</svg>

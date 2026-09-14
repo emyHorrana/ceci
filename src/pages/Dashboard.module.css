@@ -66,7 +66,10 @@
 /* Bloco da Cecília / boas-vindas */
 
 .welcomeCard {
-  background: var(--gradient-hero);
+  background-color: transparent;
+  background-image: url('/arrows-pattern.svg'), var(--gradient-hero);
+  background-repeat: repeat, no-repeat;
+  background-size: 160px 160px, cover;
   border-radius: var(--radius-xl);
   padding: 2rem;
   display: flex;
@@ -75,18 +78,6 @@
   border: 1.5px solid rgba(255, 202, 26, 0.15);
   overflow: hidden;
   position: relative;
-}
-
-.welcomeCard::before {
-  content: '';
-  position: absolute;
-  width: 200px;
-  height: 200px;
-  background: rgba(255, 202, 26, 0.12);
-  border-radius: 50%;
-  top: -60px;
-  right: 60px;
-  pointer-events: none;
 }
 
 /* Slot da mascote no dashboard */

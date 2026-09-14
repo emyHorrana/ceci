@@ -3,7 +3,6 @@ const express = require('express');
 const cors = require('cors');
 
 const app = express();
-const PORT = process.env.PORT || 3001;
 
 app.use(cors());
 app.use(express.json());
@@ -17,6 +16,14 @@ app.use('/api/licoes',    require('./routes/licoes'));
 app.use('/api/progresso', require('./routes/progresso'));
 app.use('/api/conteudo',  require('./routes/conteudo'));
 
-app.listen(PORT, () => {
-  console.log(`Servidor CECI rodando em http://localhost:${PORT}`);
-});
+// Na Vercel o arquivo é importado por api/index.cjs como serverless
+// function - quem escuta é a plataforma, não o app.listen daqui.
+// Localmente (npm run dev) continua subindo o servidor normal.
+if (!process.env.VERCEL) {
+  const PORT = process.env.PORT || 3001;
+  app.listen(PORT, () => {
+    console.log(`Servidor CECI rodando em http://localhost:${PORT}`);
+  });
+}
+
+module.exports = app;

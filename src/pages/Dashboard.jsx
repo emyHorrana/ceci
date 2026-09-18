@@ -9,6 +9,7 @@ import { ButtonPrimary } from '../components/Buttons/ButtonPrimary';
 import { MODULOS } from '../data/modulos';
 import { UNIDADES, UNIDADES_POR_MODULO } from '../data/unidades';
 import { getProximaUnidade, getPerfisAluno } from '../services/algorithmService';
+import { isAdmin } from '../utils/roles';
 import styles from './Dashboard.module.css';
 
 const MOTIVATIONAL = [
@@ -51,19 +52,19 @@ export default function Dashboard() {
     let ativo = true;
 
     Promise.all([getProximaUnidade(user.id), getPerfisAluno(user.id)])
-      .then(([proxima, perfis]) => {
-        if (!ativo) return;
-        setRecomendacao(proxima);
-        setDominiosPorUnidade(perfis?.dominiosPorUnidade || {});
-        setLimiar(perfis?.limiar ?? 0.5);
-      })
-      .catch((err) => {
-        // Se a trilha adaptativa falhar (rede, servidor fora), a tela
-        // não trava - só fica sem destaque/selo de status, do jeito
-        // que era antes desta mudança. As outras seções do dashboard
-        // (meta diária) não dependem disso.
-        console.error('Erro ao buscar recomendação adaptativa:', err);
-      });
+        .then(([proxima, perfis]) => {
+          if (!ativo) return;
+          setRecomendacao(proxima);
+          setDominiosPorUnidade(perfis?.dominiosPorUnidade || {});
+          setLimiar(perfis?.limiar ?? 0.5);
+        })
+        .catch((err) => {
+          // Se a trilha adaptativa falhar (rede, servidor fora), a tela
+          // não trava - só fica sem destaque/selo de status, do jeito
+          // que era antes desta mudança. As outras seções do dashboard
+          // (meta diária) não dependem disso.
+          console.error('Erro ao buscar recomendação adaptativa:', err);
+        });
 
     return () => { ativo = false; };
   }, [user?.id]);
@@ -74,16 +75,16 @@ export default function Dashboard() {
   // etapas) - mesmo ajuste que fiz em UnidadeCheckpoint.jsx, mesmo
   // motivo (ver comentário lá).
   const unidadeRecomendada = recomendacao?.unidade?.id
-    ? UNIDADES.find((u) => u.id === recomendacao.unidade.id)
-    : null;
+      ? UNIDADES.find((u) => u.id === recomendacao.unidade.id)
+      : null;
 
   const proximaAulaDestino = unidadeRecomendada?.miniModulos?.[0]?.id
-    ? `/mini-modulo/${unidadeRecomendada.miniModulos[0].id}`
-    // enquanto a recomendação ainda não voltou (ou se a Unidade
-    // recomendada não tiver mini-módulo por algum motivo), cai no
-    // mesmo fallback fixo que a tela sempre teve - nunca deixa o
-    // botão sem destino nenhum.
-    : `/mini-modulo/${MODULOS[0].miniModulos[0].id}`;
+      ? `/mini-modulo/${unidadeRecomendada.miniModulos[0].id}`
+      // enquanto a recomendação ainda não voltou (ou se a Unidade
+      // recomendada não tiver mini-módulo por algum motivo), cai no
+      // mesmo fallback fixo que a tela sempre teve - nunca deixa o
+      // botão sem destino nenhum.
+      : `/mini-modulo/${MODULOS[0].miniModulos[0].id}`;
 
   const proximaAulaLabel = recomendacao?.motivo === 'reforco' ? 'Praticar' : 'Próxima aula';
 
@@ -106,17 +107,18 @@ export default function Dashboard() {
   }, [initializing, user, navigate]);
 
   if (initializing || !user) return (
-    <div style={{ display:'flex', alignItems:'center', justifyContent:'center', minHeight:'100svh' }}>
-      Carregando...
-    </div>
+      <div style={{ display:'flex', alignItems:'center', justifyContent:'center', minHeight:'100svh' }}>
+        Carregando...
+      </div>
   );
 
   const userName = user?.nome || user?.user_metadata?.nome || user?.user_metadata?.name || user?.user_metadata?.full_name || (user?.email ? user.email.split('@')[0] : 'Estudante');
+  const admin = isAdmin(user);
   const streakCount = progress?.streak || 0;
   const dailyPct = Math.min(((progress?.dailyProgress || 0) / 10) * 100, 100);
 
   return (
-    <AppLayout>
+      <AppLayout>
         <PageHeader>
           <div className={styles.greeting}>
             <span className={styles.greetingHello}>Bem-vindo(a) de volta</span>
@@ -134,6 +136,12 @@ export default function Dashboard() {
         </PageHeader>
 
         <div className={`${appStyles.pageContent} ${styles.pageContentDashboard}`}>
+          {admin && (
+              <div className={styles.adminBanner}>
+                🛠️ Modo ADM — trilha completa liberada para revisão, sem gravar progresso.
+              </div>
+          )}
+
           {/* Bloco da Cecília */}
           <div className={styles.welcomeCard}>
             <div className={styles.mascoteSlotSmall} aria-hidden />
@@ -145,12 +153,12 @@ export default function Dashboard() {
                   verdade pra oferecer). */}
               <p className={styles.welcomeMessage}>
                 {curriculoConcluido
-                  ? (recomendacao.mensagem || 'Você concluiu todo o currículo disponível até agora! 🎉')
-                  : message}
+                    ? (recomendacao.mensagem || 'Você concluiu todo o currículo disponível até agora! 🎉')
+                    : message}
               </p>
               <ButtonPrimary
-                onClick={() => navigate(proximaAulaDestino)}
-                size="small"
+                  onClick={() => navigate(proximaAulaDestino)}
+                  size="small"
               >
                 {proximaAulaLabel}
               </ButtonPrimary>
@@ -170,8 +178,8 @@ export default function Dashboard() {
             </div>
             <p className={styles.progressHint}>
               {dailyPct >= 100
-                ? 'Meta concluída! Incrível!'
-                : `Faltam ${10 - (progress?.dailyProgress || 0)} exercícios para completar a meta de hoje.`}
+                  ? 'Meta concluída! Incrível!'
+                  : `Faltam ${10 - (progress?.dailyProgress || 0)} exercícios para completar a meta de hoje.`}
             </p>
           </div>
 
@@ -189,13 +197,14 @@ export default function Dashboard() {
             </div>
 
             <GameTrilha
-              unidadesPorModulo={UNIDADES_POR_MODULO}
-              unidadeRecomendada={unidadeRecomendada}
-              dominiosPorUnidade={dominiosPorUnidade}
-              limiar={limiar}
+                unidadesPorModulo={UNIDADES_POR_MODULO}
+                unidadeRecomendada={unidadeRecomendada}
+                dominiosPorUnidade={dominiosPorUnidade}
+                limiar={limiar}
+                modoAdmin={admin}
             />
           </div>
         </div>
-    </AppLayout>
+      </AppLayout>
   );
-}
+}

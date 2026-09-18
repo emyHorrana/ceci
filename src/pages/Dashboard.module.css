@@ -3,6 +3,19 @@
    (components/Layout/AppLayout) - usado por esta página via <AppLayout>.
    Aqui só o conteúdo específico do Dashboard. */
 
+.adminBanner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: var(--radius-lg);
+  background: var(--color-yellow-bg);
+  border: 1.5px solid var(--color-yellow-pale);
+  color: var(--color-text-primary);
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
 .greeting {
   display: flex;
   flex-direction: column;

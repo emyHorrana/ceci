@@ -32,16 +32,16 @@ function formatarListaNomes(nomes = []) {
 // Ícone SVG de Troféu padronizado em preto/grafite
 function TrofeuIcon({ className }) {
   return (
-    <svg
-      width="30"
-      height="30"
-      viewBox="0 0 24 24"
-      fill="#2B2140"
-      className={className}
-      aria-hidden="true"
-    >
-      <path d="M19 5h-2V3H7v2H5C3.9 5 3 5.9 3 7v1c0 2.55 1.92 4.63 4.39 4.94A5.01 5.01 0 0 0 11 15.9V18H8v2h8v-2h-3v-2.1c1.6-.35 2.99-1.46 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z" />
-    </svg>
+      <svg
+          width="30"
+          height="30"
+          viewBox="0 0 24 24"
+          fill="#2B2140"
+          className={className}
+          aria-hidden="true"
+      >
+        <path d="M19 5h-2V3H7v2H5C3.9 5 3 5.9 3 7v1c0 2.55 1.92 4.63 4.39 4.94A5.01 5.01 0 0 0 11 15.9V18H8v2h8v-2h-3v-2.1c1.6-.35 2.99-1.46 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z" />
+      </svg>
   );
 }
 
@@ -79,11 +79,14 @@ function gerarTrajetoAprovado(x1, y1, x2, y2, idxTransicao) {
 }
 
 export function GameTrilha({
-  unidadesPorModulo = [],
-  unidadeRecomendada = null,
-  dominiosPorUnidade = {},
-  limiar = 0.5,
-}) {
+                             unidadesPorModulo = [],
+                             unidadeRecomendada = null,
+                             dominiosPorUnidade = {},
+                             limiar = 0.5,
+                             // Conta ADM: nenhuma Unidade fica travada por pré-requisito, pra dar
+                             // visão da trilha inteira de uma vez (ver utils/roles.js).
+                             modoAdmin = false,
+                           }) {
   const navigate = useNavigate();
   const [noSelecionado, setNoSelecionado] = useState(null);
 
@@ -96,268 +99,270 @@ export function GameTrilha({
   }
 
   return (
-    <div className={styles.trilhaContainer}>
-      {unidadesPorModulo.map((grupo) => {
-        let globalNodeIndex = 0;
-        let globalTransitionIndex = 0;
+      <div className={styles.trilhaContainer}>
+        {unidadesPorModulo.map((grupo) => {
+          let globalNodeIndex = 0;
+          let globalTransitionIndex = 0;
 
-        return (
-          <div key={grupo.moduloId} className={styles.moduloCardGrande}>
-            {/* CABEÇALHO DO CARD GRANDE DO MÓDULO (Centralizado) */}
-            <div className={styles.moduloHeaderGrande}>
+          return (
+              <div key={grupo.moduloId} className={styles.moduloCardGrande}>
+                {/* CABEÇALHO DO CARD GRANDE DO MÓDULO (Centralizado) */}
+                <div className={styles.moduloHeaderGrande}>
               <span className={styles.moduloHeaderEmoji} aria-hidden="true">
                 {grupo.moduloEmoji || '📚'}
               </span>
-              <div className={styles.moduloHeaderInfo}>
-                <h3 className={styles.moduloHeaderTitulo}>{grupo.moduloTitulo}</h3>
-              </div>
-            </div>
+                  <div className={styles.moduloHeaderInfo}>
+                    <h3 className={styles.moduloHeaderTitulo}>{grupo.moduloTitulo}</h3>
+                  </div>
+                </div>
 
-            {/* LISTA DE UNIDADES DENTRO DO MÓDULO */}
-            <div className={styles.unidadesContainer}>
-              {grupo.unidades.map((unidade) => {
-                const status = getStatusUnidade(unidade.id);
+                {/* LISTA DE UNIDADES DENTRO DO MÓDULO */}
+                <div className={styles.unidadesContainer}>
+                  {grupo.unidades.map((unidade) => {
+                    const status = getStatusUnidade(unidade.id);
 
-                // Uma Unidade fica travada se algum pré-requisito dela
-                // ainda não foi dominado (mesma definição de
-                // FilaDePendencias.estaDominada() no backend) - os nós
-                // continuam visíveis (dá pra ver o que vem depois),
-                // só não navegam.
-                const prerequisitosPendentes = (unidade.prerequisitos || [])
-                  .filter((pid) => !estaDominada(pid, dominiosPorUnidade, limiar));
-                const isBloqueada = prerequisitosPendentes.length > 0;
-                const nomesPendentes = prerequisitosPendentes
-                  .map((pid) => UNIDADES.find((u) => u.id === pid)?.titulo)
-                  .filter(Boolean);
+                    // Uma Unidade fica travada se algum pré-requisito dela
+                    // ainda não foi dominado (mesma definição de
+                    // FilaDePendencias.estaDominada() no backend) - os nós
+                    // continuam visíveis (dá pra ver o que vem depois),
+                    // só não navegam.
+                    const prerequisitosPendentes = modoAdmin
+                        ? []
+                        : (unidade.prerequisitos || [])
+                            .filter((pid) => !estaDominada(pid, dominiosPorUnidade, limiar));
+                    const isBloqueada = prerequisitosPendentes.length > 0;
+                    const nomesPendentes = prerequisitosPendentes
+                        .map((pid) => UNIDADES.find((u) => u.id === pid)?.titulo)
+                        .filter(Boolean);
 
-                // Monta a lista linear de nós desta unidade
-                const nosDaUnidade = [];
-                const NODE_SPACING = 140;
-                // Espaço generoso inicial (95px) garantindo equilíbrio com o final
-                const TOP_OFFSET = 95;
+                    // Monta a lista linear de nós desta unidade
+                    const nosDaUnidade = [];
+                    const NODE_SPACING = 140;
+                    // Espaço generoso inicial (95px) garantindo equilíbrio com o final
+                    const TOP_OFFSET = 95;
 
-                unidade.miniModulos.forEach((mm, mmIdx) => {
-                  const posX = POSICOES_X[globalNodeIndex % POSICOES_X.length];
-                  const posY = mmIdx * NODE_SPACING + TOP_OFFSET;
-                  const corTema = PALETA_CECI[globalNodeIndex % PALETA_CECI.length];
+                    unidade.miniModulos.forEach((mm, mmIdx) => {
+                      const posX = POSICOES_X[globalNodeIndex % POSICOES_X.length];
+                      const posY = mmIdx * NODE_SPACING + TOP_OFFSET;
+                      const corTema = PALETA_CECI[globalNodeIndex % PALETA_CECI.length];
 
-                  nosDaUnidade.push({
-                    tipo: 'mini-modulo',
-                    id: mm.id,
-                    unidadeId: unidade.id,
-                    titulo: mm.titulo,
-                    destino: `/mini-modulo/${mm.id}`,
-                    icone: grupo.moduloEmoji || '▶',
-                    status,
-                    isRecomendado: status === 'atual' && mmIdx === 0 && !isBloqueada,
-                    bloqueada: isBloqueada,
-                    nomesPendentes,
-                    corTema,
-                    posX,
-                    posY,
-                    idxNaUnidade: mmIdx,
-                  });
+                      nosDaUnidade.push({
+                        tipo: 'mini-modulo',
+                        id: mm.id,
+                        unidadeId: unidade.id,
+                        titulo: mm.titulo,
+                        destino: `/mini-modulo/${mm.id}`,
+                        icone: grupo.moduloEmoji || '▶',
+                        status,
+                        isRecomendado: status === 'atual' && mmIdx === 0 && !isBloqueada,
+                        bloqueada: isBloqueada,
+                        nomesPendentes,
+                        corTema,
+                        posX,
+                        posY,
+                        idxNaUnidade: mmIdx,
+                      });
 
-                  globalNodeIndex++;
-                });
+                      globalNodeIndex++;
+                    });
 
-                if (unidade.checkpoint) {
-                  const mmCount = unidade.miniModulos.length;
-                  const posX = POSICOES_X[globalNodeIndex % POSICOES_X.length];
-                  const posY = mmCount * NODE_SPACING + TOP_OFFSET;
+                    if (unidade.checkpoint) {
+                      const mmCount = unidade.miniModulos.length;
+                      const posX = POSICOES_X[globalNodeIndex % POSICOES_X.length];
+                      const posY = mmCount * NODE_SPACING + TOP_OFFSET;
 
-                  nosDaUnidade.push({
-                    tipo: 'checkpoint',
-                    id: `checkpoint-${unidade.id}`,
-                    unidadeId: unidade.id,
-                    titulo: unidade.checkpoint.titulo || 'Desafio da Unidade',
-                    destino: `/unidade/${unidade.id}/checkpoint`,
-                    icone: 'trofeu',
-                    status,
-                    isRecomendado: status === 'atual' && mmCount === 0 && !isBloqueada,
-                    bloqueada: isBloqueada,
-                    nomesPendentes,
-                    corTema: 'checkpoint',
-                    posX,
-                    posY,
-                    idxNaUnidade: mmCount,
-                  });
+                      nosDaUnidade.push({
+                        tipo: 'checkpoint',
+                        id: `checkpoint-${unidade.id}`,
+                        unidadeId: unidade.id,
+                        titulo: unidade.checkpoint.titulo || 'Desafio da Unidade',
+                        destino: `/unidade/${unidade.id}/checkpoint`,
+                        icone: 'trofeu',
+                        status,
+                        isRecomendado: status === 'atual' && mmCount === 0 && !isBloqueada,
+                        bloqueada: isBloqueada,
+                        nomesPendentes,
+                        corTema: 'checkpoint',
+                        posX,
+                        posY,
+                        idxNaUnidade: mmCount,
+                      });
 
-                  globalNodeIndex++;
-                }
+                      globalNodeIndex++;
+                    }
 
-                // Altura calculada da trilha para manter margem inferior igual à superior
-                const totalFasesHeight = nosDaUnidade.length * NODE_SPACING + 70;
+                    // Altura calculada da trilha para manter margem inferior igual à superior
+                    const totalFasesHeight = nosDaUnidade.length * NODE_SPACING + 70;
 
-                return (
-                  <div key={unidade.id} className={styles.unidadeSecao}>
-                    {/* BANNER DE ASSUNTO / TÓPICO (Centralizado) */}
-                    <div
-                      className={`${styles.unidadeBanner} ${status === 'atual' ? styles.unidadeBannerAtual : ''}`}
-                    >
-                      <h4 className={styles.unidadeTitulo}>{unidade.titulo}</h4>
-                    </div>
-
-                    {/* CAMPO DA TRILHA DE FASES COM NÓS 3D E LINHAS PONTILHADAS COM VOLTAS CIRCULARES DIVERSIFICADAS */}
-                    <div className={styles.unidadeTrilhaFases} style={{ height: `${totalFasesHeight}px` }}>
-                      {/* SVG DO CAMINHO PONTILHADO COM TRAJETOS DIVERSIFICADOS DE VOO */}
-                      <svg
-                        className={styles.caminhoTracejadoSvg}
-                        style={{ height: `${totalFasesHeight}px` }}
-                        viewBox={`0 0 1000 ${totalFasesHeight}`}
-                        preserveAspectRatio="none"
-                        aria-hidden="true"
-                      >
-                        {nosDaUnidade.map((no, idx) => {
-                          if (idx === nosDaUnidade.length - 1) return null;
-                          const proxNo = nosDaUnidade[idx + 1];
-                          const x1 = no.posX * 10;
-                          const y1 = no.posY;
-                          const x2 = proxNo.posX * 10;
-                          const y2 = proxNo.posY;
-
-                          const pathData = gerarTrajetoAprovado(x1, y1, x2, y2, globalTransitionIndex++);
-
-                          return (
-                            <path
-                              key={`linha-${no.id}-${proxNo.id}`}
-                              d={pathData}
-                              fill="none"
-                              stroke="#2B2140"
-                              strokeWidth="2"
-                              strokeDasharray="4 5"
-                              strokeLinecap="round"
-                              strokeOpacity="0.7"
-                              vectorEffect="non-scaling-stroke"
-                              className={styles.linhaTracejadaDelicada}
-                            />
-                          );
-                        })}
-                      </svg>
-
-                      {/* NÓS CIRCULARES DE FASE (Cores da Mascote Cecília: Rosa, Roxo e Lavanda) */}
-                      {nosDaUnidade.map((etapa) => {
-                        const isCheckpoint = etapa.tipo === 'checkpoint';
-                        const isAtivo = etapa.isRecomendado;
-                        const isBloqueada = etapa.bloqueada;
-                        const isConcluido = etapa.status === 'concluida';
-                        const isPendente = etapa.status === 'pendente';
-                        const isSelected = noSelecionado?.id === etapa.id;
-
-                        // Determina a classe de cor com base na paleta da Cecília
-                        // - bloqueada tem prioridade sobre qualquer outro estado:
-                        // não faz sentido destacar como "pendente"/"concluída"
-                        // uma Unidade que a pessoa nem devia estar vendo ainda.
-                        let nodeStyleClass;
-                        if (isBloqueada) {
-                          nodeStyleClass = styles.nodeBloqueado;
-                        } else if (isConcluido) {
-                          nodeStyleClass = styles.nodeConcluido;
-                        } else if (isAtivo) {
-                          nodeStyleClass = styles.nodeAtivo;
-                        } else if (isPendente) {
-                          nodeStyleClass = styles.nodePendente;
-                        } else if (isCheckpoint) {
-                          nodeStyleClass = styles.nodeCheckpoint;
-                        } else {
-                          if (etapa.corTema === 'ceciRoxo') nodeStyleClass = styles.nodeCeciRoxo;
-                          else if (etapa.corTema === 'ceciLavanda') nodeStyleClass = styles.nodeCeciLavanda;
-                          else nodeStyleClass = styles.nodeCeciRosa;
-                        }
-
-                        return (
+                    return (
+                        <div key={unidade.id} className={styles.unidadeSecao}>
+                          {/* BANNER DE ASSUNTO / TÓPICO (Centralizado) */}
                           <div
-                            key={etapa.id}
-                            className={styles.nodeWrapper}
-                            style={{
-                              left: `${etapa.posX}%`,
-                              top: `${etapa.posY}px`,
-                            }}
+                              className={`${styles.unidadeBanner} ${status === 'atual' ? styles.unidadeBannerAtual : ''}`}
                           >
-                            {/* AURA DE ENERGIA PULSANTE NO NÓ RECOMENDADO ATUAL */}
-                            {isAtivo && (
-                              <>
-                                <div className={styles.auraPulso} aria-hidden="true" />
-                                <div className={styles.badgeSuaVez}>JOGAR</div>
-                              </>
-                            )}
+                            <h4 className={styles.unidadeTitulo}>{unidade.titulo}</h4>
+                          </div>
 
-                            {/* BOTÃO CIRCULAR 3D / GLOSSY COM CORES DA CECÍLIA */}
-                            <button
-                              type="button"
-                              className={`${styles.nodeButton} ${nodeStyleClass} ${isCheckpoint ? styles.nodeCheckpointButton : ''}`}
-                              onClick={() => setNoSelecionado(noSelecionado?.id === etapa.id ? null : etapa)}
-                              aria-label={isBloqueada ? `${etapa.titulo} (bloqueado)` : etapa.titulo}
-                              title={isBloqueada ? `${etapa.titulo} - ainda bloqueado` : etapa.titulo}
+                          {/* CAMPO DA TRILHA DE FASES COM NÓS 3D E LINHAS PONTILHADAS COM VOLTAS CIRCULARES DIVERSIFICADAS */}
+                          <div className={styles.unidadeTrilhaFases} style={{ height: `${totalFasesHeight}px` }}>
+                            {/* SVG DO CAMINHO PONTILHADO COM TRAJETOS DIVERSIFICADOS DE VOO */}
+                            <svg
+                                className={styles.caminhoTracejadoSvg}
+                                style={{ height: `${totalFasesHeight}px` }}
+                                viewBox={`0 0 1000 ${totalFasesHeight}`}
+                                preserveAspectRatio="none"
+                                aria-hidden="true"
                             >
-                              {/* Brilho Glossy / Reflexo Superior */}
-                              <span className={styles.nodeGlossy} aria-hidden="true" />
+                              {nosDaUnidade.map((no, idx) => {
+                                if (idx === nosDaUnidade.length - 1) return null;
+                                const proxNo = nosDaUnidade[idx + 1];
+                                const x1 = no.posX * 10;
+                                const y1 = no.posY;
+                                const x2 = proxNo.posX * 10;
+                                const y2 = proxNo.posY;
 
-                              {/* Ícone (cadeado se bloqueado, Troféu SVG, estrela ★ ou ícone temático) */}
-                              <span className={styles.nodeIcone} aria-hidden="true">
+                                const pathData = gerarTrajetoAprovado(x1, y1, x2, y2, globalTransitionIndex++);
+
+                                return (
+                                    <path
+                                        key={`linha-${no.id}-${proxNo.id}`}
+                                        d={pathData}
+                                        fill="none"
+                                        stroke="#2B2140"
+                                        strokeWidth="2"
+                                        strokeDasharray="4 5"
+                                        strokeLinecap="round"
+                                        strokeOpacity="0.7"
+                                        vectorEffect="non-scaling-stroke"
+                                        className={styles.linhaTracejadaDelicada}
+                                    />
+                                );
+                              })}
+                            </svg>
+
+                            {/* NÓS CIRCULARES DE FASE (Cores da Mascote Cecília: Rosa, Roxo e Lavanda) */}
+                            {nosDaUnidade.map((etapa) => {
+                              const isCheckpoint = etapa.tipo === 'checkpoint';
+                              const isAtivo = etapa.isRecomendado;
+                              const isBloqueada = etapa.bloqueada;
+                              const isConcluido = etapa.status === 'concluida';
+                              const isPendente = etapa.status === 'pendente';
+                              const isSelected = noSelecionado?.id === etapa.id;
+
+                              // Determina a classe de cor com base na paleta da Cecília
+                              // - bloqueada tem prioridade sobre qualquer outro estado:
+                              // não faz sentido destacar como "pendente"/"concluída"
+                              // uma Unidade que a pessoa nem devia estar vendo ainda.
+                              let nodeStyleClass;
+                              if (isBloqueada) {
+                                nodeStyleClass = styles.nodeBloqueado;
+                              } else if (isConcluido) {
+                                nodeStyleClass = styles.nodeConcluido;
+                              } else if (isAtivo) {
+                                nodeStyleClass = styles.nodeAtivo;
+                              } else if (isPendente) {
+                                nodeStyleClass = styles.nodePendente;
+                              } else if (isCheckpoint) {
+                                nodeStyleClass = styles.nodeCheckpoint;
+                              } else {
+                                if (etapa.corTema === 'ceciRoxo') nodeStyleClass = styles.nodeCeciRoxo;
+                                else if (etapa.corTema === 'ceciLavanda') nodeStyleClass = styles.nodeCeciLavanda;
+                                else nodeStyleClass = styles.nodeCeciRosa;
+                              }
+
+                              return (
+                                  <div
+                                      key={etapa.id}
+                                      className={styles.nodeWrapper}
+                                      style={{
+                                        left: `${etapa.posX}%`,
+                                        top: `${etapa.posY}px`,
+                                      }}
+                                  >
+                                    {/* AURA DE ENERGIA PULSANTE NO NÓ RECOMENDADO ATUAL */}
+                                    {isAtivo && (
+                                        <>
+                                          <div className={styles.auraPulso} aria-hidden="true" />
+                                          <div className={styles.badgeSuaVez}>JOGAR</div>
+                                        </>
+                                    )}
+
+                                    {/* BOTÃO CIRCULAR 3D / GLOSSY COM CORES DA CECÍLIA */}
+                                    <button
+                                        type="button"
+                                        className={`${styles.nodeButton} ${nodeStyleClass} ${isCheckpoint ? styles.nodeCheckpointButton : ''}`}
+                                        onClick={() => setNoSelecionado(noSelecionado?.id === etapa.id ? null : etapa)}
+                                        aria-label={isBloqueada ? `${etapa.titulo} (bloqueado)` : etapa.titulo}
+                                        title={isBloqueada ? `${etapa.titulo} - ainda bloqueado` : etapa.titulo}
+                                    >
+                                      {/* Brilho Glossy / Reflexo Superior */}
+                                      <span className={styles.nodeGlossy} aria-hidden="true" />
+
+                                      {/* Ícone (cadeado se bloqueado, Troféu SVG, estrela ★ ou ícone temático) */}
+                                      <span className={styles.nodeIcone} aria-hidden="true">
                                 {isBloqueada ? (
-                                  '🔒'
+                                    '🔒'
                                 ) : isCheckpoint ? (
-                                  <TrofeuIcon className={styles.trofeuSvg} />
+                                    <TrofeuIcon className={styles.trofeuSvg} />
                                 ) : isConcluido ? (
-                                  '★'
+                                    '★'
                                 ) : (
-                                  etapa.icone
+                                    etapa.icone
                                 )}
                               </span>
-                            </button>
+                                    </button>
 
-                            {/* RÓTULO DA ETAPA ABAIXO DO NÓ */}
-                            <span className={styles.nodeRotulo}>
+                                    {/* RÓTULO DA ETAPA ABAIXO DO NÓ */}
+                                    <span className={styles.nodeRotulo}>
                               {isCheckpoint ? 'Desafio da Unidade' : etapa.titulo}
                             </span>
 
-                            {/* POPOVER DE DETALHES DA ETAPA AO CLICAR */}
-                            {isSelected && (
-                              <div className={styles.popoverCard}>
-                                <div className={styles.popoverHeader}>
-                                  <h5 className={styles.popoverTitulo}>{etapa.titulo}</h5>
-                                  <button
-                                    type="button"
-                                    className={styles.popoverFechar}
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      setNoSelecionado(null);
-                                    }}
-                                    aria-label="Fechar detalhes"
-                                  >
-                                    ✕
-                                  </button>
-                                </div>
+                                    {/* POPOVER DE DETALHES DA ETAPA AO CLICAR */}
+                                    {isSelected && (
+                                        <div className={styles.popoverCard}>
+                                          <div className={styles.popoverHeader}>
+                                            <h5 className={styles.popoverTitulo}>{etapa.titulo}</h5>
+                                            <button
+                                                type="button"
+                                                className={styles.popoverFechar}
+                                                onClick={(e) => {
+                                                  e.stopPropagation();
+                                                  setNoSelecionado(null);
+                                                }}
+                                                aria-label="Fechar detalhes"
+                                            >
+                                              ✕
+                                            </button>
+                                          </div>
 
-                                <div className={styles.popoverAcao}>
-                                  {isBloqueada ? (
-                                    <p className={styles.popoverBloqueadoTexto}>
-                                      🔒 Termine {formatarListaNomes(etapa.nomesPendentes)} primeiro
-                                      pra desbloquear essa parte.
-                                    </p>
-                                  ) : (
-                                    <ButtonPrimary
-                                      size="small"
-                                      onClick={() => navigate(etapa.destino)}
-                                    >
-                                      {isConcluido ? 'Revisar aula' : isCheckpoint ? 'Fazer desafio' : 'Começar aula'}
-                                    </ButtonPrimary>
-                                  )}
-                                </div>
-                              </div>
-                            )}
+                                          <div className={styles.popoverAcao}>
+                                            {isBloqueada ? (
+                                                <p className={styles.popoverBloqueadoTexto}>
+                                                  🔒 Termine {formatarListaNomes(etapa.nomesPendentes)} primeiro
+                                                  pra desbloquear essa parte.
+                                                </p>
+                                            ) : (
+                                                <ButtonPrimary
+                                                    size="small"
+                                                    onClick={() => navigate(etapa.destino)}
+                                                >
+                                                  {isConcluido ? 'Revisar aula' : isCheckpoint ? 'Fazer desafio' : 'Começar aula'}
+                                                </ButtonPrimary>
+                                            )}
+                                          </div>
+                                        </div>
+                                    )}
+                                  </div>
+                              );
+                            })}
                           </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        );
-      })}
-    </div>
+                        </div>
+                    );
+                  })}
+                </div>
+              </div>
+          );
+        })}
+      </div>
   );
 }

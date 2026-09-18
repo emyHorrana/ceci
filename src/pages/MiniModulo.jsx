@@ -18,6 +18,7 @@ import { ProgressContext } from '../context/ProgressContext';
 import { getPerfisAluno, responderQuestao } from '../services/algorithmService';
 import { getTempoIdealMs } from '../utils/jogoTempoIdeal';
 import { reformularExplicacao } from '../services/aiService';
+import { isAdmin } from '../utils/roles';
 import { ButtonPrimary } from '../components/Buttons/ButtonPrimary';
 import { ButtonOutline } from '../components/Buttons/ButtonOutline';
 import { GameMoment } from '../components/Game/GameMoment';
@@ -83,13 +84,18 @@ const DICAS_PADRAO = [
   'Se precisar, volte e releia com calma quantas vezes quiser! 🌻',
 ];
 
-const CHAVE_MODO_REVISAO = 'ceci:modoRevisao';
-
 export default function MiniModulo() {
   const { miniModuloId } = useParams();
   const navigate = useNavigate();
   const { user } = useContext(UserContext);
   const { updateProgress } = useContext(ProgressContext) || {};
+
+  // Conta ADM: vê a trilha completa (todas as etapas/dificuldades,
+  // sem bloqueio sequencial) pra revisão de conteúdo, mas nada do que
+  // ela faz aqui é persistido - nem posição na aula (localStorage),
+  // nem resposta pro algoritmo adaptativo, nem progresso no servidor
+  // (ver handleGameComplete/concluir mais abaixo e utils/roles.js).
+  const admin = isAdmin(user);
 
   const resultado = getMiniModulo(miniModuloId);
   const todasEtapas = resultado?.miniModulo?.etapas ?? [];
@@ -98,7 +104,9 @@ export default function MiniModulo() {
   const CHAVE_ETAPA_SALVA = `ceci_etapa_${miniModuloId}`;
 
   // Memória de onde parou: inicializa na etapa salva no localStorage
+  // (contas ADM sempre começam do zero - nada fica salvo pra elas)
   const [etapaAtual, setEtapaAtual] = useState(() => {
+    if (admin) return 0;
     const salva = localStorage.getItem(CHAVE_ETAPA_SALVA);
     return salva ? parseInt(salva, 10) || 0 : 0;
   });
@@ -113,63 +121,42 @@ export default function MiniModulo() {
   const [carregandoIA, setCarregandoIA] = useState(false);
   const [erroIA, setErroIA] = useState(null);
 
-  const [modoRevisao, setModoRevisao] = useState(
-    () => sessionStorage.getItem(CHAVE_MODO_REVISAO) === '1'
-  );
-
-  function alternarModoRevisao() {
-    const dificuldades = DIFICULDADES_POR_NIVEL[nivel] || DIFICULDADES_POR_NIVEL[NIVEL_PADRAO] || ['demonstracao', 'padrao'];
-    const etapaAtualObj = etapas[Math.min(Math.max(0, etapaAtual), Math.max(0, etapas.length - 1))];
-    const novoModo = !modoRevisao;
-
-    sessionStorage.setItem(CHAVE_MODO_REVISAO, novoModo ? '1' : '0');
-    setModoRevisao(novoModo);
-
-    const novasEtapas = novoModo
-      ? todasEtapas
-      : todasEtapas.filter(
-          (e) => e.tipo !== 'jogo' || dificuldades.includes(e.dificuldade ?? 'padrao')
-        );
-
-    if (novasEtapas.length > 0) {
-      const novoIndex = etapaAtualObj ? novasEtapas.indexOf(etapaAtualObj) : -1;
-      if (novoIndex !== -1) {
-        setEtapaAtual(novoIndex);
-      } else {
-        setEtapaAtual((atual) => Math.min(atual, Math.max(0, novasEtapas.length - 1)));
-      }
-    } else {
-      setEtapaAtual(0);
-    }
-  }
-
   useEffect(() => {
-    if (!user?.id) return;
+    // Sem sentido buscar nível adaptativo pra quem vê tudo sempre
+    if (!user?.id || admin) return;
     let ativo = true;
     getPerfisAluno(user.id)
-      .then((perfis) => {
-        if (ativo) setClassificacaoPorUnidade(perfis?.classificacaoPorUnidade || {});
-      })
-      .catch((err) => {
-        console.error('Erro ao buscar nível adaptativo:', err);
-      });
+        .then((perfis) => {
+          if (ativo) setClassificacaoPorUnidade(perfis?.classificacaoPorUnidade || {});
+        })
+        .catch((err) => {
+          console.error('Erro ao buscar nível adaptativo:', err);
+        });
     return () => { ativo = false; };
-  }, [user?.id]);
+  }, [user?.id, admin]);
 
   const nivel = (unidade && classificacaoPorUnidade[unidade.id]) || NIVEL_PADRAO;
   const dificuldades = DIFICULDADES_POR_NIVEL[nivel] || DIFICULDADES_POR_NIVEL[NIVEL_PADRAO] || ['demonstracao', 'padrao'];
 
-  const etapas = modoRevisao
-    ? todasEtapas
-    : todasEtapas.filter(
-        (e) => e.tipo !== 'jogo' || dificuldades.includes(e.dificuldade ?? 'padrao')
-      );
+  // ADM sempre vê todas as etapas, em todas as dificuldades. Contas
+  // normais ficam limitadas ao que o algoritmo adaptativo indicar pro
+  // nível atual - não existe mais alternância manual pra "ver tudo"
+  // (quebrava a dinâmica de teste do algoritmo, que precisa medir a
+  // pessoa dentro do nível que ele mesmo calculou). Se um mini-módulo
+  // não tiver nenhuma etapa registrada pro nível atual (conteúdo
+  // ainda não escrito pra essa dificuldade), cai em todasEtapas como
+  // fallback automático - isso é lacuna de conteúdo, não escolha da
+  // pessoa, então não faz sentido travar a aula por causa disso.
+  const etapasDoNivel = todasEtapas.filter(
+      (e) => e.tipo !== 'jogo' || dificuldades.includes(e.dificuldade ?? 'padrao')
+  );
+  const etapas = admin || etapasDoNivel.length === 0 ? todasEtapas : etapasDoNivel;
 
   const abandonosRef = useRef([]);
 
   // Reset completo de estado ao trocar de mini-módulo
   useEffect(() => {
-    const salva = localStorage.getItem(`ceci_etapa_${miniModuloId}`);
+    const salva = admin ? null : localStorage.getItem(`ceci_etapa_${miniModuloId}`);
     const etapaInicial = salva ? parseInt(salva, 10) || 0 : 0;
     setEtapaAtual(etapaInicial);
     setResultadoJogo(null);
@@ -178,7 +165,7 @@ export default function MiniModulo() {
     setMostrarExplicacaoIA({});
     setCarregandoIA(false);
     setErroIA(null);
-  }, [miniModuloId]);
+  }, [miniModuloId, admin]);
 
   useEffect(() => {
     setResultadoJogo(null);
@@ -186,29 +173,26 @@ export default function MiniModulo() {
 
   if (!resultado) {
     return (
-      <div className={styles.notFound}>
-        <span className={styles.notFoundEmoji}>🔍</span>
-        <h2>Mini-módulo não encontrado</h2>
-        <ButtonOutline onClick={() => navigate('/dashboard')}>
-          Voltar ao início
-        </ButtonOutline>
-      </div>
+        <div className={styles.notFound}>
+          <span className={styles.notFoundEmoji}>🔍</span>
+          <h2>Mini-módulo não encontrado</h2>
+          <ButtonOutline onClick={() => navigate('/dashboard')}>
+            Voltar ao início
+          </ButtonOutline>
+        </div>
     );
   }
 
   if (etapas.length === 0) {
     return (
-      <div className={styles.notFound}>
-        <span className={styles.notFoundEmoji}>🚧</span>
-        <h2>Nada disponível pra esse nível ainda</h2>
-        <p>Este mini-módulo só tem etapas de um nível diferente do seu.</p>
-        <ButtonOutline onClick={alternarModoRevisao}>
-          Ver todas as etapas mesmo assim
-        </ButtonOutline>
-        <ButtonOutline onClick={() => navigate('/dashboard')}>
-          Voltar ao início
-        </ButtonOutline>
-      </div>
+        <div className={styles.notFound}>
+          <span className={styles.notFoundEmoji}>🚧</span>
+          <h2>Mini-módulo sem conteúdo ainda</h2>
+          <p>Esse mini-módulo ainda não tem nenhuma etapa cadastrada.</p>
+          <ButtonOutline onClick={() => navigate('/dashboard')}>
+            Voltar ao início
+          </ButtonOutline>
+        </div>
     );
   }
 
@@ -220,11 +204,13 @@ export default function MiniModulo() {
   }
 
   // Atualiza persistência da etapa atual no localStorage
+  // (não pra conta ADM - ver comentário no topo do componente)
   useEffect(() => {
+    if (admin) return;
     if (indiceSeguro >= 0) {
       localStorage.setItem(CHAVE_ETAPA_SALVA, indiceSeguro.toString());
     }
-  }, [indiceSeguro, CHAVE_ETAPA_SALVA]);
+  }, [indiceSeguro, CHAVE_ETAPA_SALVA, admin]);
 
   const etapa = etapas[indiceSeguro];
   const isFirst = indiceSeguro === 0;
@@ -253,7 +239,9 @@ export default function MiniModulo() {
       });
     }
 
-    if (!user?.id || !unidade) return;
+    // ADM só revisa conteúdo - não reporta resposta pro algoritmo
+    // adaptativo, pra não distorcer os dados reais dos alunos.
+    if (admin || !user?.id || !unidade) return;
 
     try {
       const resposta = await responderQuestao({
@@ -272,12 +260,11 @@ export default function MiniModulo() {
       // pessoa entrasse no mini-módulo, não durante a mesma sessão.
       if (resposta?.nivel && resposta.nivel !== nivel) {
         const novasDificuldades =
-          DIFICULDADES_POR_NIVEL[resposta.nivel] || DIFICULDADES_POR_NIVEL[NIVEL_PADRAO];
-        const novasEtapas = modoRevisao
-          ? todasEtapas
-          : todasEtapas.filter(
-              (e) => e.tipo !== 'jogo' || novasDificuldades.includes(e.dificuldade ?? 'padrao')
-            );
+            DIFICULDADES_POR_NIVEL[resposta.nivel] || DIFICULDADES_POR_NIVEL[NIVEL_PADRAO];
+        const etapasFiltradas = todasEtapas.filter(
+            (e) => e.tipo !== 'jogo' || novasDificuldades.includes(e.dificuldade ?? 'padrao')
+        );
+        const novasEtapas = etapasFiltradas.length === 0 ? todasEtapas : etapasFiltradas;
 
         setClassificacaoPorUnidade((prev) => ({ ...prev, [unidade.id]: resposta.nivel }));
 
@@ -296,7 +283,7 @@ export default function MiniModulo() {
   };
 
   const isEtapaDesbloqueada = (index) => {
-    if (modoRevisao) return true;
+    if (admin) return true;
     if (index === 0) return true;
     for (let i = 0; i < index; i++) {
       if (!etapasCompletas.has(i)) return false;
@@ -391,202 +378,199 @@ export default function MiniModulo() {
   const Jogo = ehJogo && etapa?.jogo ? JOGOS[etapa.jogo] : null;
 
   return (
-    <div className={styles.page}>
-      {/* HEADER */}
-      <header className={styles.header}>
-        <button className={styles.backBtn} onClick={() => navigate('/dashboard')}>
-          Início
-        </button>
+      <div className={styles.page}>
+        {/* HEADER */}
+        <header className={styles.header}>
+          <button className={styles.backBtn} onClick={() => navigate('/dashboard')}>
+            Início
+          </button>
 
-        {/* breadcrumb */}
-        <div className={styles.breadcrumb}>
+          {/* breadcrumb */}
+          <div className={styles.breadcrumb}>
           <span className={styles.breadcrumbModulo}>
             {modulo.emoji} {modulo.titulo}
           </span>
-          <span className={styles.breadcrumbSep}>›</span>
-          <span className={styles.breadcrumbMini}>{miniModulo.titulo}</span>
+            <span className={styles.breadcrumbSep}>›</span>
+            <span className={styles.breadcrumbMini}>{miniModulo.titulo}</span>
+          </div>
+
+          {/* progresso por etapas */}
+          <div className={styles.etapaInfo}>
+            Etapa {indiceSeguro + 1} / {etapas.length}
+          </div>
+
+          {/* Nível atual (ADM não tem nível - vê tudo sempre, ver
+            utils/roles.js). Não é mais clicável: alternar nível/nível
+            "ver tudo" manualmente quebrava a dinâmica de teste do
+            algoritmo adaptativo. */}
+          <div className={styles.nivelInfo} title={admin ? 'Conta ADM - trilha completa, sem gravar progresso' : `Nível atual: ${nivel}`}>
+            {admin ? '🛠️ Modo ADM' : `Nível: ${nivel}`}
+          </div>
+        </header>
+
+        {/* BARRA DE PROGRESSO */}
+        <div className={styles.progressBar}>
+          <div
+              className={styles.progressFill}
+              style={{ width: `${((indiceSeguro + 1) / etapas.length) * 100}%` }}
+          />
         </div>
 
-        {/* progresso por etapas */}
-        <div className={styles.etapaInfo}>
-          Etapa {indiceSeguro + 1} / {etapas.length}
-        </div>
-
-        {/* Modo revisão */}
-        <button
-          type="button"
-          className={styles.modoRevisaoBtn}
-          data-ativo={modoRevisao || undefined}
-          onClick={alternarModoRevisao}
-          title={modoRevisao ? 'Mostrando todas as etapas' : `Nível atual: ${nivel}`}
-        >
-          {modoRevisao ? '👁️ Vendo tudo' : `Nível: ${nivel}`}
-        </button>
-      </header>
-
-      {/* BARRA DE PROGRESSO */}
-      <div className={styles.progressBar}>
-        <div
-          className={styles.progressFill}
-          style={{ width: `${((indiceSeguro + 1) / etapas.length) * 100}%` }}
-        />
-      </div>
-
-      {/* CONTEÚDO PRINCIPAL */}
-      <main className={styles.main} data-modo={ehJogo ? 'jogo' : 'teoria'}>
-        <div className={styles.conteudoCol}>
-          {ehJogo ? (
-            Jogo ? (
-              <GameMoment
-                key={`etapa-${indiceSeguro}-${etapa.jogo}`}
-                title={etapa.titulo}
-                instructions={etapa.instructions}
-                onComplete={handleGameComplete}
-                onAbandon={registrarAbandono}
-              >
-                {({ reportResult }) => (
-                  <Jogo reportResult={reportResult} {...etapa.jogoProps} />
-                )}
-              </GameMoment>
+        {/* CONTEÚDO PRINCIPAL */}
+        <main className={styles.main} data-modo={ehJogo ? 'jogo' : 'teoria'}>
+          <div className={styles.conteudoCol}>
+            {ehJogo ? (
+                Jogo ? (
+                    <GameMoment
+                        key={`etapa-${indiceSeguro}-${etapa.jogo}`}
+                        title={etapa.titulo}
+                        instructions={etapa.instructions}
+                        onComplete={handleGameComplete}
+                        onAbandon={registrarAbandono}
+                    >
+                      {({ reportResult }) => (
+                          <Jogo reportResult={reportResult} {...etapa.jogoProps} />
+                      )}
+                    </GameMoment>
+                ) : (
+                    <div className={styles.jogoNaoEncontrado}>
+                      <p>Mecânica de jogo &quot;{etapa.jogo}&quot; não encontrada.</p>
+                    </div>
+                )
             ) : (
-              <div className={styles.jogoNaoEncontrado}>
-                <p>Mecânica de jogo &quot;{etapa.jogo}&quot; não encontrada.</p>
-              </div>
-            )
-          ) : (
-            <div className={styles.card}>
-              <div className={styles.teoriaHeader}>
-                <h1 className={styles.etapaTitulo}>{etapa.titulo}</h1>
+                <div className={styles.card}>
+                  <div className={styles.teoriaHeader}>
+                    <h1 className={styles.etapaTitulo}>{etapa.titulo}</h1>
 
-                {mostrarExplicacaoIA[indiceSeguro] && (
-                  <span className={styles.aiBadge}>
+                    {mostrarExplicacaoIA[indiceSeguro] && (
+                        <span className={styles.aiBadge}>
                     ✨ Explicação personalizada da Ceci
                   </span>
-                )}
-              </div>
-
-              {mostrarExplicacaoIA[indiceSeguro] ? (
-                <div className={styles.aiCard}>
-                  <div
-                    className={styles.aiConteudo}
-                    dangerouslySetInnerHTML={{ __html: explicacoesIA[indiceSeguro] }}
-                  />
-
-                  <div className={styles.aiActions}>
-                    <button
-                      type="button"
-                      className={styles.aiBtnSecondary}
-                      onClick={handleVerOriginal}
-                    >
-                      Voltar ao texto original
-                    </button>
-                    <button
-                      type="button"
-                      className={styles.aiBtnOutra}
-                      onClick={() => handlePedirExplicacaoIA(true)}
-                      disabled={carregandoIA}
-                    >
-                      {carregandoIA ? 'Pensando em outro exemplo...' : 'Tentar outra analogia'}
-                    </button>
+                    )}
                   </div>
+
+                  {mostrarExplicacaoIA[indiceSeguro] ? (
+                      <div className={styles.aiCard}>
+                        <div
+                            className={styles.aiConteudo}
+                            dangerouslySetInnerHTML={{ __html: explicacoesIA[indiceSeguro] }}
+                        />
+
+                        <div className={styles.aiActions}>
+                          <button
+                              type="button"
+                              className={styles.aiBtnSecondary}
+                              onClick={handleVerOriginal}
+                          >
+                            Voltar ao texto original
+                          </button>
+                          <button
+                              type="button"
+                              className={styles.aiBtnOutra}
+                              onClick={() => handlePedirExplicacaoIA(true)}
+                              disabled={carregandoIA}
+                          >
+                            {carregandoIA ? 'Pensando em outro exemplo...' : 'Tentar outra analogia'}
+                          </button>
+                        </div>
+                      </div>
+                  ) : (
+                      <>
+                        <div
+                            className={styles.etapaConteudo}
+                            dangerouslySetInnerHTML={{ __html: etapa.conteudo }}
+                        />
+
+                        <div className={styles.aiTriggerContainer}>
+                          {carregandoIA && (
+                              <div className={styles.aiLoadingBox}>
+                                <span className={styles.aiLoadingSpinner}>✨</span>
+                                <span>A Ceci está preparando uma explicação com exemplos do seu dia a dia...</span>
+                              </div>
+                          )}
+
+                          {erroIA && (
+                              <p className={styles.aiErroText} role="alert">
+                                {erroIA}
+                              </p>
+                          )}
+                          <button
+                              type="button"
+                              className={styles.aiTriggerBtn}
+                              onClick={() => handlePedirExplicacaoIA(false)}
+                          >
+                            <span className={styles.aiTriggerIcon}>✨</span>
+                            <div className={styles.aiTriggerText}>
+                              <strong>Ceci, me explica de outro jeito?</strong>
+                              <small>Clique para ver uma analogia simples e prática do dia a dia</small>
+                            </div>
+                          </button>
+
+                          {explicacoesIA[indiceSeguro] && (
+                              <button
+                                  type="button"
+                                  className={styles.aiLinkVerNovamente}
+                                  onClick={() => setMostrarExplicacaoIA((prev) => ({ ...prev, [indiceSeguro]: true }))}
+                              >
+                                Ver a explicação que a Ceci preparou antes ✨
+                              </button>
+                          )}
+                        </div>
+                      </>
+                  )}
                 </div>
-              ) : (
-                <>
-                  <div
-                    className={styles.etapaConteudo}
-                    dangerouslySetInnerHTML={{ __html: etapa.conteudo }}
-                  />
+            )}
+          </div>
 
-                  <div className={styles.aiTriggerContainer}>
-                    {carregandoIA && (
-                      <div className={styles.aiLoadingBox}>
-                        <span className={styles.aiLoadingSpinner}>✨</span>
-                        <span>A Ceci está preparando uma explicação com exemplos do seu dia a dia...</span>
-                      </div>
-                    )}
-
-                    {erroIA && (
-                      <p className={styles.aiErroText} role="alert">
-                        {erroIA}
-                      </p>
-                    )}
-                    <button
-                      type="button"
-                      className={styles.aiTriggerBtn}
-                      onClick={() => handlePedirExplicacaoIA(false)}
-                    >
-                      <span className={styles.aiTriggerIcon}>✨</span>
-                      <div className={styles.aiTriggerText}>
-                        <strong>Ceci, me explica de outro jeito?</strong>
-                        <small>Clique para ver uma analogia simples e prática do dia a dia</small>
-                      </div>
-                    </button>
-
-                    {explicacoesIA[indiceSeguro] && (
-                      <button
-                        type="button"
-                        className={styles.aiLinkVerNovamente}
-                        onClick={() => setMostrarExplicacaoIA((prev) => ({ ...prev, [indiceSeguro]: true }))}
-                      >
-                        Ver a explicação que a Ceci preparou antes ✨
-                      </button>
-                    )}
+          {/* Coluna da Cecília (mascote / dica) */}
+          {!ehJogo && (
+              <aside className={styles.ceciliaCol}>
+                <div className={styles.ceciliaCard}>
+                  <div className={styles.mascoteSlot} aria-hidden>
+                    <img src="/mascote-ceci.png" alt="Mascote Ceci" />
                   </div>
-                </>
-              )}
-            </div>
+                  <p className={styles.dica}>
+                    {etapa.dica || DICAS_PADRAO[indiceSeguro % DICAS_PADRAO.length]}
+                  </p>
+                </div>
+
+                {/* dots de navegação protegidos contra pulo de etapas não concluídas */}
+                <div className={styles.dots}>
+                  {etapas.map((_, i) => {
+                    const desbloqueada = isEtapaDesbloqueada(i);
+                    const concluida = etapasCompletas.has(i);
+                    return (
+                        <button
+                            key={i}
+                            className={`${styles.dot} ${i === indiceSeguro ? styles.dotActive : ''} ${concluida ? styles.dotDone : ''}`}
+                            onClick={() => desbloqueada && setEtapaAtual(i)}
+                            disabled={!desbloqueada}
+                            style={{ cursor: desbloqueada ? 'pointer' : 'not-allowed', opacity: desbloqueada ? 1 : 0.4 }}
+                            aria-label={`Ir para etapa ${i + 1}`}
+                        />
+                    );
+                  })}
+                </div>
+              </aside>
           )}
-        </div>
+        </main>
 
-        {/* Coluna da Cecília (mascote / dica) */}
-        {!ehJogo && (
-          <aside className={styles.ceciliaCol}>
-            <div className={styles.ceciliaCard}>
-              <div className={styles.mascoteSlot} aria-hidden>
-                <img src="/mascote-ceci.png" alt="Mascote Ceci" />
-              </div>
-              <p className={styles.dica}>
-                {etapa.dica || DICAS_PADRAO[indiceSeguro % DICAS_PADRAO.length]}
-              </p>
-            </div>
+        {/* RODAPÉ COM NAVEGAÇÃO */}
+        <footer className={styles.footer}>
+          <ButtonOutline onClick={retroceder} disabled={isFirst}>
+            Anterior
+          </ButtonOutline>
 
-            {/* dots de navegação protegidos contra pulo de etapas não concluídas */}
-            <div className={styles.dots}>
-              {etapas.map((_, i) => {
-                const desbloqueada = isEtapaDesbloqueada(i);
-                const concluida = etapasCompletas.has(i);
-                return (
-                  <button
-                    key={i}
-                    className={`${styles.dot} ${i === indiceSeguro ? styles.dotActive : ''} ${concluida ? styles.dotDone : ''}`}
-                    onClick={() => desbloqueada && setEtapaAtual(i)}
-                    disabled={!desbloqueada}
-                    style={{ cursor: desbloqueada ? 'pointer' : 'not-allowed', opacity: desbloqueada ? 1 : 0.4 }}
-                    aria-label={`Ir para etapa ${i + 1}`}
-                  />
-                );
-              })}
-            </div>
-          </aside>
-        )}
-      </main>
-
-      {/* RODAPÉ COM NAVEGAÇÃO */}
-      <footer className={styles.footer}>
-        <ButtonOutline onClick={retroceder} disabled={isFirst}>
-          Anterior
-        </ButtonOutline>
-
-        {isLast ? (
-          <ButtonPrimary onClick={concluir} disabled={proximaBloqueada}>
-            {botaoConcluirLabel}
-          </ButtonPrimary>
-        ) : (
-          <ButtonPrimary onClick={avancar} disabled={proximaBloqueada}>
-            Próxima
-          </ButtonPrimary>
-        )}
-      </footer>
-    </div>
+          {isLast ? (
+              <ButtonPrimary onClick={concluir} disabled={proximaBloqueada}>
+                {botaoConcluirLabel}
+              </ButtonPrimary>
+          ) : (
+              <ButtonPrimary onClick={avancar} disabled={proximaBloqueada}>
+                Próxima
+              </ButtonPrimary>
+          )}
+        </footer>
+      </div>
   );
 }

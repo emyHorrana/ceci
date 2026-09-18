@@ -12,23 +12,32 @@ import { getUsuario } from '../services/usuarioService';
 
 export const UserContext = createContext();
 
-// Garante que o nome do usuário esteja normalizado e acessível em `user.nome`
+// Garante que o nome e o tipo de conta (aluno/admin) do usuário estejam
+// normalizados e acessíveis em `user.nome` / `user.tipo`. `tipo` sempre
+// vem da tabela `usuarios` (nunca do metadata de auth, que o próprio
+// usuário poderia editar) - ver services/usuarioService.js e
+// utils/roles.js pro uso desse campo no resto do app.
 async function enrichUserData(userData, fallbackNome = '') {
   if (!userData) return null;
   let nome = fallbackNome
-    || userData.user_metadata?.nome
-    || userData.user_metadata?.name
-    || userData.user_metadata?.full_name
-    || userData.nome;
+      || userData.user_metadata?.nome
+      || userData.user_metadata?.name
+      || userData.user_metadata?.full_name
+      || userData.nome;
 
-  if (!nome && userData.id) {
+  let tipo = userData.tipo;
+
+  if ((!nome || !tipo) && userData.id) {
     try {
       const perfil = await getUsuario(userData.id);
-      if (perfil?.nome) {
+      if (perfil?.nome && !nome) {
         nome = perfil.nome;
       }
+      if (perfil?.tipo) {
+        tipo = perfil.tipo;
+      }
     } catch (err) {
-      console.warn('Erro ao carregar nome do perfil:', err);
+      console.warn('Erro ao carregar perfil:', err);
     }
   }
 
@@ -37,6 +46,7 @@ async function enrichUserData(userData, fallbackNome = '') {
   return {
     ...userData,
     nome: finalNome,
+    tipo: tipo || 'aluno',
   };
 }
 
@@ -56,18 +66,18 @@ export function UserProvider({ children }) {
     let ativo = true;
 
     authService.getCurrentUser()
-      .then(async (userData) => {
-        if (ativo) {
-          const enriched = await enrichUserData(userData);
-          if (ativo) setUser(enriched);
-        }
-      })
-      .catch(() => {
-        if (ativo) setUser(null);
-      })
-      .finally(() => {
-        if (ativo) setInitializing(false);
-      });
+        .then(async (userData) => {
+          if (ativo) {
+            const enriched = await enrichUserData(userData);
+            if (ativo) setUser(enriched);
+          }
+        })
+        .catch(() => {
+          if (ativo) setUser(null);
+        })
+        .finally(() => {
+          if (ativo) setInitializing(false);
+        });
 
     const unsubscribe = authService.onAuthStateChange(async (userData) => {
       if (ativo) {
@@ -136,8 +146,8 @@ export function UserProvider({ children }) {
   };
 
   return (
-    <UserContext.Provider value={value}>
-      {children}
-    </UserContext.Provider>
+      <UserContext.Provider value={value}>
+        {children}
+      </UserContext.Provider>
   );
 }

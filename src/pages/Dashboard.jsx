@@ -103,7 +103,7 @@ export default function Dashboard() {
   // checando se existe sessão salva - depois disso, se não tem
   // usuário mesmo, manda pro login em vez de travar aqui.
   useEffect(() => {
-    if (!initializing && !user) navigate('/', { replace: true });
+    if (!initializing && !user) navigate('/login', { replace: true });
   }, [initializing, user, navigate]);
 
   if (initializing || !user) return (

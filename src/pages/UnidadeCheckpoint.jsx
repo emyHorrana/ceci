@@ -9,7 +9,7 @@
  * Rota: /unidade/:unidadeId/checkpoint
  */
 
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { UNIDADES } from '../data/unidades';
 import { MODULOS } from '../data/modulos';
@@ -32,7 +32,7 @@ const JOGOS_CHECKPOINT = {
 export default function UnidadeCheckpoint() {
   const { unidadeId } = useParams();
   const navigate = useNavigate();
-  const { user } = useContext(UserContext);
+  const { user, initializing } = useContext(UserContext);
 
   const [questaoAtual, setQuestaoAtual] = useState(0);
   const [respostas, setRespostas] = useState([]);
@@ -43,6 +43,21 @@ export default function UnidadeCheckpoint() {
 
   const unidade = UNIDADES.find((u) => u.id === unidadeId);
   const modulo = unidade ? MODULOS.find((m) => m.id === unidade.moduloId) : null;
+
+  // Sem esse guard, dava pra acessar o checkpoint sem login: ele rodava
+  // normalmente, mas `if (!user?.id) return` no envio do resultado fazia
+  // o veredito da Unidade nunca chegar ao AB-BKT, sem nenhum aviso.
+  useEffect(() => {
+    if (!initializing && !user) navigate('/login', { replace: true });
+  }, [initializing, user, navigate]);
+
+  if (initializing || !user) {
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100svh' }}>
+        Carregando...
+      </div>
+    );
+  }
 
   if (!unidade || !unidade.checkpoint) {
     return (

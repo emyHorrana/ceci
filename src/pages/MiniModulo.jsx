@@ -87,8 +87,16 @@ const DICAS_PADRAO = [
 export default function MiniModulo() {
   const { miniModuloId } = useParams();
   const navigate = useNavigate();
-  const { user } = useContext(UserContext);
+  const { user, initializing } = useContext(UserContext);
   const { updateProgress } = useContext(ProgressContext) || {};
+
+  // Sem esse guard, dava pra acessar a página sem login: ela rodava
+  // normalmente, mas `if (!user?.id) return` nos handlers abaixo fazia
+  // os sinais de resposta simplesmente não serem enviados pro AB-BKT,
+  // sem nenhum aviso - a trilha adaptativa "quebrava" silenciosamente.
+  useEffect(() => {
+    if (!initializing && !user) navigate('/login', { replace: true });
+  }, [initializing, user, navigate]);
 
   // Conta ADM: vê a trilha completa (todas as etapas/dificuldades,
   // sem bloqueio sequencial) pra revisão de conteúdo, mas nada do que
@@ -376,6 +384,14 @@ export default function MiniModulo() {
   };
 
   const Jogo = ehJogo && etapa?.jogo ? JOGOS[etapa.jogo] : null;
+
+  if (initializing || !user) {
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100svh' }}>
+        Carregando...
+      </div>
+    );
+  }
 
   return (
       <div className={styles.page}>

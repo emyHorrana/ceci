@@ -70,14 +70,17 @@
 // Mesma ideia, no array DOMINIO_PERGUNTAS: key, pergunta, opcaoSim,
 // opcaoNao. A resposta fica em onboarding.dominios[key].
 //
-// IMPORTANTE: por enquanto essa rota fica de acesso livre (sem exigir
-// login), de propósito, pra facilitar o desenvolvimento e os testes.
-// Quando estiver pronta pra valer, o ideal é ela só aparecer pra quem
-// ainda não passou pelo onboarding (ex: checando uma flag salva depois
-// do cadastro), e não ficar acessível repetidamente.
+// A rota "/boas-vindas" em si continua de acesso livre (sem exigir
+// login), de propósito, pra facilitar repetir o onboarding manualmente
+// em desenvolvimento e testes. Mas a entrada normal do app é a raiz "/"
+// (ver pages/Entrada.jsx), que só mostra esta tela pra quem ainda não
+// tem a flag onboarding.concluido - setada logo abaixo, ao chegar na
+// fase 'concluido'. Quem já concluiu (com ou sem ter criado a conta) cai
+// direto no Login a partir da próxima visita.
 
-import { useState } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { UserContext } from '../context/UserContext';
 import { GameMoment } from '../components/Game/GameMoment';
 import { EspacoParaAvancar } from '../components/Game/EspacoParaAvancar';
 import { PerguntaBinaria } from '../components/Game/PerguntaBinaria';
@@ -119,6 +122,7 @@ const DOMINIO_PERGUNTAS = [
 
 export default function BoasVindas() {
   const navigate = useNavigate();
+  const { user, initializing } = useContext(UserContext);
   // 'apresentacao' | 'tutorial-espaco' | 'pergunta-mouse' |
   // 'aula-mouse-intro' | 'aula-mouse-pratica' | 'formulario-dominios' |
   // 'aula-teclado-intro' | 'aula-teclado-pratica' | 'diagnostico' |
@@ -127,6 +131,16 @@ export default function BoasVindas() {
   const [stepIndex, setStepIndex] = useState(0);
   const [dominioIndex, setDominioIndex] = useState(0);
   const [onboarding, setOnboarding] = useLocalStorage('ceci_onboarding', {});
+
+  // Rota "/boas-vindas" continua acessível por URL direta (ver comentário
+  // no topo do arquivo), mas quem já está autenticado nunca deveria cair
+  // aqui de novo - manda direto pro Dashboard. Isso cobre o caso da
+  // Entrada.jsx (rota "/") não pegar: acesso direto a "/boas-vindas".
+  useEffect(() => {
+    if (!initializing && user) navigate('/dashboard', { replace: true });
+  }, [initializing, user, navigate]);
+
+  if (initializing || user) return null;
 
   const stepAtual = DIAGNOSTIC_STEPS[stepIndex];
   const ultimoStep = stepIndex === DIAGNOSTIC_STEPS.length - 1;
@@ -404,7 +418,17 @@ export default function BoasVindas() {
             (um caderninho, por exemplo) - assim você não corre o
             risco de esquecê-la.
           </p>
-          <ButtonPrimary size="large" onClick={() => setFase('concluido')}>
+          <ButtonPrimary
+            size="large"
+            onClick={() => {
+              // Marca o onboarding como concluído assim que a pessoa
+              // termina o diagnóstico, mesmo que ainda não tenha criado a
+              // conta - assim ela não vê o onboarding de novo se voltar
+              // depois (cai direto no Login). Ver pages/Entrada.jsx.
+              setOnboarding((atual) => ({ ...atual, concluido: true }));
+              setFase('concluido');
+            }}
+          >
             Entendi, continuar
           </ButtonPrimary>
         </div>

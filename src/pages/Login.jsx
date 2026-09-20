@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../context/UserContext';
 import { ButtonPrimary } from '../components/Buttons/ButtonPrimary';
 import { TextInput } from '../components/Forms/TextInput';
+import { flushOnboardingSignals } from '../services/onboardingSync';
 import { AuthLayout } from '../components/Layout/AuthLayout';
 import authStyles from '../components/Layout/AuthLayout.module.css';
 import styles from './Login.module.css';
@@ -23,7 +24,17 @@ export default function Login() {
         setError('Por favor, preencha todos os campos');
         return;
       }
-      await login(email, password);
+      const loggedInUser = await login(email, password);
+
+      // Se a pessoa passou por /boas-vindas de novo neste navegador (ex:
+      // limpou os dados) e tinha sinais do onboarding ainda não
+      // enviados, mas optou por Login em vez de Cadastro, esses sinais
+      // nunca chegavam ao AB-BKT - só Cadastro.jsx fazia esse flush.
+      // Fire-and-forget: não deve atrasar o redirecionamento.
+      flushOnboardingSignals(loggedInUser.id).catch((err) => {
+        console.error('Erro ao sincronizar sinais do onboarding:', err);
+      });
+
       navigate('/dashboard');
     } catch (err) {
       setError(err.message || 'Erro ao fazer login. Tente novamente.');

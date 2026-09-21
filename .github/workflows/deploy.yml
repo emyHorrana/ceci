@@ -1,68 +1,58 @@
-name: Deploy Vercel
+name: CI/CD - Pré-Deploy & Vercel Deploy
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   pull_request:
-    branches: [main]
-
-concurrency:
-  group: vercel-deploy-${{ github.ref }}
-  cancel-in-progress: true
+    branches:
+      - main
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
-    environment: ${{ github.event_name == 'push' && 'Production' || 'Preview' }}
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
     steps:
-      - name: Checkout
+      - name: 1. Checkout do código
         uses: actions/checkout@v4
 
-      - name: Setup Node
+      - name: 2. Configura Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'npm'
 
-      - name: Instalar Vercel CLI
-        run: npm install -g vercel@latest
+      - name: 3. Instala dependências
+        run: npm ci
 
-      # Em push para main => ambiente de produção
-      # Em pull request => ambiente de preview
-      - name: Puxar config do projeto Vercel
+      - name: 4. DevSecOps - Auditoria de Segurança
+        # continue-on-error evita que o deploy falhe enquanto as vulnerabilidades em dependências transitivas são corrigidas
+        run: npm audit --audit-level=high
+        continue-on-error: true
+
+      - name: 5. Validação de Build
+        run: npm run build
+
+      - name: 6. Validação dos Secrets da Vercel
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         run: |
-          if [ "${{ github.event_name }}" = "push" ]; then
-            vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
-          else
-            vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
-          fi
+          if [ -z "$VERCEL_TOKEN" ]; then echo "::error::VERCEL_TOKEN está vazio ou não cadastrado em Repository Secrets!"; exit 1; fi
+          if [ -z "$VERCEL_ORG_ID" ]; then echo "::error::VERCEL_ORG_ID está vazio ou não cadastrado em Repository Secrets!"; exit 1; fi
+          if [ -z "$VERCEL_PROJECT_ID" ]; then echo "::error::VERCEL_PROJECT_ID está vazio ou não cadastrado em Repository Secrets!"; exit 1; fi
+          echo "Todos os Secrets da Vercel foram detectados!"
 
-      - name: Build
-        run: |
-          if [ "${{ github.event_name }}" = "push" ]; then
-            vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
-          else
-            vercel build --token=${{ secrets.VERCEL_TOKEN }}
-          fi
+      - name: 7. Baixa metadados da Vercel
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: npx vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
 
-      - name: Deploy
-        id: deploy
-        run: |
-          if [ "${{ github.event_name }}" = "push" ]; then
-            url=$(vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }})
-          else
-            url=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})
-          fi
-          echo "url=$url" >> "$GITHUB_OUTPUT"
-          echo "###Deploy: $url" >> "$GITHUB_STEP_SUMMARY"
+      - name: 8. Compila artefatos de deploy com a Vercel CLI
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: npx vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
 
-      - name: Comentar link no PR
-        if: github.event_name == 'pull_request'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: `Preview deployado: ${{ steps.deploy.outputs.url }}`
-            })
+      - name: 9. Executa Deploy de Produção na Vercel
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: npx vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}

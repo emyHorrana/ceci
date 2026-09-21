@@ -188,67 +188,42 @@
   pointer-events: none;
 }
 
-/* --- PALETA DA MASCOTE CECÍLIA (Rosa / Roxo / Lavanda) --- */
-
-/* 1. Rosa Cecília Vibrante */
-.nodeCeciRosa {
-  background: linear-gradient(180deg, #FBCFE8 0%, #F472B6 50%, #DB2777 100%);
-  box-shadow: 0 7px 0 #9D174D, 0 10px 20px rgba(219, 39, 119, 0.35);
-  color: white;
+/* Disponível / ainda não feito - neutro/acinzentado de propósito
+   ("sem cor"), pra não competir com o dourado de ".nodeConcluido"
+   abaixo. Diferente de ".nodeBloqueado" (mais escuro, cursor
+   not-allowed) - aqui o nó está acessível, só ainda não foi feito. */
+.nodeDisponivel {
+  background: linear-gradient(180deg, #F5F1E6 0%, #E7DFCC 100%);
+  box-shadow: 0 7px 0 #C7B896, 0 10px 18px rgba(180, 160, 120, 0.25);
+  color: #7A6F58;
 }
-.nodeCeciRosa:hover {
+.nodeDisponivel:hover {
   transform: translateY(-2px);
-  box-shadow: 0 9px 0 #9D174D, 0 14px 24px rgba(219, 39, 119, 0.5);
+  box-shadow: 0 9px 0 #C7B896, 0 14px 22px rgba(180, 160, 120, 0.35);
 }
-.nodeCeciRosa:active {
+.nodeDisponivel:active {
   transform: translateY(5px);
-  box-shadow: 0 2px 0 #9D174D;
+  box-shadow: 0 2px 0 #C7B896;
 }
 
-/* 2. Roxo Cecília Aveludado */
-.nodeCeciRoxo {
-  background: linear-gradient(180deg, #DDD6FE 0%, #A78BFA 50%, #7C3AED 100%);
-  box-shadow: 0 7px 0 #5B21B6, 0 10px 20px rgba(124, 58, 237, 0.35);
-  color: white;
-}
-.nodeCeciRoxo:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 9px 0 #5B21B6, 0 14px 24px rgba(124, 58, 237, 0.5);
-}
-.nodeCeciRoxo:active {
-  transform: translateY(5px);
-  box-shadow: 0 2px 0 #5B21B6;
-}
-
-/* 3. Lavanda Radiante */
-.nodeCeciLavanda {
-  background: linear-gradient(180deg, #EDE9FE 0%, #C4B5FD 50%, #8B5CF6 100%);
-  box-shadow: 0 7px 0 #6D28D9, 0 10px 20px rgba(139, 92, 246, 0.35);
-  color: white;
-}
-.nodeCeciLavanda:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 9px 0 #6D28D9, 0 14px 24px rgba(139, 92, 246, 0.5);
-}
-.nodeCeciLavanda:active {
-  transform: translateY(5px);
-  box-shadow: 0 2px 0 #6D28D9;
-}
-
-/* 4. Nível Concluído / Dominado (Lavanda / Roxo Real com Estrela) */
+/* 4. Feito (mini-módulo já praticado, ou Unidade dominada) - dourado
+   vivo, a MESMA cor de destaque que os botões primários do app já
+   usam (--gradient-btn-primary) - antes essa classe usava roxo/lavanda,
+   que não lê como "sucesso" de forma óbvia e ainda competia visualmente
+   com o vermelho do nó ativo (ver .nodeAtivo). */
 .nodeConcluido {
-  background: linear-gradient(180deg, #F5D0FE 0%, #C084FC 50%, #9333EA 100%);
-  box-shadow: 0 7px 0 #6B21A8, 0 12px 22px rgba(147, 51, 234, 0.45);
-  color: #2B2140;
+  background: var(--gradient-btn-primary);
+  box-shadow: 0 7px 0 var(--color-yellow-deep), 0 12px 22px rgba(255, 202, 26, 0.45);
+  color: #5C4400;
 }
 .nodeConcluido:hover {
   transform: translateY(-2px);
-  box-shadow: 0 9px 0 #6B21A8, 0 16px 26px rgba(147, 51, 234, 0.6);
+  box-shadow: 0 9px 0 var(--color-yellow-deep), 0 16px 26px rgba(255, 202, 26, 0.6);
   filter: brightness(1.05);
 }
 .nodeConcluido:active {
   transform: translateY(5px);
-  box-shadow: 0 2px 0 #6B21A8;
+  box-shadow: 0 2px 0 var(--color-yellow-deep);
 }
 
 /* 5. Nível Ativo / Recomendado Agora (Rosa Choque / Magenta Cecília com Pulso) */
@@ -268,14 +243,7 @@
   box-shadow: 0 2px 0 #9F1239;
 }
 
-/* 6. Nível em Reforço / Prática */
-.nodePendente {
-  background: linear-gradient(180deg, #FFD1DC 0%, #FF80AB 50%, #C51162 100%);
-  box-shadow: 0 7px 0 #880E4F, 0 10px 18px rgba(197, 17, 98, 0.4);
-  color: white;
-}
-
-/* 6.5. Bloqueado (pré-requisito ainda não dominado) - achatado, sem
+/* 6. Bloqueado (pré-requisito ainda não dominado) - achatado, sem
    brilho, cursor de "não permitido", pra ficar visualmente óbvio que
    esse nó não está disponível ainda, sem escondê-lo da trilha. */
 .nodeBloqueado {
@@ -292,12 +260,6 @@
 .nodeBloqueado:active {
   transform: none;
   box-shadow: 0 4px 0 #B8ABD1, 0 6px 10px rgba(139, 107, 224, 0.15);
-}
-
-/* 7. Checkpoint / Desafio Final (Troféu com Gradiente Cecília Rosa ➔ Roxo) */
-.nodeCheckpoint {
-  background: linear-gradient(135deg, #FDE8F1 0%, #F48AB8 50%, #AA8BF5 100%);
-  box-shadow: 0 8px 0 #581C87, 0 14px 28px rgba(170, 139, 245, 0.45);
 }
 
 .nodeCheckpointButton {

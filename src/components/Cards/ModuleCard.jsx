@@ -13,6 +13,10 @@
 //                    assume que é por causa do módulo anterior)
 //   onClick        - função chamada ao clicar no card
 //   onContinueClick - função chamada ao clicar em "Continuar"
+//   note           - aviso opcional específico deste módulo, ex: uma ou
+//                     mais Unidades já confirmadas pelo diagnóstico do
+//                     onboarding (ver pages/Modulos.jsx). Formato:
+//                     { texto, ctaLabel, onCtaClick }
 
 import styles from './Cards.module.css';
 
@@ -25,6 +29,7 @@ export function ModuleCard({
   lockedMessage = 'Complete o módulo anterior para desbloquear',
   onClick,
   onContinueClick,
+  note,
 }) {
   // Classe de status para estilização condicional via CSS module
   const statusClass = styles[`status-${status}`];
@@ -46,6 +51,24 @@ export function ModuleCard({
       </div>
 
       <div className={styles.moduleBody}>
+        {/* Aviso específico deste módulo (ex: Unidade já confirmada no
+            onboarding) - fica dentro do card certo, não solto na
+            página, pra não parecer que vale pra todos os módulos. */}
+        {note && (
+          <div className={styles.moduleNote} onClick={(e) => e.stopPropagation()}>
+            <p className={styles.moduleNoteTexto}>{note.texto}</p>
+            {note.ctaLabel && (
+              <button
+                type="button"
+                className={styles.moduleNoteBtn}
+                onClick={note.onCtaClick}
+              >
+                {note.ctaLabel}
+              </button>
+            )}
+          </div>
+        )}
+
         {/* Barra de progresso e tags de aulas (visível apenas se desbloqueado) */}
         {status !== 'locked' && (
           <>

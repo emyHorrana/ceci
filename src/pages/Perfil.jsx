@@ -142,6 +142,7 @@ export default function Perfil() {
           titulo: UNIDADES.find((u) => u.id === unidadeId)?.titulo || unidadeId,
           dominio,
           nivel: dominioData.classificacaoPorUnidade?.[unidadeId] || '—',
+          recomendacao: dominioData.recomendacaoPorUnidade?.[unidadeId],
         }))
         .sort((a, b) => ORDEM_UNIDADES.indexOf(a.id) - ORDEM_UNIDADES.indexOf(b.id))
     : [];
@@ -226,19 +227,16 @@ export default function Perfil() {
         {/* CARDS DE ESTATÍSTICA */}
         <div className={styles.statsGrid}>
           <div className={`${styles.statCard} ${styles.statStreak}`}>
-            <span className={styles.statIcon} aria-hidden="true">🔥</span>
             <span className={styles.statValue}>{streakCount}</span>
             <span className={styles.statLabel}>
               {streakCount === 1 ? 'dia seguido' : 'dias seguidos'}
             </span>
           </div>
           <div className={`${styles.statCard} ${styles.statXp}`}>
-            <span className={styles.statIcon} aria-hidden="true">⭐</span>
             <span className={styles.statValue}>{progress?.totalPoints || 0}</span>
             <span className={styles.statLabel}>pontos</span>
           </div>
           <div className={`${styles.statCard} ${styles.statCoin}`}>
-            <span className={styles.statIcon} aria-hidden="true">🏆</span>
             <span className={styles.statValue}>{totalConquistas}</span>
             <span className={styles.statLabel}>
               {totalConquistas === 1 ? 'conquista' : 'conquistas'}
@@ -250,7 +248,6 @@ export default function Perfil() {
         <div className={styles.dominioSecao}>
           <div className={styles.sectionHeader}>
             <h2>Seu domínio por assunto</h2>
-            <span className={styles.sectionHint}></span>
           </div>
 
           {carregandoDominio ? (
@@ -275,6 +272,9 @@ export default function Perfil() {
                       style={{ width: `${Math.round((u.dominio ?? 0) * 100)}%` }}
                     />
                   </div>
+                  {u.recomendacao && (
+                    <p className={styles.dominioRecomendacao}>{u.recomendacao}</p>
+                  )}
                 </div>
               ))}
             </div>

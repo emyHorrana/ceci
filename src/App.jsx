@@ -3,6 +3,7 @@
 
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
+import Entrada    from './pages/Entrada';
 import Login      from './pages/Login';
 import Cadastro   from './pages/Cadastro';
 import Dashboard  from './pages/Dashboard';
@@ -34,11 +35,21 @@ function App() {
               <TextSizeControl />
 
               <Routes>
-                {/* Página inicial: tela de login */}
-                <Route path="/"          element={<Login />} />
+                {/* Página inicial: decide entre boas-vindas (quem nunca
+                    passou pelo onboarding), login (quem já passou mas
+                    não tem sessão) ou dashboard (sessão ativa). Ver
+                    pages/Entrada.jsx. */}
+                <Route path="/"          element={<Entrada />} />
 
-                {/* Boas-vindas: apresentação da Ceci + diagnóstico inicial */}
-                {/* Acesso livre por enquanto, pra facilitar o desenvolvimento */}
+                {/* Login: acessível diretamente também (ex: link "Já tem
+                    conta?" no fim do onboarding, ou favoritos antigos) */}
+                <Route path="/login"     element={<Login />} />
+
+                {/* Boas-vindas: apresentação da Ceci + diagnóstico inicial.
+                    Acesso direto continua livre (ex: repetir o onboarding
+                    de propósito), mas a entrada normal do app passa pela
+                    raiz "/" acima, que só mostra essa tela pra quem ainda
+                    não concluiu o onboarding. */}
                 <Route path="/boas-vindas" element={<BoasVindas />} />
 
                 {/* Cadastro: criação de nova conta */}

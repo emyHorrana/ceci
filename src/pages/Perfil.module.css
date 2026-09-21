@@ -28,7 +28,12 @@
 
 .heroBanner {
   height: 64px;
-  background: var(--gradient-btn-primary);
+  /* --gradient-btn-primary é o amarelo vivo/saturado reservado pra
+     botões (ver variables.css) - usado aqui numa faixa decorativa
+     grande, destoava do amarelo claro/bege que o resto do app usa
+     (sidebar, welcomeCard do Dashboard). --gradient-hero é o mesmo
+     tom pálido usado nesses outros lugares. */
+  background: var(--gradient-hero);
 }
 
 .heroBody {
@@ -46,7 +51,10 @@
   background: var(--color-surface);
   padding: 4px;
   margin-top: -40px;
-  box-shadow: var(--shadow-ceci);
+  /* --shadow-ceci é rosa/roxo, reservado só pra interação direta com a
+     mascote (ver comentário em variables.css: "Nunca no restante do
+     site") - o avatar aqui é da PESSOA, não da Cecília. */
+  box-shadow: var(--shadow-md);
 }
 
 .avatarSlot {
@@ -141,11 +149,6 @@
   box-shadow: var(--shadow-md);
 }
 
-.statIcon {
-  font-size: 1.5rem;
-  line-height: 1;
-}
-
 .statValue {
   font-family: var(--font-display);
   font-size: 1.85rem;
@@ -188,12 +191,6 @@
   font-weight: 800;
   color: var(--color-text-primary);
   margin: 0;
-}
-
-.sectionHint {
-  font-size: 0.75rem;
-  color: var(--color-text-muted);
-  font-style: italic;
 }
 
 .estadoVazio {
@@ -265,6 +262,12 @@
   background: var(--gradient-btn-primary);
   border-radius: var(--radius-pill);
   transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dominioRecomendacao {
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+  margin: 0;
 }
 
 /* Últimas conquistas */

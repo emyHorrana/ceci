@@ -18,7 +18,17 @@
 //      outra coisa. A ideia: sem o básico de mouse, a pessoa não
 //      conseguiria se orientar sozinha nem pra preencher o resto do
 //      onboarding, então essa aula não pode vir depois do cadastro.
-//    - "já uso" -> pula direto pro próximo passo.
+//    - "já uso" -> desafio rápido de verificação (fase
+//      verificacao-mouse, 3 itens mais difíceis que a aula) em vez de
+//      aceitar a palavra da pessoa sozinha. Cada resposta já calcula o
+//      score real do BKT na hora (ver registrarSinalAdaptativo/
+//      simularQuestao mais abaixo) - "confirmado" significa que o
+//      domínio calculado ao vivo já cruzou o mesmo limiar (0.5) que
+//      libera qualquer Unidade na trilha de verdade, não uma contagem
+//      de acertos à parte. Confirmou? segue pro próximo passo, já
+//      pulando Fundamentos do mouse. Não confirmou? cai na aula básica
+//      mesmo, igual quem respondeu "não sei" - só a palavra sozinha não
+//      bastava.
 //    Os dois caminhos convergem no formulário de domínios (passo 4).
 // 4) Formulário de domínios: mais perguntas de bifurcação (mesmo
 //    componente PerguntaBinaria), sobre teclado e internet - pelo mesmo
@@ -31,7 +41,9 @@
 //      termina - mesma lógica da aula de mouse: sem o básico de
 //      teclado, a pessoa não conseguiria preencher o diagnóstico
 //      (digitar nome) nem o cadastro que vem depois.
-//    - "já uso" -> pula direto pro diagnóstico.
+//    - "já uso" -> desafio de verificação (fase verificacao-teclado),
+//      mesma lógica e mesmo critério da verificação de mouse acima.
+//      Confirmou? segue pro diagnóstico. Não confirmou? aula básica.
 // 5) Diagnóstico inicial: uma sequência de pequenas interações discretas
 //    (hoje: digitar o nome). Cada uma parece só uma etapa normal de
 //    cadastro, mas na real também dá sinais de familiaridade com
@@ -39,14 +51,21 @@
 //
 // SINAIS PRO ALGORITMO ADAPTATIVO (AB-BKT)
 // Ainda não existe conta nesse ponto (ver nota do passo 7), então não dá
-// pra chamar o backend aqui. Os resultados dos GameMoment que já rodam
-// no onboarding (clique do mouse, "digite oi", digitar o nome) ficam
-// bufferizados em onboarding.sinaisAdaptativos (ver
-// registrarSinalAdaptativo abaixo) e só são enviados pro algoritmo
-// depois que a conta é criada, em Cadastro.jsx (via
-// services/onboardingSync.js) - assim o L inicial de "Fundamentos do
-// mouse"/"Fundamentos do teclado" já nasce baseado em comportamento
-// real, em vez do padrão fixo.
+// pra PERSISTIR nada no Supabase aqui - mas o CÁLCULO em si (a mesma
+// fórmula de sempre: Indicadores -> CalculadoraPesos ->
+// ParametrosAdaptativos -> RastreamentoBayesiano -> Classificador) já
+// roda ao vivo, via BKTAdaptativo.calcular()/rota /api/licao/simular,
+// que não precisa de userId nem toca em `perfis_aluno`. Cada resultado
+// de GameMoment (clique do mouse, "digite oi", digitar o nome, os itens
+// de verificação) é: 1) bufferizado em onboarding.sinaisAdaptativos (ver
+// registrarSinalAdaptativo abaixo), pra ser reenviado de verdade
+// (responderQuestao, COM persistência) depois que a conta é criada, em
+// Cadastro.jsx/Login.jsx (via services/onboardingSync.js) - como as
+// fórmulas são determinísticas, esse reenvio reproduz exatamente os
+// mesmos valores já vistos aqui; e 2) simulado na hora (simularQuestao),
+// só pra decidir a experiência (e no caso da verificação, se a
+// autodeclaração se confirma) com o score real, sem teto artificial e
+// sem confiar cegamente numa resposta "sim" isolada.
 // 6) Mini-aula de orientações de conta: antes de ir pro cadastro de
 //    verdade, avisos rápidos e leves (pode usar e-mail de alguém de
 //    confiança, anotar a senha em lugar seguro) - pensados pra quem
@@ -70,14 +89,17 @@
 // Mesma ideia, no array DOMINIO_PERGUNTAS: key, pergunta, opcaoSim,
 // opcaoNao. A resposta fica em onboarding.dominios[key].
 //
-// IMPORTANTE: por enquanto essa rota fica de acesso livre (sem exigir
-// login), de propósito, pra facilitar o desenvolvimento e os testes.
-// Quando estiver pronta pra valer, o ideal é ela só aparecer pra quem
-// ainda não passou pelo onboarding (ex: checando uma flag salva depois
-// do cadastro), e não ficar acessível repetidamente.
+// A rota "/boas-vindas" em si continua de acesso livre (sem exigir
+// login), de propósito, pra facilitar repetir o onboarding manualmente
+// em desenvolvimento e testes. Mas a entrada normal do app é a raiz "/"
+// (ver pages/Entrada.jsx), que só mostra esta tela pra quem ainda não
+// tem a flag onboarding.concluido - setada logo abaixo, ao chegar na
+// fase 'concluido'. Quem já concluiu (com ou sem ter criado a conta) cai
+// direto no Login a partir da próxima visita.
 
-import { useState } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { UserContext } from '../context/UserContext';
 import { GameMoment } from '../components/Game/GameMoment';
 import { EspacoParaAvancar } from '../components/Game/EspacoParaAvancar';
 import { PerguntaBinaria } from '../components/Game/PerguntaBinaria';
@@ -87,6 +109,7 @@ import { DigitarTextoGame } from '../components/Game/games/DigitarTextoGame';
 import { ClicarAlvoGame } from '../components/Game/games/ClicarAlvoGame';
 import { ButtonPrimary } from '../components/Buttons/ButtonPrimary';
 import { useLocalStorage } from '../hooks/useLocalStorage';
+import { simularQuestao } from '../services/algorithmService';
 import { getTempoIdealMs } from '../utils/jogoTempoIdeal';
 import styles from './BoasVindas.module.css';
 
@@ -117,16 +140,126 @@ const DOMINIO_PERGUNTAS = [
   },
 ];
 
+// Quem responde "já uso" pra mouse/teclado não deveria ser jogado direto
+// pra "Cliques com timing"/"Escrever e confirmar" só por ter dito isso -
+// mas também não faz sentido forçar a aula básica de novo se a pessoa
+// realmente já sabe. Esses 3 itens por domínio são um desafio rápido
+// (mais difícil que a aula de "não sei") pra confirmar a palavra da
+// pessoa com comportamento real, antes de decidir pular a aula ou não
+// (ver handleVerificacaoMouseComplete/handleVerificacaoTecladoComplete).
+const VERIFICACAO_MOUSE_STEPS = [
+  {
+    key: 'clique-alvo',
+    instructions: 'Clique no ícone "Meus Documentos".',
+    render: (reportResult) => (
+      <ClicarAlvoGame
+        reportResult={reportResult}
+        alvos={[
+          { id: 'lixeira', label: '🗑️ Lixeira', correto: false },
+          { id: 'documentos', label: '📁 Meus Documentos', correto: true },
+          { id: 'config', label: '⚙️ Configurações', correto: false },
+        ]}
+      />
+    ),
+  },
+  {
+    key: 'clique-direito',
+    instructions: 'Clique com o botão DIREITO do mouse no ícone.',
+    render: (reportResult) => (
+      <ClicarAlvoGame
+        reportResult={reportResult}
+        tipoClique="direito"
+        alvos={[{ id: 'arquivo', label: '📄 Documento.docx', correto: true }]}
+      />
+    ),
+  },
+  {
+    key: 'duplo-clique',
+    instructions: 'Dê um clique DUPLO no ícone para abrir.',
+    render: (reportResult) => (
+      <ClicarAlvoGame
+        reportResult={reportResult}
+        duploClique={true}
+        alvos={[{ id: 'pasta', label: '📁 Fotos', correto: true }]}
+      />
+    ),
+  },
+];
+
+const VERIFICACAO_TECLADO_STEPS = [
+  {
+    key: 'frase-espaco',
+    instructions: 'Digite "bom dia" (com espaço entre as palavras) e confirme.',
+    render: (reportResult) => (
+      <DigitarTextoGame
+        reportResult={reportResult}
+        label='Digite "bom dia"'
+        placeholder="Digite aqui"
+        validar={(valor) => valor.toLowerCase() === 'bom dia'}
+        mensagemErro='Confere se digitou "bom dia" com espaço entre as palavras.'
+      />
+    ),
+  },
+  {
+    key: 'maiuscula',
+    instructions: 'Digite "Ceci", com o C maiúsculo, e confirme.',
+    render: (reportResult) => (
+      <DigitarTextoGame
+        reportResult={reportResult}
+        label='Digite "Ceci" (com C maiúsculo)'
+        placeholder="Digite aqui"
+        validar={(valor) => valor === 'Ceci'}
+        mensagemErro="Confere se o C está maiúsculo."
+      />
+    ),
+  },
+  {
+    key: 'numero',
+    instructions: 'Digite o número 2024 e confirme.',
+    render: (reportResult) => (
+      <DigitarTextoGame
+        reportResult={reportResult}
+        label="Digite o número 2024"
+        placeholder="Digite aqui"
+        validar={(valor) => valor === '2024'}
+        mensagemErro='Confere se digitou "2024" certinho.'
+      />
+    ),
+  },
+];
+
 export default function BoasVindas() {
   const navigate = useNavigate();
+  const { user, initializing } = useContext(UserContext);
   // 'apresentacao' | 'tutorial-espaco' | 'pergunta-mouse' |
-  // 'aula-mouse-intro' | 'aula-mouse-pratica' | 'formulario-dominios' |
-  // 'aula-teclado-intro' | 'aula-teclado-pratica' | 'diagnostico' |
-  // 'mini-aula-seguranca' | 'concluido'
+  // 'aula-mouse-intro' | 'aula-mouse-pratica' | 'verificacao-mouse' |
+  // 'formulario-dominios' | 'aula-teclado-intro' | 'aula-teclado-pratica' |
+  // 'verificacao-teclado' | 'diagnostico' | 'mini-aula-seguranca' |
+  // 'concluido'
   const [fase, setFase] = useState('apresentacao');
   const [stepIndex, setStepIndex] = useState(0);
   const [dominioIndex, setDominioIndex] = useState(0);
+  const [verificacaoIndex, setVerificacaoIndex] = useState(0);
   const [onboarding, setOnboarding] = useLocalStorage('ceci_onboarding', {});
+
+  // Score adaptativo calculado AO VIVO durante o onboarding, mesma
+  // fórmula de sempre (BKTAdaptativo.calcular, via /api/licao/simular) -
+  // sem persistir nada ainda (não existe conta), sem teto artificial.
+  // Mouse (U1.1) e teclado (U2.1) são acompanhados separadamente porque
+  // são módulos independentes; cada um começa do zero (L0 padrão) na
+  // primeira resposta daquele domínio, igual uma Unidade nunca tentada.
+  const [scoreMouse, setScoreMouse] = useState({ dominio: null, questoes: 0 });
+  const [scoreTeclado, setScoreTeclado] = useState({ dominio: null, questoes: 0 });
+
+  // Rota "/boas-vindas" continua acessível por URL direta (ver comentário
+  // no topo do arquivo), mas quem já está autenticado nunca deveria cair
+  // aqui de novo - manda direto pro Dashboard. Isso cobre o caso da
+  // Entrada.jsx (rota "/") não pegar: acesso direto a "/boas-vindas".
+  useEffect(() => {
+    if (!initializing && user) navigate('/dashboard', { replace: true });
+  }, [initializing, user, navigate]);
+
+  if (initializing || user) return null;
 
   const stepAtual = DIAGNOSTIC_STEPS[stepIndex];
   const ultimoStep = stepIndex === DIAGNOSTIC_STEPS.length - 1;
@@ -134,10 +267,16 @@ export default function BoasVindas() {
   const perguntaDominioAtual = DOMINIO_PERGUNTAS[dominioIndex];
   const ultimaPerguntaDominio = dominioIndex === DOMINIO_PERGUNTAS.length - 1;
 
-  // Acumula um sinal comportamental no buffer que vai ser enviado pro
-  // algoritmo adaptativo assim que a conta existir (ver nota "SINAIS PRO
-  // ALGORITMO ADAPTATIVO" no topo do arquivo).
-  const registrarSinalAdaptativo = ({ etapaId, moduleId, resultado, tempoIdeal }) => {
+  // Acumula um sinal comportamental no buffer que vai ser enviado de
+  // verdade (responderQuestao) assim que a conta existir - ver nota
+  // "SINAIS PRO ALGORITMO ADAPTATIVO" no topo do arquivo - E, ao mesmo
+  // tempo, já calcula o score real AGORA (sem persistir, via
+  // simularQuestao/api/licao/simular), encadeando o domínio/questões
+  // desse mesmo domínio (mouse ou teclado) pra próxima chamada. Como as
+  // fórmulas são determinísticas, o flush pós-cadastro (onboardingSync)
+  // reproduz exatamente os mesmos valores - não precisa de teto nem de
+  // regra própria em lugar nenhum: é o BKT de verdade desde o início.
+  const registrarSinalAdaptativo = async ({ etapaId, moduleId, resultado, tempoIdeal }) => {
     setOnboarding((atual) => ({
       ...atual,
       sinaisAdaptativos: [
@@ -151,15 +290,37 @@ export default function BoasVindas() {
         },
       ],
     }));
+
+    const ehMouse = moduleId === 'U1.1';
+    const scoreAtual = ehMouse ? scoreMouse : scoreTeclado;
+    const setScore = ehMouse ? setScoreMouse : setScoreTeclado;
+
+    try {
+      const resposta = await simularQuestao({
+        correto: resultado.success,
+        sinais: resultado.sinais,
+        tempoIdeal,
+        tentativas: (resultado.attempts ?? 0) + 1,
+        tentativasAposErro: resultado.attempts ?? 0,
+        dominioAnterior: scoreAtual.dominio,
+        questoesAnteriores: scoreAtual.questoes,
+        etapaId,
+      });
+      setScore({ dominio: resposta.dominio, questoes: scoreAtual.questoes + 1 });
+      return resposta;
+    } catch (err) {
+      console.error('Erro ao calcular score adaptativo no onboarding:', err);
+      return null;
+    }
   };
 
-  const handleStepComplete = (resultado) => {
+  const handleStepComplete = async (resultado) => {
     // Guarda o resultado desse passo, mantendo os anteriores (formato
     // usado hoje só pra pré-preencher o nome em Cadastro.jsx).
     setOnboarding((atual) => ({ ...atual, [stepAtual.key]: resultado }));
 
     // "Digitar o nome" também é sinal de familiaridade com teclado.
-    registrarSinalAdaptativo({
+    await registrarSinalAdaptativo({
       etapaId: `boas-vindas#diagnostico-${stepAtual.key}`,
       moduleId: 'U2.1',
       resultado,
@@ -174,11 +335,12 @@ export default function BoasVindas() {
   };
 
   // "não sei usar mouse" -> aula básica embutida aqui mesmo, antes de
-  // qualquer outro passo (ver nota no topo do arquivo). "já uso" pula
-  // direto pro formulário de domínios - os dois caminhos convergem ali.
+  // qualquer outro passo (ver nota no topo do arquivo). "já uso" vai pro
+  // desafio de verificação em vez de aceitar a palavra sozinha (ver
+  // VERIFICACAO_MOUSE_STEPS acima).
   const handleRespostaMouse = (resposta) => {
     setOnboarding((atual) => ({ ...atual, familiaridadeMouse: resposta }));
-    setFase(resposta === 'nao' ? 'aula-mouse-intro' : 'formulario-dominios');
+    setFase(resposta === 'nao' ? 'aula-mouse-intro' : 'verificacao-mouse');
   };
 
   const handleRespostaDominio = (resposta) => {
@@ -191,10 +353,41 @@ export default function BoasVindas() {
 
     if (ultimaPerguntaDominio) {
       // "não sei usar teclado" -> aula básica embutida aqui mesmo,
-      // igual já acontece com o mouse (ver nota no topo do arquivo).
-      setFase(dominiosAtualizados.teclado === 'nao' ? 'aula-teclado-intro' : 'diagnostico');
+      // igual já acontece com o mouse. "já uso" vai pro desafio de
+      // verificação (ver VERIFICACAO_TECLADO_STEPS acima).
+      setFase(dominiosAtualizados.teclado === 'nao' ? 'aula-teclado-intro' : 'verificacao-teclado');
     } else {
       setDominioIndex((i) => i + 1);
+    }
+  };
+
+  // Processa 1 item do desafio de verificação (mouse OU teclado) e, no
+  // último item, decide se confirma a autodeclaração (segue em frente,
+  // pulando a aula básica) ou não (cai na aula básica, igual quem
+  // respondeu "não sei" - a pessoa só disse que sabia, mas não mostrou).
+  // A decisão usa o MESMO limiar (0.5) que libera qualquer Unidade na
+  // trilha de verdade - "confirmado" aqui significa literalmente "já
+  // teria dominado Fundamentos", não uma contagem de acertos à parte.
+  const handleVerificacaoComplete = async (dominio, steps, moduleId, resultado) => {
+    const resposta = await registrarSinalAdaptativo({
+      etapaId: `boas-vindas-verificacao#${dominio}-${steps[verificacaoIndex].key}`,
+      moduleId,
+      resultado,
+      tempoIdeal: getTempoIdealMs(dominio === 'mouse' ? 'clicar' : 'digitar'),
+    });
+
+    const ultimoItem = verificacaoIndex === steps.length - 1;
+    if (!ultimoItem) {
+      setVerificacaoIndex((i) => i + 1);
+      return;
+    }
+
+    setVerificacaoIndex(0);
+    const confirmado = (resposta?.dominio ?? 0) >= (resposta?.limiar ?? 0.5);
+    if (dominio === 'mouse') {
+      setFase(confirmado ? 'formulario-dominios' : 'aula-mouse-intro');
+    } else {
+      setFase(confirmado ? 'diagnostico' : 'aula-teclado-intro');
     }
   };
 
@@ -251,6 +444,24 @@ export default function BoasVindas() {
         </div>
       )}
 
+      {fase === 'verificacao-mouse' && (
+        <div className={styles.diagnosticoWrapper}>
+          {/* key=item.key remonta o GameMoment a cada item novo, zerando
+              tentativas/status automaticamente (mesmo padrão da fase
+              'diagnostico' mais abaixo) */}
+          <GameMoment
+            key={VERIFICACAO_MOUSE_STEPS[verificacaoIndex].key}
+            title="Vamos conferir!"
+            instructions={VERIFICACAO_MOUSE_STEPS[verificacaoIndex].instructions}
+            onComplete={(resultado) =>
+              handleVerificacaoComplete('mouse', VERIFICACAO_MOUSE_STEPS, 'U1.1', resultado)
+            }
+          >
+            {({ reportResult }) => VERIFICACAO_MOUSE_STEPS[verificacaoIndex].render(reportResult)}
+          </GameMoment>
+        </div>
+      )}
+
       {fase === 'aula-mouse-intro' && (
         <div className={styles.card}>
           <img
@@ -280,8 +491,8 @@ export default function BoasVindas() {
           <GameMoment
             title="Agora é sua vez!"
             instructions="Clique no botão abaixo com o botão esquerdo do mouse."
-            onComplete={(resultado) => {
-              registrarSinalAdaptativo({
+            onComplete={async (resultado) => {
+              await registrarSinalAdaptativo({
                 etapaId: 'boas-vindas#pratica-mouse',
                 moduleId: 'U1.1',
                 resultado,
@@ -318,6 +529,21 @@ export default function BoasVindas() {
         </div>
       )}
 
+      {fase === 'verificacao-teclado' && (
+        <div className={styles.diagnosticoWrapper}>
+          <GameMoment
+            key={VERIFICACAO_TECLADO_STEPS[verificacaoIndex].key}
+            title="Vamos conferir!"
+            instructions={VERIFICACAO_TECLADO_STEPS[verificacaoIndex].instructions}
+            onComplete={(resultado) =>
+              handleVerificacaoComplete('teclado', VERIFICACAO_TECLADO_STEPS, 'U2.1', resultado)
+            }
+          >
+            {({ reportResult }) => VERIFICACAO_TECLADO_STEPS[verificacaoIndex].render(reportResult)}
+          </GameMoment>
+        </div>
+      )}
+
       {fase === 'aula-teclado-intro' && (
         <div className={styles.card}>
           <img
@@ -348,8 +574,8 @@ export default function BoasVindas() {
           <GameMoment
             title="Agora é sua vez!"
             instructions='Digite a palavra "oi" e confirme.'
-            onComplete={(resultado) => {
-              registrarSinalAdaptativo({
+            onComplete={async (resultado) => {
+              await registrarSinalAdaptativo({
                 etapaId: 'boas-vindas#pratica-teclado',
                 moduleId: 'U2.1',
                 resultado,
@@ -404,7 +630,17 @@ export default function BoasVindas() {
             (um caderninho, por exemplo) - assim você não corre o
             risco de esquecê-la.
           </p>
-          <ButtonPrimary size="large" onClick={() => setFase('concluido')}>
+          <ButtonPrimary
+            size="large"
+            onClick={() => {
+              // Marca o onboarding como concluído assim que a pessoa
+              // termina o diagnóstico, mesmo que ainda não tenha criado a
+              // conta - assim ela não vê o onboarding de novo se voltar
+              // depois (cai direto no Login). Ver pages/Entrada.jsx.
+              setOnboarding((atual) => ({ ...atual, concluido: true }));
+              setFase('concluido');
+            }}
+          >
             Entendi, continuar
           </ButtonPrimary>
         </div>

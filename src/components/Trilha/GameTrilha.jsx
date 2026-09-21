@@ -14,13 +14,6 @@ import styles from './GameTrilha.module.css';
 // 50% (centro) -> 70% (direita) -> 50% (centro) -> 30% (esquerda) -> ...
 const POSICOES_X = [50, 70, 50, 30];
 
-// Paleta temática da Mascote Cecília (Rosa, Roxo, Lavanda) para dar vida e contraste
-const PALETA_CECI = [
-  'ceciRosa',     // Rosa vibrante Cecília
-  'ceciRoxo',     // Roxo aveludado Cecília
-  'ceciLavanda',  // Lavanda radiante Cecília
-];
-
 // Junta os nomes de Unidades pendentes numa frase legível:
 // "X" | "X e Y" | "X, Y e Z"
 function formatarListaNomes(nomes = []) {
@@ -83,12 +76,23 @@ export function GameTrilha({
                              unidadeRecomendada = null,
                              dominiosPorUnidade = {},
                              limiar = 0.5,
+                             // 'licao' (fez de verdade) | 'onboarding' (domínio veio só do
+                             // desafio de verificação, nunca abriu a Unidade) - ver
+                             // GET /api/licao/perfis/:userId. Unidades 'onboarding' não
+                             // aparecem nesta trilha (só em Módulos, com aviso) - a pessoa
+                             // não precisa navegar por algo que já provou que sabe.
+                             origemPorUnidade = {},
+                             // ids de mini-módulo com pelo menos uma etapa respondida de
+                             // verdade - vira um selo de "já praticado", sem re-travar
+                             // nada (continua acessível pra revisar quando quiser).
+                             miniModulosComAtividade = [],
                              // Conta ADM: nenhuma Unidade fica travada por pré-requisito, pra dar
                              // visão da trilha inteira de uma vez (ver utils/roles.js).
                              modoAdmin = false,
                            }) {
   const navigate = useNavigate();
   const [noSelecionado, setNoSelecionado] = useState(null);
+  const miniModulosPraticadosSet = new Set(miniModulosComAtividade);
 
   // Calcula o status do algoritmo adaptativo para uma Unidade
   function getStatusUnidade(unidadeId) {
@@ -118,7 +122,9 @@ export function GameTrilha({
 
                 {/* LISTA DE UNIDADES DENTRO DO MÓDULO */}
                 <div className={styles.unidadesContainer}>
-                  {grupo.unidades.map((unidade) => {
+                  {grupo.unidades
+                    .filter((unidade) => origemPorUnidade[unidade.id] !== 'onboarding')
+                    .map((unidade) => {
                     const status = getStatusUnidade(unidade.id);
 
                     // Uma Unidade fica travada se algum pré-requisito dela
@@ -144,7 +150,6 @@ export function GameTrilha({
                     unidade.miniModulos.forEach((mm, mmIdx) => {
                       const posX = POSICOES_X[globalNodeIndex % POSICOES_X.length];
                       const posY = mmIdx * NODE_SPACING + TOP_OFFSET;
-                      const corTema = PALETA_CECI[globalNodeIndex % PALETA_CECI.length];
 
                       nosDaUnidade.push({
                         tipo: 'mini-modulo',
@@ -157,7 +162,6 @@ export function GameTrilha({
                         isRecomendado: status === 'atual' && mmIdx === 0 && !isBloqueada,
                         bloqueada: isBloqueada,
                         nomesPendentes,
-                        corTema,
                         posX,
                         posY,
                         idxNaUnidade: mmIdx,
@@ -182,7 +186,6 @@ export function GameTrilha({
                         isRecomendado: status === 'atual' && mmCount === 0 && !isBloqueada,
                         bloqueada: isBloqueada,
                         nomesPendentes,
-                        corTema: 'checkpoint',
                         posX,
                         posY,
                         idxNaUnidade: mmCount,
@@ -240,39 +243,50 @@ export function GameTrilha({
                               })}
                             </svg>
 
-                            {/* NÓS CIRCULARES DE FASE (Cores da Mascote Cecília: Rosa, Roxo e Lavanda) */}
+                            {/* NÓS CIRCULARES DE FASE - cor binária: feito (dourado,
+                                com estrela/troféu em destaque) ou disponível (amarelo
+                                pálido neutro), sem variação decorativa por posição -
+                                antes a cor rosa/roxo/lavanda girava só pelo índice do
+                                nó, sem nenhuma relação com "já fiz ou não", o que
+                                deixava impossível saber o que já tinha sido feito só
+                                olhando a trilha. */}
                             {nosDaUnidade.map((etapa) => {
                               const isCheckpoint = etapa.tipo === 'checkpoint';
                               const isAtivo = etapa.isRecomendado;
                               const isBloqueada = etapa.bloqueada;
-                              const isConcluido = etapa.status === 'concluida';
-                              const isPendente = etapa.status === 'pendente';
                               const isSelected = noSelecionado?.id === etapa.id;
+                              // "Feito" é por NÓ, não por Unidade inteira: um
+                              // mini-módulo conta como feito se tem alguma resposta
+                              // real registrada; o checkpoint conta como feito se a
+                              // Unidade já tem QUALQUER domínio salvo (ela só ganha
+                              // isso depois de pelo menos uma tentativa do desafio).
+                              const feito = isCheckpoint
+                                ? dominiosPorUnidade[etapa.unidadeId] !== undefined
+                                : miniModulosPraticadosSet.has(etapa.id);
 
-                              // Determina a classe de cor com base na paleta da Cecília
-                              // - bloqueada tem prioridade sobre qualquer outro estado:
-                              // não faz sentido destacar como "pendente"/"concluída"
-                              // uma Unidade que a pessoa nem devia estar vendo ainda.
+                              // Determina a classe de cor - bloqueada tem prioridade
+                              // sobre qualquer outro estado: não faz sentido destacar
+                              // como "feito"/"disponível" uma Unidade que a pessoa
+                              // nem devia estar vendo ainda.
                               let nodeStyleClass;
                               if (isBloqueada) {
                                 nodeStyleClass = styles.nodeBloqueado;
-                              } else if (isConcluido) {
-                                nodeStyleClass = styles.nodeConcluido;
                               } else if (isAtivo) {
                                 nodeStyleClass = styles.nodeAtivo;
-                              } else if (isPendente) {
-                                nodeStyleClass = styles.nodePendente;
-                              } else if (isCheckpoint) {
-                                nodeStyleClass = styles.nodeCheckpoint;
+                              } else if (feito) {
+                                nodeStyleClass = styles.nodeConcluido;
                               } else {
-                                if (etapa.corTema === 'ceciRoxo') nodeStyleClass = styles.nodeCeciRoxo;
-                                else if (etapa.corTema === 'ceciLavanda') nodeStyleClass = styles.nodeCeciLavanda;
-                                else nodeStyleClass = styles.nodeCeciRosa;
+                                nodeStyleClass = styles.nodeDisponivel;
                               }
 
                               return (
                                   <div
                                       key={etapa.id}
+                                      // id fixo no nó recomendado (independe de qual
+                                      // Unidade/mini-módulo seja) - Dashboard.jsx usa
+                                      // isso pro link "Ver na trilha" rolar a página
+                                      // até aqui, sem precisar saber a posição.
+                                      id={isAtivo ? 'no-trilha-atual' : undefined}
                                       className={styles.nodeWrapper}
                                       style={{
                                         left: `${etapa.posX}%`,
@@ -287,7 +301,7 @@ export function GameTrilha({
                                         </>
                                     )}
 
-                                    {/* BOTÃO CIRCULAR 3D / GLOSSY COM CORES DA CECÍLIA */}
+                                    {/* BOTÃO CIRCULAR 3D / GLOSSY - dourado quando feito */}
                                     <button
                                         type="button"
                                         className={`${styles.nodeButton} ${nodeStyleClass} ${isCheckpoint ? styles.nodeCheckpointButton : ''}`}
@@ -298,13 +312,16 @@ export function GameTrilha({
                                       {/* Brilho Glossy / Reflexo Superior */}
                                       <span className={styles.nodeGlossy} aria-hidden="true" />
 
-                                      {/* Ícone (cadeado se bloqueado, Troféu SVG, estrela ★ ou ícone temático) */}
+                                      {/* Ícone: cadeado se bloqueado, Troféu SVG pro
+                                          checkpoint (a cor de fundo já diz se foi feito),
+                                          estrela ★ se o mini-módulo já foi feito, ou o
+                                          ícone temático padrão se ainda não */}
                                       <span className={styles.nodeIcone} aria-hidden="true">
                                 {isBloqueada ? (
                                     '🔒'
                                 ) : isCheckpoint ? (
                                     <TrofeuIcon className={styles.trofeuSvg} />
-                                ) : isConcluido ? (
+                                ) : feito ? (
                                     '★'
                                 ) : (
                                     etapa.icone
@@ -346,7 +363,7 @@ export function GameTrilha({
                                                     size="small"
                                                     onClick={() => navigate(etapa.destino)}
                                                 >
-                                                  {isConcluido ? 'Revisar aula' : isCheckpoint ? 'Fazer desafio' : 'Começar aula'}
+                                                  {feito ? (isCheckpoint ? 'Refazer desafio' : 'Revisar aula') : isCheckpoint ? 'Fazer desafio' : 'Começar aula'}
                                                 </ButtonPrimary>
                                             )}
                                           </div>

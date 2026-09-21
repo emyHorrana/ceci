@@ -23,7 +23,12 @@ class Indicadores {
    */
   static calcularPersistencia(tentativas, tentativasAposErro, abandonado) {
     if (abandonado) return 0.2; // desistiu, mas não zera - pode ter tentado antes
-    const base = 0.6;
+    // Antes começava em 0.6 mesmo pra quem acertou de primeira e nunca
+    // precisou insistir - isso dava um "bônus" de persistência de graça
+    // pra qualquer acerto isolado, inflando o score. Base neutra (0.3)
+    // pra quem não teve chance de mostrar persistência; o bônus abaixo
+    // só se aplica a quem de fato tentou de novo depois de errar.
+    const base = 0.3;
     const bonus = Math.min(tentativasAposErro, 3) * 0.1; // até +0.3 por insistir
     return Indicadores.normalizar(base + bonus, 0, 1);
   }

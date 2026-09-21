@@ -25,7 +25,11 @@ class ParametrosAdaptativos {
   /* Guess: baixo foco = mais "cliques no escuro" = maior chance de acertar sem saber */
   static calcularGuess(foco) {
     const guess = 0.30 - 0.20 * foco; // foco=1 -> 0.10 | foco=0 -> 0.30
-    return ParametrosAdaptativos.limitar(guess, 0.05, 0.35);
+    // Piso de 0.15 (antes 0.05): mesmo com foco máximo, um único acerto
+    // não deveria ser tratado como quase impossível de acontecer "no
+    // chute" - isso tornava uma resposta isolada excessivamente
+    // decisiva pro domínio calculado (ver RastreamentoBayesiano).
+    return ParametrosAdaptativos.limitar(guess, 0.15, 0.35);
   }
 
   /* Slip: velocidade muito acima do esperado sugere resposta apressada, sem cuidado */

@@ -180,7 +180,7 @@ export default function Cadastro() {
         <div className={authStyles.footer}>
           <p>
             Já tem conta?{' '}
-            <a href="/" className={authStyles.link}>
+            <a href="/login" className={authStyles.link}>
               Fazer login
             </a>
           </p>

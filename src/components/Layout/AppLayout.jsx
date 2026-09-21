@@ -41,7 +41,11 @@ export function AppLayout({ children }) {
 
   const handleLogout = () => {
     logout();
-    navigate('/');
+    // Direto pro Login, não pra raiz "/" - quem já tem conta e está
+    // deslogando não deveria ver o onboarding de novo mesmo que, por
+    // algum motivo, nunca tenha passado por ele (ex: veio direto pro
+    // /cadastro). Ver pages/Entrada.jsx.
+    navigate('/login');
   };
 
   return (

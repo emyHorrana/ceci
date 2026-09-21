@@ -6,6 +6,7 @@ import { AppLayout, PageHeader } from '../components/Layout/AppLayout';
 import appStyles from '../components/Layout/AppLayout.module.css';
 import { GameTrilha } from '../components/Trilha/GameTrilha';
 import { ButtonPrimary } from '../components/Buttons/ButtonPrimary';
+import { ButtonOutline } from '../components/Buttons/ButtonOutline';
 import { MODULOS } from '../data/modulos';
 import { UNIDADES, UNIDADES_POR_MODULO } from '../data/unidades';
 import { getProximaUnidade, getPerfisAluno } from '../services/algorithmService';
@@ -40,6 +41,8 @@ export default function Dashboard() {
   // confundido com "tudo concluído".
   const [recomendacao, setRecomendacao]         = useState(undefined);
   const [dominiosPorUnidade, setDominiosPorUnidade] = useState({});
+  const [origemPorUnidade, setOrigemPorUnidade] = useState({});
+  const [miniModulosComAtividade, setMiniModulosComAtividade] = useState([]);
   const [limiar, setLimiar]                     = useState(0.5);
 
   useEffect(() => {
@@ -56,6 +59,8 @@ export default function Dashboard() {
           if (!ativo) return;
           setRecomendacao(proxima);
           setDominiosPorUnidade(perfis?.dominiosPorUnidade || {});
+          setOrigemPorUnidade(perfis?.origemPorUnidade || {});
+          setMiniModulosComAtividade(perfis?.miniModulosComAtividade || []);
           setLimiar(perfis?.limiar ?? 0.5);
         })
         .catch((err) => {
@@ -88,6 +93,18 @@ export default function Dashboard() {
 
   const proximaAulaLabel = recomendacao?.motivo === 'reforco' ? 'Praticar' : 'Próxima aula';
 
+  // Mensagem de boas-vindas personalizada: antes era sempre uma frase
+  // motivacional genérica (MOTIVATIONAL), mesmo já tendo uma Unidade
+  // recomendada de verdade em mãos. Nomear a Unidade é o
+  // "direcionamento individual" que a trilha já calcula, mas que não
+  // aparecia em lugar nenhum do texto - só no destino do botão. (Não
+  // diferencia mais o texto por "motivo" de reforço - soava como um
+  // aviso negativo; o nível/recomendação detalhados já ficam no
+  // Perfil, não precisa repetir aqui.)
+  const mensagemDirecionamento = unidadeRecomendada
+      ? `Sua próxima parada na trilha é "${unidadeRecomendada.titulo}"!`
+      : message;
+
   // Distingue "ainda não buscou" (recomendacao === undefined) de
   // "buscou e o currículo está inteiro concluído" (recomendacao =
   // { unidade: null, motivo: null, mensagem }, um objeto de verdade,
@@ -103,7 +120,7 @@ export default function Dashboard() {
   // checando se existe sessão salva - depois disso, se não tem
   // usuário mesmo, manda pro login em vez de travar aqui.
   useEffect(() => {
-    if (!initializing && !user) navigate('/', { replace: true });
+    if (!initializing && !user) navigate('/login', { replace: true });
   }, [initializing, user, navigate]);
 
   if (initializing || !user) return (
@@ -154,14 +171,32 @@ export default function Dashboard() {
               <p className={styles.welcomeMessage}>
                 {curriculoConcluido
                     ? (recomendacao.mensagem || 'Você concluiu todo o currículo disponível até agora! 🎉')
-                    : message}
+                    : mensagemDirecionamento}
               </p>
-              <ButtonPrimary
-                  onClick={() => navigate(proximaAulaDestino)}
-                  size="small"
-              >
-                {proximaAulaLabel}
-              </ButtonPrimary>
+              <div className={styles.welcomeActions}>
+                <ButtonPrimary
+                    onClick={() => navigate(proximaAulaDestino)}
+                    size="small"
+                >
+                  {proximaAulaLabel}
+                </ButtonPrimary>
+                {/* Rola até o nó destacado na trilha (id="no-trilha-atual",
+                    ver GameTrilha.jsx) em vez de navegar - só pra
+                    localizar visualmente onde aquilo fica no mapa geral,
+                    sem sair da tela. */}
+                {!curriculoConcluido && unidadeRecomendada && (
+                    <button
+                        type="button"
+                        className={styles.verNaTrilhaLink}
+                        onClick={() =>
+                            document.getElementById('no-trilha-atual')
+                                ?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+                        }
+                    >
+                      Ver na trilha ↓
+                    </button>
+                )}
+              </div>
             </div>
           </div>
 
@@ -183,6 +218,16 @@ export default function Dashboard() {
             </p>
           </div>
 
+          {/* Seu progresso: o detalhe (nível + recomendação por
+              Unidade) já mora no Perfil (styles.dominioSecao lá) - aqui
+              é só um atalho, pra não duplicar a mesma lista em duas
+              telas e a Home não crescer conforme o currículo avança. */}
+          {Object.keys(dominiosPorUnidade).length > 0 && (
+              <ButtonOutline onClick={() => navigate('/perfil')}>
+                Ver seu progresso completo
+              </ButtonOutline>
+          )}
+
           {/* Trilha de aprendizagem: Módulo → Unidade → mini-módulos.
               Ver data/unidades.js pro agrupamento em si. Cada
               UnidadeCard agora recebe o `status` calculado a partir
@@ -200,6 +245,8 @@ export default function Dashboard() {
                 unidadesPorModulo={UNIDADES_POR_MODULO}
                 unidadeRecomendada={unidadeRecomendada}
                 dominiosPorUnidade={dominiosPorUnidade}
+                origemPorUnidade={origemPorUnidade}
+                miniModulosComAtividade={miniModulosComAtividade}
                 limiar={limiar}
                 modoAdmin={admin}
             />

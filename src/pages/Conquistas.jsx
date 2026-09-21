@@ -28,7 +28,7 @@ export default function Conquistas() {
   }, [user?.id]);
 
   useEffect(() => {
-    if (!initializing && !user) navigate('/', { replace: true });
+    if (!initializing && !user) navigate('/login', { replace: true });
   }, [initializing, user, navigate]);
 
   if (initializing || !user) return (

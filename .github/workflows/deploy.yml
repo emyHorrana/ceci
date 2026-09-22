@@ -15,6 +15,7 @@ jobs:
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VITE_API_URL: "https://edsflacvlfhcpzmgbzeu.supabase.co/rest/v1/"
     steps:
       - name: 1. Checkout do código
         uses: actions/checkout@v4
@@ -35,19 +36,15 @@ jobs:
       - name: 5. Validação dos Secrets da Vercel
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: |
-          if [ -z "$VERCEL_TOKEN" ]; then echo "::error::VERCEL_TOKEN está vazio ou não cadastrado em Repository Secrets!"; exit 1; fi
-          if [ -z "$VERCEL_ORG_ID" ]; then echo "::error::VERCEL_ORG_ID está vazio ou não cadastrado em Repository Secrets!"; exit 1; fi
-          if [ -z "$VERCEL_PROJECT_ID" ]; then echo "::error::VERCEL_PROJECT_ID está vazio ou não cadastrado em Repository Secrets!"; exit 1; fi
+          if [ -z "$VERCEL_TOKEN" ]; then echo "::error::VERCEL_TOKEN está vazio!"; exit 1; fi
+          if [ -z "$VERCEL_ORG_ID" ]; then echo "::error::VERCEL_ORG_ID está vazio!"; exit 1; fi
+          if [ -z "$VERCEL_PROJECT_ID" ]; then echo "::error::VERCEL_PROJECT_ID está vazio!"; exit 1; fi
           echo "Todos os Secrets da Vercel foram detectados!"
 
-      - name: 6. Baixa configurações e variáveis da Vercel
+      - name: 6. Compila o projeto com Vite
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: npx vercel pull --yes --environment=production --token=$VERCEL_TOKEN
+        run: npm run build
 
-      - name: 7. Compila artefatos de deploy com a Vercel CLI
+      - name: 7. Executa Deploy de Produção na Vercel
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: npx vercel build --prod --token=$VERCEL_TOKEN
-
-      - name: 8. Executa Deploy de Produção na Vercel
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: npx vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN
+        run: npx vercel deploy --archive=tgz --prod --token=$VERCEL_TOKEN

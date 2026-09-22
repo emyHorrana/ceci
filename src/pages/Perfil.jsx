@@ -21,6 +21,7 @@ import { ButtonPrimary } from '../components/Buttons/ButtonPrimary';
 import { ButtonOutline } from '../components/Buttons/ButtonOutline';
 import { getUsuario, atualizarUsuario } from '../services/usuarioService';
 import { getPerfisAluno } from '../services/algorithmService';
+import { isAdmin } from '../utils/roles';
 import { UNIDADES } from '../data/unidades';
 import styles from './Perfil.module.css';
 
@@ -62,18 +63,23 @@ export default function Perfil() {
   }, [user?.id]);
 
   useEffect(() => {
-    if (!user?.id) return;
+    // Mesmo cuidado do MiniModulo.jsx/Dashboard.jsx: conta ADM não tem
+    // domínio real pra buscar (vê tudo sempre, sem algoritmo envolvido).
+    if (!user?.id || isAdmin(user)) {
+      setCarregandoDominio(false);
+      return;
+    }
     let ativo = true;
     getPerfisAluno(user.id)
-      .then((data) => {
-        if (ativo) setDominioData(data);
-      })
-      .catch((err) => {
-        console.error('Erro ao buscar domínio por Unidade:', err);
-      })
-      .finally(() => {
-        if (ativo) setCarregandoDominio(false);
-      });
+        .then((data) => {
+          if (ativo) setDominioData(data);
+        })
+        .catch((err) => {
+          console.error('Erro ao buscar domínio por Unidade:', err);
+        })
+        .finally(() => {
+          if (ativo) setCarregandoDominio(false);
+        });
     return () => { ativo = false; };
   }, [user?.id]);
 
@@ -82,9 +88,9 @@ export default function Perfil() {
   }, [initializing, user, navigate]);
 
   if (initializing || !user) return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100svh' }}>
-      Carregando...
-    </div>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100svh' }}>
+        Carregando...
+      </div>
   );
 
   const nomeExibido = perfil?.nome || user?.nome || 'Estudante';
@@ -136,170 +142,170 @@ export default function Perfil() {
   // só entram Unidades que a pessoa já tentou pelo menos uma vez
   // (dominiosPorUnidade só tem entrada pra quem já respondeu algo).
   const unidadesComDominio = dominioData?.dominiosPorUnidade
-    ? Object.entries(dominioData.dominiosPorUnidade)
-        .map(([unidadeId, dominio]) => ({
-          id: unidadeId,
-          titulo: UNIDADES.find((u) => u.id === unidadeId)?.titulo || unidadeId,
-          dominio,
-          nivel: dominioData.classificacaoPorUnidade?.[unidadeId] || '—',
-          recomendacao: dominioData.recomendacaoPorUnidade?.[unidadeId],
-        }))
-        .sort((a, b) => ORDEM_UNIDADES.indexOf(a.id) - ORDEM_UNIDADES.indexOf(b.id))
-    : [];
+      ? Object.entries(dominioData.dominiosPorUnidade)
+          .map(([unidadeId, dominio]) => ({
+            id: unidadeId,
+            titulo: UNIDADES.find((u) => u.id === unidadeId)?.titulo || unidadeId,
+            dominio,
+            nivel: dominioData.classificacaoPorUnidade?.[unidadeId] || '—',
+            recomendacao: dominioData.recomendacaoPorUnidade?.[unidadeId],
+          }))
+          .sort((a, b) => ORDEM_UNIDADES.indexOf(a.id) - ORDEM_UNIDADES.indexOf(b.id))
+      : [];
 
   return (
-    <AppLayout>
-      <PageHeader>
-        <div>
-          <h1 className={styles.title}>Meu perfil</h1>
-          <p className={styles.subtitle}>Seus dados e sua jornada até aqui.</p>
-        </div>
-      </PageHeader>
+      <AppLayout>
+        <PageHeader>
+          <div>
+            <h1 className={styles.title}>Meu perfil</h1>
+            <p className={styles.subtitle}>Seus dados e sua jornada até aqui.</p>
+          </div>
+        </PageHeader>
 
-      <div className={appStyles.pageContent}>
-        {/* CARD PRINCIPAL - avatar + dados */}
-        <div className={styles.heroCard}>
-          <div className={styles.heroBanner} aria-hidden="true" />
+        <div className={appStyles.pageContent}>
+          {/* CARD PRINCIPAL - avatar + dados */}
+          <div className={styles.heroCard}>
+            <div className={styles.heroBanner} aria-hidden="true" />
 
-          <div className={styles.heroBody}>
-            <div className={styles.avatarRing}>
-              <div className={styles.avatarSlot} aria-hidden="true">
-                {nomeExibido.charAt(0).toUpperCase()}
+            <div className={styles.heroBody}>
+              <div className={styles.avatarRing}>
+                <div className={styles.avatarSlot} aria-hidden="true">
+                  {nomeExibido.charAt(0).toUpperCase()}
+                </div>
               </div>
-            </div>
 
-            {!editando ? (
-              <div className={styles.infoView}>
-                <div className={styles.infoRow}>
-                  <span className={styles.infoLabel}>Nome</span>
-                  <span className={styles.infoValue}>
+              {!editando ? (
+                  <div className={styles.infoView}>
+                    <div className={styles.infoRow}>
+                      <span className={styles.infoLabel}>Nome</span>
+                      <span className={styles.infoValue}>
                     {carregandoPerfil ? 'Carregando...' : nomeExibido}
                   </span>
-                </div>
-                <div className={styles.infoRow}>
-                  <span className={styles.infoLabel}>E-mail</span>
-                  <span className={styles.infoValue}>
+                    </div>
+                    <div className={styles.infoRow}>
+                      <span className={styles.infoLabel}>E-mail</span>
+                      <span className={styles.infoValue}>
                     {carregandoPerfil ? 'Carregando...' : emailExibido || '—'}
                   </span>
-                </div>
+                    </div>
 
-                {sucesso && (
-                  <p className={styles.sucessoTexto}>✓ Dados atualizados com sucesso!</p>
-                )}
+                    {sucesso && (
+                        <p className={styles.sucessoTexto}>✓ Dados atualizados com sucesso!</p>
+                    )}
 
-                <ButtonOutline onClick={iniciarEdicao} disabled={carregandoPerfil}>
-                  Editar dados
-                </ButtonOutline>
-              </div>
-            ) : (
-              <form className={styles.form} onSubmit={salvar}>
-                <TextInput
-                  label="Nome"
-                  type="text"
-                  value={nome}
-                  onChange={(e) => setNome(e.target.value)}
-                  required
-                  disabled={salvando}
-                  autoFocus
-                />
-                <TextInput
-                  label="E-mail"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  disabled={salvando}
-                  error={erro}
-                />
+                    <ButtonOutline onClick={iniciarEdicao} disabled={carregandoPerfil}>
+                      Editar dados
+                    </ButtonOutline>
+                  </div>
+              ) : (
+                  <form className={styles.form} onSubmit={salvar}>
+                    <TextInput
+                        label="Nome"
+                        type="text"
+                        value={nome}
+                        onChange={(e) => setNome(e.target.value)}
+                        required
+                        disabled={salvando}
+                        autoFocus
+                    />
+                    <TextInput
+                        label="E-mail"
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        disabled={salvando}
+                        error={erro}
+                    />
 
-                <div className={styles.formAcoes}>
-                  <ButtonOutline type="button" onClick={cancelarEdicao} disabled={salvando}>
-                    Cancelar
-                  </ButtonOutline>
-                  <ButtonPrimary type="submit" disabled={salvando}>
-                    {salvando ? 'Salvando...' : 'Salvar'}
-                  </ButtonPrimary>
-                </div>
-              </form>
-            )}
+                    <div className={styles.formAcoes}>
+                      <ButtonOutline type="button" onClick={cancelarEdicao} disabled={salvando}>
+                        Cancelar
+                      </ButtonOutline>
+                      <ButtonPrimary type="submit" disabled={salvando}>
+                        {salvando ? 'Salvando...' : 'Salvar'}
+                      </ButtonPrimary>
+                    </div>
+                  </form>
+              )}
+            </div>
           </div>
-        </div>
 
-        {/* CARDS DE ESTATÍSTICA */}
-        <div className={styles.statsGrid}>
-          <div className={`${styles.statCard} ${styles.statStreak}`}>
-            <span className={styles.statValue}>{streakCount}</span>
-            <span className={styles.statLabel}>
+          {/* CARDS DE ESTATÍSTICA */}
+          <div className={styles.statsGrid}>
+            <div className={`${styles.statCard} ${styles.statStreak}`}>
+              <span className={styles.statValue}>{streakCount}</span>
+              <span className={styles.statLabel}>
               {streakCount === 1 ? 'dia seguido' : 'dias seguidos'}
             </span>
-          </div>
-          <div className={`${styles.statCard} ${styles.statXp}`}>
-            <span className={styles.statValue}>{progress?.totalPoints || 0}</span>
-            <span className={styles.statLabel}>pontos</span>
-          </div>
-          <div className={`${styles.statCard} ${styles.statCoin}`}>
-            <span className={styles.statValue}>{totalConquistas}</span>
-            <span className={styles.statLabel}>
+            </div>
+            <div className={`${styles.statCard} ${styles.statXp}`}>
+              <span className={styles.statValue}>{progress?.totalPoints || 0}</span>
+              <span className={styles.statLabel}>pontos</span>
+            </div>
+            <div className={`${styles.statCard} ${styles.statCoin}`}>
+              <span className={styles.statValue}>{totalConquistas}</span>
+              <span className={styles.statLabel}>
               {totalConquistas === 1 ? 'conquista' : 'conquistas'}
             </span>
-          </div>
-        </div>
-
-        {/* DOMÍNIO POR UNIDADE (resultado do algoritmo adaptativo) */}
-        <div className={styles.dominioSecao}>
-          <div className={styles.sectionHeader}>
-            <h2>Seu domínio por assunto</h2>
+            </div>
           </div>
 
-          {carregandoDominio ? (
-            <p className={styles.estadoVazio}>Carregando...</p>
-          ) : unidadesComDominio.length === 0 ? (
-            <p className={styles.estadoVazio}>
-              Você ainda não respondeu nenhuma questão. Comece um mini-módulo pra ver seu progresso aqui!
-            </p>
-          ) : (
-            <div className={styles.dominioLista}>
-              {unidadesComDominio.map((u) => (
-                <div key={u.id} className={styles.dominioItem}>
-                  <div className={styles.dominioTopo}>
-                    <span className={styles.dominioTitulo}>{u.titulo}</span>
-                    <span className={styles.nivelBadge} data-nivel={u.nivel}>
+          {/* DOMÍNIO POR UNIDADE (resultado do algoritmo adaptativo) */}
+          <div className={styles.dominioSecao}>
+            <div className={styles.sectionHeader}>
+              <h2>Seu domínio por assunto</h2>
+            </div>
+
+            {carregandoDominio ? (
+                <p className={styles.estadoVazio}>Carregando...</p>
+            ) : unidadesComDominio.length === 0 ? (
+                <p className={styles.estadoVazio}>
+                  Você ainda não respondeu nenhuma questão. Comece um mini-módulo pra ver seu progresso aqui!
+                </p>
+            ) : (
+                <div className={styles.dominioLista}>
+                  {unidadesComDominio.map((u) => (
+                      <div key={u.id} className={styles.dominioItem}>
+                        <div className={styles.dominioTopo}>
+                          <span className={styles.dominioTitulo}>{u.titulo}</span>
+                          <span className={styles.nivelBadge} data-nivel={u.nivel}>
                       {u.nivel}
                     </span>
-                  </div>
-                  <div className={styles.dominioBarraTrilho}>
-                    <div
-                      className={styles.dominioBarraPreenchida}
-                      style={{ width: `${Math.round((u.dominio ?? 0) * 100)}%` }}
-                    />
-                  </div>
-                  {u.recomendacao && (
-                    <p className={styles.dominioRecomendacao}>{u.recomendacao}</p>
-                  )}
+                        </div>
+                        <div className={styles.dominioBarraTrilho}>
+                          <div
+                              className={styles.dominioBarraPreenchida}
+                              style={{ width: `${Math.round((u.dominio ?? 0) * 100)}%` }}
+                          />
+                        </div>
+                        {u.recomendacao && (
+                            <p className={styles.dominioRecomendacao}>{u.recomendacao}</p>
+                        )}
+                      </div>
+                  ))}
                 </div>
-              ))}
-            </div>
+            )}
+          </div>
+
+          {/* ÚLTIMAS CONQUISTAS */}
+          {totalConquistas > 0 && (
+              <div className={styles.conquistasSecao}>
+                <div className={styles.sectionHeader}>
+                  <h2>Últimas conquistas</h2>
+                  <ButtonOutline size="small" onClick={() => navigate('/conquistas')}>
+                    Ver todas
+                  </ButtonOutline>
+                </div>
+                <div className={styles.conquistasLista}>
+                  {progress.achievements.slice(0, 4).map((c) => (
+                      <div key={c.id} className={styles.conquistaChip}>
+                        <span aria-hidden="true">{c.emoji}</span> {c.title}
+                      </div>
+                  ))}
+                </div>
+              </div>
           )}
         </div>
-
-        {/* ÚLTIMAS CONQUISTAS */}
-        {totalConquistas > 0 && (
-          <div className={styles.conquistasSecao}>
-            <div className={styles.sectionHeader}>
-              <h2>Últimas conquistas</h2>
-              <ButtonOutline size="small" onClick={() => navigate('/conquistas')}>
-                Ver todas
-              </ButtonOutline>
-            </div>
-            <div className={styles.conquistasLista}>
-              {progress.achievements.slice(0, 4).map((c) => (
-                <div key={c.id} className={styles.conquistaChip}>
-                  <span aria-hidden="true">{c.emoji}</span> {c.title}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
-    </AppLayout>
+      </AppLayout>
   );
 }

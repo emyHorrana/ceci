@@ -20,6 +20,7 @@ import { UserContext } from '../context/UserContext';
 import { MODULOS } from '../data/modulos';
 import { UNIDADES } from '../data/unidades';
 import { getPerfisAluno } from '../services/algorithmService';
+import { isAdmin } from '../utils/roles';
 import { ModuleCard } from '../components/Cards/ModuleCard';
 import { AppLayout, PageHeader } from '../components/Layout/AppLayout';
 import appStyles from '../components/Layout/AppLayout.module.css';
@@ -41,13 +42,15 @@ export default function Modulos() {
   const [origemPorUnidade, setOrigemPorUnidade] = useState({});
 
   useEffect(() => {
-    if (!user?.id) return;
+    // Mesmo cuidado do MiniModulo.jsx/Dashboard.jsx/Perfil.jsx: conta
+    // ADM não tem origem de Unidade real pra buscar.
+    if (!user?.id || isAdmin(user)) return;
     let ativo = true;
     getPerfisAluno(user.id)
-      .then((data) => {
-        if (ativo) setOrigemPorUnidade(data?.origemPorUnidade || {});
-      })
-      .catch((err) => console.error('Erro ao buscar origem das Unidades:', err));
+        .then((data) => {
+          if (ativo) setOrigemPorUnidade(data?.origemPorUnidade || {});
+        })
+        .catch((err) => console.error('Erro ao buscar origem das Unidades:', err));
     return () => { ativo = false; };
   }, [user?.id]);
 
@@ -66,64 +69,64 @@ export default function Modulos() {
   // valer pra todos os módulos) - agrupadas por moduloId, já que um
   // módulo pode ter mais de uma Unidade confirmada.
   const unidadesConfirmadasPorModulo = UNIDADES.filter(
-    (u) => origemPorUnidade[u.id] === 'onboarding'
+      (u) => origemPorUnidade[u.id] === 'onboarding'
   ).reduce((acc, u) => {
     (acc[u.moduloId] ||= []).push(u);
     return acc;
   }, {});
 
   return (
-    <AppLayout>
-      <PageHeader>
-        <div>
-          <h1 className={styles.title}>Seus módulos</h1>
-          <p className={styles.subtitle}>
-            Acompanhe seu caminho de aprendizado, um módulo de cada vez.
-          </p>
+      <AppLayout>
+        <PageHeader>
+          <div>
+            <h1 className={styles.title}>Seus módulos</h1>
+            <p className={styles.subtitle}>
+              Acompanhe seu caminho de aprendizado, um módulo de cada vez.
+            </p>
+          </div>
+        </PageHeader>
+
+        <div className={appStyles.pageContent}>
+          <div className={styles.grid}>
+            {MODULOS.map((modulo, index) => {
+              const confirmadas = unidadesConfirmadasPorModulo[modulo.id];
+              const note = confirmadas?.length
+                  ? {
+                    texto: `Já identificamos domínio em "${confirmadas.map((u) => u.titulo).join('", "')}" - não precisa fazer, mas pode revisar se quiser.`,
+                    ctaLabel: 'Fazer mesmo assim',
+                    onCtaClick: () => navigate(`/mini-modulo/${confirmadas[0].miniModulos[0].id}`),
+                  }
+                  : undefined;
+
+              return (
+                  <ModuleCard
+                      key={modulo.id}
+                      title={modulo.titulo}
+                      emoji={modulo.emoji}
+                      // Placeholder até existir uma forma real de salvar conclusão
+                      // de mini-módulos (ver nota no topo do arquivo).
+                      progress={0}
+                      lessonCount={modulo.miniModulos.length}
+                      status={index === 0 ? 'featured' : 'inprogress'}
+                      onClick={() => irParaModulo(modulo)}
+                      onContinueClick={() => irParaModulo(modulo)}
+                      note={note}
+                  />
+              );
+            })}
+
+            {MODULOS_EM_BREVE.map((modulo) => (
+                <ModuleCard
+                    key={modulo.titulo}
+                    title={modulo.titulo}
+                    emoji={modulo.emoji}
+                    progress={0}
+                    lessonCount={0}
+                    status="locked"
+                />
+            ))}
+          </div>
         </div>
-      </PageHeader>
-
-      <div className={appStyles.pageContent}>
-        <div className={styles.grid}>
-          {MODULOS.map((modulo, index) => {
-            const confirmadas = unidadesConfirmadasPorModulo[modulo.id];
-            const note = confirmadas?.length
-              ? {
-                  texto: `Já identificamos domínio em "${confirmadas.map((u) => u.titulo).join('", "')}" - não precisa fazer, mas pode revisar se quiser.`,
-                  ctaLabel: 'Fazer mesmo assim',
-                  onCtaClick: () => navigate(`/mini-modulo/${confirmadas[0].miniModulos[0].id}`),
-                }
-              : undefined;
-
-            return (
-              <ModuleCard
-                key={modulo.id}
-                title={modulo.titulo}
-                emoji={modulo.emoji}
-                // Placeholder até existir uma forma real de salvar conclusão
-                // de mini-módulos (ver nota no topo do arquivo).
-                progress={0}
-                lessonCount={modulo.miniModulos.length}
-                status={index === 0 ? 'featured' : 'inprogress'}
-                onClick={() => irParaModulo(modulo)}
-                onContinueClick={() => irParaModulo(modulo)}
-                note={note}
-              />
-            );
-          })}
-
-          {MODULOS_EM_BREVE.map((modulo) => (
-            <ModuleCard
-              key={modulo.titulo}
-              title={modulo.titulo}
-              emoji={modulo.emoji}
-              progress={0}
-              lessonCount={0}
-              status="locked"
-            />
-          ))}
-        </div>
-      </div>
-    </AppLayout>
+      </AppLayout>
   );
 }

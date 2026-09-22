@@ -21,6 +21,7 @@ import { ButtonPrimary } from '../components/Buttons/ButtonPrimary';
 import { ButtonOutline } from '../components/Buttons/ButtonOutline';
 import { registrarResultadoCheckpoint } from '../services/checkpointService';
 import { responderQuestao, getProximaUnidade } from '../services/algorithmService';
+import { isAdmin } from '../utils/roles';
 import { getTempoIdealMs } from '../utils/jogoTempoIdeal';
 import styles from './UnidadeCheckpoint.module.css';
 
@@ -53,28 +54,28 @@ export default function UnidadeCheckpoint() {
 
   if (initializing || !user) {
     return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100svh' }}>
-        Carregando...
-      </div>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100svh' }}>
+          Carregando...
+        </div>
     );
   }
 
   if (!unidade || !unidade.checkpoint) {
     return (
-      <div className={styles.notFound}>
-        <h2>Desafio não encontrado</h2>
-        <p>Essa Unidade ainda não tem um desafio de fim de Unidade.</p>
-        <ButtonOutline onClick={() => navigate('/dashboard')}>
-          Voltar ao início
-        </ButtonOutline>
-      </div>
+        <div className={styles.notFound}>
+          <h2>Desafio não encontrado</h2>
+          <p>Essa Unidade ainda não tem um desafio de fim de Unidade.</p>
+          <ButtonOutline onClick={() => navigate('/dashboard')}>
+            Voltar ao início
+          </ButtonOutline>
+        </div>
     );
   }
 
   const { checkpoint } = unidade;
   const questoes = checkpoint.questoes && checkpoint.questoes.length > 0
-    ? checkpoint.questoes
-    : [
+      ? checkpoint.questoes
+      : [
         {
           id: `${unidade.id}-q1`,
           tipo: checkpoint.tipo,
@@ -126,7 +127,11 @@ export default function UnidadeCheckpoint() {
 
     setResultado(dominou ? 'dominou' : 'reforco');
 
-    if (!user?.id) return;
+    // Conta ADM: vê o desfecho na tela (feedback local, útil pra
+    // revisão de conteúdo), mas isso NUNCA é reportado pro algoritmo
+    // adaptativo de verdade - mesmo cuidado que MiniModulo.jsx já toma
+    // em todo o resto do fluxo (ver utils/roles.js).
+    if (!user?.id || isAdmin(user)) return;
 
     try {
       const totalAttempts = todasRespostas.reduce((sum, r) => sum + (r.attempts || 0), 0);
@@ -160,138 +165,138 @@ export default function UnidadeCheckpoint() {
   };
 
   const unidadeRecomendada = proxima?.unidade?.id
-    ? UNIDADES.find((u) => u.id === proxima.unidade.id)
-    : null;
+      ? UNIDADES.find((u) => u.id === proxima.unidade.id)
+      : null;
   const proximoDestino = unidadeRecomendada?.miniModulos?.[0]?.id
-    ? `/mini-modulo/${unidadeRecomendada.miniModulos[0].id}`
-    : null;
+      ? `/mini-modulo/${unidadeRecomendada.miniModulos[0].id}`
+      : null;
 
   return (
-    <div className={styles.page}>
-      <header className={styles.header}>
-        <button className={styles.backBtn} onClick={() => navigate('/dashboard')}>
-          Início
-        </button>
+      <div className={styles.page}>
+        <header className={styles.header}>
+          <button className={styles.backBtn} onClick={() => navigate('/dashboard')}>
+            Início
+          </button>
 
-        <div className={styles.breadcrumb}>
-          {modulo && (
-            <>
-              <span className={styles.breadcrumbModulo}>{modulo.titulo}</span>
-              <span className={styles.breadcrumbSep}>›</span>
-            </>
-          )}
-          <span className={styles.breadcrumbMini}>{unidade.titulo}</span>
+          <div className={styles.breadcrumb}>
+            {modulo && (
+                <>
+                  <span className={styles.breadcrumbModulo}>{modulo.titulo}</span>
+                  <span className={styles.breadcrumbSep}>›</span>
+                </>
+            )}
+            <span className={styles.breadcrumbMini}>{unidade.titulo}</span>
+          </div>
+
+          <div className={styles.etapaInfo}>
+            Pergunta {questaoAtual + 1} / {totalQuestoes}
+          </div>
+
+          <span className={styles.badge}>Desafio da Unidade</span>
+        </header>
+
+        {/* BARRA DE PROGRESSO NO TOPO */}
+        <div className={styles.progressBar}>
+          <div
+              className={styles.progressFill}
+              style={{ width: `${((questaoAtual + 1) / totalQuestoes) * 100}%` }}
+          />
         </div>
 
-        <div className={styles.etapaInfo}>
-          Pergunta {questaoAtual + 1} / {totalQuestoes}
-        </div>
+        <main className={styles.main}>
+          {!resultado && (
+              <div className={styles.card}>
+                <div className={styles.cardHeader}>
+                  <p className={styles.unidadeTitulo}>{unidade.titulo}</p>
 
-        <span className={styles.badge}>Desafio da Unidade</span>
-      </header>
-
-      {/* BARRA DE PROGRESSO NO TOPO */}
-      <div className={styles.progressBar}>
-        <div
-          className={styles.progressFill}
-          style={{ width: `${((questaoAtual + 1) / totalQuestoes) * 100}%` }}
-        />
-      </div>
-
-      <main className={styles.main}>
-        {!resultado && (
-          <div className={styles.card}>
-            <div className={styles.cardHeader}>
-              <p className={styles.unidadeTitulo}>{unidade.titulo}</p>
-
-              {/* Tracker de progresso do desafio */}
-              <div className={styles.trackerContainer}>
-                <div className={styles.trackerLabels}>
+                  {/* Tracker de progresso do desafio */}
+                  <div className={styles.trackerContainer}>
+                    <div className={styles.trackerLabels}>
                   <span className={styles.trackerText}>
                     Pergunta <strong>{questaoAtual + 1}</strong> de {totalQuestoes}
                   </span>
-                  <span className={styles.trackerScore}>
+                      <span className={styles.trackerScore}>
                     {acertos} {acertos === 1 ? 'acerto' : 'acertos'}
                   </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Renderiza a questão atual com key para resetar o GameMoment limpo */}
+                <div className={emTransicao ? styles.questaoTransicao : styles.questaoSlot}>
+                  <GameMoment
+                      key={`${unidade.id}-questao-${questaoAtual}`}
+                      title={questao.titulo}
+                      instructions={questao.instructions}
+                      onComplete={handleCompleteQuestao}
+                  >
+                    {({ reportResult }) => (
+                        <Jogo reportResult={reportResult} {...questao.jogoProps} />
+                    )}
+                  </GameMoment>
                 </div>
               </div>
-            </div>
+          )}
 
-            {/* Renderiza a questão atual com key para resetar o GameMoment limpo */}
-            <div className={emTransicao ? styles.questaoTransicao : styles.questaoSlot}>
-              <GameMoment
-                key={`${unidade.id}-questao-${questaoAtual}`}
-                title={questao.titulo}
-                instructions={questao.instructions}
-                onComplete={handleCompleteQuestao}
-              >
-                {({ reportResult }) => (
-                  <Jogo reportResult={reportResult} {...questao.jogoProps} />
-                )}
-              </GameMoment>
-            </div>
-          </div>
-        )}
+          {/* Desfecho: DOMINOU (Aprovado com maestria) */}
+          {resultado === 'dominou' && (
+              <div className={styles.desfecho} data-tipo="dominou">
+                <h2>Excelente! Você dominou &quot;{unidade.titulo}&quot;!</h2>
 
-        {/* Desfecho: DOMINOU (Aprovado com maestria) */}
-        {resultado === 'dominou' && (
-          <div className={styles.desfecho} data-tipo="dominou">
-            <h2>Excelente! Você dominou &quot;{unidade.titulo}&quot;!</h2>
+                <div className={styles.scoreBadge}>
+                  Você acertou <strong>{acertos} de {totalQuestoes}</strong> desafios ({Math.round((acertos / totalQuestoes) * 100)}%)
+                </div>
 
-            <div className={styles.scoreBadge}>
-              Você acertou <strong>{acertos} de {totalQuestoes}</strong> desafios ({Math.round((acertos / totalQuestoes) * 100)}%)
-            </div>
+                <p>
+                  Você mostrou muita segurança neste tópico. Seu progresso foi registrado com sucesso na sua trilha!
+                </p>
 
-            <p>
-              Você mostrou muita segurança neste tópico. Seu progresso foi registrado com sucesso na sua trilha!
-            </p>
+                <div className={styles.desfechoActions}>
+                  {proximoDestino ? (
+                      <ButtonPrimary onClick={() => navigate(proximoDestino)}>
+                        Continuar: {proxima.unidade.titulo}
+                      </ButtonPrimary>
+                  ) : (
+                      <ButtonPrimary onClick={() => navigate('/dashboard')}>
+                        Voltar ao início
+                      </ButtonPrimary>
+                  )}
+                  <ButtonOutline onClick={reiniciarDesafio}>
+                    Refazer desafio
+                  </ButtonOutline>
+                </div>
+              </div>
+          )}
 
-            <div className={styles.desfechoActions}>
-              {proximoDestino ? (
-                <ButtonPrimary onClick={() => navigate(proximoDestino)}>
-                  Continuar: {proxima.unidade.titulo}
-                </ButtonPrimary>
-              ) : (
-                <ButtonPrimary onClick={() => navigate('/dashboard')}>
-                  Voltar ao início
-                </ButtonPrimary>
-              )}
-              <ButtonOutline onClick={reiniciarDesafio}>
-                Refazer desafio
-              </ButtonOutline>
-            </div>
-          </div>
-        )}
+          {/* Desfecho: REFORÇO (Acolhimento e encorajamento) */}
+          {resultado === 'reforco' && (
+              <div className={styles.desfecho} data-tipo="reforco">
+                <h2>Sem problemas, vamos no seu ritmo!</h2>
 
-        {/* Desfecho: REFORÇO (Acolhimento e encorajamento) */}
-        {resultado === 'reforco' && (
-          <div className={styles.desfecho} data-tipo="reforco">
-            <h2>Sem problemas, vamos no seu ritmo!</h2>
+                <div className={styles.scoreBadge}>
+                  Você acertou <strong>{acertos} de {totalQuestoes}</strong> desafios
+                </div>
 
-            <div className={styles.scoreBadge}>
-              Você acertou <strong>{acertos} de {totalQuestoes}</strong> desafios
-            </div>
+                <p>
+                  Cada tentativa é um passo para ganhar mais confiança. Vamos continuar praticando &quot;{unidade.titulo}&quot; para você dominar tudo com tranquilidade!
+                </p>
 
-            <p>
-              Cada tentativa é um passo para ganhar mais confiança. Vamos continuar praticando &quot;{unidade.titulo}&quot; para você dominar tudo com tranquilidade!
-            </p>
-
-            <div className={styles.desfechoActions}>
-              <ButtonPrimary onClick={reiniciarDesafio}>
-                Tentar o desafio novamente
-              </ButtonPrimary>
-              {proximoDestino && (
-                <ButtonOutline onClick={() => navigate(proximoDestino)}>
-                  Continuar praticando com a Ceci
-                </ButtonOutline>
-              )}
-              <ButtonOutline onClick={() => navigate('/dashboard')}>
-                Voltar ao início
-              </ButtonOutline>
-            </div>
-          </div>
-        )}
-      </main>
-    </div>
+                <div className={styles.desfechoActions}>
+                  <ButtonPrimary onClick={reiniciarDesafio}>
+                    Tentar o desafio novamente
+                  </ButtonPrimary>
+                  {proximoDestino && (
+                      <ButtonOutline onClick={() => navigate(proximoDestino)}>
+                        Continuar praticando com a Ceci
+                      </ButtonOutline>
+                  )}
+                  <ButtonOutline onClick={() => navigate('/dashboard')}>
+                    Voltar ao início
+                  </ButtonOutline>
+                </div>
+              </div>
+          )}
+        </main>
+      </div>
   );
 }

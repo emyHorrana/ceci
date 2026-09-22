@@ -50,7 +50,10 @@ export default function Dashboard() {
   }, [user?.id]);
 
   useEffect(() => {
-    if (!user?.id) return;
+    // Sem sentido buscar recomendação/domínio pra quem vê a trilha
+    // inteira sempre, sem bloqueio nenhum (ver GameTrilha modoAdmin) -
+    // mesmo cuidado que MiniModulo.jsx já toma com getPerfisAluno.
+    if (!user?.id || isAdmin(user)) return;
 
     let ativo = true;
 

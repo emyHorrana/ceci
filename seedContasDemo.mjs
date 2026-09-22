@@ -111,6 +111,7 @@ const CONTAS = [
     // certo e rápido pra mostrar o nível mudando na hora dentro do
     // MiniModulo (handleGameComplete recalcula etapas nível na mesma
     // sessão, sem precisar sair e voltar).
+    
     respostas: [
       { correto: false, tempoResposta: 12000, tempoInativo: 6, trocasDeAba: 1, abandonado: false, tentativas: 1, tentativasAposErro: 0 },
       { correto: false, tempoResposta: 11000, tempoInativo: 5, trocasDeAba: 1, abandonado: false, tentativas: 1, tentativasAposErro: 0 },

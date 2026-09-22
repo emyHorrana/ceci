@@ -1,0 +1,96 @@
+/* CECI - Laboratório
+   Topbar e pageContent vêm de components/Layout/AppLayout.module.css.
+   Aqui só o que é específico desta tela. */
+
+.title {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--color-text-primary);
+    margin: 0 0 4px 0;
+}
+
+.subtitle {
+    font-size: 0.9375rem;
+    color: var(--color-text-secondary);
+    margin: 0;
+}
+
+.tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 1.25rem;
+}
+
+.tab {
+    padding: 10px 20px;
+    border-radius: var(--radius-pill);
+    border: 1.5px solid var(--color-border);
+    background: var(--color-surface);
+    color: var(--color-text-secondary);
+    font-family: var(--font-body);
+    font-size: 0.9375rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
+}
+
+.tab:hover {
+    border-color: var(--color-yellow-light);
+}
+
+.tabActive {
+    background: var(--gradient-btn-primary);
+    border-color: var(--color-yellow-deep);
+    color: var(--color-text-primary);
+}
+
+.scoreRow {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 1.5rem;
+}
+
+/* Mesmo padrão de "pílula" já usado em Dashboard/Conquistas
+   (statBadge/progressBadge) - reaproveitando os mesmos tokens. */
+.scoreChip {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 10px 20px;
+    border-radius: var(--radius-lg);
+    background: var(--color-yellow-bg);
+    border: 1.5px solid var(--color-yellow-pale);
+}
+
+.scoreLabel {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+}
+
+.scoreValue {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--color-yellow-deep);
+}
+
+.arena {
+    background: var(--color-surface);
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    padding: 2rem 1.5rem;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+}
+
+.instrucao {
+    font-size: 1rem;
+    color: var(--color-text-primary);
+    text-align: center;
+    max-width: 420px;
+}

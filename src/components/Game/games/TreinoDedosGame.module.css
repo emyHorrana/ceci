@@ -1,0 +1,83 @@
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+    width: 100%;
+}
+
+.passagem {
+    font-family: 'Courier New', monospace;
+    font-size: 1.375rem;
+    line-height: 2;
+    text-align: left;
+    max-width: 640px;
+    width: 100%;
+    /* pre-wrap preserva o espaço em si (não deixa ele "sumir" visualmente
+       mesmo sem \u00A0) e ainda permite quebra de linha normal - era
+       isso que faltava antes */
+    white-space: pre-wrap;
+    word-break: break-word;
+    /* limite de altura pensado pra fases mais longas no futuro (fase 2,
+       3...) - o texto rola dentro da caixa em vez de estourar a página;
+       o useEffect com scrollIntoView no componente acompanha o cursor */
+    max-height: calc(1.375rem * 2 * 4); /* ~4 linhas visíveis */
+    overflow-y: auto;
+    background: var(--color-bg);
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem 1.5rem;
+}
+
+.digitado {
+    color: var(--color-success);
+}
+
+.pendente {
+    color: var(--color-text-muted);
+}
+
+.atual {
+    color: var(--color-text-primary);
+    background: var(--color-yellow-light);
+    border-radius: 4px;
+    animation: pulsar 1.4s ease-in-out infinite;
+}
+
+.erro {
+    background: var(--color-error-bg);
+    color: var(--color-error);
+}
+
+@keyframes pulsar {
+    0%, 100% { background: var(--color-yellow-light); }
+    50% { background: var(--color-yellow-deep); }
+}
+
+.dica {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 18px;
+    border-radius: var(--radius-pill);
+    background: var(--color-yellow-bg);
+    border: 1.5px solid var(--color-yellow-pale);
+}
+
+.dicaLabel {
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+    font-weight: 600;
+}
+
+.dicaDedo {
+    font-size: 0.9375rem;
+    color: var(--color-text-primary);
+    font-weight: 800;
+}
+
+.contadorErros {
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+    margin: 0;
+}

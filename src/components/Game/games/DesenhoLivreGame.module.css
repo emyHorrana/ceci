@@ -1,0 +1,109 @@
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+}
+
+.canvasArea {
+    position: relative;
+    border-radius: var(--radius-lg);
+    background: var(--color-bg);
+    border: 1.5px solid var(--color-border);
+    overflow: hidden;
+}
+
+.camada {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.camadaTinta {
+    cursor: crosshair;
+    touch-action: none; /* deixa o arrastar-pra-pintar funcionar em telas de toque, sem rolar a página */
+}
+
+.resultadoOverlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    background: rgba(255, 253, 240, 0.88);
+    backdrop-filter: blur(2px);
+}
+
+.resultadoNumero {
+    font-family: var(--font-display);
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--color-yellow-deep);
+}
+
+.resultadoLabel {
+    font-size: 0.9375rem;
+    color: var(--color-text-secondary);
+    font-weight: 600;
+}
+
+.controles {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.paleta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.corBotao {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    cursor: pointer;
+    padding: 0;
+    transition: transform var(--transition-fast), border-color var(--transition-fast);
+}
+
+.corBotao:hover:not(:disabled) {
+    transform: scale(1.1);
+}
+
+.corAtiva {
+    border-color: var(--color-text-primary);
+    transform: scale(1.12);
+}
+
+.borrachaBotao {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 3px solid var(--color-border);
+    background: var(--color-surface);
+    cursor: pointer;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform var(--transition-fast), border-color var(--transition-fast);
+}
+
+.borrachaBotao:hover:not(:disabled) {
+    transform: scale(1.1);
+}
+
+.corBotao:disabled,
+.borrachaBotao:disabled {
+    opacity: 0.6;
+    cursor: default;
+}

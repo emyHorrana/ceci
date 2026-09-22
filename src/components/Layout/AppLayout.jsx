@@ -31,6 +31,7 @@ const NAV_ITEMS = [
   { icon: '⌂', label: 'Início',      path: '/dashboard' },
   { icon: '◫', label: 'Módulos',     path: '/modulos' },
   { icon: '★', label: 'Conquistas',  path: '/conquistas' },
+  { icon: '◈', label: 'Laboratório', path: '/laboratorio' },
   { icon: '◎', label: 'Meu perfil',  path: '/perfil' },
 ];
 
@@ -49,34 +50,34 @@ export function AppLayout({ children }) {
   };
 
   return (
-    <div className={styles.shell}>
-      {/* SIDEBAR */}
-      <aside className={styles.sidebar}>
-        <div className={styles.sidebarLogo}>
-          <div className={styles.sidebarLogoIcon} />
-          <span className={styles.sidebarLogoText}>CECI</span>
-        </div>
+      <div className={styles.shell}>
+        {/* SIDEBAR */}
+        <aside className={styles.sidebar}>
+          <div className={styles.sidebarLogo}>
+            <div className={styles.sidebarLogoIcon} />
+            <span className={styles.sidebarLogoText}>CECI</span>
+          </div>
 
-        <nav className={styles.sidebarNav}>
-          {NAV_ITEMS.map((item) => (
-            <button
-              key={item.path}
-              className={`${styles.navItem} ${location.pathname === item.path ? styles.active : ''}`}
-              onClick={() => navigate(item.path)}
-            >
-              <span className={styles.navItemIcon}>{item.icon}</span>
-              {item.label}
-            </button>
-          ))}
-        </nav>
+          <nav className={styles.sidebarNav}>
+            {NAV_ITEMS.map((item) => (
+                <button
+                    key={item.path}
+                    className={`${styles.navItem} ${location.pathname === item.path ? styles.active : ''}`}
+                    onClick={() => navigate(item.path)}
+                >
+                  <span className={styles.navItemIcon}>{item.icon}</span>
+                  {item.label}
+                </button>
+            ))}
+          </nav>
 
-        <button className={styles.sidebarLogout} onClick={handleLogout}>
-          Sair
-        </button>
-      </aside>
+          <button className={styles.sidebarLogout} onClick={handleLogout}>
+            Sair
+          </button>
+        </aside>
 
-      {/* CONTEÚDO DA PÁGINA */}
-      <main className={styles.main}>{children}</main>
-    </div>
+        {/* CONTEÚDO DA PÁGINA */}
+        <main className={styles.main}>{children}</main>
+      </div>
   );
 }

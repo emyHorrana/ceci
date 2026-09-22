@@ -1,6 +1,7 @@
 .wrapper {
   display: flex;
   justify-content: center;
+  width: 100%;
   padding: 10px;
   border: 2px solid transparent;
   border-radius: var(--radius-lg);

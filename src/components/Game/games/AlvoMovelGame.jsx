@@ -23,13 +23,25 @@
 //   rotulo (string/emoji, padrão '🎯') - o que aparece dentro do alvo
 //   duploClique (bool, padrão false) - exige duplo clique no alvo em
 //     movimento (mesma convenção do ClicarAlvoGame)
+//   tipoClique ('esquerdo' | 'direito', padrão 'esquerdo') - qual botão
+//     do mouse deve capturar o alvo (mesma convenção do ClicarAlvoGame).
+//     Clicar com o botão errado NÃO conta como tentativa (reportResult
+//     não é chamado) - só um aviso visual rápido, pra não punir alguém
+//     que ainda está aprendendo qual botão é qual.
 
 import { useState, useRef, useEffect, useCallback } from 'react';
 import styles from './AlvoMovelGame.module.css';
 
 const ALTURA_AREA = 220;
 
-export function AlvoMovelGame({ reportResult, velocidade = 60, tamanhoAlvo = 56, rotulo = '🎯', duploClique = false }) {
+export function AlvoMovelGame({
+                                reportResult,
+                                velocidade = 60,
+                                tamanhoAlvo = 56,
+                                rotulo = '🎯',
+                                duploClique = false,
+                                tipoClique = 'esquerdo',
+                              }) {
   const areaRef = useRef(null);
   const posRef = useRef({ x: 40, y: 40 });
   const velRef = useRef({ vx: velocidade, vy: velocidade * 0.7 });
@@ -38,6 +50,7 @@ export function AlvoMovelGame({ reportResult, velocidade = 60, tamanhoAlvo = 56,
 
   const [pos, setPos] = useState({ x: 40, y: 40 });
   const [capturado, setCapturado] = useState(false);
+  const [botaoErrado, setBotaoErrado] = useState(false);
 
   const animar = useCallback((larguraArea) => {
     const passo = () => {
@@ -84,22 +97,47 @@ export function AlvoMovelGame({ reportResult, velocidade = 60, tamanhoAlvo = 56,
     reportResult(true);
   };
 
-  const propsClique = duploClique
-    ? { onDoubleClick: handleCaptura }
-    : { onClick: handleCaptura };
+  const avisarBotaoErrado = () => {
+    setBotaoErrado(true);
+    setTimeout(() => setBotaoErrado(false), 400);
+  };
+
+  const handleCliqueEsquerdo = () => {
+    if (tipoClique === 'direito') { avisarBotaoErrado(); return; }
+    handleCaptura();
+  };
+
+  const handleCliqueDireito = (e) => {
+    e.preventDefault(); // nunca deixa o menu de contexto do navegador abrir aqui
+    if (tipoClique !== 'direito') { avisarBotaoErrado(); return; }
+    handleCaptura();
+  };
+
+  const propsClique = tipoClique === 'direito'
+      ? { onContextMenu: handleCliqueDireito, onClick: handleCliqueEsquerdo }
+      : duploClique
+          ? { onDoubleClick: handleCliqueEsquerdo, onContextMenu: handleCliqueDireito }
+          : { onClick: handleCliqueEsquerdo, onContextMenu: handleCliqueDireito };
+
+  const rotuloAria = tipoClique === 'direito'
+      ? 'Clique com o botão DIREITO no alvo em movimento'
+      : duploClique
+          ? 'Dê um duplo clique no alvo em movimento'
+          : 'Clique no alvo em movimento';
 
   return (
-    <div ref={areaRef} className={styles.area}>
-      <button
-        type="button"
-        className={styles.alvo}
-        data-capturado={capturado}
-        style={{ width: tamanhoAlvo, height: tamanhoAlvo, transform: `translate(${pos.x}px, ${pos.y}px)` }}
-        aria-label={duploClique ? 'Dê um duplo clique no alvo em movimento' : 'Clique no alvo em movimento'}
-        {...propsClique}
-      >
-        {rotulo}
-      </button>
-    </div>
+      <div ref={areaRef} className={styles.area}>
+        <button
+            type="button"
+            className={styles.alvo}
+            data-capturado={capturado}
+            data-erro={botaoErrado}
+            style={{ width: tamanhoAlvo, height: tamanhoAlvo, transform: `translate(${pos.x}px, ${pos.y}px)` }}
+            aria-label={rotuloAria}
+            {...propsClique}
+        >
+          {rotulo}
+        </button>
+      </div>
   );
 }

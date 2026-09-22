@@ -3,7 +3,7 @@
   align-items: center;
   justify-content: center;
   width: 100%;
-  max-width: 52rem;
+  max-width: 64rem;
   padding: 0.75rem;
   background: var(--color-yellow-bg, #fff9db);
   border-radius: var(--radius-lg, 12px);

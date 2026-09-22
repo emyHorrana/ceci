@@ -36,3 +36,8 @@
   border-color: var(--color-success);
   cursor: default;
 }
+
+.alvo[data-erro='true'] {
+  background: var(--color-error-bg);
+  border-color: var(--color-error);
+}

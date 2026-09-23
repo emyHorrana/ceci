@@ -2295,11 +2295,6 @@ ${gerarFileiraBaseDetalhadaSvg()}
   },
 ];
 
-/** Busca um módulo pelo id */
-export function getModulo(moduloId) {
-  return MODULOS.find((m) => m.id === moduloId) ?? null;
-}
-
 /** Busca um mini-módulo pelo id composto (ex: "1-2") */
 export function getMiniModulo(miniModuloId) {
   for (const modulo of MODULOS) {

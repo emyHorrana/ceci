@@ -18,9 +18,7 @@
   margin-left: 3px;
 }
 
-.textInput,
-.textArea,
-.select {
+.textInput {
   width: 100%;
   padding: 13px 16px;
   font-size: 1rem;
@@ -35,45 +33,30 @@
   box-sizing: border-box;
 }
 
-.textInput::placeholder,
-.textArea::placeholder {
+.textInput::placeholder {
   color: var(--color-text-muted);
 }
 
-.textInput:hover:not(:disabled),
-.textArea:hover:not(:disabled),
-.select:hover:not(:disabled) {
+.textInput:hover:not(:disabled) {
   border-color: var(--color-yellow-pale);
 }
 
-.textInput:focus,
-.textArea:focus,
-.select:focus {
+.textInput:focus {
   border-color: var(--color-yellow-deep);
-  box-shadow: 0 0 0 4px rgba(255, 202, 26, 0.12);
+  box-shadow: 0 0 0 4px rgba(var(--color-yellow-deep-rgb), 0.12);
   background: var(--color-yellow-bg);
 }
 
-.textInput:disabled,
-.textArea:disabled,
-.select:disabled {
+.textInput:disabled {
   background: var(--color-yellow-bg);
   color: var(--color-text-muted);
   cursor: not-allowed;
   opacity: 0.7;
 }
 
-.textInput.error,
-.textArea.error,
-.select.error {
+.textInput.error {
   border-color: var(--color-error);
   box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.10);
-}
-
-.textArea {
-  resize: vertical;
-  min-height: 110px;
-  line-height: 1.6;
 }
 
 .errorMessage {
@@ -92,31 +75,4 @@
   font-size: 0.8125rem;
   color: var(--color-text-muted);
   padding-left: 2px;
-}
-
-.checkboxGroup {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.checkbox {
-  width: 22px;
-  height: 22px;
-  cursor: pointer;
-  accent-color: var(--color-yellow-deep);
-  border-radius: 6px;
-}
-
-.checkbox:focus-visible {
-  outline: 3px solid var(--color-yellow);
-  outline-offset: 2px;
-}
-
-.checkboxLabel {
-  font-size: 1rem;
-  font-family: var(--font-body);
-  cursor: pointer;
-  user-select: none;
-  color: var(--color-text-primary);
 }

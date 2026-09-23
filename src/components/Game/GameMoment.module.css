@@ -40,10 +40,6 @@
   box-shadow: var(--shadow-yellow);
 }
 
-.modeIcon {
-  font-size: 1rem;
-}
-
 .modeLabel {
   /* Exceção à regra de títulos: badge pequeno, pede um sans forte
      (Archivo) em vez da serifa (Merriweather) */
@@ -88,19 +84,12 @@
 }
 
 .ceciAvatar {
-  width: 44px;
-  height: 44px;
+  /* Tamanho da Ceci no recadinho: mexa só aqui (o <Mascote> preenche o
+     slot, sem recorte - as artes já são o "selo" redondo da Ceci, então
+     não precisa de moldura/gradiente por trás). */
+  width: 72px;
+  height: 72px;
   flex-shrink: 0;
-  border-radius: 50%;
-  overflow: hidden;
-  background: var(--gradient-ceci);
-  box-shadow: var(--shadow-ceci);
-}
-
-.ceciAvatar img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
 }
 
 .ceciMessage {

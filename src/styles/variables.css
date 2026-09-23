@@ -7,20 +7,30 @@
 :root {
     /* Marca do site: Amarelo */
     /* Escala completa da paleta oficial (5 tons, do mais claro ao mais forte) */
-    --color-yellow-bg:    #FFFDF0;
-    --color-yellow-pale:  #FFFFCC;
-    --color-yellow-soft:  #FFF099;
-    --color-yellow-light: #FFE880;
-    --color-yellow:       #FFD94D;
-    --color-yellow-deep:  #FFCA1A;
+    /* Todos no mesmo matiz (~48°), só variando saturação/luminosidade -
+       o #FFFFCC antigo tinha matiz 60° (esverdeado) e era o que deixava o
+       conjunto "apagado". Amarelo-sol, sem puxar pro mostarda (que é
+       menos saturado/mais escuro). */
+    --color-yellow-bg:    #FFF8D6;
+    --color-yellow-pale:  #FFF1AD;
+    --color-yellow-soft:  #FFE985;
+    --color-yellow-light: #FFE061;
+    --color-yellow:       #FFD42E;
+    --color-yellow-deep:  #FFC400;
+    --color-yellow-dark:  #E5A800; /* bordas de tecla/botão pressionado */
+
+    /* Mesmos tons em R, G, B soltos - pra usar em rgba() com transparência
+       sem repetir número mágico: rgba(var(--color-yellow-deep-rgb), 0.3) */
+    --color-yellow-rgb:       255, 212, 46;
+    --color-yellow-deep-rgb:  255, 196, 0;
 
     /* Gradientes (marca do site) */
     --gradient-hero:
             linear-gradient(
                     135deg,
-                    #FFFDF0 0%,
-                    #FFFBE0 50%,
-                    #FFF6CC 100%
+                    #FFF9DC 0%,
+                    #FFF4C2 50%,
+                    #FFEEA6 100%
             );
 
     --gradient-card:
@@ -33,22 +43,22 @@
     --gradient-btn-primary:
             linear-gradient(
                     135deg,
-                    #FFD94D 0%,
-                    #FFCA1A 100%
+                    #FFD42E 0%,
+                    #FFC400 100%
             );
 
     --gradient-sidebar:
             linear-gradient(
                     180deg,
-                    #FFF6CC 0%,
-                    #FFEAA0 100%
+                    #FFEFA8 0%,
+                    #FFE27A 100%
             );
 
     /* Neutros */
     --color-white:         #FFFFFF;
-    --color-bg:            #FDFBF3;
+    --color-bg:            #FFF9DE;
     --color-surface:       #FFFFFF;
-    --color-border:        #EDE4CE;
+    --color-border:        #F0E0AE;
     --color-border-focus:  #E0A100;
 
     /* Texto */
@@ -85,7 +95,7 @@
 
     /* Sombras */
     --shadow-sm:
-            0 2px 8px rgba(230, 180, 60, 0.10);
+            0 2px 8px rgba(230, 180, 60, 0.12);
 
     --shadow-md:
             0 4px 20px rgba(230, 180, 60, 0.16);
@@ -94,7 +104,7 @@
             0 8px 40px rgba(230, 180, 60, 0.20);
 
     --shadow-yellow:
-            0 4px 20px rgba(255, 202, 26, 0.35);
+            0 4px 20px rgba(255, 196, 0, 0.40);
 
     /* Transições */
     --transition-fast:     0.15s ease;

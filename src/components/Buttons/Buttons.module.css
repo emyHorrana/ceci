@@ -35,7 +35,7 @@
 .buttonPrimary:hover:not(:disabled)::after { opacity: 0.10; }
 .buttonPrimary:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 6px 28px rgba(255, 202, 26, 0.40);
+  box-shadow: 0 6px 28px rgba(var(--color-yellow-deep-rgb), 0.40);
 }
 .buttonPrimary:active:not(:disabled) {
   transform: scale(0.97);
@@ -48,39 +48,6 @@
   opacity: 0.45;
   cursor: not-allowed;
   box-shadow: none;
-}
-
-/* Botão Secundário (contorno roxo) */
-.buttonSecondary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 11px 28px;
-  background: transparent;
-  color: var(--color-yellow-deep);
-  border: 2px solid var(--color-yellow-deep);
-  border-radius: var(--radius-pill);
-  font-family: var(--font-body);
-  font-size: 1rem;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  cursor: pointer;
-  min-height: 48px;
-  transition: all var(--transition-base);
-}
-
-.buttonSecondary:hover:not(:disabled) {
-  background: var(--color-yellow-bg);
-  transform: translateY(-2px);
-}
-.buttonSecondary:focus-visible {
-  outline: 3px solid var(--color-yellow);
-  outline-offset: 3px;
-}
-.buttonSecondary:disabled {
-  opacity: 0.45;
-  cursor: not-allowed;
 }
 
 /* Botão Outline (contorno amarelo) */
@@ -105,30 +72,6 @@
 .buttonOutline:hover:not(:disabled) {
   background: var(--color-yellow-bg);
   transform: translateY(-2px);
-}
-
-/* Botão ícone */
-.buttonIcon {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--radius-sm);
-  transition: all var(--transition-fast);
-  color: var(--color-text-secondary);
-}
-
-.buttonIcon:hover {
-  background: var(--color-yellow-bg);
-  color: var(--color-yellow-deep);
-}
-
-.buttonIcon:focus-visible {
-  outline: 3px solid var(--color-yellow);
-  outline-offset: 2px;
 }
 
 /* Modificadores de tamanho */

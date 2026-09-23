@@ -12,7 +12,7 @@
 //   accent   - 'purple' | 'pink' | 'yellow' | 'branco' (padrão: 'purple') -
 //              cor da barra de título. 'branco' é neutro (sem cor de
 //              destaque) - usado nos cards de teoria/jogo das lições
-//              (GameMoment, MiniModulo, Licao).
+//              (GameMoment, MiniModulo).
 //   controls - mostra os botõezinhos decorativos "_ □ ×" (padrão: true).
 //              São só visuais (aria-hidden), não fazem nada ao clicar -
 //              não é pra fingir que a janela minimiza/fecha de verdade,

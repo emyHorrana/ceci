@@ -90,10 +90,6 @@
   color: var(--color-text-secondary);
 }
 
-.progressLabelPct {
-  color: var(--color-yellow-deep);
-}
-
 .progressTrack {
   background: var(--color-yellow-bg);
   border-radius: var(--radius-pill);
@@ -204,7 +200,7 @@
 
 .btn-inprogress:hover {
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(255, 202, 26, 0.35);
+  box-shadow: 0 6px 20px rgba(var(--color-yellow-deep-rgb), 0.35);
 }
 
 .btn-featured {

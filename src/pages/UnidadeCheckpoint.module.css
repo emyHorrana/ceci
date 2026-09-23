@@ -95,7 +95,7 @@
 
 .progressFill {
   height: 100%;
-  background: var(--gradient-btn-primary, linear-gradient(90deg, #ffd94d, #ffca1a));
+  background: var(--gradient-btn-primary, linear-gradient(90deg, var(--color-yellow), var(--color-yellow-deep)));
   transition: width var(--transition-base);
 }
 
@@ -165,7 +165,6 @@
   border-radius: var(--radius-pill);
 }
 
-
 .questaoSlot {
   transition: opacity 0.3s ease;
 }
@@ -200,10 +199,6 @@
 .desfecho[data-tipo='reforco'] {
   border-color: var(--color-yellow);
   background: linear-gradient(180deg, #fefce8 0%, #ffffff 100%);
-}
-
-.desfechoEmoji {
-  font-size: 3.5rem;
 }
 
 .desfecho h2 {
@@ -246,8 +241,4 @@
   gap: 0.75rem;
   text-align: center;
   padding: 2rem;
-}
-
-.notFoundEmoji {
-  font-size: 3rem;
 }

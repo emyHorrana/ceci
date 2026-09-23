@@ -16,12 +16,6 @@ const MAPA_MINI_MODULOS = MODULOS.reduce((mapa, modulo) => {
   return mapa;
 }, {});
 
-export const TIERS = {
-  0: { label: 'Essencial', descricao: 'Mínimo pra usar a plataforma' },
-  1: { label: 'Importante', descricao: 'Necessário pra tarefas comuns' },
-  2: { label: 'Complementar', descricao: 'Não bloqueia o uso básico' },
-};
-
 const DEFINICOES_UNIDADES = [
   // =========================================================================
   // MÓDULO 1 - MOUSE (Tier 0: Essencial)
@@ -1124,12 +1118,12 @@ const DEFINICOES_UNIDADES = [
 
 export const UNIDADES = DEFINICOES_UNIDADES.map((def) => {
   const miniModulos = def.miniModuloIds
-    .map((id) => MAPA_MINI_MODULOS[id])
-    .filter(Boolean);
+      .map((id) => MAPA_MINI_MODULOS[id])
+      .filter(Boolean);
 
   // Normaliza o objeto de checkpoint para manter compatibilidade
   const checkpoint = def.checkpoint
-    ? {
+      ? {
         ...def.checkpoint,
         // Garante que questoes exista como array
         questoes: def.checkpoint.questoes || [
@@ -1146,7 +1140,7 @@ export const UNIDADES = DEFINICOES_UNIDADES.map((def) => {
         instructions: def.checkpoint.instructions || def.checkpoint.questoes?.[0]?.instructions,
         jogoProps: def.checkpoint.jogoProps || def.checkpoint.questoes?.[0]?.jogoProps,
       }
-    : null;
+      : null;
 
   return {
     ...def,

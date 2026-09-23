@@ -69,27 +69,6 @@
   color: var(--color-yellow-deep);
 }
 
-.divider {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 0.25rem 0;
-}
-
-.divider::before,
-.divider::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: var(--color-border);
-}
-
-.dividerText {
-  font-size: 0.8125rem;
-  color: var(--color-text-muted);
-  white-space: nowrap;
-}
-
 /* Conteúdo do lado da ilustração (a coluna em si é a AuthLayout) */
 .illustrationContent {
   position: relative;
@@ -99,17 +78,10 @@
 }
 
 .mascoteSlot {
+  /* Tamanho da Ceci nesta tela: mexa só aqui (o <Mascote> preenche o slot) */
   width: 260px;
   height: 260px;
   margin: 0 auto 1rem;
-  overflow: hidden;
-}
-
-.mascote {
-  width: 125%;
-  height: 125%;
-  object-fit: contain;
-  transform: translateX(-35px);
 }
 
 .illustrationSubtitle {
@@ -138,7 +110,7 @@
   font-weight: 600;
   color: var(--color-text-primary);
   border: 1px solid rgba(255, 255, 255, 0.9);
-  box-shadow: 0 2px 8px rgba(255, 202, 26, 0.08);
+  box-shadow: 0 2px 8px rgba(var(--color-yellow-deep-rgb), 0.08);
 }
 
 /* Responsivo (só o que é específico daqui - o resto está no AuthLayout) */

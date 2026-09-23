@@ -1,0 +1,11 @@
+/* CECI - Mascote
+   Sem recorte, sem deslocamento: a arte inteira, dentro do tamanho que o
+   elemento pai (slot) definir. Ver comentário em Mascote.jsx. */
+
+.mascote {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    user-select: none;
+}

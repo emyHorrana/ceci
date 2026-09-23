@@ -176,15 +176,6 @@
   margin-bottom: 1.25rem;
 }
 
-.etapaTitulo {
-  font-family: var(--font-display);
-  font-size: 1.6rem;
-  font-weight: 800;
-  color: var(--color-text-primary);
-  margin: 0;
-  line-height: 1.2;
-}
-
 /* Estilo do HTML gerado pelo conteúdo das etapas */
 .etapaConteudo {
   font-size: 1.0625rem;
@@ -241,17 +232,10 @@
 }
 
 .mascoteSlot {
+  /* Tamanho da Ceci nesta tela: mexa só aqui (o <Mascote> preenche o slot) */
   width: 200px;
   height: 200px;
   margin: 0 auto 1.1rem;
-  overflow: hidden;
-}
-
-.mascoteSlot img {
-  width: 125%;
-  height: 125%;
-  object-fit: contain;
-  transform: translateX(-22px);
 }
 
 .dica {
@@ -293,35 +277,6 @@
 .dotActive {
   background: var(--color-yellow-deep);
   transform: scale(1.25);
-}
-
-/* Nudge de revisão (algoritmo adaptativo sugerindo repetir a etapa) */
-
-.revisaoNudge {
-  margin-top: 1.5rem;
-  padding: 1.25rem 1.5rem;
-  background: var(--color-ceci-lavender-pale);
-  border: 1px solid var(--color-ceci-purple-light);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-ceci);
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  align-items: center;
-  text-align: center;
-}
-
-.revisaoTexto {
-  font-size: 0.975rem;
-  color: var(--color-text-primary);
-  margin: 0;
-}
-
-.revisaoAcoes {
-  display: flex;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-  justify-content: center;
 }
 
 /* Footer */
@@ -478,28 +433,6 @@
   margin-top: 0.5rem;
   box-shadow: 0 4px 20px rgba(142, 68, 173, 0.12);
   animation: cardIn 0.35s ease-out both;
-}
-
-.aiHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  padding-bottom: 1rem;
-  margin-bottom: 1.25rem;
-  border-bottom: 1.5px solid #E8DCF8;
-}
-
-.aiHeaderTitle {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: #4A154B;
-  font-size: 1.15rem;
-}
-
-.aiIcon {
-  font-size: 1.3rem;
 }
 
 .aiBadge {

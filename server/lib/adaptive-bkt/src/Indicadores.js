@@ -1,10 +1,10 @@
 /*
- Transforma os dados brutos do RastreadorEventos em indicadores normalizados.
+ Transforma os dados brutos capturados pelo GameMoment (front-end) em indicadores normalizados.
  */
 class Indicadores {
   static calcularVelocidade(tempoIdeal, tempoReal) {
     if (!tempoReal || tempoReal <= 0) return 0;
-    return Indicadores.normalizar(tempoIdeal / tempoReal, 0, 2); 
+    return Indicadores.normalizar(tempoIdeal / tempoReal, 0, 2);
   }
 
   static calcularFoco(trocasDeAba, tempoInativo, abandonado) {

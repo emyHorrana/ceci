@@ -18,14 +18,14 @@
 //
 // O QUE ELE **NÃO** FAZ (de propósito, pra manter simples por enquanto)
 //   - Não decide sozinho quando navegar para a próxima etapa. Quem navega
-//     continua sendo a página (Licao.jsx / MiniModulo.jsx), usando o
+//     continua sendo a página (MiniModulo.jsx), usando o
 //     resultado que o GameMoment entrega em onComplete para liberar o
 //     botão "Próxima" que já existe no rodapé.
 //   - Não calcula métricas ricas (tempo, precisão etc). O objeto de
 //     resultado já nasce com o formato certo pra isso ser encaixado depois
 //     (ver "EVOLUINDO DEPOIS" no fim do arquivo), sem quebrar quem já usa.
 //
-// COMO USAR NUMA PÁGINA (Licao.jsx / MiniModulo.jsx)
+// COMO USAR NUMA PÁGINA (ex.: MiniModulo.jsx)
 //
 //   const [resultadoJogo, setResultadoJogo] = useState(null);
 //
@@ -79,6 +79,7 @@
 //   messages       (objeto, opcional)     Sobrescreve as falas padrão da
 //                    Cecília. Formato:
 //                    {
+//                      waiting: 'Sem pressa, pode tentar quando quiser.',  // antes da 1ª tentativa (null = esconde)
 //                      encourage: ['Quase! Tenta de novo :)', ...],
 //                      success: 'Isso aí! Você conseguiu!',
 //                      skipAvailable: 'Sem problemas, você pode voltar aqui quando quiser.',
@@ -120,6 +121,7 @@ import { useState, useCallback, useMemo, useRef, useEffect } from 'react';
 import styles from './GameMoment.module.css';
 import { ButtonOutline } from '../Buttons/ButtonOutline';
 import { RetroWindow } from '../Window/RetroWindow';
+import { Mascote } from '../Mascote/Mascote';
 
 // Só conta como "tempo parado" gaps de atividade maiores que isso -
 // evita contar o intervalo normal entre um clique e outro como inatividade.
@@ -136,6 +138,10 @@ const LIMIAR_INATIVIDADE_MS = 3000;
 const PAUSA_TRANSICAO_MS = 900;
 
 const DEFAULT_MESSAGES = {
+  // Fala exibida enquanto a pessoa ainda não respondeu (Ceci "em dúvida").
+  // Passe waiting: null em `messages` pra esconder o recadinho até a
+  // primeira tentativa (comportamento antigo).
+  waiting: 'Sem pressa. Quando estiver pronto(a), é só tentar!',
   encourage: [
     'Quase! Vamos tentar de novo?',
     'Sem problema, é assim que a gente aprende. Tenta mais uma vez!',
@@ -160,6 +166,12 @@ export function GameMoment({
   const [attempts, setAttempts] = useState(0);
   const [status, setStatus] = useState('jogando'); // 'jogando' | 'sucesso' | 'pulado'
   const [ceciMessage, setCeciMessage] = useState(null);
+
+  // Qual Ceci aparece: em dúvida até a pessoa acertar; ao acertar, comemora.
+  // Errar ou pular NÃO troca a arte (ela continua "em dúvida" - o tom de
+  // incentivo já vem da fala, e assim ninguém vê uma Ceci "triste").
+  const varianteCeci = status === 'sucesso' ? 'acerto' : 'duvida';
+  const falaCeci = ceciMessage ?? msgs.waiting;
 
   const canSkip = allowSkip && status === 'jogando' && attempts >= maxAttempts;
 
@@ -317,14 +329,16 @@ export function GameMoment({
           {children({ reportResult, attempts, status })}
         </div>
 
-        {/* Recadinho da Cecília - só aparece quando ela tem algo de fato a
-          dizer (erro, acerto ou "pular"), pra não repetir a instrução */}
-        {ceciMessage && (
-            <div className={styles.ceciFeedback}>
+        {/* Recadinho da Cecília - sempre presente enquanto a pessoa joga:
+          em dúvida (ceci-duvida) até acertar, e comemorando (ceci-acerto)
+          no acerto. A fala vem de: erro/acerto/pular → ceciMessage; antes
+          da 1ª tentativa → msgs.waiting (algo curto e sem pressão). */}
+        {falaCeci && (
+            <div className={styles.ceciFeedback} data-variante={varianteCeci}>
               <div className={styles.ceciAvatar} aria-hidden>
-                <img src="/mascote-ceci.png" alt="" />
+                <Mascote variante={varianteCeci} />
               </div>
-              <p className={styles.ceciMessage}>{ceciMessage}</p>
+              <p className={styles.ceciMessage} aria-live="polite">{falaCeci}</p>
             </div>
         )}
 

@@ -43,6 +43,7 @@ import { MonitorGame } from '../components/Game/games/MonitorGame';
 import { FoneGame } from '../components/Game/games/FoneGame';
 import { WebcamLuzGame } from '../components/Game/games/WebcamLuzGame';
 import { MonitorEGabineteGame } from '../components/Game/games/MonitorEGabineteGame';
+import { Mascote } from '../components/Mascote/Mascote';
 import styles from './MiniModulo.module.css';
 
 // Registro das mecânicas disponíveis pro campo `jogo` de uma etapa em data/modulos.js
@@ -548,7 +549,10 @@ export default function MiniModulo() {
               <aside className={styles.ceciliaCol}>
                 <div className={styles.ceciliaCard}>
                   <div className={styles.mascoteSlot} aria-hidden>
-                    <img src="/mascote-ceci.png" alt="Mascote Ceci" />
+                    {/* Durante a leitura da lição a Ceci fica "em dúvida"
+                        (mesma arte do GameMoment enquanto a pessoa ainda não
+                        respondeu) - só muda pra acerto lá dentro do jogo. */}
+                    <Mascote variante="duvida" alt="Mascote Ceci" />
                   </div>
                   <p className={styles.dica}>
                     {etapa.dica || DICAS_PADRAO[indiceSeguro % DICAS_PADRAO.length]}

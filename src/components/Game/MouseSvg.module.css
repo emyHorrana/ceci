@@ -26,8 +26,8 @@
 }
 
 .scroll {
-    fill: var(--color-yellow-light, #ffe880);
-    stroke: var(--color-yellow-deep, #ffca1a);
+    fill: var(--color-yellow-light);
+    stroke: var(--color-yellow-deep);
     stroke-width: 1.5;
 }
 

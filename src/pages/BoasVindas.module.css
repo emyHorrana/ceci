@@ -65,9 +65,10 @@
 }
 
 .dicaMascote {
+  /* Tamanho da Ceci na lateral: mexa só aqui (o <Mascote> preenche o slot) */
   width: 80px;
   height: 80px;
-  object-fit: contain;
+  flex-shrink: 0;
 }
 
 .dicaTexto {
@@ -88,13 +89,6 @@
   align-items: center;
   gap: 1rem;
   text-align: center;
-}
-
-.mascote {
-  width: 150px;
-  height: 150px;
-  object-fit: contain;
-  margin-bottom: 0.25rem;
 }
 
 .titulo {
@@ -134,14 +128,6 @@
   line-height: 1.55;
   margin: 0;
   text-align: justify;
-}
-
-.introPergunta {
-  font-family: var(--font-display);
-  font-size: 1.15rem;
-  font-weight: 700;
-  color: var(--color-text-primary);
-  margin: 0.25rem 0 0;
 }
 
 .introCard > *:last-child {
@@ -194,11 +180,6 @@
 @media (max-width: 768px) {
   .card {
     padding: 2rem 1.5rem;
-  }
-
-  .mascote {
-    width: 107px;
-    height: 107px;
   }
 
   .introCard {

@@ -35,7 +35,7 @@
   font-weight: 600;
   color: var(--color-text-primary);
   border: 1px solid rgba(255, 255, 255, 0.9);
-  box-shadow: 0 2px 8px rgba(255, 202, 26, 0.08);
+  box-shadow: 0 2px 8px rgba(var(--color-yellow-deep-rgb), 0.08);
 }
 
 .featureItem::before {
@@ -72,11 +72,6 @@
   text-align: center;
   padding: 2rem 1rem;
   margin-bottom: 2rem;
-}
-
-.successEmoji {
-  font-size: 52px;
-  margin-bottom: 0.75rem;
 }
 
 .successBox h3 {

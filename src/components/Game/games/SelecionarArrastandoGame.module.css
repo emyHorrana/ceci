@@ -48,14 +48,14 @@
 
 /* Estado "tocado" pelo laço - usando a paleta acolhedora CECI (amarelo ouro/suave) */
 .icone.tocado {
-  border-color: var(--color-yellow-deep, #ffca1a);
-  background: var(--color-yellow-soft, #fff099);
+  border-color: var(--color-yellow-deep);
+  background: var(--color-yellow-soft);
   transform: scale(1.04);
   box-shadow: var(--shadow-sm);
 }
 
 .palavra.tocado {
-  background: var(--color-yellow-soft, #fff099);
+  background: var(--color-yellow-soft);
   color: var(--color-text-primary);
   font-weight: 600;
 }
@@ -64,8 +64,8 @@
 .laco {
   position: absolute;
   pointer-events: none;
-  background: rgba(255, 202, 26, 0.22);
-  border: 2px solid var(--color-yellow-deep, #ffca1a);
+  background: rgba(var(--color-yellow-deep-rgb), 0.22);
+  border: 2px solid var(--color-yellow-deep);
   border-radius: 4px;
   z-index: 10;
 }
@@ -92,4 +92,4 @@
   0% { transform: scale(1); }
   50% { transform: scale(1.02); }
   100% { transform: scale(1); }
-}
+}

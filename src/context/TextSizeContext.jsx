@@ -24,7 +24,6 @@
 // Uso: envolva o app inteiro (App.jsx, fora do <BrowserRouter> ou por
 // fora, não importa a ordem) com <TextSizeProvider>. Pra consumir:
 // const { textSize, setTextSize } = useContext(TextSizeContext)
-// ou o hook useTextSize() em hooks/useTextSize.js.
 
 import { createContext, useEffect } from 'react';
 import { useLocalStorage } from '../hooks/useLocalStorage';
@@ -61,8 +60,8 @@ export function TextSizeProvider({ children }) {
   };
 
   return (
-    <TextSizeContext.Provider value={value}>
-      {children}
-    </TextSizeContext.Provider>
+      <TextSizeContext.Provider value={value}>
+        {children}
+      </TextSizeContext.Provider>
   );
 }

@@ -232,9 +232,9 @@ export default function Dashboard() {
           )}
 
           {/* Trilha de aprendizagem: Módulo → Unidade → mini-módulos.
-              Ver data/unidades.js pro agrupamento em si. Cada
-              UnidadeCard agora recebe o `status` calculado a partir
-              da recomendação real do algoritmo adaptativo
+              Ver data/unidades.js pro agrupamento em si. O
+              GameTrilha atribui a cada Unidade um `status`, calculado a
+              partir da recomendação real do algoritmo adaptativo
               (getProximaUnidade/getPerfisAluno, buscados no topo
               deste componente) - 'atual' destaca a Unidade
               recomendada, 'concluida'/'pendente' vêm do domínio (BKT)

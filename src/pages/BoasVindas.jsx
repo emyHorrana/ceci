@@ -69,9 +69,7 @@
 //    teclado pro algoritmo adaptativo usar depois.
 //
 // AVANÇO SÓ COM MOUSE (sem atalho de teclado aqui)
-// O resto do site usa EspacoParaAvancar (Espaço/Enter + "ou clique
-// aqui") em telas só-de-leitura - mas AQUI no onboarding, de propósito,
-// só existe avanço por clique (ButtonPrimary/PerguntaBinaria/GameMoment),
+// AQUI no onboarding, de propósito, só existe avanço por clique (ButtonPrimary/PerguntaBinaria/GameMoment),
 // nunca tecla de atalho. Motivo: da fase 'pergunta-mouse' em diante, a
 // própria orientação fixa na lateral (ver abaixo) já ensina "clique com
 // o botão ESQUERDO do mouse" como o jeito padrão de interagir - é
@@ -199,6 +197,7 @@ import { RetroWindow } from '../components/Window/RetroWindow';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { simularQuestao } from '../services/algorithmService';
 import { getTempoIdealMs } from '../utils/jogoTempoIdeal';
+import { Mascote } from '../components/Mascote/Mascote';
 import styles from './BoasVindas.module.css';
 
 // Sequência de interações de diagnóstico. Adicione novos passos aqui.
@@ -808,7 +807,9 @@ export default function BoasVindas() {
           {mostrarLateral && (
               <aside className={styles.ceciliaCol}>
                 <RetroWindow title="ceci.exe" icon="👋" accent="purple" className={styles.dicaFrame} bodyClassName={styles.dicaCard}>
-                  <img src="/mascote-ceci.png" alt="Mascote Ceci" className={styles.dicaMascote} />
+                  <div className={styles.dicaMascote}>
+                    <Mascote alt="Mascote Ceci" />
+                  </div>
                   <p className={styles.dicaTexto}>
                     Pra responder e avançar, clique nos botões da tela com
                     o botão <strong>ESQUERDO</strong> do mouse - o que fica

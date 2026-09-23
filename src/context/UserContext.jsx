@@ -4,7 +4,6 @@
 //
 // Uso: envolva os componentes que precisam de dados do usuário com <UserProvider>.
 // Para consumir: const { user, login } = useContext(UserContext)
-// ou use o hook useUser() de hooks/useUser.js.
 
 import { createContext, useState, useCallback, useEffect } from 'react';
 import * as authService from '../services/auth';

@@ -27,12 +27,12 @@
 .taskbar {
   position: absolute;
   /* Troque os rems fixos por porcentagens para acompanhar o "cover" do fundo */
-  left: 6%; 
+  left: 6%;
   right: 6%;
   /* Reduza a distância do fundo e a altura mínima */
   bottom: -0.5rem;
   min-height: 75px; /* Antes estava 100px, o que a deixava muito alta */
-  
+
   display: flex;
   align-items: center;
   justify-content: center;
@@ -79,7 +79,7 @@
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: var(--color-yellow-deep, #ffca1a);
+  background: var(--color-yellow-deep);
   opacity: 0.7;
 }
 
@@ -102,7 +102,7 @@
   color: var(--color-text-primary);
   padding: 1rem 1.5rem;
   background: rgba(255, 255, 255, 0.95);
-  border: 2.5px solid var(--color-yellow-deep, #ffca1a);
+  border: 2.5px solid var(--color-yellow-deep);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
   cursor: grab;
@@ -125,7 +125,7 @@
 .item:hover {
   transform: translateY(-3px);
   border-color: var(--color-border-focus, #e0a100);
-  background: var(--color-yellow-bg, #fffdf0);
+  background: var(--color-yellow-bg);
   box-shadow: var(--shadow-yellow);
 }
 
@@ -207,8 +207,8 @@
 }
 
 .zona[data-sobre='true'] {
-  border-color: var(--color-yellow-deep, #ffca1a);
-  background: var(--color-yellow-pale, #ffffcc);
+  border-color: var(--color-yellow-deep);
+  background: var(--color-yellow-pale);
   color: var(--color-text-primary);
   transform: scale(1.04);
   box-shadow: var(--shadow-yellow);

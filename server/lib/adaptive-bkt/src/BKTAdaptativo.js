@@ -8,7 +8,7 @@ const PerfilAluno = require('./PerfilAluno');
 
 /*
   Junta as 7 classes de backend numa única API.
-  (RastreadorEventos fica de fora - roda só no front-end.)
+  (Os sinais brutos são capturados no front-end pelo GameMoment.)
 
   Uso (dentro do server, ex: server/routes/licao.js):
 
@@ -49,18 +49,18 @@ class BKTAdaptativo {
     pelo teto acima - ver TETO_DOMINIO_ONBOARDING.
    */
   static calcular({
-    correto,
-    dadosEvento,
-    tempoIdeal,
-    tentativas = 1,
-    tentativasAposErro = 0,
-    biasModulo = 0,
-    biasAluno = 0,
-    dominioAnterior = null,
-    questoesAnteriores = 0,
-    pesos,
-    etapaId = null,
-  }) {
+                    correto,
+                    dadosEvento,
+                    tempoIdeal,
+                    tentativas = 1,
+                    tentativasAposErro = 0,
+                    biasModulo = 0,
+                    biasAluno = 0,
+                    dominioAnterior = null,
+                    questoesAnteriores = 0,
+                    pesos,
+                    etapaId = null,
+                  }) {
     const indicadores = Indicadores.aPartirDoEvento(dadosEvento, {
       tempoIdeal,
       tentativas,
@@ -71,9 +71,9 @@ class BKTAdaptativo {
 
     const calculadoraPesos = new CalculadoraPesos(pesos);
     const score = calculadoraPesos.calcularScore(
-      { ...indicadores, acerto, erros },
-      biasAluno,
-      biasModulo
+        { ...indicadores, acerto, erros },
+        biasAluno,
+        biasModulo
     );
 
     const parametros = ParametrosAdaptativos.calcularTodos({
@@ -84,11 +84,11 @@ class BKTAdaptativo {
     });
 
     let dominio = RastreamentoBayesiano.atualizar(
-      parametros.L0,
-      parametros.T,
-      parametros.Guess,
-      parametros.Slip,
-      correto
+        parametros.L0,
+        parametros.T,
+        parametros.Guess,
+        parametros.Slip,
+        correto
     );
 
     // Piso é Math.max(TETO, dominioAnterior) - não Math.max(TETO, 0) -
@@ -127,28 +127,28 @@ class BKTAdaptativo {
     score, domínio atualizado, nível, recomendação e os indicadores usados.
    */
   async finalizarQuestao({
-    correto,
-    dadosEvento,
-    tempoIdeal,
-    tentativas = 1,
-    tentativasAposErro = 0,
-    biasModulo = 0,
-    etapaId = null,
-  }) {
+                           correto,
+                           dadosEvento,
+                           tempoIdeal,
+                           tentativas = 1,
+                           tentativasAposErro = 0,
+                           biasModulo = 0,
+                           etapaId = null,
+                         }) {
     const { score, dominio: novoDominio, nivel, recomendacao, indicadores, acerto, erros } =
-      BKTAdaptativo.calcular({
-        correto,
-        dadosEvento,
-        tempoIdeal,
-        tentativas,
-        tentativasAposErro,
-        biasModulo,
-        biasAluno: this.perfil.biasAluno,
-        dominioAnterior: this.perfil.dominio,
-        questoesAnteriores: this.perfil.questoes,
-        pesos: this.calculadoraPesos.pesos,
-        etapaId,
-      });
+        BKTAdaptativo.calcular({
+          correto,
+          dadosEvento,
+          tempoIdeal,
+          tentativas,
+          tentativasAposErro,
+          biasModulo,
+          biasAluno: this.perfil.biasAluno,
+          dominioAnterior: this.perfil.dominio,
+          questoesAnteriores: this.perfil.questoes,
+          pesos: this.calculadoraPesos.pesos,
+          etapaId,
+        });
 
     // persiste o novo estado do aluno (agregado por módulo)
     this.perfil.registrarTentativa({

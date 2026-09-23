@@ -6,7 +6,7 @@
 //
 // Isso deixa o fluxo inteiro testável hoje (fazer o desafio, ver o
 // resultado, ver a Unidade marcada) sem depender de nada que ainda
-// não foi construído. Quando a integração real existir, trocar as 3
+// não foi construído. Quando a integração real existir, trocar as
 // funções abaixo por chamadas à API - quem consome (UnidadeCheckpoint,
 // futuramente o Dashboard) não precisa mudar nada além do import.
 
@@ -47,20 +47,4 @@ export function registrarResultadoCheckpoint(unidadeId, dominou, { attempts, sin
     em: new Date().toISOString(),
   };
   salvarTudo(dados);
-}
-
-// Resultado do último checkpoint feito pra essa Unidade, ou null se
-// ainda não foi feito nenhum.
-export function getResultadoCheckpoint(unidadeId) {
-  return lerTudo()[unidadeId] ?? null;
-}
-
-// IDs de todas as Unidades marcadas como "precisa de reforço" -
-// candidato natural a alimentar uma seção de pendências no Dashboard
-// mais pra frente.
-export function getUnidadesPendentes() {
-  const dados = lerTudo();
-  return Object.entries(dados)
-    .filter(([, resultado]) => resultado.dominou === false)
-    .map(([unidadeId]) => unidadeId);
 }

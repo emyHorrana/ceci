@@ -91,7 +91,7 @@
 }
 
 .mouseBotao:hover {
-  fill: rgba(255, 202, 26, 0.25);
+  fill: rgba(var(--color-yellow-deep-rgb), 0.25);
 }
 
 .botaoAtivo {
@@ -99,7 +99,7 @@
 }
 
 .botaoPressionado {
-  fill: rgba(255, 202, 26, 0.5) !important;
+  fill: rgba(var(--color-yellow-deep-rgb), 0.5) !important;
 }
 
 .linhaDivisoria {
@@ -108,25 +108,25 @@
 }
 
 .mouseScroll {
-  fill: var(--color-yellow-light, #ffe880);
-  stroke: var(--color-yellow-deep, #ffca1a);
+  fill: var(--color-yellow-light);
+  stroke: var(--color-yellow-deep);
   stroke-width: 1.5;
   cursor: pointer;
   transition: fill var(--transition-fast), stroke var(--transition-fast);
 }
 
 .mouseScroll:hover {
-  fill: var(--color-yellow-deep, #ffca1a);
+  fill: var(--color-yellow-deep);
 }
 
 .scrollAtivo {
-  fill: var(--color-yellow-deep, #ffca1a) !important;
-  stroke: var(--color-border-focus, #e6b400) !important;
+  fill: var(--color-yellow-deep) !important;
+  stroke: var(--color-border-focus, var(--color-yellow-dark)) !important;
   stroke-width: 2 !important;
 }
 
 .scrollGirando {
-  fill: var(--color-yellow-deep, #ffca1a) !important;
+  fill: var(--color-yellow-deep) !important;
 }
 
 .instrucaoApoio {
@@ -148,4 +148,3 @@
   padding: 6px 14px;
   border-radius: var(--radius-pill);
 }
-

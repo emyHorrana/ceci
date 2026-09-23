@@ -11,14 +11,12 @@ import Modulos    from './pages/Modulos';
 import Conquistas from './pages/Conquistas';
 import Perfil     from './pages/Perfil';
 import Laboratorio from './pages/Laboratorio';
-import Licao      from './pages/Licao';
 import MiniModulo from './pages/MiniModulo';
 import UnidadeCheckpoint from './pages/UnidadeCheckpoint';
 import BoasVindas from './pages/BoasVindas';
 
 import { UserProvider }     from './context/UserContext';
 import { ProgressProvider } from './context/ProgressContext';
-import { LessonProvider }   from './context/LessonContext';
 import { TextSizeProvider } from './context/TextSizeContext';
 import { TextSizeControl }  from './components/Accessibility/TextSizeControl';
 
@@ -27,69 +25,64 @@ function App() {
       <TextSizeProvider>
         <UserProvider>
           <ProgressProvider>
-            <LessonProvider>
-              <BrowserRouter>
-                {/* Fora das <Routes> de propósito - precisa aparecer em
-                  QUALQUER tela (login, boas-vindas, dashboard, lição),
-                  não só nas internas. Ver comentário em
-                  TextSizeControl.jsx. */}
-                <TextSizeControl />
+            <BrowserRouter>
+              {/* Fora das <Routes> de propósito - precisa aparecer em
+                QUALQUER tela (login, boas-vindas, dashboard, lição),
+                não só nas internas. Ver comentário em
+                TextSizeControl.jsx. */}
+              <TextSizeControl />
 
-                <Routes>
-                  {/* Página inicial: decide entre boas-vindas (quem nunca
-                    passou pelo onboarding), login (quem já passou mas
-                    não tem sessão) ou dashboard (sessão ativa). Ver
-                    pages/Entrada.jsx. */}
-                  <Route path="/"          element={<Entrada />} />
+              <Routes>
+                {/* Página inicial: decide entre boas-vindas (quem nunca
+                  passou pelo onboarding), login (quem já passou mas
+                  não tem sessão) ou dashboard (sessão ativa). Ver
+                  pages/Entrada.jsx. */}
+                <Route path="/"          element={<Entrada />} />
 
-                  {/* Login: acessível diretamente também (ex: link "Já tem
-                    conta?" no fim do onboarding, ou favoritos antigos) */}
-                  <Route path="/login"     element={<Login />} />
+                {/* Login: acessível diretamente também (ex: link "Já tem
+                  conta?" no fim do onboarding, ou favoritos antigos) */}
+                <Route path="/login"     element={<Login />} />
 
-                  {/* Boas-vindas: apresentação da Ceci + diagnóstico inicial.
-                    Acesso direto continua livre (ex: repetir o onboarding
-                    de propósito), mas a entrada normal do app passa pela
-                    raiz "/" acima, que só mostra essa tela pra quem ainda
-                    não concluiu o onboarding. */}
-                  <Route path="/boas-vindas" element={<BoasVindas />} />
+                {/* Boas-vindas: apresentação da Ceci + diagnóstico inicial.
+                  Acesso direto continua livre (ex: repetir o onboarding
+                  de propósito), mas a entrada normal do app passa pela
+                  raiz "/" acima, que só mostra essa tela pra quem ainda
+                  não concluiu o onboarding. */}
+                <Route path="/boas-vindas" element={<BoasVindas />} />
 
-                  {/* Cadastro: criação de nova conta */}
-                  <Route path="/cadastro"  element={<Cadastro />} />
+                {/* Cadastro: criação de nova conta */}
+                <Route path="/cadastro"  element={<Cadastro />} />
 
-                  {/* Dashboard: visão geral do progresso do aluno */}
-                  <Route path="/dashboard" element={<Dashboard />} />
+                {/* Dashboard: visão geral do progresso do aluno */}
+                <Route path="/dashboard" element={<Dashboard />} />
 
-                  {/* Módulos: listagem dos módulos do currículo */}
-                  <Route path="/modulos"   element={<Modulos />} />
+                {/* Módulos: listagem dos módulos do currículo */}
+                <Route path="/modulos"   element={<Modulos />} />
 
-                  {/* Conquistas: catálogo completo (desbloqueadas e não) */}
-                  <Route path="/conquistas" element={<Conquistas />} />
+                {/* Conquistas: catálogo completo (desbloqueadas e não) */}
+                <Route path="/conquistas" element={<Conquistas />} />
 
-                  {/* Perfil: dados básicos (editáveis) + resumo de
-                    conquistas/streak. Já existia como item de
-                    navegação na sidebar (AppLayout.jsx), sem rota. */}
-                  <Route path="/perfil" element={<Perfil />} />
+                {/* Perfil: dados básicos (editáveis) + resumo de
+                  conquistas/streak. Já existia como item de
+                  navegação na sidebar (AppLayout.jsx), sem rota. */}
+                <Route path="/perfil" element={<Perfil />} />
 
-                  {/* Laboratório: área de prática livre e infinita (mouse/
-                    teclado), fora da trilha de módulos - ver comentário
-                    no topo de pages/Laboratorio.jsx. */}
-                  <Route path="/laboratorio" element={<Laboratorio />} />
+                {/* Laboratório: área de prática livre e infinita (mouse/
+                  teclado), fora da trilha de módulos - ver comentário
+                  no topo de pages/Laboratorio.jsx. */}
+                <Route path="/laboratorio" element={<Laboratorio />} />
 
-                  {/* Mini-módulo: estudo de uma lição específica */}
-                  {/* Ex: /mini-modulo/1-1  →  módulo 1, mini-módulo 1 */}
-                  <Route path="/mini-modulo/:miniModuloId" element={<MiniModulo />} />
+                {/* Mini-módulo: estudo de uma lição específica */}
+                {/* Ex: /mini-modulo/1-1  →  módulo 1, mini-módulo 1 */}
+                <Route path="/mini-modulo/:miniModuloId" element={<MiniModulo />} />
 
-                  {/* Desafio de fim de Unidade: jogo mais difícil
-                    (associação/quiz) que dá o veredito de domínio da
-                    Unidade inteira. Ver data/unidades.js (campo
-                    `checkpoint`) e pages/UnidadeCheckpoint.jsx. */}
-                  <Route path="/unidade/:unidadeId/checkpoint" element={<UnidadeCheckpoint />} />
-
-                  {/* Lição legada (mantida por compatibilidade) */}
-                  <Route path="/licoes/:id" element={<Licao />} />
-                </Routes>
-              </BrowserRouter>
-            </LessonProvider>
+                {/* Desafio de fim de Unidade: jogo mais difícil
+                  (associação/quiz) que dá o veredito de domínio da
+                  Unidade inteira. Ver data/unidades.js (campo
+                  `checkpoint`) e pages/UnidadeCheckpoint.jsx. */}
+                <Route path="/unidade/:unidadeId/checkpoint" element={<UnidadeCheckpoint />} />
+              </Routes>
+            </BrowserRouter>
           </ProgressProvider>
         </UserProvider>
       </TextSizeProvider>

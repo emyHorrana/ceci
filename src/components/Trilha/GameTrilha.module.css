@@ -112,7 +112,7 @@
 .unidadeBannerAtual {
   background: #FFFDF2;
   border-color: var(--color-yellow-deep);
-  box-shadow: 0 4px 18px rgba(255, 202, 26, 0.22);
+  box-shadow: 0 4px 18px rgba(var(--color-yellow-deep-rgb), 0.22);
 }
 
 .unidadeTitulo {
@@ -213,12 +213,12 @@
    com o vermelho do nó ativo (ver .nodeAtivo). */
 .nodeConcluido {
   background: var(--gradient-btn-primary);
-  box-shadow: 0 7px 0 var(--color-yellow-deep), 0 12px 22px rgba(255, 202, 26, 0.45);
+  box-shadow: 0 7px 0 var(--color-yellow-deep), 0 12px 22px rgba(var(--color-yellow-deep-rgb), 0.45);
   color: #5C4400;
 }
 .nodeConcluido:hover {
   transform: translateY(-2px);
-  box-shadow: 0 9px 0 var(--color-yellow-deep), 0 16px 26px rgba(255, 202, 26, 0.6);
+  box-shadow: 0 9px 0 var(--color-yellow-deep), 0 16px 26px rgba(var(--color-yellow-deep-rgb), 0.6);
   filter: brightness(1.05);
 }
 .nodeConcluido:active {

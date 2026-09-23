@@ -88,18 +88,14 @@ ceci/
 │   ├── pages/
 │   │   ├── Login.jsx        # Tela de login (autenticação via Supabase Auth)
 │   │   ├── Cadastro.jsx     # Tela de cadastro de novo usuário
-│   │   ├── Dashboard.jsx    # Visão geral do progresso do aluno
-│   │   └── Licao.jsx        # Exibição de lição com steps sequenciais
+│   │   └── Dashboard.jsx    # Visão geral do progresso do aluno
 │   ├── context/
 │   │   ├── UserContext.jsx     # Autenticação e dados do usuário logado
-│   │   ├── ProgressContext.jsx # Módulos e progresso geral do aluno
-│   │   └── LessonContext.jsx   # Lição em andamento
+│   │   └── ProgressContext.jsx # Módulos e progresso geral do aluno
 │   ├── services/
 │   │   ├── auth.js             # Login, cadastro e logout via Supabase Auth
 │   │   ├── progressService.js  # Módulos e progresso - lê direto do Supabase
-│   │   ├── lessonService.js    # Lições e exercícios - usa apiClient (backend)
 │   │   ├── algorithmService.js # Lógica de classificação de nível
-│   │   ├── storageService.js   # Utilitários de localStorage (cache, preferências)
 │   │   └── api.js              # Cliente Axios apontando para o backend
 │   └── lib/
 │       └── supabaseClient.js   # Instância do Supabase SDK (frontend)
@@ -115,7 +111,7 @@ ceci/
 - **React 19** com React Router DOM (SPA, roteamento client-side)
 - **Vite** como bundler, com proxy `/api` configurado para evitar CORS em desenvolvimento
 - Autenticação e progresso comunicam diretamente com o Supabase via SDK do lado do cliente; funcionalidades de conteúdo e IA utilizam o backend Express como intermediário
-- Rotas disponíveis: `/` (Login), `/cadastro` (Cadastro), `/dashboard` e `/licoes/:id`
+- Rotas disponíveis: `/` (Entrada), `/login`, `/boas-vindas`, `/cadastro`, `/dashboard`, `/modulos`, `/conquistas`, `/perfil`, `/laboratorio`, `/mini-modulo/:miniModuloId` e `/unidade/:unidadeId/checkpoint`
 
 ### Backend
 - **Node.js + Express** rodando na porta `3001`
@@ -183,14 +179,14 @@ O diagrama de classes completo está em `ceci_uml.pdf`. As entidades principais 
 
 ### Configuração
 1. Copie `.env.example` para `.env` na raiz e preencha:
-   - `VITE_SUPABASE_URL`
-   - `VITE_SUPABASE_ANON_KEY`
+    - `VITE_SUPABASE_URL`
+    - `VITE_SUPABASE_ANON_KEY`
 
 2. Copie `.env.example` para `server/.env` e preencha:
-   - `SUPABASE_URL`
-   - `SUPABASE_ANON_KEY`
-   - `SUPABASE_SERVICE_ROLE_KEY`
-   - `GEMINI_API_KEY`
+    - `SUPABASE_URL`
+    - `SUPABASE_ANON_KEY`
+    - `SUPABASE_SERVICE_ROLE_KEY`
+    - `GEMINI_API_KEY`
 
 > ⚠️ **Nunca commite o arquivo `.env`.** Ele já está no `.gitignore` do servidor.
 

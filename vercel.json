@@ -1,5 +1,8 @@
 {
   "git": { "deploymentEnabled": false },
+  "functions": {
+    "api/index.cjs": {}
+  },
   "rewrites": [
     { "source": "/api/:path*", "destination": "/api/index" },
     { "source": "/(.*)", "destination": "/index.html" }

@@ -1,7 +1,7 @@
 {
   "git": { "deploymentEnabled": false },
   "functions": {
-    "api/index.cjs": {}
+    "api/index.js": { "maxDuration": 10 }
   },
   "rewrites": [
     { "source": "/api/:path*", "destination": "/api/index" },

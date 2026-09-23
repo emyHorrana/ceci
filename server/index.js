@@ -15,7 +15,7 @@ app.use('/api/licoes',    require('./routes/licoes'));
 app.use('/api/progresso', require('./routes/progresso'));
 app.use('/api/conteudo',  require('./routes/conteudo'));
 
-// Na Vercel o arquivo é importado por api/index.cjs como serverless
+// Na Vercel o arquivo é importado por api/index.js como serverless
 // function - quem escuta é a plataforma, não o app.listen daqui.
 // Localmente (npm run dev) continua subindo o servidor normal.
 if (!process.env.VERCEL) {

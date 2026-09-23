@@ -144,14 +144,16 @@
   flex-direction: column;
 }
 
+.contentFrame {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
 .card {
   background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-xl);
   padding: 2.5rem 2.75rem;
-  box-shadow: var(--shadow-md);
   flex: 1;
-  animation: cardIn 0.35s cubic-bezier(0.4, 0, 0.2, 1) both;
 }
 
 @keyframes cardIn {
@@ -605,9 +607,5 @@
 
   .footer {
     padding: 1rem 1.25rem;
-  }
-
-  .card {
-    animation: cardIn 0.8s ease-out both;
   }
 }

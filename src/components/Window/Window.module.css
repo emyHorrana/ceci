@@ -1,0 +1,118 @@
+/* RetroWindow - moldura "computador antigo" reutilizável.
+   A cor de fundo do CORPO da janela continua vindo da própria página
+   (bodyClassName, ex: .card do BoasVindas.module.css) - este arquivo só
+   cuida do "objeto físico": borda grossa, sombra dura (sem blur, pra
+   parecer ilustração vetorial e não um card de SaaS comum), cantos
+   arredondados e a barra de título. */
+
+.window {
+    background: var(--gradient-card);
+    border: 2px solid var(--color-text-primary);
+    border-radius: var(--radius-lg);
+    /* Sombra "dura", deslocada, sem blur - dá a sensação de objeto sólido
+       com espessura (estilo das ilustrações retrô de referência), em vez
+       do sombreado suave e difuso típico de card de SaaS moderno. */
+    box-shadow: 6px 6px 0 rgba(43, 33, 64, 0.16);
+    overflow: hidden;
+    width: 100%;
+    animation: windowIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+@keyframes windowIn {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.titlebar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.6rem 1rem;
+    border-bottom: 2px solid var(--color-text-primary);
+    font-family: var(--font-mono);
+}
+
+/* Variantes de cor da barra de título - sempre em tom "light/pale" da
+   escala (nunca a cor saturada), pra manter contraste alto com o texto
+   escuro da legenda e não competir com o conteúdo dentro da janela. */
+
+.accent-purple .titlebar {
+    background: var(--color-ceci-purple-light);
+}
+
+.accent-pink .titlebar {
+    background: var(--color-ceci-pink-light);
+}
+
+.accent-yellow .titlebar {
+    background: var(--color-yellow-light);
+}
+
+.caption {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 0.8rem;
+    letter-spacing: 0.01em;
+    color: var(--color-text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.captionIcon {
+    font-size: 0.95rem;
+    line-height: 1;
+}
+
+/* Botõezinhos "_ ▢ ×" - só decorativos (ver aria-hidden no componente),
+   não substituem nenhuma ação real da página. */
+.controls {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    flex-shrink: 0;
+}
+
+.ctrl {
+    width: 1.1rem;
+    height: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1.5px solid var(--color-text-primary);
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.4);
+    font-size: 0.6rem;
+    line-height: 1;
+    color: var(--color-text-primary);
+}
+
+.ctrlClose {
+    background: rgba(255, 255, 255, 0.55);
+}
+
+@media (max-width: 768px) {
+    .titlebar {
+        padding: 0.5rem 0.75rem;
+    }
+
+    .caption {
+        font-size: 0.72rem;
+    }
+
+    .ctrl {
+        width: 0.95rem;
+        height: 0.95rem;
+        font-size: 0.55rem;
+    }
+}

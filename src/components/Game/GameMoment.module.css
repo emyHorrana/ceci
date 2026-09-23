@@ -1,31 +1,31 @@
 /* CECI - GameMoment
    Momento de jogo/prática dentro de uma lição.
-   Visualmente distinto do card de teoria: borda tracejada +
-   fundo levemente lilás, pra reforçar "aqui é modo ação". */
+   A moldura (borda, sombra, cantos, barra de título) agora vem do
+   RetroWindow (accent="branco" - ver GameMoment.jsx) - mesma casca de
+   janela usada no resto do site. Aqui só cuidamos do CORPO (padding,
+   layout) e do estado visual (borda/fundo mudam em sucesso/pulado). */
 
 .gameMoment {
-  background: var(--color-surface, #ffffff);
-  border: 2px dashed var(--color-yellow);
-  border-radius: var(--radius-xl);
   padding: 2rem 2.25rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 1.25rem;
   text-align: center;
-  box-shadow: var(--shadow-md);
-  animation: gameIn 0.35s cubic-bezier(0.4, 0, 0.2, 1) both;
 }
 
-@keyframes gameIn {
-  from {
-    opacity: 0;
-    transform: scale(0.97);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+/* .frame cai no MESMO elemento que recebe o data-status (o <div> externo
+   do RetroWindow - ver className={styles.frame} em GameMoment.jsx), por
+   isso dá pra sobrescrever a borda/fundo padrão da janela aqui mesmo,
+   sem precisar tocar em Window.module.css (que não sabe nada sobre
+   status de jogo). */
+.frame[data-status='sucesso'] {
+  border-color: var(--color-success) !important;
+  background: var(--color-success-bg) !important;
+}
+
+.frame[data-status='pulado'] {
+  background: var(--color-yellow-bg) !important;
 }
 
 /* Aviso de transição */
@@ -55,15 +55,7 @@
   letter-spacing: 0.04em;
 }
 
-/* Título e instruções */
-
-.title {
-  font-family: var(--font-display);
-  font-size: 1.4rem;
-  font-weight: 800;
-  color: var(--color-text-primary);
-  margin: 0;
-}
+/* Instruções */
 
 .instructions {
   font-size: 1.0625rem;
@@ -133,19 +125,7 @@
   color: var(--color-text-muted);
 }
 
-/* Estados */
-
-.gameMoment[data-status='sucesso'] {
-  background: var(--color-success-bg);
-  border-color: var(--color-success);
-  border-style: solid;
-}
-
-.gameMoment[data-status='pulado'] {
-  background: var(--color-yellow-bg);
-  border-color: var(--color-border);
-  border-style: solid;
-}
+/* Estados: ver .frame[data-status=...] no topo do arquivo */
 
 /* Feedback de erro compartilhado entre as mecânicas de jogo (arrastar
    e soltar, clicar no alvo, ...): borda/fundo de erro + tremidinha.

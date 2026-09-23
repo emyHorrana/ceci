@@ -1,0 +1,46 @@
+/* MouseSvg.module.css */
+
+.mouseSvg {
+    width: 100%;
+    max-width: 100%;
+    max-height: 120px; /* Impede o SVG de estourar a altura vertical */
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    object-fit: contain;
+}
+
+.corpo {
+    fill: var(--color-bg, #f8fafc);
+    stroke: var(--color-border, #cbd5e1);
+    stroke-width: 4;
+}
+
+.botaoDireito {
+    fill: transparent;
+}
+
+.linhaDivisoria {
+    stroke: var(--color-border, #cbd5e1);
+    stroke-width: 3;
+}
+
+.scroll {
+    fill: var(--color-yellow-light, #ffe880);
+    stroke: var(--color-yellow-deep, #ffca1a);
+    stroke-width: 1.5;
+}
+
+.botaoEsquerdo {
+    fill: rgba(170, 139, 245, 0.35);
+    animation: pulsarBotao 1.6s ease-in-out infinite;
+}
+
+@keyframes pulsarBotao {
+    0%, 100% {
+        fill: rgba(170, 139, 245, 0.35);
+    }
+    50% {
+        fill: rgba(170, 139, 245, 0.65);
+    }
+}

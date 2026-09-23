@@ -21,6 +21,7 @@ import { reformularExplicacao } from '../services/aiService';
 import { isAdmin } from '../utils/roles';
 import { ButtonPrimary } from '../components/Buttons/ButtonPrimary';
 import { ButtonOutline } from '../components/Buttons/ButtonOutline';
+import { RetroWindow } from '../components/Window/RetroWindow';
 import { GameMoment } from '../components/Game/GameMoment';
 import { ClicarAlvoGame } from '../components/Game/games/ClicarAlvoGame';
 import { ArrastarSoltarGame } from '../components/Game/games/ArrastarSoltarGame';
@@ -387,9 +388,9 @@ export default function MiniModulo() {
 
   if (initializing || !user) {
     return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100svh' }}>
-        Carregando...
-      </div>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100svh' }}>
+          Carregando...
+        </div>
     );
   }
 
@@ -454,16 +455,20 @@ export default function MiniModulo() {
                     </div>
                 )
             ) : (
-                <div className={styles.card}>
-                  <div className={styles.teoriaHeader}>
-                    <h1 className={styles.etapaTitulo}>{etapa.titulo}</h1>
-
-                    {mostrarExplicacaoIA[indiceSeguro] && (
+                <RetroWindow
+                    title={etapa.titulo}
+                    icon="📖"
+                    accent="branco"
+                    className={styles.contentFrame}
+                    bodyClassName={styles.card}
+                >
+                  {mostrarExplicacaoIA[indiceSeguro] && (
+                      <div className={styles.teoriaHeader}>
                         <span className={styles.aiBadge}>
                     ✨ Explicação personalizada da Ceci
                   </span>
-                    )}
-                  </div>
+                      </div>
+                  )}
 
                   {mostrarExplicacaoIA[indiceSeguro] ? (
                       <div className={styles.aiCard}>
@@ -534,7 +539,7 @@ export default function MiniModulo() {
                         </div>
                       </>
                   )}
-                </div>
+                </RetroWindow>
             )}
           </div>
 

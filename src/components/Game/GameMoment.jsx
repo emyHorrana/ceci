@@ -119,10 +119,21 @@
 import { useState, useCallback, useMemo, useRef, useEffect } from 'react';
 import styles from './GameMoment.module.css';
 import { ButtonOutline } from '../Buttons/ButtonOutline';
+import { RetroWindow } from '../Window/RetroWindow';
 
 // Só conta como "tempo parado" gaps de atividade maiores que isso -
 // evita contar o intervalo normal entre um clique e outro como inatividade.
 const LIMIAR_INATIVIDADE_MS = 3000;
+
+// Pausa entre a pessoa acertar/pular e o GameMoment de fato avisar a
+// página (onComplete) pra trocar de card. Sem isso, o React batiza a
+// troca de status ('sucesso'/'pulado') e a troca de fase da página no
+// mesmo commit - a pessoa nunca chega a VER a borda verde/"Isso aí!"
+// antes do card já ter sido substituído pelo próximo. Esta pausa é
+// também o lugar certo pra, no futuro, tocar um efeito sonoro de
+// acerto: ele entraria bem no início do setTimeout abaixo, antes (ou
+// junto) da chamada de onComplete.
+const PAUSA_TRANSICAO_MS = 900;
 
 const DEFAULT_MESSAGES = {
   encourage: [
@@ -135,15 +146,15 @@ const DEFAULT_MESSAGES = {
 };
 
 export function GameMoment({
-  title,
-  instructions,
-  children,
-  maxAttempts = 3,
-  allowSkip = true,
-  onComplete,
-  onAbandon,
-  messages,
-}) {
+                             title,
+                             instructions,
+                             children,
+                             maxAttempts = 3,
+                             allowSkip = true,
+                             onComplete,
+                             onAbandon,
+                             messages,
+                           }) {
   const msgs = useMemo(() => ({ ...DEFAULT_MESSAGES, ...messages }), [messages]);
 
   const [attempts, setAttempts] = useState(0);
@@ -163,6 +174,10 @@ export function GameMoment({
   const tempoInativoRef = useRef(0);
   const ultimaAtividadeRef = useRef(null);
   const statusRef = useRef(status);
+  // Guarda o timeout da PAUSA_TRANSICAO_MS (ver constante no topo do
+  // arquivo), pra poder cancelar se o componente desmontar antes dele
+  // disparar (troca de etapa/saída da página no meio da pausa).
+  const timeoutTransicaoRef = useRef(null);
 
   useEffect(() => {
     inicioRef.current = Date.now();
@@ -212,6 +227,12 @@ export function GameMoment({
       eventosDeAtividade.forEach((ev) => window.removeEventListener(ev, registrarAtividade));
       document.removeEventListener('visibilitychange', registrarVisibilidade);
 
+      // Cancela a pausa de transição pendente (ver PAUSA_TRANSICAO_MS) -
+      // se a etapa mudou por outro caminho (ex: "Anterior") enquanto o
+      // setTimeout ainda não disparou, evita chamar onComplete de um
+      // GameMoment que já saiu de tela.
+      if (timeoutTransicaoRef.current) clearTimeout(timeoutTransicaoRef.current);
+
       // Componente sendo desmontado ainda em jogo (trocou de etapa, saiu
       // da página) - nem acertou, nem pulou. onComplete não é o lugar
       // certo pra isso (é reservado pra conclusão de verdade), por isso
@@ -234,7 +255,15 @@ export function GameMoment({
     if (success) {
       setStatus('sucesso');
       setCeciMessage(msgs.success);
-      onComplete?.({ success: true, attempts, skipped: false, meta, sinais: coletarSinais() });
+      // Segura o aviso pra página (troca de card) até a pessoa ter
+      // tempo de ver a borda verde/mensagem de acerto - ver
+      // PAUSA_TRANSICAO_MS no topo do arquivo. Sinais/meta são
+      // coletados JÁ (no instante do acerto de verdade), só o
+      // onComplete que atrasa.
+      const sinais = coletarSinais();
+      timeoutTransicaoRef.current = setTimeout(() => {
+        onComplete?.({ success: true, attempts, skipped: false, meta, sinais });
+      }, PAUSA_TRANSICAO_MS);
       return;
     }
 
@@ -247,60 +276,72 @@ export function GameMoment({
   const handleSkip = useCallback(() => {
     setStatus('pulado');
     setCeciMessage(msgs.skipAvailable);
-    onComplete?.({ success: false, attempts, skipped: true, sinais: coletarSinais() });
+    // Mesma pausa do caminho de sucesso acima, por consistência (a
+    // pessoa também merece ver o aviso de "pular" antes do card trocar).
+    const sinais = coletarSinais();
+    timeoutTransicaoRef.current = setTimeout(() => {
+      onComplete?.({ success: false, attempts, skipped: true, sinais });
+    }, PAUSA_TRANSICAO_MS);
   }, [attempts, msgs, onComplete, coletarSinais]);
 
   return (
-    <div className={styles.gameMoment} data-status={status}>
+      <RetroWindow
+          title={title}
+          icon="🎮"
+          accent="branco"
+          data-status={status}
+          className={styles.frame}
+          bodyClassName={styles.gameMoment}
+      >
 
-      {/* Aviso de transição: sinaliza que a leitura acabou e agora é ação */}
-      <div className={styles.modeBanner}>
-        <span className={styles.modeLabel}>Hora de praticar!</span>
-      </div>
+        {/* Aviso de transição: sinaliza que a leitura acabou e agora é ação -
+          agora é o principal sinal visual de "modo jogo", já que a moldura
+          em si é a mesma casca de janela usada em toda lição/onboarding */}
+        <div className={styles.modeBanner}>
+          <span className={styles.modeLabel}>Hora de praticar!</span>
+        </div>
 
-      <h2 className={styles.title}>{title}</h2>
+        {status === 'jogando' && (
+            <p className={styles.instructions}>{instructions}</p>
+        )}
 
-      {status === 'jogando' && (
-        <p className={styles.instructions}>{instructions}</p>
-      )}
-
-      {/* Slot do jogo de verdade - o GameMoment não sabe o que tem aqui dentro */}
-      <div className={styles.gameSlot}>
-        {/* eslint-disable-next-line react-hooks/refs -- reportResult só
+        {/* Slot do jogo de verdade - o GameMoment não sabe o que tem aqui dentro */}
+        <div className={styles.gameSlot}>
+          {/* eslint-disable-next-line react-hooks/refs -- reportResult só
             LÊ refs quando é de fato CHAMADO (dentro de um evento do
             jogo filho), nunca durante este render - é o padrão
             clássico de render prop. A regra do compiler não consegue
             provar isso estaticamente e trata qualquer função exposta
             aqui que toque ref em algum lugar do corpo como arriscada,
             mesmo sem ser invocada agora. */}
-        {children({ reportResult, attempts, status })}
-      </div>
-
-      {/* Recadinho da Cecília - só aparece quando ela tem algo de fato a
-          dizer (erro, acerto ou "pular"), pra não repetir a instrução */}
-      {ceciMessage && (
-        <div className={styles.ceciFeedback}>
-          <div className={styles.ceciAvatar} aria-hidden>
-            <img src="/mascote-ceci.png" alt="" />
-          </div>
-          <p className={styles.ceciMessage}>{ceciMessage}</p>
+          {children({ reportResult, attempts, status })}
         </div>
-      )}
 
-      {/* Indicador discreto de tentativas - só aparece depois do 1º erro,
+        {/* Recadinho da Cecília - só aparece quando ela tem algo de fato a
+          dizer (erro, acerto ou "pular"), pra não repetir a instrução */}
+        {ceciMessage && (
+            <div className={styles.ceciFeedback}>
+              <div className={styles.ceciAvatar} aria-hidden>
+                <img src="/mascote-ceci.png" alt="" />
+              </div>
+              <p className={styles.ceciMessage}>{ceciMessage}</p>
+            </div>
+        )}
+
+        {/* Indicador discreto de tentativas - só aparece depois do 1º erro,
           pra não deixar a pessoa ansiosa logo de cara */}
-      {attempts > 0 && status === 'jogando' && (
-        <div className={styles.attemptsRow}>
+        {attempts > 0 && status === 'jogando' && (
+            <div className={styles.attemptsRow}>
           <span className={styles.attemptsText}>
             Tentativa {attempts} de {maxAttempts}
           </span>
-          {canSkip && (
-            <ButtonOutline size="small" onClick={handleSkip}>
-              Pular por enquanto
-            </ButtonOutline>
-          )}
-        </div>
-      )}
-    </div>
+              {canSkip && (
+                  <ButtonOutline size="small" onClick={handleSkip}>
+                    Pular por enquanto
+                  </ButtonOutline>
+              )}
+            </div>
+        )}
+      </RetroWindow>
   );
 }

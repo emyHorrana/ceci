@@ -1,8 +1,9 @@
-
 import { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { LessonContext } from '../context/LessonContext';
 import { ButtonPrimary } from '../components/Buttons/ButtonPrimary';
+import { ButtonOutline } from '../components/Buttons/ButtonOutline';
+import { RetroWindow } from '../components/Window/RetroWindow';
 import styles from './Licao.module.css';
 
 export default function Licao() {
@@ -40,77 +41,81 @@ export default function Licao() {
   };
 
   return (
-    <div className={styles.licaoContainer}>
-      {/* HEADER */}
-      <header className={styles.header}>
-        <button className={styles.backBtn} onClick={() => navigate('/dashboard')}>
-          Voltar
-        </button>
-        <h1 className={styles.title}>{lesson?.title}</h1>
-        <div className={styles.progress}>
-          Etapa {currentStepIndex + 1} de {totalSteps}
-        </div>
-      </header>
+      <div className={styles.licaoContainer}>
+        {/* HEADER */}
+        <header className={styles.header}>
+          <button className={styles.backBtn} onClick={() => navigate('/dashboard')}>
+            Voltar
+          </button>
+          <h1 className={styles.title}>{lesson?.title}</h1>
+          <div className={styles.progress}>
+            Etapa {currentStepIndex + 1} de {totalSteps}
+          </div>
+        </header>
 
-      {/* CONTEÚDO */}
-      <main className={styles.contentArea}>
-        <div className={styles.content}>
-          {currentStep?.type === 'teoria' && (
-            <div className={styles.teoriaContent}>
-              <div className={styles.teoriaEmoji}>{currentStep?.emoji}</div>
-              <h2>{currentStep?.title}</h2>
-              <div 
-                className={styles.teoriaText}
-                dangerouslySetInnerHTML={{ __html: currentStep?.content }}
-              />
-            </div>
-          )}
+        {/* CONTEÚDO */}
+        <main className={styles.contentArea}>
+          <RetroWindow
+              title={currentStep?.title || lesson?.title || 'licao.exe'}
+              icon={currentStep?.type === 'pratica' ? '🎮' : '📖'}
+              accent="branco"
+              className={styles.contentFrame}
+              bodyClassName={styles.content}
+          >
+            {currentStep?.type === 'teoria' && (
+                <div className={styles.teoriaContent}>
+                  <div className={styles.teoriaEmoji}>{currentStep?.emoji}</div>
+                  <div
+                      className={styles.teoriaText}
+                      dangerouslySetInnerHTML={{ __html: currentStep?.content }}
+                  />
+                </div>
+            )}
 
-          {currentStep?.type === 'pratica' && (
-            <div className={styles.praticaContent}>
-              <h2>{currentStep?.title}</h2>
-              <div className={styles.exerciseContainer}>
-                <p className={styles.question}>{currentStep?.question}</p>
-                {/* Aqui viria o componente interativo do exercício */}
-              </div>
-            </div>
-          )}
-        </div>
+            {currentStep?.type === 'pratica' && (
+                <div className={styles.praticaContent}>
+                  <div className={styles.exerciseContainer}>
+                    <p className={styles.question}>{currentStep?.question}</p>
+                    {/* Aqui viria o componente interativo do exercício */}
+                  </div>
+                </div>
+            )}
+          </RetroWindow>
 
-        {/* PERSONAGEM CECÍLIA */}
-        <aside className={styles.ceciliaArea}>
-          <div className={styles.personagem}>👩‍🏫</div>
-          <p className={styles.tip}>
-            {currentStep?.tip || 'Você está indo bem! Continue assim! 💪'}
-          </p>
-        </aside>
-      </main>
+          {/* PERSONAGEM CECÍLIA */}
+          <aside className={styles.ceciliaArea}>
+            <div className={styles.personagem}>👩‍🏫</div>
+            <p className={styles.tip}>
+              {currentStep?.tip || 'Você está indo bem! Continue assim! 💪'}
+            </p>
+          </aside>
+        </main>
 
-      {/* FOOTER COM NAVEGAÇÃO */}
-      <footer className={styles.footer}>
-        <ButtonOutline
-          onClick={handlePrevious}
-          disabled={isFirstStep}
-        >
-          Anterior
-        </ButtonOutline>
+        {/* FOOTER COM NAVEGAÇÃO */}
+        <footer className={styles.footer}>
+          <ButtonOutline
+              onClick={handlePrevious}
+              disabled={isFirstStep}
+          >
+            Anterior
+          </ButtonOutline>
 
-        <div className={styles.stepIndicator}>
-          {Array.from({ length: totalSteps }).map((_, i) => (
-            <div
-              key={i}
-              className={`${styles.stepDot} ${i <= currentStepIndex ? styles.active : ''}`}
-              onClick={() => setCurrentStepIndex(i)}
-              role="button"
-              tabIndex={0}
-            />
-          ))}
-        </div>
+          <div className={styles.stepIndicator}>
+            {Array.from({ length: totalSteps }).map((_, i) => (
+                <div
+                    key={i}
+                    className={`${styles.stepDot} ${i <= currentStepIndex ? styles.active : ''}`}
+                    onClick={() => setCurrentStepIndex(i)}
+                    role="button"
+                    tabIndex={0}
+                />
+            ))}
+          </div>
 
-        <ButtonPrimary onClick={handleNext}>
-          {isLastStep ? 'Finalizar aula' : 'Próxima'}
-        </ButtonPrimary>
-      </footer>
-    </div>
+          <ButtonPrimary onClick={handleNext}>
+            {isLastStep ? 'Finalizar aula' : 'Próxima'}
+          </ButtonPrimary>
+        </footer>
+      </div>
   );
 }

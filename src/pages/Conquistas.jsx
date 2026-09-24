@@ -16,6 +16,7 @@ import { AppLayout, PageHeader } from '../components/Layout/AppLayout';
 import appStyles from '../components/Layout/AppLayout.module.css';
 import { AchievementCard } from '../components/Cards/AchievementCard';
 import { getConquistasComStatus, agruparPorTipo } from '../data/conquistas';
+import { Footer } from '../components/Footer/Footer';
 import styles from './Conquistas.module.css';
 
 export default function Conquistas() {
@@ -79,6 +80,7 @@ export default function Conquistas() {
           </div>
         ))}
       </div>
+      <Footer />
     </AppLayout>
   );
 }

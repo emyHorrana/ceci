@@ -14,7 +14,7 @@ import Laboratorio from './pages/Laboratorio';
 import MiniModulo from './pages/MiniModulo';
 import UnidadeCheckpoint from './pages/UnidadeCheckpoint';
 import BoasVindas from './pages/BoasVindas';
-
+import SobreNos from './pages/SobreNos';
 import { UserProvider }     from './context/UserContext';
 import { ProgressProvider } from './context/ProgressContext';
 import { TextSizeProvider } from './context/TextSizeContext';
@@ -75,6 +75,8 @@ function App() {
                 {/* Mini-módulo: estudo de uma lição específica */}
                 {/* Ex: /mini-modulo/1-1  →  módulo 1, mini-módulo 1 */}
                 <Route path="/mini-modulo/:miniModuloId" element={<MiniModulo />} />
+
+                <Route path="/sobre-nos" element={<SobreNos />} />
 
                 {/* Desafio de fim de Unidade: jogo mais difícil
                   (associação/quiz) que dá o veredito de domínio da

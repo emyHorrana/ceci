@@ -11,6 +11,7 @@ import { MODULOS } from '../data/modulos';
 import { UNIDADES, UNIDADES_POR_MODULO } from '../data/unidades';
 import { getProximaUnidade, getPerfisAluno } from '../services/algorithmService';
 import { isAdmin } from '../utils/roles';
+import { Footer } from '../components/Footer/Footer';
 import styles from './Dashboard.module.css';
 
 const MOTIVATIONAL = [
@@ -255,6 +256,7 @@ export default function Dashboard() {
             />
           </div>
         </div>
+        <Footer />
       </AppLayout>
   );
 }

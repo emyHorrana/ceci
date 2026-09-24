@@ -50,6 +50,7 @@ import { TreinoDedosGame } from '../components/Game/games/TreinoDedosGame';
 import { DesenhoLivreGame } from '../components/Game/games/DesenhoLivreGame';
 import { FASES_TREINO_DEDOS } from '../data/treinoDedosFases';
 import { sortearFigura } from '../utils/figurasCanvas';
+import { Footer } from '../components/Footer/Footer';
 import styles from './Laboratorio.module.css';
 
 const TECLAS_TREINO = [
@@ -250,6 +251,7 @@ function LaboratorioConteudo({ userId }) {
                     </div>
                 </div>
             </div>
+            <Footer />
         </AppLayout>
     );
 }

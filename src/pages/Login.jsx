@@ -7,6 +7,7 @@ import { flushOnboardingSignals } from '../services/onboardingSync';
 import { AuthLayout } from '../components/Layout/AuthLayout';
 import { Mascote } from '../components/Mascote/Mascote';
 import authStyles from '../components/Layout/AuthLayout.module.css';
+import { Footer } from '../components/Footer/Footer';
 import styles from './Login.module.css';
 
 export default function Login() {
@@ -45,6 +46,7 @@ export default function Login() {
   };
 
   return (
+    <>
       <AuthLayout
           formPosition="left"
           illustrationMobileMinHeight="260px"
@@ -141,5 +143,7 @@ export default function Login() {
           </p>
         </div>
       </AuthLayout>
+      <Footer />
+    </>
   );
 }

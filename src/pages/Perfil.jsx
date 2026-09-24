@@ -23,6 +23,7 @@ import { getUsuario, atualizarUsuario } from '../services/usuarioService';
 import { getPerfisAluno } from '../services/algorithmService';
 import { isAdmin } from '../utils/roles';
 import { UNIDADES } from '../data/unidades';
+import { Footer } from '../components/Footer/Footer';
 import styles from './Perfil.module.css';
 
 // Ordem "natural" do currículo (a mesma em que as Unidades aparecem em
@@ -306,6 +307,7 @@ export default function Perfil() {
               </div>
           )}
         </div>
+        <Footer />
       </AppLayout>
   );
 }

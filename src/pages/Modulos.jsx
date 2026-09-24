@@ -23,6 +23,7 @@ import { getPerfisAluno } from '../services/algorithmService';
 import { isAdmin } from '../utils/roles';
 import { ModuleCard } from '../components/Cards/ModuleCard';
 import { AppLayout, PageHeader } from '../components/Layout/AppLayout';
+import { Footer } from '../components/Footer/Footer';
 import appStyles from '../components/Layout/AppLayout.module.css';
 import styles from './Modulos.module.css';
 
@@ -127,6 +128,7 @@ export default function Modulos() {
             ))}
           </div>
         </div>
+        <Footer />
       </AppLayout>
   );
 }

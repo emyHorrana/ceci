@@ -1,0 +1,244 @@
+/* SobreNos.module.css */
+
+.page {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  background: var(--gradient-hero);
+  font-family: var(--font-body);
+}
+
+.header {
+  padding: 1.25rem 2rem;
+}
+
+.voltar {
+  background: none;
+  border: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.voltar:hover {
+  background: var(--color-yellow-pale);
+  color: var(--color-border-focus);
+}
+
+.secaoHomenageados {
+  position: relative;
+  width: 100%;
+  padding: 3rem 0 2.5rem;
+  overflow: hidden;
+}
+
+/* Duas colunas flex (uma por margem) em vez de posições absolutas com
+   % calculadas a mão - assim o espaçamento fica sempre uniforme,
+   sem acúmulo nem vãos, não importa quantas imagens tenham. Ficam
+   fora da coluna central de texto (max-width 900px do
+   .conteudoHomenageados), nunca por cima dela. */
+.decoracoes {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 1.5%;
+  pointer-events: none;
+  box-sizing: border-box;
+}
+
+/* Largura calculada a partir do próprio espaço disponível: metade do
+   container menos metade do cartão central (900px) e uma folga de
+   30px - assim a coluna de desenhos ocupa a margem amarela inteira,
+   do canto da tela quase até a borda do cartão, em vez de uma faixa
+   fina perto da borda. O número de colunas fica fixo em 3 (em vez de
+   auto-fill) pra não "comer" linhas conforme a margem fica mais
+   larga - senão sobram poucas linhas e o meio fica vazio. */
+.colunaEsquerda,
+.colunaDireita {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  align-content: space-between;
+  row-gap: 1.5rem;
+  column-gap: 0.5rem;
+  height: 100%;
+  width: clamp(70px, calc(50% - 480px), 460px);
+  box-sizing: border-box;
+}
+
+.decoracaoImg {
+  width: 68px;
+  height: auto;
+  display: block;
+  opacity: 0.35;
+}
+
+/* Cada item recebe um tamanho, alinhamento e rotação/deslocamento
+   próprios (ciclo de 8) pra quebrar a sensação de grade e parecer
+   espalhado de verdade, sem deixar buracos vazios. */
+.decoracaoImg:nth-child(8n + 1) { justify-self: start; width: 56px; transform: rotate(-15deg) translate(6px, -8px); }
+.decoracaoImg:nth-child(8n + 2) { justify-self: end;   width: 84px; transform: rotate(9deg) translate(-8px, 9px); }
+.decoracaoImg:nth-child(8n + 3) { justify-self: center; width: 62px; transform: rotate(-5deg) translate(3px, -6px); }
+.decoracaoImg:nth-child(8n + 4) { justify-self: end;   width: 76px; transform: rotate(16deg) translate(-10px, 7px); }
+.decoracaoImg:nth-child(8n + 5) { justify-self: start; width: 58px; transform: rotate(-10deg) translate(9px, 8px); }
+.decoracaoImg:nth-child(8n + 6) { justify-self: center; width: 80px; transform: rotate(7deg) translate(-4px, -9px); }
+.decoracaoImg:nth-child(8n + 7) { justify-self: end;   width: 54px; transform: rotate(-18deg) translate(-9px, 5px); }
+.decoracaoImg:nth-child(8n)     { justify-self: start; width: 72px; transform: rotate(12deg) translate(7px, -7px); }
+
+.conteudoHomenageados {
+  position: relative;
+  z-index: 1;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2.5rem 2.5rem;
+  background: var(--color-yellow-bg);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+}
+
+.titulo {
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  color: var(--color-text-primary);
+  text-align: center;
+  margin: 0 0 2.5rem;
+}
+
+.mascoteRow {
+  display: flex;
+  align-items: center;
+  gap: 2.5rem;
+  margin-bottom: 3rem;
+}
+
+.mascoteRowInvertida {
+  flex-direction: row-reverse;
+}
+
+.mascoteRowInvertida .mascoteTexto {
+  text-align: right;
+}
+
+.mascoteFoto {
+  flex-shrink: 0;
+  width: 220px;
+}
+
+.mascoteFoto img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: var(--radius-xl);
+}
+
+.mascoteTexto {
+  flex: 1;
+  min-width: 0;
+}
+
+.mascoteTexto h2 {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  color: var(--color-text-primary);
+  margin: 0 0 0.6rem;
+}
+
+.mascoteTexto p {
+  font-size: 1rem;
+  line-height: 1.75;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.secaoEquipe {
+  position: relative;
+  width: 100%;
+  flex: 1;
+  padding: 1rem 0 4rem;
+  overflow: hidden;
+}
+
+.conteudoEquipe {
+  position: relative;
+  z-index: 1;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 0;
+  border-top: 1px solid var(--color-border);
+  box-sizing: border-box;
+}
+
+.tituloEquipe {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  color: var(--color-text-primary);
+  text-align: center;
+  margin: 0 0 2rem;
+}
+
+.equipeGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+}
+
+.equipeCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem 1.25rem;
+}
+
+.equipeFotoPlaceholder {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: var(--color-yellow-pale);
+  margin-bottom: 1rem;
+}
+
+.equipeNome {
+  font-size: 0.95rem;
+  color: var(--color-text-primary);
+  margin-bottom: 0.4rem;
+}
+
+.equipeTexto {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+@media (max-width: 640px) {
+  .decoracoes {
+    display: none;
+  }
+
+  .secaoHomenageados {
+    padding: 2rem 1.5rem;
+  }
+
+  .mascoteRow,
+  .mascoteRowInvertida {
+    flex-direction: column;
+    text-align: center;
+    gap: 1.25rem;
+  }
+
+  .mascoteFoto {
+    width: 160px;
+  }
+
+  .equipeGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

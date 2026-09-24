@@ -7,6 +7,7 @@ import { useLocalStorage } from '../hooks/useLocalStorage';
 import { flushOnboardingSignals } from '../services/onboardingSync';
 import { criarUsuario } from '../services/usuarioService';
 import { AuthLayout } from '../components/Layout/AuthLayout';
+import { Footer } from '../components/Footer/Footer';
 import authStyles from '../components/Layout/AuthLayout.module.css';
 import styles from './Cadastro.module.css';
 
@@ -87,105 +88,108 @@ export default function Cadastro() {
   };
 
   return (
-    <AuthLayout
-      formPosition="right"
-      illustrationMobileMinHeight="220px"
-      illustration={
-        <>
-          <h2 className={authStyles.illustrationTitle}>Aprenda com a CECI</h2>
-          <p className={styles.illustrationText}>
-            Uma plataforma pensada para você aprender tecnologia no seu próprio ritmo, com leveza e sem pressão.
-          </p>
-          <div className={styles.features}>
-            <div className={styles.featureItem}>Lições adaptadas ao seu nível</div>
-            <div className={styles.featureItem}>Atividades práticas e interativas</div>
-            <div className={styles.featureItem}>Acompanhe seu progresso em tempo real</div>
-            <div className={styles.featureItem}>Conquistas e recompensas ao longo do caminho</div>
+    <>
+      <AuthLayout
+        formPosition="right"
+        illustrationMobileMinHeight="220px"
+        illustration={
+          <>
+            <h2 className={authStyles.illustrationTitle}>Aprenda com a CECI</h2>
+            <p className={styles.illustrationText}>
+              Uma plataforma pensada para você aprender tecnologia no seu próprio ritmo, com leveza e sem pressão.
+            </p>
+            <div className={styles.features}>
+              <div className={styles.featureItem}>Lições adaptadas ao seu nível</div>
+              <div className={styles.featureItem}>Atividades práticas e interativas</div>
+              <div className={styles.featureItem}>Acompanhe seu progresso em tempo real</div>
+              <div className={styles.featureItem}>Conquistas e recompensas ao longo do caminho</div>
+            </div>
+          </>
+        }
+      >
+        <div className={styles.card}>
+          <div className={styles.cardHeader}>
+            <div className={styles.logoMini}>CECI</div>
+            <h1 className={authStyles.title}>Criar conta</h1>
+            <p className={authStyles.subtitle}>Comece a aprender hoje, de graça</p>
           </div>
-        </>
-      }
-    >
-      <div className={styles.card}>
-        <div className={styles.cardHeader}>
-          <div className={styles.logoMini}>CECI</div>
-          <h1 className={authStyles.title}>Criar conta</h1>
-          <p className={authStyles.subtitle}>Comece a aprender hoje, de graça</p>
-        </div>
 
-        {success ? (
-          <div className={styles.successBox}>
-            <h3>Conta criada com sucesso!</h3>
-            <p>Redirecionando para o dashboard...</p>
+          {success ? (
+            <div className={styles.successBox}>
+              <h3>Conta criada com sucesso!</h3>
+              <p>Redirecionando para o dashboard...</p>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} className={authStyles.form} noValidate>
+              <TextInput
+                label="Como você se chama?"
+                type="text"
+                value={nome}
+                onChange={(e) => setNome(e.target.value)}
+                placeholder="Seu nome"
+                required
+                disabled={loading}
+                autoFocus
+              />
+
+              <TextInput
+                label="E-mail"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="seu@email.com"
+                required
+                disabled={loading}
+              />
+
+              <TextInput
+                label="Senha"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Mínimo 6 caracteres"
+                required
+                disabled={loading}
+              />
+
+              <TextInput
+                label="Confirmar senha"
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="Repita sua senha"
+                required
+                disabled={loading}
+              />
+
+              {error && (
+                <div className={authStyles.errorBox} role="alert">
+                  ⚠️ {error}
+                </div>
+              )}
+
+              <ButtonPrimary
+                type="submit"
+                fullWidth
+                disabled={loading}
+                size="large"
+              >
+                {loading ? '⏳ Criando conta...' : 'Criar conta grátis'}
+              </ButtonPrimary>
+            </form>
+          )}
+
+          <div className={authStyles.footer}>
+            <p>
+              Já tem conta?{' '}
+              <a href="/login" className={authStyles.link}>
+                Fazer login
+              </a>
+            </p>
           </div>
-        ) : (
-          <form onSubmit={handleSubmit} className={authStyles.form} noValidate>
-            <TextInput
-              label="Como você se chama?"
-              type="text"
-              value={nome}
-              onChange={(e) => setNome(e.target.value)}
-              placeholder="Seu nome"
-              required
-              disabled={loading}
-              autoFocus
-            />
-
-            <TextInput
-              label="E-mail"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="seu@email.com"
-              required
-              disabled={loading}
-            />
-
-            <TextInput
-              label="Senha"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Mínimo 6 caracteres"
-              required
-              disabled={loading}
-            />
-
-            <TextInput
-              label="Confirmar senha"
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              placeholder="Repita sua senha"
-              required
-              disabled={loading}
-            />
-
-            {error && (
-              <div className={authStyles.errorBox} role="alert">
-                ⚠️ {error}
-              </div>
-            )}
-
-            <ButtonPrimary
-              type="submit"
-              fullWidth
-              disabled={loading}
-              size="large"
-            >
-              {loading ? '⏳ Criando conta...' : 'Criar conta grátis'}
-            </ButtonPrimary>
-          </form>
-        )}
-
-        <div className={authStyles.footer}>
-          <p>
-            Já tem conta?{' '}
-            <a href="/login" className={authStyles.link}>
-              Fazer login
-            </a>
-          </p>
         </div>
-      </div>
-    </AuthLayout>
+      </AuthLayout>
+      <Footer />
+    </>
   );
 }

@@ -74,27 +74,27 @@
 .ceciFeedback {
   display: flex;
   align-items: center;
-  gap: 0.85rem;
+  gap: 1.25rem;
   background: var(--color-ceci-purple-pale);
   border: 1px solid var(--color-ceci-purple-light);
   border-radius: var(--radius-lg);
-  padding: 0.85rem 1.25rem;
+  padding: 1rem 1.75rem;
   box-shadow: var(--shadow-ceci);
-  max-width: 34rem;
+  max-width: 40rem;
 }
 
 .ceciAvatar {
   /* Tamanho da Ceci no recadinho: mexa só aqui (o <Mascote> preenche o
      slot, sem recorte - as artes já são o "selo" redondo da Ceci, então
      não precisa de moldura/gradiente por trás). */
-  width: 72px;
-  height: 72px;
+  width: 112px;
+  height: 112px;
   flex-shrink: 0;
 }
 
 .ceciMessage {
   margin: 0;
-  font-size: 0.95rem;
+  font-size: 1.05rem;
   color: var(--color-text-primary);
   text-align: left;
   line-height: 1.5;
@@ -177,6 +177,11 @@
   .ceciFeedback {
     flex-direction: column;
     text-align: center;
+  }
+
+  .ceciAvatar {
+    width: 92px;
+    height: 92px;
   }
 
   .ceciMessage {

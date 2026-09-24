@@ -16,9 +16,12 @@
   transform-origin: center;
 }
 
+/* O destaque é TRANSLÚCIDO de propósito: o alvo é desenhado por cima da
+   ilustração (ver ClicarNaImagemGame.jsx), então uma cor opaca taparia o
+   desenho justamente quando a pessoa passa o mouse nele. */
 .alvo:hover,
 .alvo:focus-visible {
-  fill: var(--color-yellow-bg);
+  fill: rgba(var(--color-yellow-rgb), 0.3);
   stroke: var(--color-yellow-deep);
   outline: none;
 }
@@ -44,13 +47,13 @@
 }
 
 .erro {
-  fill: var(--color-error-bg) !important;
+  fill: rgba(239, 68, 68, 0.18) !important; /* --color-error, translúcido */
   stroke: var(--color-error) !important;
   animation: cenaTremer 0.3s;
 }
 
 .acerto {
-  fill: var(--color-success-bg) !important;
+  fill: rgba(34, 197, 94, 0.22) !important; /* --color-success, translúcido */
   stroke: var(--color-success) !important;
   animation: cenaComemorar 0.5s ease-out;
 }

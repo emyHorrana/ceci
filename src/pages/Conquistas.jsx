@@ -15,6 +15,7 @@ import { ProgressContext } from '../context/ProgressContext';
 import { AppLayout, PageHeader } from '../components/Layout/AppLayout';
 import appStyles from '../components/Layout/AppLayout.module.css';
 import { AchievementCard } from '../components/Cards/AchievementCard';
+import { Mascote } from '../components/Mascote/Mascote';
 import { getConquistasComStatus, agruparPorTipo } from '../data/conquistas';
 import { Footer } from '../components/Footer/Footer';
 import styles from './Conquistas.module.css';
@@ -58,27 +59,39 @@ export default function Conquistas() {
       </PageHeader>
 
       <div className={appStyles.pageContent}>
-        {grupos.map((grupo) => (
-          <div key={grupo.tipo} className={styles.grupo}>
-            <div className={styles.grupoHeader}>
-              <h2>{grupo.tipo}</h2>
-              <span className={styles.grupoChip}>
-                {grupo.conquistas.filter((c) => c.unlocked).length} / {grupo.conquistas.length}
-              </span>
-            </div>
-            <div className={styles.grid}>
-              {grupo.conquistas.map((c) => (
-                <AchievementCard
-                  key={c.id}
-                  emoji={c.emoji}
-                  title={c.titulo}
-                  description={c.motivo}
-                  unlocked={c.unlocked}
-                />
-              ))}
-            </div>
+        <div className={styles.layout}>
+          <div className={styles.grupos}>
+            {grupos.map((grupo) => (
+              <div key={grupo.tipo} className={styles.grupo}>
+                <div className={styles.grupoHeader}>
+                  <h2>{grupo.tipo}</h2>
+                  <span className={styles.grupoChip}>
+                    {grupo.conquistas.filter((c) => c.unlocked).length} / {grupo.conquistas.length}
+                  </span>
+                </div>
+                <div className={styles.grid}>
+                  {grupo.conquistas.map((c) => (
+                    <AchievementCard
+                      key={c.id}
+                      emoji={c.emoji}
+                      title={c.titulo}
+                      description={c.motivo}
+                      unlocked={c.unlocked}
+                    />
+                  ))}
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
+
+          {/* Ceci de destaque na lateral direita (só telas largas - ver
+              .ceci em Conquistas.module.css). Decorativa: aria-hidden. */}
+          <aside className={styles.ceci} aria-hidden="true">
+            <div className={styles.ceciSlot}>
+              <Mascote variante="sorrindo" />
+            </div>
+          </aside>
+        </div>
       </div>
       <Footer />
     </AppLayout>

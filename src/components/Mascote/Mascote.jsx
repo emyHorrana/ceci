@@ -15,6 +15,8 @@
 //   padrao  → /mascote-ceci.png  (boas-vindas, login, saudações)
 //   duvida  → /ceci-duvida.png   (lendo conteúdo / esperando resposta)
 //   acerto  → /ceci-acerto.png   (a pessoa acertou)
+//   sorrindo → /ceci-sorrindo.png (corpo inteiro, sorrindo - arte grande
+//             de destaque, ex: lateral da tela de Conquistas)
 //
 // As artes ficam em /public. Se uma arte nova ainda não estiver lá
 // (ou falhar ao carregar), cai automaticamente na arte padrão em vez de
@@ -26,6 +28,7 @@ const MASCOTE_SRC = {
     padrao: '/mascote-ceci.png',
     duvida: '/ceci-duvida.png',
     acerto: '/ceci-acerto.png',
+    sorrindo: '/ceci-sorrindo.png',
 };
 
 export function Mascote({ variante = 'padrao', alt = '', className = '' }) {

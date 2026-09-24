@@ -32,6 +32,20 @@
   white-space: nowrap;
 }
 
+/* Duas colunas: conquistas à esquerda, Ceci grande à direita. Em telas
+   estreitas a Ceci some (os cards precisam da largura toda) - ver o
+   @media abaixo. */
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2rem;
+  align-items: start;
+}
+
+.ceci {
+  display: none;
+}
+
 .grupo {
   margin-bottom: 2.5rem;
 }
@@ -67,6 +81,29 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 1.25rem;
+}
+
+/* Ceci grande na lateral direita (só telas largas).
+   Tamanho em px (nada de rem/em/vh): o botão "Tamanho do texto" muda o
+   font-size raiz, e assim a Ceci NÃO acompanha - ela só ocupa o espaço
+   em branco da direita. Ela rola junto com a página, no fluxo normal.
+   Só aparece a partir de 1500px; abaixo disso some (os cards precisam
+   da largura toda). */
+@media (min-width: 1500px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr) 510px;
+    gap: 48px;
+  }
+
+  .ceci {
+    display: block;
+  }
+
+  /* Tamanho da Ceci: mexa só aqui. Proporção da arte: 755 x 1497 px. */
+  .ceciSlot {
+    width: 510px;
+    aspect-ratio: 755 / 1497;
+  }
 }
 
 @media (max-width: 768px) {

@@ -14,62 +14,11 @@
 }
 
 /* =========================================================================
-   CARD GRANDE DO MÓDULO (100% da largura da tela/conteúdo)
-   ========================================================================= */
-
-.moduloCardGrande {
-  width: 100%;
-  background: var(--color-white);
-  border: 1.5px solid var(--color-border);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-md);
-  overflow: hidden;
-  transition: box-shadow var(--transition-fast), border-color var(--transition-fast);
-}
-
-.moduloCardGrande:hover {
-  box-shadow: var(--shadow-lg);
-  border-color: rgba(170, 139, 245, 0.45);
-}
-
-/* Header superior do Card do Módulo (Centralizado) */
-.moduloHeaderGrande {
-  width: 100%;
-  background: var(--gradient-hero);
-  border-bottom: 1.5px solid var(--color-border);
-  padding: 1.25rem 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  text-align: center;
-}
-
-.moduloHeaderInfo {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.moduloHeaderTitulo {
-  font-family: var(--font-display);
-  font-size: 1.375rem;
-  font-weight: 800;
-  color: var(--color-text-primary);
-  margin: 0;
-  text-align: center;
-}
-
-.moduloHeaderEmoji {
-  font-size: 2.5rem;
-  line-height: 1;
-  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.1));
-  flex-shrink: 0;
-}
-
-/* =========================================================================
-   CONTAINER DE UNIDADES
+   CARD DO MÓDULO
+   Antes era um card próprio (fundo, borda, sombra, header com gradiente
+   centralizado) - agora é uma RetroWindow (ver GameTrilha.jsx), então a
+   moldura e a barra de título (emoji + nome do módulo como caption/icon)
+   vêm de lá. Aqui sobra só o miolo: o container das Unidades.
    ========================================================================= */
 
 .unidadesContainer {
@@ -77,6 +26,7 @@
   flex-direction: column;
   gap: 2.5rem;
   padding: 1.75rem 2rem 2.5rem;
+  background: var(--color-white);
 }
 
 .unidadeSecao {
@@ -471,10 +421,6 @@
 @media (max-width: 768px) {
   .unidadesContainer {
     padding: 1.25rem 1rem 2rem;
-  }
-
-  .moduloHeaderGrande {
-    padding: 1.25rem 1.5rem;
   }
 
   .unidadeBanner {

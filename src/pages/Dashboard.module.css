@@ -76,20 +76,20 @@
   gap: 2rem;
 }
 
-/* Bloco da Cecília / boas-vindas */
+/* Bloco da Cecília / boas-vindas.
+   Moldura (borda, raio, sombra) agora vem do FrameCard por fora - aqui
+   só o miolo: fundo com o padrão de setas + gradiente e o layout
+   interno (mascote + texto). */
 
 .welcomeCard {
   background-color: transparent;
   background-image: url('/arrows-pattern.svg'), var(--gradient-hero);
   background-repeat: repeat, no-repeat;
   background-size: 160px 160px, cover;
-  border-radius: var(--radius-xl);
   padding: 2rem;
   display: flex;
   align-items: center;
   gap: 2rem;
-  border: 1.5px solid rgba(var(--color-yellow-deep-rgb), 0.15);
-  overflow: hidden;
   position: relative;
 }
 
@@ -145,14 +145,12 @@
   text-decoration: underline;
 }
 
-/* Meta diária */
+/* Meta diária - moldura vem do FrameCard; aqui só o miolo (branco,
+   padrão do site - nada aqui é específico da Ceci). */
 
 .dailyGoalCard {
   background: var(--color-white);
-  border-radius: var(--radius-lg);
   padding: 1.5rem;
-  border: 1.5px solid var(--color-border);
-  box-shadow: var(--shadow-sm);
 }
 
 .sectionLabel {

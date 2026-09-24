@@ -146,4 +146,13 @@
 
     --shadow-ceci:
             0 4px 20px rgba(183, 154, 247, 0.25);
+
+    /* Moldura "retrô" (borda grossa + sombra dura, sem blur, sem cor de
+       apoio) - o mesmo peso visual da RetroWindow (components/Window),
+       só que sem barra de título. Pra cards menores/repetidos onde um
+       "nome de programa" em cada um poluiria (ModuleCard, AchievementCard
+       etc.) - ver Cards.module.css. */
+    --border-frame:        2px solid var(--color-text-primary);
+    --shadow-frame:        6px 6px 0 rgba(43, 33, 64, 0.16);
+    --shadow-frame-hover:  8px 8px 0 rgba(43, 33, 64, 0.20);
 }

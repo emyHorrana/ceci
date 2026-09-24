@@ -54,18 +54,15 @@
   margin-bottom: 0;
 }
 
-.grupoHeader {
+/* Corpo da RetroWindow de cada grupo - o contador (X/Y) que antes ficava
+   ao lado do <h2> (agora é a própria barra de título) vira uma pílula
+   solta no topo do corpo. */
+.grupoBody {
+  padding: 1.5rem;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 1.25rem;
-}
-
-.grupoHeader h2 {
-  font-size: 1.125rem;
-  font-weight: 700;
-  color: var(--color-text-primary);
-  margin: 0;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.25rem;
 }
 
 .grupoChip {
@@ -78,6 +75,7 @@
 }
 
 .grid {
+  width: 100%;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 1.25rem;

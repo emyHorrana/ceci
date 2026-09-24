@@ -1,385 +1,352 @@
 // GameTrilha.jsx
-// Visualização da trilha de aprendizagem no formato de Level Design / Game Map limpo e focado no aluno.
-// - Paleta de cores inspirada na mascote Cecília (Rosa / Roxo / Lavanda) trazendo contraste e vida sobre o fundo amarelo.
-// - Voltas circulares (loops de voo ➰) fluidas nos pontos de inflexão do caminho tracejado, eliminando zigue-zagues bruscos.
-// - Títulos centralizados de forma harmônica e espaçamento equilibrado no início e fim de cada unidade.
+// Mapa da trilha de aprendizagem (Módulo → Unidade → mini-módulos), usado
+// no Dashboard. Estilo "mapa de fases": cada Unidade tem um banner com o
+// título e, embaixo, uma trilha de nós circulares ligados por uma linha
+// pontilhada - um nó por mini-módulo + um nó de checkpoint (troféu) no fim.
+//
+// Cada MÓDULO é uma RetroWindow (card grande e único da seção - aqui a
+// barra de título faz sentido, e o título é o nome real do módulo, sem
+// ".exe"). Dentro dela o miolo é só o container das Unidades
+// (styles.unidadesContainer).
+//
+// Props:
+//   unidadesPorModulo       - UNIDADES_POR_MODULO (data/unidades.js):
+//                             [{ moduloId, moduloEmoji, moduloTitulo, unidades }]
+//   unidadeRecomendada      - Unidade que o algoritmo adaptativo recomenda
+//                             agora (objeto de UNIDADES) ou null. Ganha o
+//                             banner destacado e o nó "ativo" (pulsando),
+//                             que recebe id="no-trilha-atual" - o Dashboard
+//                             rola até ele no botão "Ver na trilha".
+//   dominiosPorUnidade      - { [unidadeId]: 0..1 } domínio (BKT) já registrado
+//   origemPorUnidade        - { [unidadeId]: 'licao' | 'onboarding' }.
+//                             'onboarding' = a pessoa nunca abriu a Unidade,
+//                             só foi confirmada pelo desafio de verificação
+//                             da boas-vindas -> NÃO ocupa nó na trilha (o
+//                             aviso dela mora em pages/Modulos.jsx).
+//   miniModulosComAtividade - ids de mini-módulos já praticados de verdade
+//   limiar                  - domínio mínimo pra considerar a Unidade
+//                             dominada (padrão 0.5)
+//   modoAdmin               - conta ADM: trilha inteira liberada, nada
+//                             bloqueado (não grava progresso)
+//
+// Estados de cada nó:
+//   'ativo'      - próximo passo da Unidade recomendada (rosa, pulsando)
+//   'concluido'  - mini-módulo já praticado / Unidade dominada (dourado)
+//   'disponivel' - acessível, ainda não feito (neutro)
+//   'bloqueado'  - pré-requisito da Unidade ainda não dominado (cinza-lilás)
+//
+// Clicar num nó abre um popover com o título e a ação (começar/rever), ou
+// com o aviso do que falta pra liberar, se estiver bloqueado.
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { RetroWindow } from '../Window/RetroWindow';
 import { ButtonPrimary } from '../Buttons/ButtonPrimary';
 import { UNIDADES, estaDominada } from '../../data/unidades';
 import styles from './GameTrilha.module.css';
 
-// Padrão de oscilação senoidal suave para os nós (posições horizontais em %)
-// 50% (centro) -> 70% (direita) -> 50% (centro) -> 30% (esquerda) -> ...
-const POSICOES_X = [50, 70, 50, 30];
+// --- Geometria da trilha -------------------------------------------------
+// x em % da largura (o SVG usa viewBox 0-100 na horizontal), y em px.
+// Zigue-zague suave: nunca muito perto das bordas, pra o popover (250px)
+// não ser cortado pela moldura da janela no celular.
+const POSICOES_X = [50, 66, 50, 34];
+const TOPO_Y = 60;      // centro do 1º nó (deixa espaço pra tag "JOGAR")
+const PASSO_Y = 150;    // distância vertical entre nós (nó + rótulo)
+const RODAPE_Y = 90;    // folga embaixo do último nó
+const EXTRA_POPOVER = 190; // folga extra quando o popover abre no fim do módulo
 
-// Junta os nomes de Unidades pendentes numa frase legível:
-// "X" | "X e Y" | "X, Y e Z"
-function formatarListaNomes(nomes = []) {
-  if (nomes.length === 0) return 'a Unidade anterior';
-  if (nomes.length === 1) return `"${nomes[0]}"`;
-  return `${nomes.slice(0, -1).map((n) => `"${n}"`).join(', ')} e "${nomes[nomes.length - 1]}"`;
-}
+const ACENTOS_MODULO = ['purple', 'pink', 'yellow'];
 
-// Ícone SVG de Troféu padronizado em preto/grafite
-function TrofeuIcon({ className }) {
-  return (
-      <svg
-          width="30"
-          height="30"
-          viewBox="0 0 24 24"
-          fill="#2B2140"
-          className={className}
-          aria-hidden="true"
-      >
-        <path d="M19 5h-2V3H7v2H5C3.9 5 3 5.9 3 7v1c0 2.55 1.92 4.63 4.39 4.94A5.01 5.01 0 0 0 11 15.9V18H8v2h8v-2h-3v-2.1c1.6-.35 2.99-1.46 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z" />
-      </svg>
-  );
-}
+const CLASSE_STATUS = {
+    ativo: styles.nodeAtivo,
+    concluido: styles.nodeConcluido,
+    disponivel: styles.nodeDisponivel,
+    bloqueado: styles.nodeBloqueado,
+};
 
-// Gera exclusivamente os 2 padrões de trajeto aprovados:
-// 1. Curva suave em "S" ondulado (sem cruzar, como na Imagem 0)
-// 2. Voltinha alta em formato de gota vertical / laço em "X" (exatamente como na Imagem 1 e 2)
-function gerarTrajetoAprovado(x1, y1, x2, y2, idxTransicao) {
-  const dy = y2 - y1;
-  const mx = (x1 + x2) / 2;
-  const my = (y1 + y2) / 2;
-  const dir = x2 >= x1 ? 1 : -1;
+const TEXTO_STATUS = {
+    ativo: 'próximo passo',
+    concluido: 'concluído',
+    disponivel: 'disponível',
+    bloqueado: 'bloqueado',
+};
 
-  if (idxTransicao % 2 === 0) {
-    // 1. Curva S suave e fluida com balanço orgânico
-    const swing = dir * 55;
-    return `M ${x1} ${y1} C ${x1 - swing * 0.7} ${y1 + dy * 0.28}, ${mx + swing * 0.9} ${my - dy * 0.15}, ${mx} ${my} C ${mx - swing * 0.9} ${my + dy * 0.15}, ${x2 + swing * 0.7} ${y2 - dy * 0.28}, ${x2} ${y2}`;
-  } else {
-    // 2. Voltinha alta ajustada para um laço menor e mais apertado (Imagem 2)
-    const ix = mx;
-    const iy = my + 5;   // Subiu um pouco o centro do cruzamento (era +10)
-    const ay = iy - 28;  // Reduziu drasticamente a altura do topo (era -48)
-
+function IconeTrofeu() {
     return (
-        `M ${x1} ${y1} ` +
-        // Curva de entrada até o cruzamento (mais fechada: dir * 25)
-        `C ${x1 + dir * 25} ${y1 + dy * 0.45}, ${ix - dir * 25} ${iy + 20}, ${ix} ${iy} ` +
-        // Subida do laço (mais estreita: dir * 14 e dir * 12)
-        `C ${ix + dir * 14} ${iy - 12}, ${mx + dir * 12} ${ay + 8}, ${mx} ${ay} ` +
-        // Descida do laço de volta ao cruzamento
-        `C ${mx - dir * 12} ${ay + 8}, ${ix - dir * 14} ${iy - 12}, ${ix} ${iy} ` +
-        // Curva de saída até o próximo ponto
-        `C ${ix + dir * 25} ${iy + 20}, ${x2 - dir * 25} ${y2 - dy * 0.45}, ${x2} ${y2}`
+        <svg className={styles.trofeuSvg} viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M7 3h10v5a5 5 0 0 1-10 0z" />
+            <path
+                d="M7 5H4.5v2A3 3 0 0 0 7.5 10M17 5h2.5v2a3 3 0 0 1-3 3"
+                fill="none"
+                stroke="#2B2140"
+                strokeWidth="1.6"
+                strokeLinecap="round"
+            />
+            <rect x="11" y="13" width="2" height="4" />
+            <rect x="8" y="17" width="8" height="3" rx="1" />
+        </svg>
     );
-  }
+}
+
+function tituloDaUnidade(id) {
+    return UNIDADES.find((u) => u.id === id)?.titulo ?? id;
 }
 
 export function GameTrilha({
-                             unidadesPorModulo = [],
-                             unidadeRecomendada = null,
-                             dominiosPorUnidade = {},
-                             limiar = 0.5,
-                             // 'licao' (fez de verdade) | 'onboarding' (domínio veio só do
-                             // desafio de verificação, nunca abriu a Unidade) - ver
-                             // GET /api/licao/perfis/:userId. Unidades 'onboarding' não
-                             // aparecem nesta trilha (só em Módulos, com aviso) - a pessoa
-                             // não precisa navegar por algo que já provou que sabe.
-                             origemPorUnidade = {},
-                             // ids de mini-módulo com pelo menos uma etapa respondida de
-                             // verdade - vira um selo de "já praticado", sem re-travar
-                             // nada (continua acessível pra revisar quando quiser).
-                             miniModulosComAtividade = [],
-                             // Conta ADM: nenhuma Unidade fica travada por pré-requisito, pra dar
-                             // visão da trilha inteira de uma vez (ver utils/roles.js).
-                             modoAdmin = false,
+                               unidadesPorModulo = [],
+                               unidadeRecomendada = null,
+                               dominiosPorUnidade = {},
+                               origemPorUnidade = {},
+                               miniModulosComAtividade = [],
+                               limiar = 0.5,
+                               modoAdmin = false,
                            }) {
-  const navigate = useNavigate();
-  const [noSelecionado, setNoSelecionado] = useState(null);
-  const miniModulosPraticadosSet = new Set(miniModulosComAtividade);
+    const navigate = useNavigate();
 
-  // Calcula o status do algoritmo adaptativo para uma Unidade
-  function getStatusUnidade(unidadeId) {
-    if (unidadeId === unidadeRecomendada?.id) return 'atual';
-    const dominio = dominiosPorUnidade[unidadeId];
-    if (dominio === undefined) return undefined;
-    return dominio >= limiar ? 'concluida' : 'pendente';
-  }
+    // Chave do nó com popover aberto: `${unidadeId}:${noId}` (ou null)
+    const [aberto, setAberto] = useState(null);
 
-  return (
-      <div className={styles.trilhaContainer}>
-        {unidadesPorModulo.map((grupo) => {
-          let globalNodeIndex = 0;
-          let globalTransitionIndex = 0;
+    // Fecha o popover ao clicar fora de qualquer nó ou apertar Esc
+    useEffect(() => {
+        if (!aberto) return undefined;
 
-          return (
-              <div key={grupo.moduloId} className={styles.moduloCardGrande}>
-                {/* CABEÇALHO DO CARD GRANDE DO MÓDULO (Centralizado) */}
-                <div className={styles.moduloHeaderGrande}>
-              <span className={styles.moduloHeaderEmoji} aria-hidden="true">
-                {grupo.moduloEmoji || '📚'}
-              </span>
-                  <div className={styles.moduloHeaderInfo}>
-                    <h3 className={styles.moduloHeaderTitulo}>{grupo.moduloTitulo}</h3>
-                  </div>
+        const aoClicar = (e) => {
+            if (!e.target.closest('[data-trilha-no]')) setAberto(null);
+        };
+        const aoTeclar = (e) => {
+            if (e.key === 'Escape') setAberto(null);
+        };
+
+        document.addEventListener('mousedown', aoClicar);
+        document.addEventListener('keydown', aoTeclar);
+        return () => {
+            document.removeEventListener('mousedown', aoClicar);
+            document.removeEventListener('keydown', aoTeclar);
+        };
+    }, [aberto]);
+
+    const feitos = new Set(miniModulosComAtividade);
+    const recomendadaId = unidadeRecomendada?.id ?? null;
+
+    // Sem nenhum dado do algoritmo (falha de rede/servidor - ver Dashboard)
+    // não dá pra saber o que está dominado: em vez de trancar a trilha
+    // inteira, não bloqueia nada. Uma pessoa nova NÃO cai aqui, porque
+    // sempre tem uma Unidade recomendada (a primeira).
+    const semDados = !unidadeRecomendada && Object.keys(dominiosPorUnidade).length === 0;
+
+    const abrirNo = (chave) => setAberto((atual) => (atual === chave ? null : chave));
+
+    const irPara = (unidade, no) => {
+        setAberto(null);
+        if (no.tipo === 'checkpoint') navigate(`/unidade/${unidade.id}/checkpoint`);
+        else navigate(`/mini-modulo/${no.id}`);
+    };
+
+    const renderUnidade = (unidade, ehUltimaDoModulo) => {
+        const ehRecomendada = unidade.id === recomendadaId;
+
+        const prereqPendentes = (unidade.prerequisitos || []).filter(
+            (id) => !estaDominada(id, dominiosPorUnidade, limiar)
+        );
+        // A Unidade que o algoritmo recomendou nunca fica trancada
+        const unidadeBloqueada =
+            !modoAdmin && !semDados && !ehRecomendada && prereqPendentes.length > 0;
+
+        const dominada = (dominiosPorUnidade[unidade.id] ?? -1) >= limiar;
+        const todosMinisFeitos = unidade.miniModulos.every((mm) => feitos.has(mm.id));
+        const proximoMini = unidade.miniModulos.find((mm) => !feitos.has(mm.id));
+
+        // Nós: 1 por mini-módulo + checkpoint (se a Unidade tiver)
+        const nos = [
+            ...unidade.miniModulos.map((mm, i) => ({
+                tipo: 'mini',
+                id: mm.id,
+                titulo: mm.titulo,
+                rotulo: mm.titulo,
+                numero: i + 1,
+            })),
+            ...(unidade.checkpoint
+                ? [{
+                    tipo: 'checkpoint',
+                    id: 'checkpoint',
+                    titulo: unidade.checkpoint.titulo || 'Desafio da Unidade',
+                    rotulo: 'Desafio',
+                }]
+                : []),
+        ];
+
+        // Qual nó é o "próximo passo" da Unidade recomendada
+        let idAtivo = null;
+        if (ehRecomendada) {
+            if (proximoMini) idAtivo = proximoMini.id;
+            else if (unidade.checkpoint) idAtivo = 'checkpoint';
+        }
+
+        const statusDe = (no) => {
+            if (unidadeBloqueada) return 'bloqueado';
+            if (no.id === idAtivo) return 'ativo';
+            if (no.tipo === 'mini') return feitos.has(no.id) ? 'concluido' : 'disponivel';
+            return dominada && todosMinisFeitos ? 'concluido' : 'disponivel';
+        };
+
+        const statusNos = nos.map(statusDe);
+
+        const pontos = nos.map((_, i) => ({
+            x: POSICOES_X[i % POSICOES_X.length],
+            y: TOPO_Y + i * PASSO_Y,
+        }));
+
+        const alturaBase = TOPO_Y + Math.max(nos.length - 1, 0) * PASSO_Y + RODAPE_Y;
+        const popoverNestaUnidade = aberto?.startsWith(`${unidade.id}:`);
+        const altura = alturaBase + (ehUltimaDoModulo && popoverNestaUnidade ? EXTRA_POPOVER : 0);
+
+        return (
+            <section key={unidade.id} className={styles.unidadeSecao}>
+                <div className={`${styles.unidadeBanner} ${ehRecomendada ? styles.unidadeBannerAtual : ''}`.trim()}>
+                    <h3 className={styles.unidadeTitulo}>{unidade.titulo}</h3>
                 </div>
 
-                {/* LISTA DE UNIDADES DENTRO DO MÓDULO */}
-                <div className={styles.unidadesContainer}>
-                  {grupo.unidades
-                    .filter((unidade) => origemPorUnidade[unidade.id] !== 'onboarding')
-                    .map((unidade) => {
-                    const status = getStatusUnidade(unidade.id);
+                <div className={styles.unidadeTrilhaFases} style={{ height: altura }}>
+                    {/* Linha pontilhada entre os nós (dourada até onde já foi feito) */}
+                    <svg
+                        className={styles.caminhoTracejadoSvg}
+                        viewBox={`0 0 100 ${altura}`}
+                        preserveAspectRatio="none"
+                        height={altura}
+                        aria-hidden="true"
+                    >
+                        {pontos.slice(1).map((p, i) => {
+                            const a = pontos[i];
+                            const meio = (a.y + p.y) / 2;
+                            const feito = statusNos[i] === 'concluido';
+                            return (
+                                <path
+                                    key={i}
+                                    className={styles.linhaTracejadaDelicada}
+                                    d={`M ${a.x} ${a.y} C ${a.x} ${meio}, ${p.x} ${meio}, ${p.x} ${p.y}`}
+                                    fill="none"
+                                    stroke={feito ? 'var(--color-yellow-deep)' : 'var(--color-ceci-lavender)'}
+                                    strokeWidth="3.5"
+                                    vectorEffect="non-scaling-stroke"
+                                />
+                            );
+                        })}
+                    </svg>
 
-                    // Uma Unidade fica travada se algum pré-requisito dela
-                    // ainda não foi dominado (mesma definição de
-                    // FilaDePendencias.estaDominada() no backend) - os nós
-                    // continuam visíveis (dá pra ver o que vem depois),
-                    // só não navegam.
-                    const prerequisitosPendentes = modoAdmin
-                        ? []
-                        : (unidade.prerequisitos || [])
-                            .filter((pid) => !estaDominada(pid, dominiosPorUnidade, limiar));
-                    const isBloqueada = prerequisitosPendentes.length > 0;
-                    const nomesPendentes = prerequisitosPendentes
-                        .map((pid) => UNIDADES.find((u) => u.id === pid)?.titulo)
-                        .filter(Boolean);
+                    {nos.map((no, i) => {
+                        const status = statusNos[i];
+                        const chave = `${unidade.id}:${no.id}`;
+                        const popoverAberto = aberto === chave;
+                        const ehCheckpoint = no.tipo === 'checkpoint';
 
-                    // Monta a lista linear de nós desta unidade
-                    const nosDaUnidade = [];
-                    const NODE_SPACING = 140;
-                    // Espaço generoso inicial (95px) garantindo equilíbrio com o final
-                    const TOP_OFFSET = 95;
+                        let icone;
+                        if (status === 'bloqueado') icone = '🔒';
+                        else if (ehCheckpoint) icone = <IconeTrofeu />;
+                        else if (status === 'concluido') icone = '✓';
+                        else if (status === 'ativo') icone = '▶';
+                        else icone = no.numero;
 
-                    unidade.miniModulos.forEach((mm, mmIdx) => {
-                      const posX = POSICOES_X[globalNodeIndex % POSICOES_X.length];
-                      const posY = mmIdx * NODE_SPACING + TOP_OFFSET;
-
-                      nosDaUnidade.push({
-                        tipo: 'mini-modulo',
-                        id: mm.id,
-                        unidadeId: unidade.id,
-                        titulo: mm.titulo,
-                        destino: `/mini-modulo/${mm.id}`,
-                        icone: grupo.moduloEmoji || '▶',
-                        status,
-                        isRecomendado: status === 'atual' && mmIdx === 0 && !isBloqueada,
-                        bloqueada: isBloqueada,
-                        nomesPendentes,
-                        posX,
-                        posY,
-                        idxNaUnidade: mmIdx,
-                      });
-
-                      globalNodeIndex++;
-                    });
-
-                    if (unidade.checkpoint) {
-                      const mmCount = unidade.miniModulos.length;
-                      const posX = POSICOES_X[globalNodeIndex % POSICOES_X.length];
-                      const posY = mmCount * NODE_SPACING + TOP_OFFSET;
-
-                      nosDaUnidade.push({
-                        tipo: 'checkpoint',
-                        id: `checkpoint-${unidade.id}`,
-                        unidadeId: unidade.id,
-                        titulo: unidade.checkpoint.titulo || 'Desafio da Unidade',
-                        destino: `/unidade/${unidade.id}/checkpoint`,
-                        icone: 'trofeu',
-                        status,
-                        isRecomendado: status === 'atual' && mmCount === 0 && !isBloqueada,
-                        bloqueada: isBloqueada,
-                        nomesPendentes,
-                        posX,
-                        posY,
-                        idxNaUnidade: mmCount,
-                      });
-
-                      globalNodeIndex++;
-                    }
-
-                    // Altura calculada da trilha para manter margem inferior igual à superior
-                    const totalFasesHeight = nosDaUnidade.length * NODE_SPACING + 70;
-
-                    return (
-                        <div key={unidade.id} className={styles.unidadeSecao}>
-                          {/* BANNER DE ASSUNTO / TÓPICO (Centralizado) */}
-                          <div
-                              className={`${styles.unidadeBanner} ${status === 'atual' ? styles.unidadeBannerAtual : ''}`}
-                          >
-                            <h4 className={styles.unidadeTitulo}>{unidade.titulo}</h4>
-                          </div>
-
-                          {/* CAMPO DA TRILHA DE FASES COM NÓS 3D E LINHAS PONTILHADAS COM VOLTAS CIRCULARES DIVERSIFICADAS */}
-                          <div className={styles.unidadeTrilhaFases} style={{ height: `${totalFasesHeight}px` }}>
-                            {/* SVG DO CAMINHO PONTILHADO COM TRAJETOS DIVERSIFICADOS DE VOO */}
-                            <svg
-                                className={styles.caminhoTracejadoSvg}
-                                style={{ height: `${totalFasesHeight}px` }}
-                                viewBox={`0 0 1000 ${totalFasesHeight}`}
-                                preserveAspectRatio="none"
-                                aria-hidden="true"
+                        return (
+                            <div
+                                key={chave}
+                                id={status === 'ativo' ? 'no-trilha-atual' : undefined}
+                                data-trilha-no
+                                className={styles.nodeWrapper}
+                                style={{
+                                    left: `${pontos[i].x}%`,
+                                    top: `${pontos[i].y}px`,
+                                    // sobe acima dos nós seguintes enquanto o popover está aberto
+                                    zIndex: popoverAberto ? 20 : undefined,
+                                }}
                             >
-                              {nosDaUnidade.map((no, idx) => {
-                                if (idx === nosDaUnidade.length - 1) return null;
-                                const proxNo = nosDaUnidade[idx + 1];
-                                const x1 = no.posX * 10;
-                                const y1 = no.posY;
-                                const x2 = proxNo.posX * 10;
-                                const y2 = proxNo.posY;
+                                {status === 'ativo' && <span className={styles.badgeSuaVez}>JOGAR</span>}
 
-                                const pathData = gerarTrajetoAprovado(x1, y1, x2, y2, globalTransitionIndex++);
-
-                                return (
-                                    <path
-                                        key={`linha-${no.id}-${proxNo.id}`}
-                                        d={pathData}
-                                        fill="none"
-                                        stroke="#2B2140"
-                                        strokeWidth="2"
-                                        strokeDasharray="4 5"
-                                        strokeLinecap="round"
-                                        strokeOpacity="0.7"
-                                        vectorEffect="non-scaling-stroke"
-                                        className={styles.linhaTracejadaDelicada}
-                                    />
-                                );
-                              })}
-                            </svg>
-
-                            {/* NÓS CIRCULARES DE FASE - cor binária: feito (dourado,
-                                com estrela/troféu em destaque) ou disponível (amarelo
-                                pálido neutro), sem variação decorativa por posição -
-                                antes a cor rosa/roxo/lavanda girava só pelo índice do
-                                nó, sem nenhuma relação com "já fiz ou não", o que
-                                deixava impossível saber o que já tinha sido feito só
-                                olhando a trilha. */}
-                            {nosDaUnidade.map((etapa) => {
-                              const isCheckpoint = etapa.tipo === 'checkpoint';
-                              const isAtivo = etapa.isRecomendado;
-                              const isBloqueada = etapa.bloqueada;
-                              const isSelected = noSelecionado?.id === etapa.id;
-                              // "Feito" é por NÓ, não por Unidade inteira: um
-                              // mini-módulo conta como feito se tem alguma resposta
-                              // real registrada; o checkpoint conta como feito se a
-                              // Unidade já tem QUALQUER domínio salvo (ela só ganha
-                              // isso depois de pelo menos uma tentativa do desafio).
-                              const feito = isCheckpoint
-                                ? dominiosPorUnidade[etapa.unidadeId] !== undefined
-                                : miniModulosPraticadosSet.has(etapa.id);
-
-                              // Determina a classe de cor - bloqueada tem prioridade
-                              // sobre qualquer outro estado: não faz sentido destacar
-                              // como "feito"/"disponível" uma Unidade que a pessoa
-                              // nem devia estar vendo ainda.
-                              let nodeStyleClass;
-                              if (isBloqueada) {
-                                nodeStyleClass = styles.nodeBloqueado;
-                              } else if (isAtivo) {
-                                nodeStyleClass = styles.nodeAtivo;
-                              } else if (feito) {
-                                nodeStyleClass = styles.nodeConcluido;
-                              } else {
-                                nodeStyleClass = styles.nodeDisponivel;
-                              }
-
-                              return (
-                                  <div
-                                      key={etapa.id}
-                                      // id fixo no nó recomendado (independe de qual
-                                      // Unidade/mini-módulo seja) - Dashboard.jsx usa
-                                      // isso pro link "Ver na trilha" rolar a página
-                                      // até aqui, sem precisar saber a posição.
-                                      id={isAtivo ? 'no-trilha-atual' : undefined}
-                                      className={styles.nodeWrapper}
-                                      style={{
-                                        left: `${etapa.posX}%`,
-                                        top: `${etapa.posY}px`,
-                                      }}
-                                  >
-                                    {/* AURA DE ENERGIA PULSANTE NO NÓ RECOMENDADO ATUAL */}
-                                    {isAtivo && (
-                                        <>
-                                          <div className={styles.auraPulso} aria-hidden="true" />
-                                          <div className={styles.badgeSuaVez}>JOGAR</div>
-                                        </>
+                                {/* A aura fica FORA do botão: ele tem overflow:hidden e cortaria o pulso */}
+                                <div style={{ position: 'relative', display: 'flex' }}>
+                                    {status === 'ativo' && (
+                                        <span
+                                            className={styles.auraPulso}
+                                            style={ehCheckpoint ? { borderRadius: 30 } : undefined}
+                                            aria-hidden="true"
+                                        />
                                     )}
-
-                                    {/* BOTÃO CIRCULAR 3D / GLOSSY - dourado quando feito */}
                                     <button
                                         type="button"
-                                        className={`${styles.nodeButton} ${nodeStyleClass} ${isCheckpoint ? styles.nodeCheckpointButton : ''}`}
-                                        onClick={() => setNoSelecionado(noSelecionado?.id === etapa.id ? null : etapa)}
-                                        aria-label={isBloqueada ? `${etapa.titulo} (bloqueado)` : etapa.titulo}
-                                        title={isBloqueada ? `${etapa.titulo} - ainda bloqueado` : etapa.titulo}
+                                        className={[
+                                            styles.nodeButton,
+                                            CLASSE_STATUS[status],
+                                            ehCheckpoint ? styles.nodeCheckpointButton : '',
+                                        ].join(' ').trim()}
+                                        onClick={() => abrirNo(chave)}
+                                        aria-label={`${no.titulo} - ${TEXTO_STATUS[status]}`}
+                                        aria-expanded={popoverAberto}
                                     >
-                                      {/* Brilho Glossy / Reflexo Superior */}
-                                      <span className={styles.nodeGlossy} aria-hidden="true" />
-
-                                      {/* Ícone: cadeado se bloqueado, Troféu SVG pro
-                                          checkpoint (a cor de fundo já diz se foi feito),
-                                          estrela ★ se o mini-módulo já foi feito, ou o
-                                          ícone temático padrão se ainda não */}
-                                      <span className={styles.nodeIcone} aria-hidden="true">
-                                {isBloqueada ? (
-                                    '🔒'
-                                ) : isCheckpoint ? (
-                                    <TrofeuIcon className={styles.trofeuSvg} />
-                                ) : feito ? (
-                                    '★'
-                                ) : (
-                                    etapa.icone
-                                )}
-                              </span>
+                                        <span className={styles.nodeGlossy} aria-hidden="true" />
+                                        <span className={styles.nodeIcone}>{icone}</span>
                                     </button>
+                                </div>
 
-                                    {/* RÓTULO DA ETAPA ABAIXO DO NÓ */}
-                                    <span className={styles.nodeRotulo}>
-                              {isCheckpoint ? 'Desafio da Unidade' : etapa.titulo}
-                            </span>
+                                <span className={styles.nodeRotulo}>{no.rotulo}</span>
 
-                                    {/* POPOVER DE DETALHES DA ETAPA AO CLICAR */}
-                                    {isSelected && (
-                                        <div className={styles.popoverCard}>
-                                          <div className={styles.popoverHeader}>
-                                            <h5 className={styles.popoverTitulo}>{etapa.titulo}</h5>
+                                {popoverAberto && (
+                                    <div className={styles.popoverCard} role="dialog" aria-label={no.titulo}>
+                                        <div className={styles.popoverHeader}>
+                                            <h4 className={styles.popoverTitulo}>{no.titulo}</h4>
                                             <button
                                                 type="button"
                                                 className={styles.popoverFechar}
-                                                onClick={(e) => {
-                                                  e.stopPropagation();
-                                                  setNoSelecionado(null);
-                                                }}
-                                                aria-label="Fechar detalhes"
+                                                onClick={() => setAberto(null)}
+                                                aria-label="Fechar"
                                             >
-                                              ✕
+                                                ✕
                                             </button>
-                                          </div>
-
-                                          <div className={styles.popoverAcao}>
-                                            {isBloqueada ? (
-                                                <p className={styles.popoverBloqueadoTexto}>
-                                                  🔒 Termine {formatarListaNomes(etapa.nomesPendentes)} primeiro
-                                                  pra desbloquear essa parte.
-                                                </p>
-                                            ) : (
-                                                <ButtonPrimary
-                                                    size="small"
-                                                    onClick={() => navigate(etapa.destino)}
-                                                >
-                                                  {feito ? (isCheckpoint ? 'Refazer desafio' : 'Revisar aula') : isCheckpoint ? 'Fazer desafio' : 'Começar aula'}
-                                                </ButtonPrimary>
-                                            )}
-                                          </div>
                                         </div>
-                                    )}
-                                  </div>
-                              );
-                            })}
-                          </div>
-                        </div>
-                    );
-                  })}
+
+                                        {status === 'bloqueado' ? (
+                                            <p className={styles.popoverBloqueadoTexto}>
+                                                Para liberar esta etapa, conclua antes:{' '}
+                                                {prereqPendentes.map(tituloDaUnidade).join(', ')}.
+                                            </p>
+                                        ) : (
+                                            <div className={styles.popoverAcao}>
+                                                <ButtonPrimary size="small" onClick={() => irPara(unidade, no)}>
+                                                    {ehCheckpoint
+                                                        ? (status === 'concluido' ? 'Refazer o desafio' : 'Fazer o desafio')
+                                                        : (status === 'concluido' ? 'Rever aula' : 'Começar aula')}
+                                                </ButtonPrimary>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+                        );
+                    })}
                 </div>
-              </div>
-          );
-        })}
-      </div>
-  );
+            </section>
+        );
+    };
+
+    return (
+        <div className={styles.trilhaContainer}>
+            {unidadesPorModulo.map((grupo, indiceModulo) => {
+                // Unidades só confirmadas no onboarding não ocupam nó (ver Modulos.jsx)
+                const visiveis = grupo.unidades.filter(
+                    (u) => modoAdmin || origemPorUnidade[u.id] !== 'onboarding'
+                );
+                if (visiveis.length === 0) return null;
+
+                return (
+                    <RetroWindow
+                        key={grupo.moduloId}
+                        title={grupo.moduloTitulo}
+                        icon={grupo.moduloEmoji}
+                        accent={ACENTOS_MODULO[indiceModulo % ACENTOS_MODULO.length]}
+                        bodyClassName={styles.unidadesContainer}
+                    >
+                        {visiveis.map((u, i) => renderUnidade(u, i === visiveis.length - 1))}
+                    </RetroWindow>
+                );
+            })}
+        </div>
+    );
 }

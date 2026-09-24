@@ -15,14 +15,10 @@
   margin: 0;
 }
 
-/* Card principal (hero) */
+/* Card principal (hero) - moldura vem do RetroWindow; aqui só espaçamento
+   externo e o miolo (faixa decorativa + corpo com avatar/dados). */
 
 .heroCard {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-md);
-  overflow: hidden;
   margin-bottom: 1.5rem;
 }
 
@@ -132,10 +128,10 @@
 
 .statCard {
   background: var(--color-surface);
-  border: 1px solid var(--color-border);
+  border: var(--border-frame);
   border-radius: var(--radius-lg);
   padding: 1.4rem 1.25rem;
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-frame);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -146,7 +142,7 @@
 
 .statCard:hover {
   transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-frame-hover);
 }
 
 .statValue {
@@ -165,32 +161,15 @@
 .statXp .statValue { color: var(--color-xp); }
 .statCoin .statValue { color: #C99A2E; }
 
-/* Domínio por Unidade */
+/* Domínio por Unidade - moldura vem do RetroWindow; aqui só espaçamento
+   externo (.dominioSecao) e o padding interno (.dominioBody). */
 
 .dominioSecao {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-xl);
-  padding: 1.5rem 1.75rem;
-  box-shadow: var(--shadow-sm);
   margin-bottom: 1.5rem;
 }
 
-.sectionHeader {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-  margin-bottom: 1.1rem;
-}
-
-.sectionHeader h2 {
-  font-family: var(--font-display);
-  font-size: 1.1rem;
-  font-weight: 800;
-  color: var(--color-text-primary);
-  margin: 0;
+.dominioBody {
+  padding: 1.5rem 1.75rem;
 }
 
 .estadoVazio {
@@ -272,12 +251,18 @@
 
 /* Últimas conquistas */
 
-.conquistasSecao {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-xl);
+/* Últimas conquistas - moldura vem do RetroWindow; o botão "Ver todas"
+   (antes ao lado do <h2>, que virou a barra de título) fica alinhado
+   à direita no topo do corpo. */
+
+.conquistasBody {
   padding: 1.5rem 1.75rem;
-  box-shadow: var(--shadow-sm);
+}
+
+.conquistasHeader {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
 }
 
 .conquistasLista {

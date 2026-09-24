@@ -7,12 +7,12 @@
 
 .window {
     background: var(--gradient-card);
-    border: 2px solid var(--color-text-primary);
+    border: var(--border-frame);
     border-radius: var(--radius-lg);
     /* Sombra "dura", deslocada, sem blur - dá a sensação de objeto sólido
        com espessura (estilo das ilustrações retrô de referência), em vez
        do sombreado suave e difuso típico de card de SaaS moderno. */
-    box-shadow: 6px 6px 0 rgba(43, 33, 64, 0.16);
+    box-shadow: var(--shadow-frame);
     overflow: hidden;
     width: 100%;
     animation: windowIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) both;

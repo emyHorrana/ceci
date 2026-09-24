@@ -19,11 +19,11 @@ import appStyles from '../components/Layout/AppLayout.module.css';
 import { TextInput } from '../components/Forms/TextInput';
 import { ButtonPrimary } from '../components/Buttons/ButtonPrimary';
 import { ButtonOutline } from '../components/Buttons/ButtonOutline';
+import { RetroWindow } from '../components/Window/RetroWindow';
 import { getUsuario, atualizarUsuario } from '../services/usuarioService';
 import { getPerfisAluno } from '../services/algorithmService';
 import { isAdmin } from '../utils/roles';
 import { UNIDADES } from '../data/unidades';
-import { Footer } from '../components/Footer/Footer';
 import styles from './Perfil.module.css';
 
 // Ordem "natural" do currículo (a mesma em que as Unidades aparecem em
@@ -165,7 +165,7 @@ export default function Perfil() {
 
         <div className={appStyles.pageContent}>
           {/* CARD PRINCIPAL - avatar + dados */}
-          <div className={styles.heroCard}>
+          <RetroWindow title="perfil.exe" icon="🙂" accent="yellow" className={styles.heroCard}>
             <div className={styles.heroBanner} aria-hidden="true" />
 
             <div className={styles.heroBody}>
@@ -229,7 +229,7 @@ export default function Perfil() {
                   </form>
               )}
             </div>
-          </div>
+          </RetroWindow>
 
           {/* CARDS DE ESTATÍSTICA */}
           <div className={styles.statsGrid}>
@@ -252,11 +252,7 @@ export default function Perfil() {
           </div>
 
           {/* DOMÍNIO POR UNIDADE (resultado do algoritmo adaptativo) */}
-          <div className={styles.dominioSecao}>
-            <div className={styles.sectionHeader}>
-              <h2>Seu domínio por assunto</h2>
-            </div>
-
+          <RetroWindow title="dominio.exe" icon="📈" accent="yellow" className={styles.dominioSecao}>
             {carregandoDominio ? (
                 <p className={styles.estadoVazio}>Carregando...</p>
             ) : unidadesComDominio.length === 0 ? (
@@ -286,13 +282,12 @@ export default function Perfil() {
                   ))}
                 </div>
             )}
-          </div>
+          </RetroWindow>
 
           {/* ÚLTIMAS CONQUISTAS */}
           {totalConquistas > 0 && (
-              <div className={styles.conquistasSecao}>
-                <div className={styles.sectionHeader}>
-                  <h2>Últimas conquistas</h2>
+              <RetroWindow title="conquistas.exe" icon="🏅" accent="yellow" className={styles.conquistasSecao}>
+                <div className={styles.conquistasHeader}>
                   <ButtonOutline size="small" onClick={() => navigate('/conquistas')}>
                     Ver todas
                   </ButtonOutline>
@@ -304,10 +299,9 @@ export default function Perfil() {
                       </div>
                   ))}
                 </div>
-              </div>
+              </RetroWindow>
           )}
         </div>
-        <Footer />
       </AppLayout>
   );
 }

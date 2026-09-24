@@ -15,10 +15,18 @@ import { ProgressContext } from '../context/ProgressContext';
 import { AppLayout, PageHeader } from '../components/Layout/AppLayout';
 import appStyles from '../components/Layout/AppLayout.module.css';
 import { AchievementCard } from '../components/Cards/AchievementCard';
+import { RetroWindow } from '../components/Window/RetroWindow';
 import { Mascote } from '../components/Mascote/Mascote';
 import { getConquistasComStatus, agruparPorTipo } from '../data/conquistas';
-import { Footer } from '../components/Footer/Footer';
 import styles from './Conquistas.module.css';
+
+// Emoji por tipo de grupo (ver data/conquistas.js) - só decorativo, pra
+// virar o ícone da barra de título de cada RetroWindow abaixo.
+const EMOJI_POR_TIPO = {
+  Iniciativa: '🌱',
+  'Grandes Marcos': '🏆',
+  Exploração: '🧭',
+};
 
 export default function Conquistas() {
   const { user, initializing } = useContext(UserContext);
@@ -34,9 +42,9 @@ export default function Conquistas() {
   }, [initializing, user, navigate]);
 
   if (initializing || !user) return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100svh' }}>
-      Carregando...
-    </div>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100svh' }}>
+        Carregando...
+      </div>
   );
 
   const conquistas = getConquistasComStatus(progress?.achievements);
@@ -44,56 +52,59 @@ export default function Conquistas() {
   const totalDesbloqueadas = conquistas.filter((c) => c.unlocked).length;
 
   return (
-    <AppLayout>
-      <PageHeader>
-        <div>
-          <h1 className={styles.title}>Suas conquistas</h1>
-          <p className={styles.subtitle}>
-            Cada passo dado na plataforma pode revelar uma conquista nova.
-          </p>
-        </div>
-
-        <div className={styles.progressBadge}>
-          {totalDesbloqueadas} de {conquistas.length} desbloqueadas
-        </div>
-      </PageHeader>
-
-      <div className={appStyles.pageContent}>
-        <div className={styles.layout}>
-          <div className={styles.grupos}>
-            {grupos.map((grupo) => (
-              <div key={grupo.tipo} className={styles.grupo}>
-                <div className={styles.grupoHeader}>
-                  <h2>{grupo.tipo}</h2>
-                  <span className={styles.grupoChip}>
-                    {grupo.conquistas.filter((c) => c.unlocked).length} / {grupo.conquistas.length}
-                  </span>
-                </div>
-                <div className={styles.grid}>
-                  {grupo.conquistas.map((c) => (
-                    <AchievementCard
-                      key={c.id}
-                      emoji={c.emoji}
-                      title={c.titulo}
-                      description={c.motivo}
-                      unlocked={c.unlocked}
-                    />
-                  ))}
-                </div>
-              </div>
-            ))}
+      <AppLayout>
+        <PageHeader>
+          <div>
+            <h1 className={styles.title}>Suas conquistas</h1>
+            <p className={styles.subtitle}>
+              Cada passo dado na plataforma pode revelar uma conquista nova.
+            </p>
           </div>
 
-          {/* Ceci de destaque na lateral direita (só telas largas - ver
-              .ceci em Conquistas.module.css). Decorativa: aria-hidden. */}
-          <aside className={styles.ceci} aria-hidden="true">
-            <div className={styles.ceciSlot}>
-              <Mascote variante="sorrindo" />
+          <div className={styles.progressBadge}>
+            {totalDesbloqueadas} de {conquistas.length} desbloqueadas
+          </div>
+        </PageHeader>
+
+        <div className={appStyles.pageContent}>
+          <div className={styles.layout}>
+            <div className={styles.grupos}>
+              {grupos.map((grupo) => (
+                  <RetroWindow
+                      key={grupo.tipo}
+                      title={grupo.tipo}
+                      icon={EMOJI_POR_TIPO[grupo.tipo] || '⭐'}
+                      accent="yellow"
+                      className={styles.grupo}
+                      bodyClassName={styles.grupoBody}
+                  >
+                <span className={styles.grupoChip}>
+                  {grupo.conquistas.filter((c) => c.unlocked).length} / {grupo.conquistas.length}
+                </span>
+                    <div className={styles.grid}>
+                      {grupo.conquistas.map((c) => (
+                          <AchievementCard
+                              key={c.id}
+                              emoji={c.emoji}
+                              title={c.titulo}
+                              description={c.motivo}
+                              unlocked={c.unlocked}
+                          />
+                      ))}
+                    </div>
+                  </RetroWindow>
+              ))}
             </div>
-          </aside>
+
+            {/* Ceci de destaque na lateral direita (só telas largas - ver
+              .ceci em Conquistas.module.css). Decorativa: aria-hidden. */}
+            <aside className={styles.ceci} aria-hidden="true">
+              <div className={styles.ceciSlot}>
+                <Mascote variante="sorrindo" />
+              </div>
+            </aside>
+          </div>
         </div>
-      </div>
-      <Footer />
-    </AppLayout>
+      </AppLayout>
   );
 }

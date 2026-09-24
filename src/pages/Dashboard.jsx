@@ -4,6 +4,7 @@ import { UserContext } from '../context/UserContext';
 import { ProgressContext } from '../context/ProgressContext';
 import { AppLayout, PageHeader } from '../components/Layout/AppLayout';
 import appStyles from '../components/Layout/AppLayout.module.css';
+import { FrameCard } from '../components/Window/FrameCard.jsx';
 import { GameTrilha } from '../components/Trilha/GameTrilha';
 import { ButtonPrimary } from '../components/Buttons/ButtonPrimary';
 import { ButtonOutline } from '../components/Buttons/ButtonOutline';
@@ -11,7 +12,6 @@ import { MODULOS } from '../data/modulos';
 import { UNIDADES, UNIDADES_POR_MODULO } from '../data/unidades';
 import { getProximaUnidade, getPerfisAluno } from '../services/algorithmService';
 import { isAdmin } from '../utils/roles';
-import { Footer } from '../components/Footer/Footer';
 import styles from './Dashboard.module.css';
 
 const MOTIVATIONAL = [
@@ -159,12 +159,15 @@ export default function Dashboard() {
         <div className={`${appStyles.pageContent} ${styles.pageContentDashboard}`}>
           {admin && (
               <div className={styles.adminBanner}>
-                🛠️ Modo ADM — trilha completa liberada para revisão, sem gravar progresso.
+                Modo ADM: trilha completa liberada para revisão, sem gravar progresso.
               </div>
           )}
 
-          {/* Bloco da Cecília */}
-          <div className={styles.welcomeCard}>
+          {/* Bloco da Cecília - moldura/sombra só (FrameCard), sem barra
+              de título: já tem título próprio (<h2>Olá...!</h2>) e
+              reserva a barra "nome de programa" pra cards
+              maiores/únicos, como cada módulo da trilha abaixo. */}
+          <FrameCard bodyClassName={styles.welcomeCard}>
             <div className={styles.mascoteSlotSmall} aria-hidden />
             <div className={styles.welcomeText}>
               <h2>Olá, {userName}!</h2>
@@ -202,10 +205,10 @@ export default function Dashboard() {
                 )}
               </div>
             </div>
-          </div>
+          </FrameCard>
 
-          {/* Meta diária */}
-          <div className={styles.dailyGoalCard}>
+          {/* Meta diária - moldura simples, mesmo motivo do bloco acima */}
+          <FrameCard bodyClassName={styles.dailyGoalCard}>
             <div className={styles.sectionLabel}>
               <h3>Meta diária</h3>
               <span className={styles.progressChip}>
@@ -220,7 +223,7 @@ export default function Dashboard() {
                   ? 'Meta concluída! Incrível!'
                   : `Faltam ${10 - (progress?.dailyProgress || 0)} exercícios para completar a meta de hoje.`}
             </p>
-          </div>
+          </FrameCard>
 
           {/* Seu progresso: o detalhe (nível + recomendação por
               Unidade) já mora no Perfil (styles.dominioSecao lá) - aqui
@@ -245,6 +248,9 @@ export default function Dashboard() {
               <h2>Trilha de aprendizagem</h2>
             </div>
 
+            {/* Cada card de módulo aqui dentro (grupo.moduloId) agora é
+                sua própria RetroWindow - ver GameTrilha.jsx/.module.css
+                (moduloCardGrande virou o bodyClassName de uma janela). */}
             <GameTrilha
                 unidadesPorModulo={UNIDADES_POR_MODULO}
                 unidadeRecomendada={unidadeRecomendada}
@@ -256,7 +262,6 @@ export default function Dashboard() {
             />
           </div>
         </div>
-        <Footer />
       </AppLayout>
   );
 }

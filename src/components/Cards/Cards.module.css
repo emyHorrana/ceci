@@ -5,9 +5,9 @@
 .moduleCard {
   background: var(--color-white);
   border-radius: var(--radius-lg);
-  border: 1.5px solid var(--color-border);
+  border: var(--border-frame);
   overflow: hidden;
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-frame);
   transition: all var(--transition-base);
   cursor: pointer;
   display: flex;
@@ -15,9 +15,8 @@
 }
 
 .moduleCard:hover {
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-frame-hover);
   transform: translateY(-3px);
-  border-color: var(--color-yellow-pale);
 }
 
 .status-featured {
@@ -226,8 +225,8 @@
 .achievementCard {
   background: var(--gradient-card);
   border-radius: var(--radius-lg);
-  border: 1.5px solid var(--color-border);
-  box-shadow: var(--shadow-sm);
+  border: var(--border-frame);
+  box-shadow: var(--shadow-frame);
   padding: 1.5rem 1.25rem;
   text-align: center;
   display: flex;
@@ -238,9 +237,8 @@
 }
 
 .achievementCard:not(.locked):hover {
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-frame-hover);
   transform: translateY(-3px);
-  border-color: var(--color-yellow-pale);
 }
 
 .achievementEmoji {

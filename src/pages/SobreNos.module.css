@@ -95,10 +95,7 @@
   z-index: 1;
   max-width: 900px;
   margin: 0 auto;
-  padding: 2.5rem 2.5rem;
-  background: var(--color-yellow-bg);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-sm);
+  padding: 0 2.5rem;
 }
 
 .titulo {
@@ -109,11 +106,27 @@
   margin: 0 0 2.5rem;
 }
 
+/* Cada personagem (Ceci, Mosquinha) agora é uma RetroWindow própria -
+   moldura/sombra/barra de título vêm do componente; aqui só o
+   espaçamento entre elas e o miolo (fundo branco explícito, já que o
+   fundo padrão da RetroWindow é bege claro e a página é toda amarela). */
+.personagemFrame {
+  margin-bottom: 2rem;
+}
+
+.personagemFrame:last-child {
+  margin-bottom: 0;
+}
+
+.personagemCard {
+  background: var(--color-white);
+  padding: 2rem;
+}
+
 .mascoteRow {
   display: flex;
   align-items: center;
   gap: 2.5rem;
-  margin-bottom: 3rem;
 }
 
 .mascoteRowInvertida {
@@ -192,17 +205,19 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
+  /* Fundo branco explícito (não var(--gradient-card), que é bege claro) -
+     a página é toda em tom amarelo (--gradient-hero), então card + fundo
+     no mesmo tom ficava sem contraste. Borda/raio/sombra já vêm do
+     FrameCard (mesma moldura retrô usada no resto do site). */
+  background: var(--color-white);
   padding: 1.5rem 1.25rem;
 }
 
-.equipeFotoPlaceholder {
+.equipeFoto {
   width: 96px;
   height: 96px;
   border-radius: 50%;
-  background: var(--color-yellow-pale);
+  object-fit: cover;
   margin-bottom: 1rem;
 }
 
@@ -212,10 +227,21 @@
   margin-bottom: 0.4rem;
 }
 
-.equipeTexto {
+.equipeFuncao {
   font-size: 0.85rem;
   color: var(--color-text-muted);
-  margin: 0;
+  margin: 0 0 0.5rem;
+}
+
+.equipeGithub {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--color-border-focus);
+  text-decoration: none;
+}
+
+.equipeGithub:hover {
+  text-decoration: underline;
 }
 
 @media (max-width: 640px) {

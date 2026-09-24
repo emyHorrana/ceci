@@ -63,7 +63,6 @@ import { TreinoDedosGame } from '../components/Game/games/TreinoDedosGame';
 import { DesenhoLivreGame } from '../components/Game/games/DesenhoLivreGame';
 import { FASES_TREINO_DEDOS } from '../data/treinoDedosFases';
 import { sortearFigura } from '../utils/figurasCanvas';
-import { Footer } from '../components/Footer/Footer';
 import styles from './Laboratorio.module.css';
 
 const TECLAS_TREINO = [
@@ -161,7 +160,7 @@ export default function Laboratorio() {
 
     if (initializing) {
         return (
-            <AppLayout>
+            <AppLayout hideFooter>
                 <PageHeader>
                     <div>
                         <h1 className={styles.title}>Laboratório</h1>
@@ -258,7 +257,7 @@ function LaboratorioConteudo({ userId }) {
     const gameKey = `${modo}-${rodada}`;
 
     return (
-        <AppLayout>
+        <AppLayout hideFooter>
             <PageHeader>
                 <div>
                     <h1 className={styles.title}>Laboratório</h1>
@@ -337,7 +336,6 @@ function LaboratorioConteudo({ userId }) {
                     </div>
                 </div>
             </div>
-            <Footer />
         </AppLayout>
     );
 }

@@ -21,6 +21,7 @@
 import { useContext } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { UserContext } from '../../context/UserContext';
+import { Footer } from '../Footer/Footer';
 import styles from './AppLayout.module.css';
 
 export function PageHeader({ children }) {
@@ -35,7 +36,11 @@ const NAV_ITEMS = [
   { icon: '◎', label: 'Meu perfil',  path: '/perfil' },
 ];
 
-export function AppLayout({ children }) {
+// hideFooter: só pra páginas imersivas (jogos/interações) que usam esta
+// mesma casca, como o Laboratório - o rodapé institucional não faz
+// sentido ali. Em todas as páginas "normais" (Dashboard, Módulos,
+// Conquistas, Perfil...) ele fica por padrão.
+export function AppLayout({ children, hideFooter = false }) {
   const { logout } = useContext(UserContext);
   const navigate = useNavigate();
   const location = useLocation();
@@ -76,7 +81,10 @@ export function AppLayout({ children }) {
         </aside>
 
         {/* CONTEÚDO DA PÁGINA */}
-        <main className={styles.main}>{children}</main>
+        <main className={styles.main}>
+          {children}
+          {!hideFooter && <Footer />}
+        </main>
       </div>
   );
 }

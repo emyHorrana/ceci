@@ -83,12 +83,18 @@
 
 .modal {
   position: relative;
-  background: var(--color-surface);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-lg);
-  padding: 2.25rem 2rem 2rem;
   max-width: 560px;
   width: 100%;
+}
+
+/* Miolo da RetroWindow do modal: fundo branco explícito (o padrão da
+   RetroWindow é bege claro) e quem cuida do scroll quando o texto é
+   maior que a tela - a moldura em volta (borda/sombra/cantos) já vem
+   do componente e tem overflow: hidden, então o scroll tem que ficar
+   aqui dentro, não nela. */
+.modalBody {
+  background: var(--color-white);
+  padding: 2.25rem 2rem 2rem;
   max-height: 80svh;
   overflow-y: auto;
 }
@@ -142,7 +148,7 @@
     text-align: center;
   }
 
-  .modal {
+  .modalBody {
     padding: 2rem 1.25rem 1.5rem;
   }
 }

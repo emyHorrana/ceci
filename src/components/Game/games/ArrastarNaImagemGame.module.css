@@ -4,6 +4,15 @@
   height: auto;
   display: block;
   margin: 0 auto;
+  /* Arrastar sem selecionar o texto da página por baixo. */
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Com limiteRef (ver ArrastarNaImagemGame.jsx) a arte arrastada pode
+   passar do quadrado do viewBox - o card em volta é quem limita. */
+.cenaLivre {
+  overflow: visible;
 }
 
 .zona {
@@ -37,6 +46,17 @@
 
 .item {
   cursor: grab;
+}
+
+/* Concluído: a zona tracejada some (a cena já mostra o resultado) e o
+   item deixa de parecer arrastável. */
+.cena[data-concluido='true'] .zona {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.cena[data-concluido='true'] .item {
+  cursor: default;
 }
 
 .item[data-arrastando='true'] {

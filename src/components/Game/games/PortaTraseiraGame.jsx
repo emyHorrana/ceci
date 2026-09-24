@@ -1,48 +1,60 @@
 // PortaTraseiraGame.jsx
-// Cena: painel traseiro simples com uma porta USB (retangular) e uma
-// entrada de energia (redonda) - desenho básico feito à mão (mesma
-// situação do GabineteFrenteGame: a designer ainda não cobre hardware
-// físico, só tela de fundo/apps/janelas).
+// Cena: painel traseiro de um computador de mesa, visto de trás, com uma
+// porta USB (moldura de metal com a "língua" de contatos) e a entrada de
+// energia (moldura escura com três lâminas). Embaixo, um mouse com fio: o
+// mouse fica parado e o cabo acompanha o plugue enquanto ele é arrastado.
 //
-// De propósito, os formatos são bem diferentes entre si (retangular
-// vs. redondo) e o plugue arrastado tem o mesmo formato da porta
-// certa - a pessoa aprende a comparar formato do plugue com formato
-// da porta, não a decorar "qual das duas é a certa".
+// De propósito, as duas entradas têm formatos bem diferentes (uma larga e
+// baixa, outra mais alta e escura, com três lâminas) e o plugue arrastado
+// tem o mesmo formato da porta USB - a pessoa aprende a comparar o plugue
+// com a porta, não a decorar "qual das duas é a certa". O símbolo gravado
+// embaixo de cada entrada (tridente do USB, raio da energia) é a pista.
+//
+// O desenho das peças fica em ArteHardware.jsx (compartilhado com as
+// outras cenas de hardware); aqui ficam só a montagem e as coordenadas.
 
 import { ArrastarNaImagemGame } from './ArrastarNaImagemGame';
+import {
+  DefsHardware, Cabo, Mouse, pontaCaboMouse, Parafuso,
+  PortaUsbFrontal, EntradaEnergiaPc, PlugueUsbFrontal,
+  SimboloUsb, SimboloEnergia,
+} from './ArteHardware';
 
-const VIEW_BOX = '0 0 320 220';
+const VIEW_BOX = '0 0 320 250';
 
-const ITEM_INICIAL = { x: 70, y: 175 };
+const ITEM_INICIAL = { x: 208, y: 206 };
+
+// Onde cada peça está (mesmas coordenadas usadas pelas zonas abaixo).
+const USB = { cx: 110, cy: 88 };
+const ENERGIA = { cx: 230, cy: 88 };
+const MOUSE = { cx: 84, cy: 216, escala: 0.23 };
 
 const ZONAS = [
   {
     id: 'porta-usb',
     correta: true,
     shape: 'rect',
-    x: 84, y: 84, width: 52, height: 28, rx: 6,
+    x: USB.cx - 34, y: USB.cy - 18, width: 68, height: 36, rx: 8,
   },
   {
     id: 'porta-energia',
     correta: false,
-    shape: 'circle',
-    cx: 230, cy: 98, r: 22,
+    shape: 'rect',
+    x: ENERGIA.cx - 34, y: ENERGIA.cy - 26, width: 68, height: 52, rx: 10,
   },
 ];
 
-// Plugue USB (mouse) - desenhado centrado em (0,0), o motor translada.
-const ITEM_DESENHO = (
-  <>
-    {/* corpo do mouse, só pra deixar claro de onde vem o cabo */}
-    <ellipse cx="-46" cy="-14" rx="18" ry="24" fill="var(--color-surface)" stroke="var(--color-border)" strokeWidth="3" />
-    <line x1="-46" y1="-36" x2="-46" y2="-14" stroke="var(--color-border)" strokeWidth="2" />
-    {/* cabo curvo até o plugue */}
-    <path d="M -30 4 Q -10 20 0 0" fill="none" stroke="var(--color-border)" strokeWidth="3" />
-    {/* plugue USB - mesmo formato retangular da porta certa */}
-    <rect x="-18" y="-11" width="36" height="22" rx="5" fill="var(--color-surface)" stroke="var(--color-border)" strokeWidth="3" />
-    <rect x="-12" y="-5" width="24" height="10" rx="2" fill="var(--color-text-muted)" />
-  </>
-);
+// O plugue é desenhado centrado em (0,0); o motor translada.
+const ITEM_DESENHO = <PlugueUsbFrontal />;
+
+// Cabo do mouse até o plugue. Sai do alto do mouse (parado) e entra no
+// plugue pela esquerda; se recalcula a cada movimento do plugue (`pos`).
+function caboAteOPlugue(pos) {
+  const de = pontaCaboMouse(MOUSE.cx, MOUSE.cy, MOUSE.escala);
+  const ate = { x: pos.x - 41, y: pos.y };
+  const folga = Math.max(30, Math.abs(ate.y - de.y) * 0.45);
+  return `M ${de.x} ${de.y} C ${de.x} ${de.y - folga}, ${ate.x - folga} ${ate.y}, ${ate.x} ${ate.y}`;
+}
 
 export function PortaTraseiraGame({ reportResult }) {
   return (
@@ -53,16 +65,36 @@ export function PortaTraseiraGame({ reportResult }) {
       itemDesenho={ITEM_DESENHO}
       zonas={ZONAS}
     >
-      {/* Painel traseiro */}
-      <rect x="20" y="20" width="280" height="180" rx="16" fill="var(--color-surface)" stroke="var(--color-border)" strokeWidth="4" />
+      {({ pos }) => (
+        <>
+          <DefsHardware />
 
-      {/* Moldura decorativa da porta USB (retangular) */}
-      <rect x="78" y="78" width="64" height="40" rx="8" fill="none" stroke="var(--color-border)" strokeWidth="2" />
-      <rect x="90" y="90" width="40" height="16" rx="3" fill="var(--color-text-muted)" />
+          {/* Painel traseiro */}
+          <rect x="20" y="12" width="280" height="150" rx="16" fill="url(#hw-chassi)" stroke="var(--color-border)" strokeWidth="4" />
 
-      {/* Moldura decorativa da entrada de energia (redonda) */}
-      <circle cx="230" cy="98" r="28" fill="none" stroke="var(--color-border)" strokeWidth="2" />
-      <circle cx="230" cy="98" r="14" fill="var(--color-text-muted)" />
+          {/* Saída de ventilação (mesmo estilo da frente do gabinete) */}
+          {[26, 34, 42].map((y) => (
+            <line key={y} x1="100" y1={y} x2="220" y2={y} stroke="var(--color-border)" strokeWidth="4" strokeLinecap="round" />
+          ))}
+
+          <Parafuso cx={40} cy={30} />
+          <Parafuso cx={280} cy={30} />
+          <Parafuso cx={40} cy={144} />
+          <Parafuso cx={280} cy={144} />
+
+          {/* Porta USB + símbolo */}
+          <PortaUsbFrontal cx={USB.cx} cy={USB.cy} />
+          <SimboloUsb x={USB.cx} y={USB.cy + 34} escala={1.1} />
+
+          {/* Entrada de energia + símbolo */}
+          <EntradaEnergiaPc cx={ENERGIA.cx} cy={ENERGIA.cy} />
+          <SimboloEnergia x={ENERGIA.cx} y={ENERGIA.cy + 40} escala={1.05} />
+
+          {/* Mouse (parado) e o cabo que acompanha o plugue */}
+          <Cabo d={caboAteOPlugue(pos)} espessura={4} cor="#4B4068" />
+          <Mouse {...MOUSE} />
+        </>
+      )}
     </ArrastarNaImagemGame>
   );
 }

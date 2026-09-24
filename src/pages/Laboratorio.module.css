@@ -92,6 +92,13 @@
        e cada jogo dentro do .gameHost) centraliza por conta própria. */
     align-items: stretch;
     gap: 1.25rem;
+    transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+
+/* Acerto: mesma moldura verde do GameMoment (.frame[data-status='sucesso']). */
+.arena[data-status='sucesso'] {
+    border-color: var(--color-success);
+    background: var(--color-success-bg);
 }
 
 .instrucao {
@@ -109,4 +116,21 @@
     width: 100%;
     display: flex;
     justify-content: center;
+}
+
+/* Recadinho da Cecília: reaproveita EXATAMENTE o visual do GameMoment
+   (caixa lilás, avatar, responsivo) via composes, pra os dois nunca
+   ficarem diferentes. */
+.ceciFeedback {
+    composes: ceciFeedback from '../components/Game/GameMoment.module.css';
+    align-self: center;
+    width: 100%;
+}
+
+.ceciAvatar {
+    composes: ceciAvatar from '../components/Game/GameMoment.module.css';
+}
+
+.ceciMessage {
+    composes: ceciMessage from '../components/Game/GameMoment.module.css';
 }

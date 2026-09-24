@@ -1,0 +1,50 @@
+/* CECI - CapturaPuffGame
+   Todas as artes ficam no DOM o tempo todo; o que muda é a opacidade
+   (ver comentário no topo de CapturaPuffGame.jsx). */
+
+/* Ceci arrastável. A troca capturada ↔ caindo é seca (sem transição, pra
+   não aparecerem as duas juntas com tamanhos diferentes); só o sumiço no
+   acerto tem fade. */
+.ceci {
+  transition: opacity 0.35s ease;
+}
+
+.ceciSome {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.oculta {
+  opacity: 0;
+}
+
+/* Pufe vazio: fica embaixo até a ilustração final terminar de aparecer e
+   só então some (o transition-delay é igual à duração do fade do
+   .noPuff) - assim o pufe nunca fica "meio transparente" no meio da troca
+   e, no fim, não sobra um contorno duplicado por baixo. */
+.puff {
+  opacity: 1;
+}
+
+.puffSai {
+  opacity: 0;
+  transition: opacity 0s linear 0.5s;
+}
+
+/* Ilustração final (Ceci sentada no pufe): entra por cima com fade. */
+.noPuff {
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+}
+
+.noPuffEntra {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ceci,
+  .noPuff {
+    transition: none;
+  }
+}

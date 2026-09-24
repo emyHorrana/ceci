@@ -11,11 +11,22 @@
 //
 // COMO FUNCIONA
 // Reaproveita 100% dos componentes de jogo que já existem (AlvoMovelGame,
-// PressionarTeclaGame) mais os dois novos feitos pra cá (TreinoDedosGame,
-// DesenhoLivreGame) - nenhum deles sabe nada sobre módulo/lição, só
-// recebem reportResult(sucesso, meta). O truque pra virar "infinito" é
-// remontar o jogo com uma `key` nova a cada rodada (força o React a
-// resetar o estado interno dele sozinho, sem tocar no código do jogo).
+// PressionarTeclaGame, CapturaPuffGame) mais os dois novos feitos pra cá
+// (TreinoDedosGame, DesenhoLivreGame) - nenhum deles sabe nada sobre
+// módulo/lição, só recebem reportResult(sucesso, meta). O truque pra virar
+// "infinito" é remontar o jogo com uma `key` nova a cada rodada (força o
+// React a resetar o estado interno dele sozinho, sem tocar no código do
+// jogo) - é justamente esse reset "de graça" que faz o CapturaPuffGame
+// voltar a mostrar a Ceci capturada na rodada seguinte, sem precisar de
+// nenhuma lógica de reset própria dele.
+//
+// FEEDBACK DE ACERTO
+// Igual ao do GameMoment (moldura verde + Ceci comemorando + "Isso aí!"),
+// só que sem o GameMoment: ao acertar, o card fica verde, a Ceci do
+// recadinho troca de "dúvida" pra "acerto" e o jogo SEGURA a rodada
+// seguinte por um tempo (PAUSA_APOS_ACERTO_MS) pra dar tempo de ver isso
+// - e, no "Arrastar e soltar", de ver a Ceci sentada no pufe. Durante a
+// pausa novos acertos são ignorados (não contam no placar duas vezes).
 //
 // PLACAR
 // Guardado em localStorage (não em Supabase) de propósito - é só um
@@ -40,12 +51,14 @@
 // de LaboratorioConteudo rodam pela primeira vez, userId já é o valor
 // final - nunca precisa ser corrigido depois.
 
-import { useContext, useState, useCallback } from 'react';
+import { useContext, useState, useCallback, useRef, useEffect } from 'react';
 import { UserContext } from '../context/UserContext';
 import { AppLayout, PageHeader } from '../components/Layout/AppLayout';
+import { Mascote } from '../components/Mascote/Mascote';
 import appStyles from '../components/Layout/AppLayout.module.css';
 import { AlvoMovelGame } from '../components/Game/games/AlvoMovelGame';
 import { PressionarTeclaGame } from '../components/Game/games/PressionarTeclaGame';
+import { CapturaPuffGame } from '../components/Game/games/CapturaPuffGame';
 import { TreinoDedosGame } from '../components/Game/games/TreinoDedosGame';
 import { DesenhoLivreGame } from '../components/Game/games/DesenhoLivreGame';
 import { FASES_TREINO_DEDOS } from '../data/treinoDedosFases';
@@ -68,6 +81,12 @@ const MODOS = {
         instrucaoPara: (tipoClique) => tipoClique === 'direito'
             ? 'Clique com o botão DIREITO no alvo assim que conseguir alcançar ele.'
             : 'Clique com o botão ESQUERDO no alvo assim que conseguir alcançar ele.',
+        metricaSessao: 'Nesta sessão',
+        metricaRecorde: 'Seu recorde',
+    },
+    arrastar: {
+        label: 'Arrastar e soltar',
+        instrucaoPara: () => 'Clique, segure e arraste a Ceci até o pufe.',
         metricaSessao: 'Nesta sessão',
         metricaRecorde: 'Seu recorde',
     },
@@ -108,6 +127,22 @@ function sortearDaLista(lista, anterior) {
     const opcoes = lista.filter((item) => item !== anterior);
     return opcoes[Math.floor(Math.random() * opcoes.length)];
 }
+
+// Quanto tempo o acerto fica na tela antes da próxima rodada começar
+// (a troca de `gameKey` remonta o jogo na mesma hora, então sem essa
+// pausa o feedback nunca chegaria a ser visto).
+// - Padrão: mesma pausa do GameMoment (PAUSA_TRANSICAO_MS).
+// - "Arrastar e soltar": mais longa, porque termina com a Ceci sentada
+//   no pufe (CapturaPuffGame troca pra essa arte sozinho ao soltar) e a
+//   ideia é a pessoa curtir essa ilustração por alguns segundos.
+const PAUSA_APOS_ACERTO_PADRAO_MS = 900;
+const PAUSA_APOS_ACERTO_MS = {
+    arrastar: 3000,
+};
+
+// Falas do recadinho da Cecília - mesmas do GameMoment.
+const FALA_ESPERANDO = 'Sem pressa. Quando estiver pronto(a), é só tentar!';
+const FALA_ACERTO = 'Isso aí! Você conseguiu!';
 
 // Pra cada modo, decide qual valor vira "recorde" a partir do
 // resultado da rodada - nem sempre é a contagem de acertos (ver
@@ -150,8 +185,30 @@ function LaboratorioConteudo({ userId }) {
     // Seguro ler direto aqui agora - userId já chega definitivo (ver
     // comentário no componente Laboratorio, acima).
     const [recorde, setRecorde] = useState(() => lerRecorde(userId, 'mouse'));
+    // true durante a pausa depois de um acerto (ver PAUSA_APOS_ACERTO_MS).
+    const [acertou, setAcertou] = useState(false);
+    // Card onde a Ceci pode ser arrastada (ver CapturaPuffGame/limiteRef).
+    const arenaRef = useRef(null);
+    // Espelho de `acertou` + timer da pausa, em ref pra handleResultado
+    // conseguir ignorar acertos repetidos e a troca de modo cancelar o timer.
+    const aguardandoRef = useRef(false);
+    const timerRodadaRef = useRef(null);
+
+    useEffect(() => () => clearTimeout(timerRodadaRef.current), []);
+
+    // A arte de "acerto" é grande (~1 MB) - baixa já ao entrar no
+    // Laboratório pra ela aparecer na hora do primeiro acerto, em vez de
+    // o recadinho ficar vazio até terminar o download.
+    useEffect(() => {
+        new Image().src = '/ceci-acerto.png';
+    }, []);
 
     const trocarModo = useCallback((novoModo) => {
+        // Cancela a pausa de um acerto anterior - senão o timer dela
+        // avançaria a rodada do modo NOVO.
+        clearTimeout(timerRodadaRef.current);
+        aguardandoRef.current = false;
+        setAcertou(false);
         setModo(novoModo);
         setRodada(0);
         setAcertosSessao(0);
@@ -163,10 +220,12 @@ function LaboratorioConteudo({ userId }) {
 
     const handleResultado = useCallback((sucesso, meta) => {
         if (!sucesso) return; // tentativa errada em "Tecla certa" chama com false - não avança rodada
+        if (aguardandoRef.current) return; // já acertou: o jogo ainda está na pausa do feedback
+        aguardandoRef.current = true;
+        setAcertou(true);
 
         const novaContagem = acertosSessao + 1;
         setAcertosSessao(novaContagem);
-        setRodada((r) => r + 1);
 
         const valorRecorde = valorParaRecorde(modo, novaContagem, meta);
         if (valorRecorde > recorde) {
@@ -174,9 +233,19 @@ function LaboratorioConteudo({ userId }) {
             salvarRecorde(userId, modo, valorRecorde);
         }
 
-        if (modo === 'teclado') setTeclaAtual((atual) => sortearDaLista(TECLAS_TREINO, atual));
-        if (modo === 'mouse') setTipoCliqueAtual((atual) => sortearDaLista(TIPOS_CLIQUE, atual));
-        if (modo === 'desenho') setFiguraAtual((atual) => sortearFigura(atual));
+        const avancarRodada = () => {
+            aguardandoRef.current = false;
+            setAcertou(false);
+            setRodada((r) => r + 1);
+            if (modo === 'teclado') setTeclaAtual((atual) => sortearDaLista(TECLAS_TREINO, atual));
+            if (modo === 'mouse') setTipoCliqueAtual((atual) => sortearDaLista(TIPOS_CLIQUE, atual));
+            if (modo === 'desenho') setFiguraAtual((atual) => sortearFigura(atual));
+        };
+
+        timerRodadaRef.current = setTimeout(
+            avancarRodada,
+            PAUSA_APOS_ACERTO_MS[modo] ?? PAUSA_APOS_ACERTO_PADRAO_MS,
+        );
     }, [acertosSessao, recorde, modo, userId]);
 
     const modoInfo = MODOS[modo];
@@ -221,7 +290,7 @@ function LaboratorioConteudo({ userId }) {
                     </div>
                 </div>
 
-                <div className={styles.arena}>
+                <div ref={arenaRef} className={styles.arena} data-status={acertou ? 'sucesso' : 'jogando'}>
                     <p className={styles.instrucao}>
                         {modo === 'mouse' ? modoInfo.instrucaoPara(tipoCliqueAtual) : modoInfo.instrucaoPara()}
                     </p>
@@ -236,6 +305,10 @@ function LaboratorioConteudo({ userId }) {
                             />
                         )}
 
+                        {modo === 'arrastar' && (
+                            <CapturaPuffGame key={gameKey} reportResult={handleResultado} limiteRef={arenaRef} />
+                        )}
+
                         {modo === 'teclado' && (
                             <PressionarTeclaGame key={gameKey} reportResult={handleResultado} tecla={teclaAtual} />
                         )}
@@ -247,6 +320,19 @@ function LaboratorioConteudo({ userId }) {
                         {modo === 'desenho' && (
                             <DesenhoLivreGame key={gameKey} reportResult={handleResultado} figura={figuraAtual} />
                         )}
+                    </div>
+
+                    {/* Recadinho da Cecília - mesmo do GameMoment: em dúvida
+                        até acertar, comemorando durante a pausa do acerto.
+                        Fica sempre no card (não só no acerto) pra o card não
+                        crescer/encolher a cada rodada. */}
+                    <div className={styles.ceciFeedback}>
+                        <div className={styles.ceciAvatar} aria-hidden>
+                            <Mascote variante={acertou ? 'acerto' : 'duvida'} />
+                        </div>
+                        <p className={styles.ceciMessage} aria-live="polite">
+                            {acertou ? FALA_ACERTO : FALA_ESPERANDO}
+                        </p>
                     </div>
                 </div>
             </div>

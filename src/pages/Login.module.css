@@ -11,21 +11,12 @@
   margin-bottom: 3rem;
 }
 
-.logoIcon {
-  width: 36px;
-  height: 36px;
-  background: var(--gradient-btn-primary);
-  border-radius: var(--radius-sm);
-}
-
-.logoText {
-  /* Exceção à regra de títulos: wordmark da marca, pede um sans forte
-     (Archivo) em vez da serifa (Merriweather) */
-  font-family: var(--font-body);
-  font-size: 1.25rem;
-  font-weight: 800;
-  color: var(--color-text-primary);
-  letter-spacing: 0.08em;
+.logoImg {
+  display: block;
+  height: 48px;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
 }
 
 .header {

@@ -169,7 +169,10 @@ export function ScrollAteUmPontoGame({
               height: `${zonaAlvo.fim - zonaAlvo.inicio}%`,
             }}
           >
-            <span className={styles.zonaAlvoLabel}>🎯 {rotuloAlvo}</span>
+            <span className={styles.zonaAlvoLabel}>
+              <img src="/alvo.png" alt="" className={styles.zonaAlvoIcone} draggable={false} />
+              {rotuloAlvo}
+            </span>
           </div>
         </div>
       </div>

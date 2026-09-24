@@ -30,10 +30,10 @@
 //                             bloqueado (não grava progresso)
 //
 // Estados de cada nó:
-//   'ativo'      - próximo passo da Unidade recomendada (rosa, pulsando)
-//   'concluido'  - mini-módulo já praticado / Unidade dominada (dourado)
-//   'disponivel' - acessível, ainda não feito (neutro)
-//   'bloqueado'  - pré-requisito da Unidade ainda não dominado (cinza-lilás)
+//   'ativo'      - próximo passo da Unidade recomendada (rosa Ceci, pulsando)
+//   'concluido'  - mini-módulo já praticado / Unidade dominada (amarelo)
+//   'disponivel' - acessível, ainda não feito (roxo Ceci)
+//   'bloqueado'  - pré-requisito da Unidade ainda não dominado (lilás apagado)
 //
 // Clicar num nó abre um popover com o título e a ação (começar/rever), ou
 // com o aviso do que falta pra liberar, se estiver bloqueado.
@@ -50,10 +50,10 @@ import styles from './GameTrilha.module.css';
 // Zigue-zague suave: nunca muito perto das bordas, pra o popover (250px)
 // não ser cortado pela moldura da janela no celular.
 const POSICOES_X = [50, 66, 50, 34];
-const TOPO_Y = 60;      // centro do 1º nó (deixa espaço pra tag "JOGAR")
+const TOPO_Y = 78;      // centro do 1º nó: ~40px de ar entre o título e o topo do nó (cabe a tag "JOGAR")
 const PASSO_Y = 150;    // distância vertical entre nós (nó + rótulo)
-const RODAPE_Y = 90;    // folga embaixo do último nó
-const EXTRA_POPOVER = 190; // folga extra quando o popover abre no fim do módulo
+const RODAPE_Y = 110;   // do centro do último nó até o fim da Unidade (rótulo + ~35px; o gap entre Unidades soma ~40px)
+const EXTRA_POPOVER = 140; // folga extra quando o popover abre no fim do módulo
 
 const ACENTOS_MODULO = ['purple', 'pink', 'yellow'];
 
@@ -71,19 +71,59 @@ const TEXTO_STATUS = {
     bloqueado: 'bloqueado',
 };
 
-function IconeTrofeu() {
+// Ícones SVG (contorno preto, sem cor) que substituem os números dos nós.
+// Um por módulo (mouse / teclado / cabo) + troféu no nó de checkpoint.
+// `currentColor` -> a cor vem de .iconeSvg no CSS (um lugar só pra trocar).
+const ICONES_NO = {
+    mouse: (
+        <>
+            <path d="M12 2.5a6 6 0 0 0-6 6v7a6 6 0 0 0 12 0v-7a6 6 0 0 0-6-6z" />
+            <path d="M6 10h12M12 2.5V10" />
+        </>
+    ),
+    teclado: (
+        <>
+            <rect x="2" y="6" width="20" height="12" rx="2.5" />
+            <path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M8 13h.01M12 13h.01M16 13h.01M8 16h8" />
+        </>
+    ),
+    cabo: (
+        <>
+            <path d="M9 3v5M15 3v5" />
+            <path d="M6.5 8h11v3.5a5.5 5.5 0 0 1-11 0z" />
+            <path d="M12 17v3a2 2 0 0 0 2 2h4" />
+        </>
+    ),
+    trofeu: (
+        <>
+            <path d="M7 3.5h10V9a5 5 0 0 1-10 0z" />
+            <path d="M7 5.5H4v1.5a3.5 3.5 0 0 0 3.3 3.5M17 5.5h3v1.5a3.5 3.5 0 0 1-3.3 3.5" />
+            <path d="M12 14v6M8 20.5h8" />
+        </>
+    ),
+};
+
+// Ícone de cada nó "mini" por módulo (ids de data/modulos.js).
+// Módulo sem ícone aqui cai de volta no número do mini-módulo.
+const ICONE_POR_MODULO = {
+    '1': 'mouse',
+    '2': 'teclado',
+    '3': 'cabo',
+};
+
+function IconeNo({ nome }) {
     return (
-        <svg className={styles.trofeuSvg} viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M7 3h10v5a5 5 0 0 1-10 0z" />
-            <path
-                d="M7 5H4.5v2A3 3 0 0 0 7.5 10M17 5h2.5v2a3 3 0 0 1-3 3"
-                fill="none"
-                stroke="#2B2140"
-                strokeWidth="1.6"
-                strokeLinecap="round"
-            />
-            <rect x="11" y="13" width="2" height="4" />
-            <rect x="8" y="17" width="8" height="3" rx="1" />
+        <svg
+            className={styles.iconeSvg}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.75"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+        >
+            {ICONES_NO[nome]}
         </svg>
     );
 }
@@ -241,9 +281,10 @@ export function GameTrilha({
 
                         let icone;
                         if (status === 'bloqueado') icone = '🔒';
-                        else if (ehCheckpoint) icone = <IconeTrofeu />;
+                        else if (ehCheckpoint) icone = <IconeNo nome="trofeu" />;
                         else if (status === 'concluido') icone = '✓';
                         else if (status === 'ativo') icone = '▶';
+                        else if (ICONE_POR_MODULO[unidade.moduloId]) icone = <IconeNo nome={ICONE_POR_MODULO[unidade.moduloId]} />;
                         else icone = no.numero;
 
                         return (
@@ -251,7 +292,7 @@ export function GameTrilha({
                                 key={chave}
                                 id={status === 'ativo' ? 'no-trilha-atual' : undefined}
                                 data-trilha-no
-                                className={styles.nodeWrapper}
+                                className={`${styles.nodeWrapper} ${ehCheckpoint ? styles.nodeWrapperCheckpoint : ''}`.trim()}
                                 style={{
                                     left: `${pontos[i].x}%`,
                                     top: `${pontos[i].y}px`,
@@ -281,7 +322,6 @@ export function GameTrilha({
                                         aria-label={`${no.titulo} - ${TEXTO_STATUS[status]}`}
                                         aria-expanded={popoverAberto}
                                     >
-                                        <span className={styles.nodeGlossy} aria-hidden="true" />
                                         <span className={styles.nodeIcone}>{icone}</span>
                                     </button>
                                 </div>

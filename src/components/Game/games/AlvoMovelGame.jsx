@@ -20,7 +20,9 @@
 //   reportResult (função, obrigatória) - vem do GameMoment
 //   velocidade (número, px/s, padrão 60) - quão rápido o alvo se move
 //   tamanhoAlvo (número, px, padrão 56)
-//   rotulo (string/emoji, padrão '🎯') - o que aparece dentro do alvo
+//   rotulo (string, opcional) - texto/emoji dentro do alvo. Sem ele, o
+//     alvo mostra a arte /alvo.png (public/alvo.png) - é o padrão tanto
+//     nas lições quanto no Laboratório.
 //   duploClique (bool, padrão false) - exige duplo clique no alvo em
 //     movimento (mesma convenção do ClicarAlvoGame)
 //   tipoClique ('esquerdo' | 'direito', padrão 'esquerdo') - qual botão
@@ -38,7 +40,7 @@ export function AlvoMovelGame({
                                 reportResult,
                                 velocidade = 60,
                                 tamanhoAlvo = 56,
-                                rotulo = '🎯',
+                                rotulo = null,
                                 duploClique = false,
                                 tipoClique = 'esquerdo',
                               }) {
@@ -136,7 +138,9 @@ export function AlvoMovelGame({
             aria-label={rotuloAria}
             {...propsClique}
         >
-          {rotulo}
+          {rotulo ?? (
+              <img src="/alvo.png" alt="" className={styles.alvoImg} draggable={false} />
+          )}
         </button>
       </div>
   );

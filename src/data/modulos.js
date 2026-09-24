@@ -544,7 +544,7 @@ export const MODULOS = [
             instructions: 'Acompanhe o alvo com o cursor e clique nele quando conseguir alcançá-lo.',
             jogo: 'alvo-movel',
             dificuldade: 'desafio',
-            jogoProps: { velocidade: 35, rotulo: '🎯 Clique aqui' },
+            jogoProps: { velocidade: 35 },
           },
           {
             titulo: 'Para lembrar',

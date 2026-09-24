@@ -27,6 +27,16 @@
   transition: background var(--transition-fast), border-color var(--transition-fast);
 }
 
+/* Arte do alvo (public/alvo.png): ocupa a maior parte do círculo e deixa o
+   clique passar pro botão (a img nunca é o alvo do evento, nem arrastável). */
+.alvoImg {
+  width: 76%;
+  height: 76%;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+}
+
 .alvo:hover {
   background: var(--color-yellow-pale);
 }

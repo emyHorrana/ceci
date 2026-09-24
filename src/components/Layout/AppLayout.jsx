@@ -54,8 +54,7 @@ export function AppLayout({ children }) {
         {/* SIDEBAR */}
         <aside className={styles.sidebar}>
           <div className={styles.sidebarLogo}>
-            <div className={styles.sidebarLogoIcon} />
-            <span className={styles.sidebarLogoText}>CECI</span>
+            <img src="/logo-ceci.png" alt="CECI" className={styles.sidebarLogoImg} />
           </div>
 
           <nav className={styles.sidebarNav}>

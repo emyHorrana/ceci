@@ -31,22 +31,13 @@
   gap: 10px;
 }
 
-.sidebarLogoIcon {
-  width: 32px;
-  height: 32px;
-  background: rgba(255, 255, 255, 0.65);
-  border: 1.5px solid rgba(220, 180, 50, 0.35);
-  border-radius: var(--radius-sm);
-}
-
-.sidebarLogoText {
-  /* Exceção à regra de títulos: wordmark da marca, pede um sans forte
-     (Archivo) em vez da serifa (Merriweather) */
-  font-family: var(--font-body);
-  font-size: 1.25rem;
-  font-weight: 900;
-  color: var(--color-text-primary);
-  letter-spacing: 0.08em;
+/* Logo da marca (public/logo-ceci.png): altura fixa, largura proporcional */
+.sidebarLogoImg {
+  display: block;
+  height: 40px;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
 }
 
 .sidebarNav {

@@ -75,8 +75,7 @@ export default function Login() {
       >
         {/* Logo */}
         <div className={styles.logo}>
-          <div className={styles.logoIcon} />
-          <span className={styles.logoText}>CECI</span>
+          <img src="/logo-ceci.png" alt="CECI" className={styles.logoImg} />
         </div>
 
         {/* Cabeçalho */}

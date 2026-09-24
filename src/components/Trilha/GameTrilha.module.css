@@ -25,7 +25,8 @@
   display: flex;
   flex-direction: column;
   gap: 2.5rem;
-  padding: 1.75rem 2rem 2.5rem;
+  --pad-x: 2rem; /* o banner das Unidades "sangra" esse tanto pra colar nas bordas do card */
+  padding: 1.75rem var(--pad-x) 2.5rem;
   background: var(--color-white);
 }
 
@@ -41,28 +42,29 @@
    ========================================================================= */
 
 .unidadeBanner {
-  width: 100%;
+  /* Faixa de título colada nas laterais do card: margem negativa = o
+     padding do container, então ela ocupa a largura EXATA do miolo da
+     janela (a borda de 2px do card fica por fora, sem vão nenhum). */
+  width: auto;
+  margin-inline: calc(var(--pad-x) * -1);
   background: var(--color-yellow-bg);
-  border: 1.5px solid var(--color-border);
-  border-radius: var(--radius-lg);
+  /* Mesmo contorno escuro do card (--border-frame) só em cima e embaixo:
+     as laterais já são a própria borda do card. */
+  border: 0;
+  border-block: 2px solid var(--color-text-primary);
+  border-radius: 0;
   padding: 0.875rem 1.5rem;
-  box-shadow: var(--shadow-sm);
+  /* Sombra dura (sem blur) embaixo, mesma linguagem do --shadow-frame */
+  box-shadow: 0 4px 0 rgba(43, 33, 64, 0.16);
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
-  transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
 }
 
-.unidadeBanner:hover {
-  box-shadow: var(--shadow-md);
-  transform: translateY(-1px);
-}
-
+/* Unidade recomendada agora: amarelo mais forte */
 .unidadeBannerAtual {
-  background: #FFFDF2;
-  border-color: var(--color-yellow-deep);
-  box-shadow: 0 4px 18px rgba(var(--color-yellow-deep-rgb), 0.22);
+  background: var(--color-yellow-pale);
 }
 
 .unidadeTitulo {
@@ -102,20 +104,29 @@
    ========================================================================= */
 
 .nodeWrapper {
+  --no-size: 74px;
   position: absolute;
-  transform: translate(-50%, -50%);
+  /* `top` marca o CENTRO DO NÓ: o wrapper inclui o rótulo (e o popover), então
+     centralizar o wrapper inteiro empurrava o nó pra cima conforme o tamanho
+     do rótulo (1 ou 2 linhas) e colava o 1º nó no título. */
+  transform: translateX(-50%);
+  margin-top: calc(var(--no-size) / -2);
   display: flex;
   flex-direction: column;
   align-items: center;
   z-index: 3;
 }
 
+.nodeWrapperCheckpoint {
+  --no-size: 82px;
+}
+
 .nodeButton {
   position: relative;
-  width: 74px;
-  height: 74px;
+  width: var(--no-size);
+  height: var(--no-size);
   border-radius: 50%;
-  border: 3.5px solid rgba(255, 255, 255, 0.95);
+  border: 0;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -126,107 +137,104 @@
   overflow: hidden;
 }
 
-/* Efeito Glossy (Brilho do topo do botão) */
-.nodeGlossy {
+/* Cores dos nós: CHAPADAS (sem degradê), no estilo dos níveis do Duolingo -
+   face colorida + "espessura" mais escura embaixo. Cada estado só define
+   --no-cor (face) e --no-borda (espessura); o resto é compartilhado.
+   Paleta da Ceci: roxo (disponível), amarelo da marca (concluído),
+   rosa (próximo passo). */
+.nodeButton {
+  background: var(--no-cor);
+  /* --no-brilho: reflexo interno na borda de cima (parte do efeito
+     "espelhado"); a espessura de baixo continua sendo a sombra dura. */
+  --no-brilho: inset 0 3px 2px rgba(255, 255, 255, 0.4), inset 0 -3px 3px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 7px 0 var(--no-borda), var(--no-brilho);
+  color: #111;
+}
+.nodeButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 9px 0 var(--no-borda), var(--no-brilho);
+  filter: brightness(1.06);
+}
+.nodeButton:active {
+  transform: translateY(5px);
+  box-shadow: 0 2px 0 var(--no-borda), var(--no-brilho);
+}
+
+/* Brilho "espelhado" (estilo Duolingo): duas faixas diagonais claras no
+   canto superior esquerdo + um reflexo suave. O botão tem overflow:hidden,
+   então tudo é recortado no formato do nó (círculo ou quadrado arredondado).
+   Ajuste a intensidade nos rgba(255,255,255,X). */
+.nodeButton::before,
+.nodeButton::after {
+  content: '';
   position: absolute;
-  top: 2px;
-  left: 12%;
-  right: 12%;
-  height: 38%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0.05) 100%);
-  border-radius: 50% 50% 40% 40% / 60% 60% 30% 30%;
+  inset: 0;
   pointer-events: none;
 }
+.nodeButton::before {
+  background: linear-gradient(
+          135deg,
+          transparent 0%,
+          transparent 19%,
+          rgba(255, 255, 255, 0.34) 19%,
+          rgba(255, 255, 255, 0.34) 35%,
+          transparent 35%,
+          transparent 41%,
+          rgba(255, 255, 255, 0.22) 41%,
+          rgba(255, 255, 255, 0.22) 47%,
+          transparent 47%
+  );
+}
+.nodeButton::after {
+  background: radial-gradient(ellipse at 70% 82%, rgba(255, 255, 255, 0.22), transparent 55%);
+}
 
-/* Disponível / ainda não feito - neutro/acinzentado de propósito
-   ("sem cor"), pra não competir com o dourado de ".nodeConcluido"
-   abaixo. Diferente de ".nodeBloqueado" (mais escuro, cursor
-   not-allowed) - aqui o nó está acessível, só ainda não foi feito. */
+/* Disponível / ainda não feito - roxo Ceci */
 .nodeDisponivel {
-  background: linear-gradient(180deg, #F5F1E6 0%, #E7DFCC 100%);
-  box-shadow: 0 7px 0 #C7B896, 0 10px 18px rgba(180, 160, 120, 0.25);
-  color: #7A6F58;
-}
-.nodeDisponivel:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 9px 0 #C7B896, 0 14px 22px rgba(180, 160, 120, 0.35);
-}
-.nodeDisponivel:active {
-  transform: translateY(5px);
-  box-shadow: 0 2px 0 #C7B896;
+  --no-cor: var(--color-ceci-purple);
+  --no-borda: #8460D9;
 }
 
-/* 4. Feito (mini-módulo já praticado, ou Unidade dominada) - dourado
-   vivo, a MESMA cor de destaque que os botões primários do app já
-   usam (--gradient-btn-primary) - antes essa classe usava roxo/lavanda,
-   que não lê como "sucesso" de forma óbvia e ainda competia visualmente
-   com o vermelho do nó ativo (ver .nodeAtivo). */
+/* Feito (mini-módulo praticado ou Unidade dominada) - amarelo da marca */
 .nodeConcluido {
-  background: var(--gradient-btn-primary);
-  box-shadow: 0 7px 0 var(--color-yellow-deep), 0 12px 22px rgba(var(--color-yellow-deep-rgb), 0.45);
-  color: #5C4400;
-}
-.nodeConcluido:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 9px 0 var(--color-yellow-deep), 0 16px 26px rgba(var(--color-yellow-deep-rgb), 0.6);
-  filter: brightness(1.05);
-}
-.nodeConcluido:active {
-  transform: translateY(5px);
-  box-shadow: 0 2px 0 var(--color-yellow-deep);
+  --no-cor: var(--color-yellow);
+  --no-borda: var(--color-yellow-dark);
 }
 
-/* 5. Nível Ativo / Recomendado Agora (Rosa Choque / Magenta Cecília com Pulso) */
+/* Próximo passo recomendado agora - rosa Ceci (com pulso e flutuação) */
 .nodeAtivo {
-  background: linear-gradient(180deg, #FFE4E6 0%, #F43F5E 50%, #E11D48 100%);
-  border: 4px solid #FFFFFF;
-  box-shadow: 0 7px 0 #9F1239, 0 12px 24px rgba(244, 63, 94, 0.6);
-  color: white;
+  --no-cor: var(--color-ceci-pink);
+  --no-borda: #D8659A;
   animation: floatActiveNode 3s ease-in-out infinite;
 }
-.nodeAtivo:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 9px 0 #9F1239, 0 16px 28px rgba(244, 63, 94, 0.7);
-}
-.nodeAtivo:active {
-  transform: translateY(5px);
-  box-shadow: 0 2px 0 #9F1239;
-}
 
-/* 6. Bloqueado (pré-requisito ainda não dominado) - achatado, sem
-   brilho, cursor de "não permitido", pra ficar visualmente óbvio que
-   esse nó não está disponível ainda, sem escondê-lo da trilha. */
+/* Bloqueado (pré-requisito ainda não dominado) - lilás apagado, achatado,
+   cursor de "não permitido": fica na trilha, mas óbvio que não dá pra abrir. */
 .nodeBloqueado {
-  background: #E4DDF0;
-  box-shadow: 0 4px 0 #B8ABD1, 0 6px 10px rgba(139, 107, 224, 0.15);
-  color: #9B8FB5;
-  filter: grayscale(0.4);
+  --no-cor: #E4DDF0;
+  --no-borda: #B8ABD1;
+  box-shadow: 0 4px 0 var(--no-borda), var(--no-brilho);
   cursor: not-allowed;
 }
-.nodeBloqueado:hover {
-  transform: none;
-  filter: grayscale(0.4);
-}
+.nodeBloqueado:hover,
 .nodeBloqueado:active {
   transform: none;
-  box-shadow: 0 4px 0 #B8ABD1, 0 6px 10px rgba(139, 107, 224, 0.15);
+  filter: none;
+  box-shadow: 0 4px 0 var(--no-borda), var(--no-brilho);
+}
+/* brilho mais discreto no bloqueado (parece "apagado") */
+.nodeBloqueado::before,
+.nodeBloqueado::after {
+  opacity: 0.45;
 }
 
 .nodeCheckpointButton {
-  width: 82px;
-  height: 82px;
   border-radius: 26px;
-}
-.nodeCheckpointButton:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 0 #581C87, 0 18px 30px rgba(170, 139, 245, 0.65);
-}
-.nodeCheckpointButton:active {
-  transform: translateY(5px);
-  box-shadow: 0 3px 0 #581C87;
 }
 
 .nodeIcone {
+  position: relative;
+  z-index: 1; /* acima das faixas de brilho (::before/::after do nó) */
   font-family: var(--font-display);
   font-size: 1.75rem;
   font-weight: 900;
@@ -237,11 +245,10 @@
   justify-content: center;
 }
 
-.trofeuSvg {
-  width: 32px;
-  height: 32px;
-  fill: #2B2140;
-  filter: drop-shadow(0 1px 2px rgba(255, 255, 255, 0.5));
+.iconeSvg {
+  width: 34px;
+  height: 34px;
+  color: #111; /* ícones de mouse/teclado/cabo/troféu: contorno preto */
 }
 
 /* Tag flutuante "JOGAR" no nó ativo */
@@ -420,21 +427,20 @@
 
 @media (max-width: 768px) {
   .unidadesContainer {
-    padding: 1.25rem 1rem 2rem;
+    --pad-x: 1rem;
+    padding: 1.25rem var(--pad-x) 2rem;
   }
 
   .unidadeBanner {
     padding: 0.75rem 1.25rem;
   }
 
-  .nodeButton {
-    width: 66px;
-    height: 66px;
+  .nodeWrapper {
+    --no-size: 66px;
   }
 
-  .nodeCheckpointButton {
-    width: 74px;
-    height: 74px;
+  .nodeWrapperCheckpoint {
+    --no-size: 74px;
   }
 
   .nodeIcone {

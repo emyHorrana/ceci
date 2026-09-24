@@ -168,7 +168,7 @@ export default function Dashboard() {
               reserva a barra "nome de programa" pra cards
               maiores/únicos, como cada módulo da trilha abaixo. */}
           <FrameCard bodyClassName={styles.welcomeCard}>
-            <div className={styles.mascoteSlotSmall} aria-hidden />
+            <img src="/ceci-acerto.png" alt="Ceci" className={styles.mascoteSlotSmall} />
             <div className={styles.welcomeText}>
               <h2>Olá, {userName}!</h2>
               {/* curriculoConcluido é o único momento em que a mensagem

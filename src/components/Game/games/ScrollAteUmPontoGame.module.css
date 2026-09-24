@@ -84,9 +84,19 @@
 }
 
 .zonaAlvoLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
   font-size: 0.9rem;
   font-weight: 700;
   color: var(--color-text-primary);
   text-align: center;
   padding: 0 0.5rem;
+}
+
+.zonaAlvoIcone {
+  width: 1.4em;
+  height: 1.4em;
+  object-fit: contain;
+  flex-shrink: 0;
 }

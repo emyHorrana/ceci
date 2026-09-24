@@ -109,7 +109,7 @@ export default function Cadastro() {
       >
         <div className={styles.card}>
           <div className={styles.cardHeader}>
-            <div className={styles.logoMini}>CECI</div>
+            <img src="/logo-ceci.png" alt="CECI" className={styles.logoMini} />
             <h1 className={authStyles.title}>Criar conta</h1>
             <p className={authStyles.subtitle}>Comece a aprender hoje, de graça</p>
           </div>

@@ -18,6 +18,7 @@ import { ProgressContext } from '../context/ProgressContext';
 import { getPerfisAluno, responderQuestao } from '../services/algorithmService';
 import { getTempoIdealMs } from '../utils/jogoTempoIdeal';
 import { reformularExplicacao } from '../services/aiService';
+import mosquinha from '../assets/mosquinha.png';
 import { isAdmin } from '../utils/roles';
 import { ButtonPrimary } from '../components/Buttons/ButtonPrimary';
 import { ButtonOutline } from '../components/Buttons/ButtonOutline';
@@ -463,16 +464,17 @@ export default function MiniModulo() {
                     className={styles.contentFrame}
                     bodyClassName={styles.card}
                 >
-                  {mostrarExplicacaoIA[indiceSeguro] && (
-                      <div className={styles.teoriaHeader}>
-                        <span className={styles.aiBadge}>
-                    ✨ Explicação personalizada da Ceci
-                  </span>
-                      </div>
-                  )}
-
-                  {mostrarExplicacaoIA[indiceSeguro] ? (
+                    {mostrarExplicacaoIA[indiceSeguro] ? (
                       <div className={styles.aiCard}>
+                        <div className={styles.aiCardHeader}>
+                          <img
+                              src={mosquinha}
+                              alt=""
+                              aria-hidden="true"
+                              className={styles.aiCardArt}
+                          />
+                          <span className={styles.aiBadge}>Dica do Mosquinha</span>
+                        </div>
                         <div
                             className={styles.aiConteudo}
                             dangerouslySetInnerHTML={{ __html: explicacoesIA[indiceSeguro] }}

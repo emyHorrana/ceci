@@ -435,13 +435,34 @@
   animation: cardIn 0.35s ease-out both;
 }
 
+.aiCardHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding-bottom: 1rem;
+  margin-bottom: 1.25rem;
+  border-bottom: 1.5px solid #E8DCF8;
+  min-width: 0;
+}
+
+.aiCardArt {
+  width: 6.5rem;
+  height: 6.5rem;
+  flex-shrink: 0;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: 55% 55%;
+}
+
 .aiBadge {
   background: #E8DCF8;
   color: #5C2374;
-  font-size: 0.75rem;
+  font-size: 0.9rem;
   font-weight: 700;
-  padding: 4px 10px;
-  border-radius: var(--radius-pill);
+  padding: 8px 14px;
+  border-radius: var(--radius-lg);
+  white-space: normal;
+  max-width: 100%;
 }
 
 .aiConteudo {

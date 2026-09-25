@@ -122,6 +122,8 @@ import styles from './GameMoment.module.css';
 import { ButtonOutline } from '../Buttons/ButtonOutline';
 import { RetroWindow } from '../Window/RetroWindow';
 import { Mascote } from '../Mascote/Mascote';
+import { useSomClique } from '../../hooks/useSomClique';
+import { useSomTecla } from '../../hooks/useSomTecla';
 
 // Só conta como "tempo parado" gaps de atividade maiores que isso -
 // evita contar o intervalo normal entre um clique e outro como inatividade.
@@ -162,6 +164,21 @@ export function GameMoment({
                              messages,
                            }) {
   const msgs = useMemo(() => ({ ...DEFAULT_MESSAGES, ...messages }), [messages]);
+
+  // Som de clique (esquerdo + direito) e bloqueio do menu de opções do
+  // navegador - ver useSomClique.js. Espalhado no RetroWindow (moldura
+  // inteira do "momento de jogo"), não só no gameSlot, porque a
+  // instrução também fica dentro desse card e é fácil o clique direito
+  // cair fora do jogo em si enquanto a pessoa mira.
+  const somHandlers = useSomClique();
+
+  // Som de tecla (espaço/especial/normal) - ver useSomTecla.js. Ao
+  // contrário do somHandlers acima, não retorna nada pra espalhar no
+  // JSX: o efeito já liga o listener em 'window' sozinho, e desliga
+  // no cleanup quando este GameMoment desmonta (troca de etapa, saiu
+  // da página) - por isso só cobre teclado ENQUANTO for "momento de
+  // jogo", igual o som de clique.
+  useSomTecla();
 
   const [attempts, setAttempts] = useState(0);
   const [status, setStatus] = useState('jogando'); // 'jogando' | 'sucesso' | 'pulado'
@@ -304,6 +321,7 @@ export function GameMoment({
           data-status={status}
           className={styles.frame}
           bodyClassName={styles.gameMoment}
+          {...somHandlers}
       >
 
         {/* Aviso de transição: sinaliza que a leitura acabou e agora é ação -
@@ -317,7 +335,13 @@ export function GameMoment({
             <p className={styles.instructions}>{instructions}</p>
         )}
 
-        {/* Slot do jogo de verdade - o GameMoment não sabe o que tem aqui dentro */}
+        {/* Slot do jogo de verdade - o GameMoment não sabe o que tem aqui
+          dentro. O som de clique e o bloqueio do menu de opções do
+          navegador (somHandlers) agora ficam no RetroWindow, cobrindo o
+          card inteiro (instrução incluída) - não só este slot -, porque
+          é fácil o clique direito cair fora do alvo enquanto a pessoa
+          ainda está mirando, e o menu do navegador atrapalha o
+          aprendizado onde quer que apareça dentro do "momento de jogo". */}
         <div className={styles.gameSlot}>
           {/* eslint-disable-next-line react-hooks/refs -- reportResult só
             LÊ refs quando é de fato CHAMADO (dentro de um evento do
@@ -326,7 +350,7 @@ export function GameMoment({
             provar isso estaticamente e trata qualquer função exposta
             aqui que toque ref em algum lugar do corpo como arriscada,
             mesmo sem ser invocada agora. */}
-          {children({ reportResult, attempts, status })}
+            {children({ reportResult, attempts, status })}
         </div>
 
         {/* Recadinho da Cecília - sempre presente enquanto a pessoa joga:

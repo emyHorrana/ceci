@@ -5,6 +5,27 @@
     gap: 1.25rem;
 }
 
+/* canvas de pintura + arte decorativa da Ceci lado a lado. Em telas
+   estreitas, o wrap joga a arte pra baixo do canvas em vez de espremer. */
+.areaPrincipal {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+/* Redonda, do mesmo jeito que a arte já vem recortada (ceci-round-6.png
+   é um "sticker" circular). Ajuste width/height aqui se quiser a Ceci
+   maior ou menor do lado do desenho - não precisa tocar no JSX. */
+.arteDecorativa {
+    width: 280px;
+    height: 280px;
+    border-radius: 50%;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
 .canvasArea {
     position: relative;
     border-radius: var(--radius-lg);

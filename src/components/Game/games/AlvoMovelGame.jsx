@@ -128,7 +128,11 @@ export function AlvoMovelGame({
           : 'Clique no alvo em movimento';
 
   return (
-      <div ref={areaRef} className={styles.area}>
+      <div
+          ref={areaRef}
+          className={styles.area}
+          onContextMenu={(e) => e.preventDefault()} // bloqueia o menu do navegador em qualquer ponto da área de jogo, não só em cima do alvo (que fica se movendo)
+      >
         <button
             type="button"
             className={styles.alvo}

@@ -155,27 +155,43 @@ export function DesenhoLivreGame({ reportResult, figura = 'circulo', tamanho = 2
 
     return (
         <div className={styles.wrapper}>
-            <div className={styles.canvasArea} style={{ width: tamanho, height: tamanho }}>
-                <canvas ref={guiaRef} width={tamanho} height={tamanho} className={styles.camada} />
-                <canvas
-                    ref={tintaRef}
-                    width={tamanho}
-                    height={tamanho}
-                    className={`${styles.camada} ${styles.camadaTinta}`}
-                    onPointerDown={handlePointerDown}
-                    onPointerMove={handlePointerMove}
-                    onPointerUp={pararDePintar}
-                    onPointerLeave={pararDePintar}
-                    role="img"
-                    aria-label={`Área de pintura em formato de ${figura}`}
-                />
+            {/* areaPrincipal = canvas de pintura + arte decorativa da Ceci
+                do lado. A arte é só ilustrativa (por isso aria-hidden e
+                sem alt) - não faz parte da mecânica do jogo, então se a
+                imagem não existir/ falhar em algum ambiente, não quebra
+                nada, só some. */}
+            <div className={styles.areaPrincipal}>
+                <div className={styles.canvasArea} style={{ width: tamanho, height: tamanho }}>
+                    <canvas ref={guiaRef} width={tamanho} height={tamanho} className={styles.camada} />
+                    <canvas
+                        ref={tintaRef}
+                        width={tamanho}
+                        height={tamanho}
+                        className={`${styles.camada} ${styles.camadaTinta}`}
+                        onPointerDown={handlePointerDown}
+                        onPointerMove={handlePointerMove}
+                        onPointerUp={pararDePintar}
+                        onPointerLeave={pararDePintar}
+                        role="img"
+                        aria-label={`Área de pintura em formato de ${figura}`}
+                    />
 
-                {concluido && (
-                    <div className={styles.resultadoOverlay}>
-                        <span className={styles.resultadoNumero}>{resultado}%</span>
-                        <span className={styles.resultadoLabel}>de perfeição</span>
-                    </div>
-                )}
+                    {concluido && (
+                        <div className={styles.resultadoOverlay}>
+                            <span className={styles.resultadoNumero}>{resultado}%</span>
+                            <span className={styles.resultadoLabel}>de perfeição</span>
+                        </div>
+                    )}
+                </div>
+
+                <img
+                    src="/ceci-round-6.png"
+                    alt=""
+                    aria-hidden="true"
+                    draggable={false}
+                    className={styles.arteDecorativa}
+                    onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                />
             </div>
 
             <div className={styles.controles}>

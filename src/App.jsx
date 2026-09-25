@@ -20,6 +20,10 @@ import { ProgressProvider } from './context/ProgressContext';
 import { TextSizeProvider } from './context/TextSizeContext';
 import { TextSizeControl }  from './components/Accessibility/TextSizeControl';
 
+// Som de clique: deixou de ser global (ver useSomClique.js) - agora só
+// toca dentro dos jogos, onde cada um chama o hook por conta própria
+// (GameMoment.jsx cobre as lições, Laboratorio.jsx cobre o treino livre).
+
 function App() {
   return (
       <TextSizeProvider>

@@ -63,6 +63,8 @@ import { TreinoDedosGame } from '../components/Game/games/TreinoDedosGame';
 import { DesenhoLivreGame } from '../components/Game/games/DesenhoLivreGame';
 import { FASES_TREINO_DEDOS } from '../data/treinoDedosFases';
 import { sortearFigura } from '../utils/figurasCanvas';
+import { useSomClique } from '../hooks/useSomClique';
+import { useSomTecla } from '../hooks/useSomTecla';
 import styles from './Laboratorio.module.css';
 
 const TECLAS_TREINO = [
@@ -176,6 +178,20 @@ export default function Laboratorio() {
 }
 
 function LaboratorioConteudo({ userId }) {
+    // Som de clique (esquerdo + direito) e bloqueio do menu de opções do
+    // navegador - ver useSomClique.js e o mesmo uso em GameMoment.jsx
+    // (lições). Espalhado na arena inteira (não só no gameHost) porque
+    // a instrução também mora dentro desse quadrado e é fácil o clique
+    // direito cair fora do alvo em movimento enquanto a pessoa mira.
+    const somHandlers = useSomClique();
+
+    // Som de tecla (espaço/especial/normal) - ver useSomTecla.js e o
+    // mesmo uso em GameMoment.jsx. Fica ligado o tempo todo que o
+    // Laboratório estiver montado (não só no modo 'teclado'), mas como
+    // só dispara em keydown, na prática só toca quando a pessoa está
+    // de fato no modo de treino de teclado.
+    useSomTecla();
+
     const [modo, setModo] = useState('mouse');
     const [rodada, setRodada] = useState(0);
     const [acertosSessao, setAcertosSessao] = useState(0);
@@ -290,7 +306,12 @@ function LaboratorioConteudo({ userId }) {
                     </div>
                 </div>
 
-                <div ref={arenaRef} className={styles.arena} data-status={acertou ? 'sucesso' : 'jogando'}>
+                <div
+                    ref={arenaRef}
+                    className={styles.arena}
+                    data-status={acertou ? 'sucesso' : 'jogando'}
+                    {...somHandlers}
+                >
                     <p className={styles.instrucao}>
                         {modo === 'mouse' ? modoInfo.instrucaoPara(tipoCliqueAtual) : modoInfo.instrucaoPara()}
                     </p>
@@ -305,21 +326,21 @@ function LaboratorioConteudo({ userId }) {
                             />
                         )}
 
-                        {modo === 'arrastar' && (
-                            <CapturaPuffGame key={gameKey} reportResult={handleResultado} limiteRef={arenaRef} />
-                        )}
+                            {modo === 'arrastar' && (
+                                <CapturaPuffGame key={gameKey} reportResult={handleResultado} limiteRef={arenaRef} />
+                            )}
 
-                        {modo === 'teclado' && (
-                            <PressionarTeclaGame key={gameKey} reportResult={handleResultado} tecla={teclaAtual} />
-                        )}
+                            {modo === 'teclado' && (
+                                <PressionarTeclaGame key={gameKey} reportResult={handleResultado} tecla={teclaAtual} />
+                            )}
 
-                        {modo === 'dedos' && (
-                            <TreinoDedosGame key={gameKey} reportResult={handleResultado} texto={textoTreinoDedos} />
-                        )}
+                            {modo === 'dedos' && (
+                                <TreinoDedosGame key={gameKey} reportResult={handleResultado} texto={textoTreinoDedos} />
+                            )}
 
-                        {modo === 'desenho' && (
-                            <DesenhoLivreGame key={gameKey} reportResult={handleResultado} figura={figuraAtual} />
-                        )}
+                            {modo === 'desenho' && (
+                                <DesenhoLivreGame key={gameKey} reportResult={handleResultado} figura={figuraAtual} />
+                            )}
                     </div>
 
                     {/* Recadinho da Cecília - mesmo do GameMoment: em dúvida

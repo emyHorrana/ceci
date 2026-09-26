@@ -15,13 +15,31 @@
 // comparar pixel a pixel com o que foi pintado.
 //
 // PERFEIÇÃO (ao clicar "Concluir desenho")
-//   preenchimento = % da área INTERNA da figura que ficou pintada
-//   vazamento     = % da área EXTERNA que foi pintada por engano
-//   perfeicao     = preenchimento * (1 - vazamento/2), arredondado
-// O /2 no vazamento é de propósito: um pouquinho de tinta fora do
-// risco não deveria derrubar a nota tanto quanto deixar de pintar por
-// dentro - mantém o retorno acolhedor mesmo pra quem ainda não tem
-// pulso firme (público adulto iniciante, ver GameMoment).
+//   preenchimento = % do NÚCLEO da figura que ficou pintada
+//   vazamento     = % da área fora da ZONA TOLERADA que foi pintada
+//   perfeicao     = max(0, preenchimento - vazamento), em pontos %, arredondado
+// Sem amortecimento: cada ponto percentual de área vazada tira um
+// ponto percentual de exatidão, direto. Preencher tudo por dentro não
+// segura a nota se boa parte também vazou pra fora - pintar a tela
+// inteira, por exemplo, zera a perfeição mesmo com preenchimento 100%.
+//
+// MARGEM DE ERRO (faixa ao redor do contorno guia)
+// Em vez de comparar o traço com a figura exata (o que fazia até quem
+// pintasse "perfeito" cair pra 99% por causa de 1px de anti-aliasing
+// ou de uma ponta que o pincel redondo não alcança), a régua real usa
+// duas versões da máscara, geradas UMA vez por rodada a partir da
+// mesma figura, "inflando" o contorno em `margem` px pra cada lado
+// (ctx.stroke com lineWidth = 2*margem, centrado no traço):
+//   - zonaTolerada = interior + uma faixa de tolerância pra FORA do
+//     contorno -> só conta como "vazamento" o que escapar dessa faixa
+//   - nucleo       = interior encolhido, tirando uma faixa de
+//     tolerância de DENTRO do contorno -> só esse núcleo precisa ficar
+//     100% pintado pra render "preenchimento" cheio; a beirada (onde
+//     ninguém acerta o traço no pixel) não é mais cobrada
+// `margem` não é um número fixo de px: é calculada por figura a partir
+// da própria área/perímetro (ver FRACAO_MARGEM_ERRO), pra tolerar
+// sempre ~2-3% da área interna, nem mais nem menos, mesmo em figuras
+// bem diferentes (um círculo largo x uma ponta fina de estrela).
 //
 // Props:
 //   reportResult (função, obrigatória) - chamada com (true, { perfeicao })
@@ -44,22 +62,33 @@ const PALETA = [
     { id: 'roxo',     cor: '#AB47BC' },
 ];
 
-const RAIO_PINCEL = 12;
+const RAIO_PADRAO = 12; // tamanho inicial do pincel/borracha, em px de raio
+const RAIO_MIN = 4;
+const RAIO_MAX = 30;
+
+// Alvo de tolerância: fração da ÁREA interna da figura que a margem de
+// erro pode "perdoar" de cada lado do contorno (underfill por dentro,
+// vazamento por fora). 0.025 = 2.5%, no meio do intervalo de 2-3%
+// pedido - segue valorizando a exatidão, só não pune 1-2px de imprecisão
+// inevitável do mouse/touch.
+const FRACAO_MARGEM_ERRO = 0.025;
 
 export function DesenhoLivreGame({ reportResult, figura = 'circulo', tamanho = 280 }) {
     const guiaRef = useRef(null);
     const tintaRef = useRef(null);
-    const maskRef = useRef(null); // Uint8Array - true = dentro da figura, nunca vai pro DOM
+    const zonaToleradaRef = useRef(null); // Uint8Array - dentro OU na faixa de tolerância (usada no vazamento)
+    const nucleoRef = useRef(null); // Uint8Array - interior encolhido pela margem (usada no preenchimento)
     const pintandoRef = useRef(false);
 
     const [corAtual, setCorAtual] = useState(PALETA[0].cor);
     const [modoBorracha, setModoBorracha] = useState(false);
+    const [raioPincel, setRaioPincel] = useState(RAIO_PADRAO);
     const [concluido, setConcluido] = useState(false);
     const [resultado, setResultado] = useState(null);
 
-    // Desenha a guia (contorno tracejado) e monta a máscara de acerto -
-    // roda só quando a figura muda (troca de rodada), nunca de novo por
-    // causa de cor/borracha.
+    // Desenha a guia (contorno tracejado) e monta as duas máscaras de
+    // acerto (zona tolerada + núcleo) - roda só quando a figura muda
+    // (troca de rodada), nunca de novo por causa de cor/borracha/pincel.
     useEffect(() => {
         const guia = guiaRef.current;
         const tinta = tintaRef.current;
@@ -73,20 +102,89 @@ export function DesenhoLivreGame({ reportResult, figura = 'circulo', tamanho = 2
         tracarFigura(ctxGuia, figura, tamanho);
         ctxGuia.stroke();
 
-        // Máscara: canvas só na memória (nunca vira <canvas> na tela).
-        const maskCanvas = document.createElement('canvas');
-        maskCanvas.width = tamanho;
-        maskCanvas.height = tamanho;
-        const ctxMask = maskCanvas.getContext('2d');
-        tracarFigura(ctxMask, figura, tamanho);
-        ctxMask.fillStyle = '#000';
-        ctxMask.fill();
-        const dados = ctxMask.getImageData(0, 0, tamanho, tamanho).data;
+        // 1) Interior "puro" (sem margem), só pra medir área e perímetro
+        // da figura e daí calcular quantos px de margem correspondem a
+        // FRACAO_MARGEM_ERRO da área - assim a margem vira proporcional
+        // à espessura de cada figura (uma ponta fina de estrela ganha
+        // uma faixa bem menor que um círculo largo, em vez de uma
+        // largura fixa que "come" desproporcionalmente as partes finas).
+        const interiorCanvas = document.createElement('canvas');
+        interiorCanvas.width = tamanho;
+        interiorCanvas.height = tamanho;
+        const ctxInterior = interiorCanvas.getContext('2d');
+        tracarFigura(ctxInterior, figura, tamanho);
+        ctxInterior.fillStyle = '#000';
+        ctxInterior.fill();
+        const dadosInterior = ctxInterior.getImageData(0, 0, tamanho, tamanho).data;
         const dentro = new Uint8Array(tamanho * tamanho);
         for (let i = 0; i < dentro.length; i++) {
-            dentro[i] = dados[i * 4 + 3] > 0 ? 1 : 0; // canal alpha
+            dentro[i] = dadosInterior[i * 4 + 3] > 0 ? 1 : 0;
         }
-        maskRef.current = dentro;
+
+        let areaTotal = 0;
+        let perimetroEstimado = 0;
+        for (let y = 0; y < tamanho; y++) {
+            for (let x = 0; x < tamanho; x++) {
+                const i = y * tamanho + x;
+                if (!dentro[i]) continue;
+                areaTotal++;
+                const bordaCanvas = x === 0 || y === 0 || x === tamanho - 1 || y === tamanho - 1;
+                const vizinhoFora =
+                    bordaCanvas ||
+                    !dentro[i - 1] || !dentro[i + 1] ||
+                    !dentro[i - tamanho] || !dentro[i + tamanho];
+                if (vizinhoFora) perimetroEstimado++;
+            }
+        }
+
+        // margem (px) = (fração-alvo * área) / perímetro, com um piso de
+        // 1px (pra sempre existir alguma tolerância) e um teto de 10px
+        // (sanidade, evita exagero em figuras muito irregulares).
+        const margem = perimetroEstimado > 0
+            ? Math.min(10, Math.max(1, (FRACAO_MARGEM_ERRO * areaTotal) / perimetroEstimado))
+            : 0;
+
+        // Zona tolerada: interior + faixa de tolerância pra FORA do
+        // contorno. Canvas só na memória (nunca vira <canvas> na tela).
+        const zonaCanvas = document.createElement('canvas');
+        zonaCanvas.width = tamanho;
+        zonaCanvas.height = tamanho;
+        const ctxZona = zonaCanvas.getContext('2d');
+        tracarFigura(ctxZona, figura, tamanho);
+        ctxZona.fillStyle = '#000';
+        ctxZona.fill();
+        tracarFigura(ctxZona, figura, tamanho);
+        ctxZona.lineWidth = margem * 2;
+        ctxZona.strokeStyle = '#000';
+        ctxZona.stroke();
+        const dadosZona = ctxZona.getImageData(0, 0, tamanho, tamanho).data;
+        const zonaTolerada = new Uint8Array(tamanho * tamanho);
+        for (let i = 0; i < zonaTolerada.length; i++) {
+            zonaTolerada[i] = dadosZona[i * 4 + 3] > 0 ? 1 : 0; // canal alpha
+        }
+        zonaToleradaRef.current = zonaTolerada;
+
+        // Núcleo: interior encolhido, tirando uma faixa de tolerância de
+        // DENTRO do contorno (fill seguido de "furo" com destination-out
+        // usando o mesmo traço grosso, o que produz uma erosão simples).
+        const nucleoCanvas = document.createElement('canvas');
+        nucleoCanvas.width = tamanho;
+        nucleoCanvas.height = tamanho;
+        const ctxNucleo = nucleoCanvas.getContext('2d');
+        tracarFigura(ctxNucleo, figura, tamanho);
+        ctxNucleo.fillStyle = '#000';
+        ctxNucleo.fill();
+        tracarFigura(ctxNucleo, figura, tamanho);
+        ctxNucleo.lineWidth = margem * 2;
+        ctxNucleo.strokeStyle = '#000';
+        ctxNucleo.globalCompositeOperation = 'destination-out';
+        ctxNucleo.stroke();
+        const dadosNucleo = ctxNucleo.getImageData(0, 0, tamanho, tamanho).data;
+        const nucleo = new Uint8Array(tamanho * tamanho);
+        for (let i = 0; i < nucleo.length; i++) {
+            nucleo[i] = dadosNucleo[i * 4 + 3] > 0 ? 1 : 0;
+        }
+        nucleoRef.current = nucleo;
 
         // Limpa a camada de tinta (nova rodada = tela em branco)
         const ctxTinta = tinta.getContext('2d');
@@ -106,9 +204,9 @@ export function DesenhoLivreGame({ reportResult, figura = 'circulo', tamanho = 2
         ctx.globalCompositeOperation = modoBorracha ? 'destination-out' : 'source-over';
         ctx.fillStyle = corAtual;
         ctx.beginPath();
-        ctx.arc(x, y, RAIO_PINCEL, 0, Math.PI * 2);
+        ctx.arc(x, y, raioPincel, 0, Math.PI * 2);
         ctx.fill();
-    }, [corAtual, modoBorracha]);
+    }, [corAtual, modoBorracha, raioPincel]);
 
     const handlePointerDown = (e) => {
         if (concluido) return;
@@ -126,27 +224,34 @@ export function DesenhoLivreGame({ reportResult, figura = 'circulo', tamanho = 2
     const pararDePintar = () => { pintandoRef.current = false; };
 
     const handleConcluir = () => {
-        const dentro = maskRef.current;
-        if (!dentro) return;
+        const zonaTolerada = zonaToleradaRef.current;
+        const nucleo = nucleoRef.current;
+        if (!zonaTolerada || !nucleo) return;
 
         const ctx = tintaRef.current.getContext('2d');
         const pintado = ctx.getImageData(0, 0, tamanho, tamanho).data;
 
-        let dentroTotal = 0, dentroPintado = 0, foraTotal = 0, foraPintado = 0;
-        for (let i = 0; i < dentro.length; i++) {
+        let nucleoTotal = 0, nucleoPintado = 0, foraTotal = 0, foraPintado = 0;
+        for (let i = 0; i < zonaTolerada.length; i++) {
             const temTinta = pintado[i * 4 + 3] > 0;
-            if (dentro[i]) {
-                dentroTotal++;
-                if (temTinta) dentroPintado++;
-            } else {
+            if (nucleo[i]) {
+                nucleoTotal++;
+                if (temTinta) nucleoPintado++;
+            }
+            if (!zonaTolerada[i]) {
                 foraTotal++;
                 if (temTinta) foraPintado++;
             }
         }
 
-        const preenchimento = dentroTotal > 0 ? dentroPintado / dentroTotal : 0;
+        const preenchimento = nucleoTotal > 0 ? nucleoPintado / nucleoTotal : 0;
         const vazamento = foraTotal > 0 ? foraPintado / foraTotal : 0;
-        const perfeicao = Math.round(preenchimento * 100 * (1 - Math.min(vazamento, 1) * 0.5));
+        // Vazamento tira pontos de exatidão DIRETO (1 ponto percentual
+        // de área vazada = 1 ponto percentual a menos), sem amortecer
+        // pela metade como antes - preenchimento sozinho não segura a
+        // nota se boa parte da tinta escapou pra fora do contorno.
+        // Pintar a tela inteira, por exemplo, agora vai pra 0%.
+        const perfeicao = Math.round(Math.max(0, preenchimento * 100 - Math.min(vazamento, 1) * 100));
 
         setConcluido(true);
         setResultado(perfeicao);
@@ -195,27 +300,53 @@ export function DesenhoLivreGame({ reportResult, figura = 'circulo', tamanho = 2
             </div>
 
             <div className={styles.controles}>
-                <div className={styles.paleta}>
-                    {PALETA.map((p) => (
+                <div className={styles.grupoPaleta}>
+                    <span className={styles.legendaControle}>🎨 Cor</span>
+                    <div className={styles.paleta} title="Escolha a cor da tinta">
+                        {PALETA.map((p) => (
+                            <button
+                                key={p.id}
+                                type="button"
+                                className={`${styles.corBotao} ${!modoBorracha && corAtual === p.cor ? styles.corAtiva : ''}`}
+                                style={{ background: p.cor }}
+                                aria-label={`Cor ${p.id}`}
+                                title={`Pintar de ${p.id}`}
+                                onClick={() => { setCorAtual(p.cor); setModoBorracha(false); }}
+                                disabled={concluido}
+                            />
+                        ))}
                         <button
-                            key={p.id}
                             type="button"
-                            className={`${styles.corBotao} ${!modoBorracha && corAtual === p.cor ? styles.corAtiva : ''}`}
-                            style={{ background: p.cor }}
-                            aria-label={`Cor ${p.id}`}
-                            onClick={() => { setCorAtual(p.cor); setModoBorracha(false); }}
+                            className={`${styles.borrachaBotao} ${modoBorracha ? styles.corAtiva : ''}`}
+                            onClick={() => setModoBorracha(true)}
                             disabled={concluido}
-                        />
-                    ))}
-                    <button
-                        type="button"
-                        className={`${styles.borrachaBotao} ${modoBorracha ? styles.corAtiva : ''}`}
-                        onClick={() => setModoBorracha(true)}
-                        disabled={concluido}
-                        aria-label="Borracha"
+                            aria-label="Borracha (apaga o que você pintou)"
+                            title="Borracha - apaga o que você pintou"
+                        >
+                            🧹
+                        </button>
+                    </div>
+                </div>
+
+                <div className={styles.controleTamanho}>
+                    <label
+                        htmlFor="tamanho-pincel"
+                        className={styles.legendaControle}
+                        title={`Arraste para ajustar o tamanho do ${modoBorracha ? 'borracha' : 'pincel'}`}
                     >
-                        🧹
-                    </button>
+                        {modoBorracha ? '🧹' : '🖌️'} Tamanho: {raioPincel * 2}px
+                    </label>
+                    <input
+                        id="tamanho-pincel"
+                        type="range"
+                        min={RAIO_MIN}
+                        max={RAIO_MAX}
+                        value={raioPincel}
+                        onChange={(e) => setRaioPincel(Number(e.target.value))}
+                        disabled={concluido}
+                        className={styles.controleTamanhoSlider}
+                        aria-label={`Tamanho do ${modoBorracha ? 'borracha' : 'pincel'} - ${raioPincel * 2}px, arraste para ajustar`}
+                    />
                 </div>
 
                 <ButtonPrimary onClick={handleConcluir} disabled={concluido} size="small">

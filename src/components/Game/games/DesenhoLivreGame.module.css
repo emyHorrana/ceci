@@ -128,3 +128,37 @@
     opacity: 0.6;
     cursor: default;
 }
+
+.controleTamanho {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.grupoPaleta {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+/* Legenda pequena e discreta, reaproveitada acima da paleta de cores e
+   ao lado do controle de tamanho - dá contexto sem virar um bloco de
+   texto chamativo. */
+.legendaControle {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    white-space: nowrap;
+}
+
+.controleTamanhoSlider {
+    width: 90px;
+    accent-color: var(--color-yellow-deep);
+    cursor: pointer;
+}
+
+.controleTamanhoSlider:disabled {
+    opacity: 0.6;
+    cursor: default;
+}

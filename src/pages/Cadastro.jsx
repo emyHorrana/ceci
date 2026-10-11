@@ -6,6 +6,7 @@ import { TextInput } from '../components/Forms/TextInput';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { flushOnboardingSignals } from '../services/onboardingSync';
 import { criarUsuario } from '../services/usuarioService';
+import { salvarConquista } from '../services/progressService';
 import { AuthLayout } from '../components/Layout/AuthLayout';
 import { Footer } from '../components/Footer/Footer';
 import authStyles from '../components/Layout/AuthLayout.module.css';
@@ -59,6 +60,13 @@ export default function Cadastro() {
         await criarUsuario({ id: newUser.id, nome: nome.trim(), email: email.trim() });
       } catch (err) {
         console.error('Erro ao criar perfil em usuarios:', err);
+      }
+
+      // Desbloqueia a primeira conquista: "Primeiros Passos" (Concluir o cadastro)
+      try {
+        await salvarConquista(newUser.id, 'Primeiros Passos');
+      } catch (err) {
+        console.warn('Erro ao registrar conquista de cadastro:', err);
       }
 
       // A conta acabou de nascer - agora sim dá pra mandar pro algoritmo

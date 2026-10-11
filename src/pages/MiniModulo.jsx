@@ -18,6 +18,7 @@ import { ProgressContext } from '../context/ProgressContext';
 import { getPerfisAluno, responderQuestao } from '../services/algorithmService';
 import { getTempoIdealMs } from '../utils/jogoTempoIdeal';
 import { reformularExplicacao } from '../services/aiService';
+import { marcarMiniModuloConcluidoLocal } from '../services/achievementService';
 import mosquinha from '../assets/mosquinha.png';
 import { isAdmin } from '../utils/roles';
 import { ButtonPrimary } from '../components/Buttons/ButtonPrimary';
@@ -368,11 +369,14 @@ export default function MiniModulo() {
   const concluir = async () => {
     localStorage.removeItem(CHAVE_ETAPA_SALVA);
 
-    if (user?.id && updateProgress) {
-      try {
-        await updateProgress(miniModuloId, user.id, { progress: 100, completed: true });
-      } catch (err) {
-        console.warn('Não foi possível salvar o progresso no servidor:', err);
+    if (user?.id) {
+      marcarMiniModuloConcluidoLocal(user.id, miniModuloId);
+      if (updateProgress) {
+        try {
+          await updateProgress(miniModuloId, user.id, { progress: 100, completed: true }, user);
+        } catch (err) {
+          console.warn('Não foi possível salvar o progresso no servidor:', err);
+        }
       }
     }
     navigate(destinoConclusao);

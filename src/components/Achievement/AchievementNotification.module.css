@@ -1,0 +1,224 @@
+/* AchievementNotification.module.css */
+/* Janela flutuante no estilo retro do CECI */
+
+.overlay {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 10000;
+  max-width: 420px;
+  width: calc(100vw - 32px);
+  pointer-events: auto;
+  animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.window {
+  background: var(--color-surface, #ffffff);
+  border: var(--border-frame, 2px solid #222222);
+  border-radius: var(--radius-lg, 16px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18), 4px 4px 0 #222222;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.titleBar {
+  background: var(--color-yellow-deep, #ffc400);
+  border-bottom: var(--border-frame, 2px solid #222222);
+  padding: 8px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  user-select: none;
+}
+
+.titleText {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-display, inherit);
+  font-size: 0.875rem;
+  font-weight: 800;
+  color: var(--color-text-primary, #222222);
+}
+
+.titleIcon {
+  font-size: 1rem;
+}
+
+.closeBtn {
+  background: none;
+  border: none;
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: pointer;
+  color: var(--color-text-primary, #222222);
+  padding: 2px 6px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease;
+}
+
+.closeBtn:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: linear-gradient(180deg, #fffcf0 0%, #ffffff 100%);
+  position: relative;
+}
+
+.mascoteSlot {
+  position: absolute;
+  top: -24px;
+  right: 12px;
+  width: 58px;
+  height: 58px;
+  pointer-events: none;
+  filter: drop-shadow(2px 2px 0 rgba(0,0,0,0.15));
+}
+
+.mascoteImg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.content {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding-right: 48px;
+}
+
+.emojiBadge {
+  background: var(--color-yellow-bg, #fff8d6);
+  border: 1.5px solid var(--color-yellow-dark, #e5a800);
+  border-radius: 50%;
+  width: 54px;
+  height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
+}
+
+.emoji {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.tag {
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-yellow-dark, #b8860b);
+}
+
+.titulo {
+  font-family: var(--font-display, inherit);
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--color-text-primary, #222222);
+  margin: 0;
+  line-height: 1.25;
+}
+
+.motivo {
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary, #555555);
+  margin: 0;
+  line-height: 1.35;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.primaryBtn {
+  flex: 1;
+  background: var(--gradient-btn-primary, linear-gradient(135deg, #ffd42e 0%, #ffc400 100%));
+  border: 1.5px solid var(--color-yellow-dark, #e5a800);
+  border-radius: var(--radius-pill, 9999px);
+  padding: 8px 14px;
+  font-family: var(--font-display, inherit);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--color-text-primary, #222222);
+  cursor: pointer;
+  box-shadow: 1.5px 1.5px 0 #222222;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.primaryBtn:hover {
+  transform: translateY(-1px);
+  box-shadow: 2.5px 2.5px 0 #222222;
+}
+
+.primaryBtn:active {
+  transform: translateY(1px);
+  box-shadow: 0 0 0 #222222;
+}
+
+.secondaryBtn {
+  background: #ffffff;
+  border: 1.5px solid #cccccc;
+  border-radius: var(--radius-pill, 9999px);
+  padding: 8px 14px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-text-secondary, #555555);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.secondaryBtn:hover {
+  background: #f5f5f5;
+  border-color: #999999;
+}
+
+@media (max-width: 600px) {
+  .overlay {
+    bottom: 16px;
+    right: 16px;
+    left: 16px;
+    width: auto;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+
+  .primaryBtn, .secondaryBtn {
+    width: 100%;
+  }
+}

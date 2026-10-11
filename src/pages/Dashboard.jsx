@@ -47,8 +47,8 @@ export default function Dashboard() {
   const [limiar, setLimiar]                     = useState(0.5);
 
   useEffect(() => {
-    if (user?.id) fetchModules(user.id);
-  }, [user?.id]);
+    if (user?.id) fetchModules(user.id, user);
+  }, [user?.id, user, fetchModules]);
 
   useEffect(() => {
     // Sem sentido buscar recomendação/domínio pra quem vê a trilha

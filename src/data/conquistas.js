@@ -82,20 +82,42 @@ export const CONQUISTAS = [
  * usuário (vinda de ProgressContext -> progress.achievements, cada item
  * { id, title, emoji }) e devolve o catálogo completo com `unlocked`.
  *
- * O cruzamento é por título (ver nota no topo do arquivo) - normaliza
- * espaços/maiúsculas pra não perder o vínculo por diferença boba.
+ * O cruzamento compara tanto por título quanto por id normalizados.
  */
 export function getConquistasComStatus(achievements = []) {
   const titulosDesbloqueados = new Set(
-    achievements
-      .map((a) => a?.title?.trim().toLowerCase())
+    (achievements || [])
+      .map((a) => (a?.title || a?.titulo || '')?.trim().toLowerCase())
+      .filter(Boolean)
+  );
+
+  const idsDesbloqueados = new Set(
+    (achievements || [])
+      .map((a) => (a?.id || '')?.trim().toLowerCase())
       .filter(Boolean)
   );
 
   return CONQUISTAS.map((c) => ({
     ...c,
-    unlocked: titulosDesbloqueados.has(c.titulo.trim().toLowerCase()),
+    unlocked:
+      titulosDesbloqueados.has(c.titulo.trim().toLowerCase()) ||
+      idsDesbloqueados.has(c.id.trim().toLowerCase()),
   }));
+}
+
+/**
+ * Retorna as informações completas de uma conquista pelo seu id ou título.
+ */
+export function getConquistaInfo(identificador = '') {
+  if (!identificador) return null;
+  const termo = identificador.trim().toLowerCase();
+  return (
+    CONQUISTAS.find(
+      (c) =>
+        c.id.toLowerCase() === termo ||
+        c.titulo.trim().toLowerCase() === termo
+    ) || null
+  );
 }
 
 /** Agrupa uma lista de conquistas (já com `unlocked`, ou não) por tipo. */

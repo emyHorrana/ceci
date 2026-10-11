@@ -49,8 +49,8 @@ export default function Perfil() {
   const [carregandoDominio, setCarregandoDominio] = useState(true);
 
   useEffect(() => {
-    if (user?.id) fetchProgress(user.id);
-  }, [user?.id]);
+    if (user?.id) fetchProgress(user.id, user);
+  }, [user?.id, user, fetchProgress]);
 
   useEffect(() => {
     if (!user?.id) return;

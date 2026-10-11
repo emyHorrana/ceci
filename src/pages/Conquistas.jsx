@@ -34,8 +34,8 @@ export default function Conquistas() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (user?.id) fetchProgress(user.id);
-  }, [user?.id]);
+    if (user?.id) fetchProgress(user.id, user);
+  }, [user?.id, user, fetchProgress]);
 
   useEffect(() => {
     if (!initializing && !user) navigate('/login', { replace: true });

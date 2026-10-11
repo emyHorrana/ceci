@@ -3,6 +3,11 @@
 // Busca módulos (licoes) e progresso do aluno diretamente do Supabase.
 
 import { supabase } from '../lib/supabaseClient';
+import apiClient from './api';
+import { getConquistaInfo } from '../data/conquistas';
+
+const CONQUISTAS_STORAGE_KEY_PREFIX = 'ceci_conquistas_';
+const COMPLETED_MINIMODULOS_KEY_PREFIX = 'ceci_minimodulos_completos_';
 
 // Busca todas as lições com o progresso do aluno mesclado.
 // Retorna array no formato que Dashboard e ModuleCard esperam:
@@ -117,6 +122,76 @@ export function calculateStreak(dateStrings) {
   return streak;
 }
 
+// Busca conquistas salvas localmente
+export function getConquistasLocais(userId) {
+  if (!userId) return [];
+  try {
+    const raw = localStorage.getItem(`${CONQUISTAS_STORAGE_KEY_PREFIX}${userId}`);
+    const parsed = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+// Salva/desbloqueia uma conquista para o usuário de forma resiliente
+export async function salvarConquista(userId, title) {
+  if (!userId || !title) return null;
+  const cleanTitle = title.trim();
+
+  // 1. Salva em cache local imediatamente
+  try {
+    const key = `${CONQUISTAS_STORAGE_KEY_PREFIX}${userId}`;
+    const existentes = getConquistasLocais(userId);
+    const jaTem = existentes.some(
+      (c) => (c.title || c || '').trim().toLowerCase() === cleanTitle.toLowerCase()
+    );
+    if (!jaTem) {
+      existentes.push({ title: cleanTitle, created_at: new Date().toISOString() });
+      localStorage.setItem(key, JSON.stringify(existentes));
+    }
+  } catch (err) {
+    console.warn('Erro ao salvar conquista localmente:', err);
+  }
+
+  // 2. Tenta salvar via backend (com Service Role Key no servidor)
+  try {
+    const res = await apiClient.post('/progresso/conquistas', {
+      usuario_id: userId,
+      title: cleanTitle,
+    });
+    if (res?.data) return res.data;
+  } catch (backendErr) {
+    // Se falhar ou estiver offline, tenta direto pelo cliente Supabase
+    try {
+      const { data: existente } = await supabase
+        .from('conquistas')
+        .select('id, title')
+        .eq('usuario_id', userId)
+        .ilike('title', cleanTitle)
+        .maybeSingle();
+
+      if (existente) return existente;
+
+      const { data, error } = await supabase
+        .from('conquistas')
+        .insert({
+          usuario_id: userId,
+          title: cleanTitle,
+          created_at: new Date().toISOString(),
+        })
+        .select()
+        .single();
+
+      if (!error && data) return data;
+    } catch (supaErr) {
+      console.warn('Erro ao salvar conquista no Supabase:', supaErr);
+    }
+  }
+
+  return { title: cleanTitle };
+}
+
 // Busca o progresso geral do aluno: pontos totais, dias seguidos, meta diária e conquistas.
 export async function getUserProgress(userId) {
   if (userId) {
@@ -128,9 +203,9 @@ export async function getUserProgress(userId) {
     .select('progress, completed, updated_at')
     .eq('usuario_id', userId);
 
-  const { data: conquistas } = await supabase
+  const { data: conquistasSupa } = await supabase
     .from('conquistas')
-    .select('id, title')
+    .select('id, title, created_at')
     .eq('usuario_id', userId);
 
   const totalPoints = (progresso || []).reduce((acc, p) => acc + (p.progress || 0), 0);
@@ -160,20 +235,69 @@ export async function getUserProgress(userId) {
 
   const streak = calculateStreak(Array.from(activityDates));
 
+  // Mescla conquistas do Supabase com conquistas do cache local
+  const locais = getConquistasLocais(userId);
+  const mapaConquistas = new Map();
+
+  (conquistasSupa || []).forEach((c) => {
+    if (c?.title) {
+      mapaConquistas.set(c.title.trim().toLowerCase(), {
+        id: c.id,
+        title: c.title.trim(),
+        created_at: c.created_at,
+      });
+    }
+  });
+
+  locais.forEach((c) => {
+    const t = (c.title || c || '').trim();
+    if (!t) return;
+    const key = t.toLowerCase();
+    if (!mapaConquistas.has(key)) {
+      mapaConquistas.set(key, {
+        id: c.id || key,
+        title: t,
+        created_at: c.created_at || new Date().toISOString(),
+      });
+    }
+  });
+
+  const achievements = Array.from(mapaConquistas.values()).map((c) => {
+    const info = getConquistaInfo(c.title);
+    return {
+      id: c.id || info?.id || c.title,
+      title: c.title,
+      emoji: info?.emoji || '🏆',
+      motivo: info?.motivo || '',
+      tipo: info?.tipo || '',
+      created_at: c.created_at,
+    };
+  });
+
   return {
     totalPoints,
     streak,
     dailyProgress,
-    achievements: (conquistas || []).map((c) => ({
-      id: c.id,
-      title: c.title,
-      emoji: '🏆',
-    })),
+    achievements,
   };
 }
 
 // Atualiza (ou cria) o progresso de uma lição específica.
 export async function updateProgress(licaoId, userId, progressData) {
+  // Salva no cache local de mini-módulos concluídos
+  if (userId && licaoId && (progressData.completed || (progressData.progress && progressData.progress >= 100))) {
+    try {
+      const key = `${COMPLETED_MINIMODULOS_KEY_PREFIX}${userId}`;
+      const raw = localStorage.getItem(key);
+      const arr = raw ? JSON.parse(raw) : [];
+      const set = new Set(Array.isArray(arr) ? arr : []);
+      set.add(String(licaoId));
+      localStorage.setItem(key, JSON.stringify(Array.from(set)));
+    } catch {
+      // ignore
+    }
+  }
+
   const { data, error } = await supabase
     .from('progresso_usuario')
     .upsert(

@@ -61,6 +61,46 @@ function calculateStreakFromDates(dates) {
   return streak;
 }
 
+// Salvar/desbloquear conquista do usuário
+router.post('/conquistas', async (req, res) => {
+  const { usuario_id, title } = req.body;
+
+  if (!usuario_id || !title) {
+    return res.status(400).json({ error: 'usuario_id e title são obrigatórios' });
+  }
+
+  const cleanTitle = title.trim();
+
+  // Verifica se o usuário já tem essa conquista desbloqueada
+  const { data: existente, error: findError } = await supabase
+    .from('conquistas')
+    .select('id, title, created_at')
+    .eq('usuario_id', usuario_id)
+    .ilike('title', cleanTitle)
+    .maybeSingle();
+
+  if (findError && findError.code !== 'PGRST116') {
+    return res.status(500).json({ error: findError.message });
+  }
+
+  if (existente) {
+    return res.json({ success: true, alreadyUnlocked: true, data: existente });
+  }
+
+  const { data, error } = await supabase
+    .from('conquistas')
+    .insert({
+      usuario_id,
+      title: cleanTitle,
+      created_at: new Date().toISOString(),
+    })
+    .select()
+    .single();
+
+  if (error) return res.status(500).json({ error: error.message });
+  res.json({ success: true, alreadyUnlocked: false, data });
+});
+
 // Buscar progresso geral do usuário (para o dashboard)
 router.get('/:usuarioId', async (req, res) => {
   const { usuarioId } = req.params;
@@ -76,8 +116,7 @@ router.get('/:usuarioId', async (req, res) => {
     .from('conquistas')
     .select('*')
     .eq('usuario_id', usuarioId)
-    .order('created_at', { ascending: false })
-    .limit(4);
+    .order('created_at', { ascending: false });
 
   const licoesConcluidas = progressos?.filter(p => p.completed).length || 0;
   const streak = calculateStreakFromDates(progressos?.map(p => p.updated_at) || []);

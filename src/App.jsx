@@ -17,12 +17,26 @@ import BoasVindas from './pages/BoasVindas';
 import SobreNos from './pages/SobreNos';
 import { UserProvider }     from './context/UserContext';
 import { ProgressProvider } from './context/ProgressContext';
+import { useContext } from 'react';
 import { TextSizeProvider } from './context/TextSizeContext';
 import { TextSizeControl }  from './components/Accessibility/TextSizeControl';
+import { AchievementNotification } from './components/Achievement/AchievementNotification';
+import { ProgressContext } from './context/ProgressContext';
 
 // Som de clique: deixou de ser global (ver useSomClique.js) - agora só
 // toca dentro dos jogos, onde cada um chama o hook por conta própria
 // (GameMoment.jsx cobre as lições, Laboratorio.jsx cobre o treino livre).
+
+function GlobalAchievementToast() {
+  const { achievementNotification, dismissAchievementNotification } = useContext(ProgressContext);
+  if (!achievementNotification) return null;
+  return (
+    <AchievementNotification
+      conquista={achievementNotification}
+      onClose={dismissAchievementNotification}
+    />
+  );
+}
 
 function App() {
   return (
@@ -35,6 +49,7 @@ function App() {
                 não só nas internas. Ver comentário em
                 TextSizeControl.jsx. */}
               <TextSizeControl />
+              <GlobalAchievementToast />
 
               <Routes>
                 {/* Página inicial: decide entre boas-vindas (quem nunca

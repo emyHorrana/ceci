@@ -14,6 +14,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { UNIDADES } from '../data/unidades';
 import { MODULOS } from '../data/modulos';
 import { UserContext } from '../context/UserContext';
+import { ProgressContext } from '../context/ProgressContext';
 import { GameMoment } from '../components/Game/GameMoment';
 import { ArrastarSoltarGame } from '../components/Game/games/ArrastarSoltarGame';
 import { QuizGame } from '../components/Game/games/QuizGame';
@@ -34,6 +35,7 @@ export default function UnidadeCheckpoint() {
   const { unidadeId } = useParams();
   const navigate = useNavigate();
   const { user, initializing } = useContext(UserContext);
+  const { checkAchievements } = useContext(ProgressContext) || {};
 
   const [questaoAtual, setQuestaoAtual] = useState(0);
   const [respostas, setRespostas] = useState([]);
@@ -126,6 +128,12 @@ export default function UnidadeCheckpoint() {
     });
 
     setResultado(dominou ? 'dominou' : 'reforco');
+
+    if (dominou && user?.id && checkAchievements) {
+      checkAchievements(user.id, user).catch((err) => {
+        console.warn('Erro ao avaliar conquistas após checkpoint:', err);
+      });
+    }
 
     // Conta ADM: vê o desfecho na tela (feedback local, útil pra
     // revisão de conteúdo), mas isso NUNCA é reportado pro algoritmo

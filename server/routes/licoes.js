@@ -1,10 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const supabase = require('../lib/supabaseClient');
+const requireAuth = require('../middleware/auth');
 
-// Listar todas as lições com progresso do usuário
-router.get('/', async (req, res) => {
-  const { usuario_id } = req.query;
+// Listar todas as lições com progresso do usuário autenticado
+// Ignora usuario_id da query e utiliza req.user.id do token autenticado.
+router.get('/', requireAuth, async (req, res) => {
+  const usuario_id = req.user.id;
 
   const { data: licoes, error: licaoError } = await supabase
     .from('licoes')
@@ -13,7 +15,7 @@ router.get('/', async (req, res) => {
 
   if (licaoError) return res.status(500).json({ error: licaoError.message });
 
-  // Se tiver usuario_id, busca o progresso dele
+  // Busca o progresso do usuário logado
   let progressos = [];
   if (usuario_id) {
     const { data } = await supabase
@@ -46,7 +48,7 @@ router.get('/', async (req, res) => {
 });
 
 // Buscar etapas de uma lição específica
-router.get('/:id/etapas', async (req, res) => {
+router.get('/:id/etapas', requireAuth, async (req, res) => {
   const { id } = req.params;
 
   const { data, error } = await supabase
@@ -60,11 +62,10 @@ router.get('/:id/etapas', async (req, res) => {
 });
 
 // Marcar lição como concluída
-router.post('/:id/concluir', async (req, res) => {
+// Usa req.user.id do token autenticado, ignorando qualquer usuario_id vindo do body.
+router.post('/:id/concluir', requireAuth, async (req, res) => {
   const { id } = req.params;
-  const { usuario_id } = req.body;
-
-  if (!usuario_id) return res.status(400).json({ error: 'usuario_id obrigatório' });
+  const usuario_id = req.user.id;
 
   const { data, error } = await supabase
     .from('progresso_usuario')

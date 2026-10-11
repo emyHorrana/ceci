@@ -123,7 +123,6 @@ export default function Perfil() {
     try {
       const atualizado = await atualizarUsuario(user.id, {
         nome: nome.trim(),
-        email: email.trim(),
       });
       setPerfil(atualizado);
       setEditando(false);
@@ -213,9 +212,8 @@ export default function Perfil() {
                         label="E-mail"
                         type="email"
                         value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        disabled={salvando}
-                        error={erro}
+                        disabled={true}
+                        hint="O e-mail da conta de acesso não pode ser alterado por aqui."
                     />
 
                     <div className={styles.formAcoes}>

@@ -1,13 +1,16 @@
 const express = require('express');
 const router = express.Router();
 const supabase = require('../lib/supabaseClient');
+const requireAuth = require('../middleware/auth');
 
 // Salvar/atualizar progresso
-router.post('/', async (req, res) => {
-  const { usuario_id, licao_id, progress, completed } = req.body;
+// Usa req.user.id do token autenticado, ignorando qualquer usuario_id vindo do body.
+router.post('/', requireAuth, async (req, res) => {
+  const usuario_id = req.user.id;
+  const { licao_id, progress, completed } = req.body;
 
-  if (!usuario_id || !licao_id) {
-    return res.status(400).json({ error: 'usuario_id e licao_id são obrigatórios' });
+  if (!licao_id) {
+    return res.status(400).json({ error: 'licao_id é obrigatório' });
   }
 
   const { data, error } = await supabase
@@ -62,11 +65,13 @@ function calculateStreakFromDates(dates) {
 }
 
 // Salvar/desbloquear conquista do usuário
-router.post('/conquistas', async (req, res) => {
-  const { usuario_id, title } = req.body;
+// Usa req.user.id do token autenticado, ignorando qualquer usuario_id vindo do body.
+router.post('/conquistas', requireAuth, async (req, res) => {
+  const usuario_id = req.user.id;
+  const { title } = req.body;
 
-  if (!usuario_id || !title) {
-    return res.status(400).json({ error: 'usuario_id e title são obrigatórios' });
+  if (!title) {
+    return res.status(400).json({ error: 'title é obrigatório' });
   }
 
   const cleanTitle = title.trim();
@@ -102,8 +107,9 @@ router.post('/conquistas', async (req, res) => {
 });
 
 // Buscar progresso geral do usuário (para o dashboard)
-router.get('/:usuarioId', async (req, res) => {
-  const { usuarioId } = req.params;
+// Usa req.user.id do token autenticado, ignorando qualquer :usuarioId da URL.
+router.get(['/:usuarioId', '/'], requireAuth, async (req, res) => {
+  const usuarioId = req.user.id;
 
   const { data: progressos, error } = await supabase
     .from('progresso_usuario')

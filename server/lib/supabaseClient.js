@@ -1,5 +1,6 @@
 const { createClient } = require('@supabase/supabase-js');
-require('dotenv').config();
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
 
 // Usa a service_role key, não a anon key: este código roda só no
 // servidor (nunca é exposto ao navegador), e precisa ignorar RLS pra

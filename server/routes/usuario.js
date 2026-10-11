@@ -1,10 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const supabase = require('../lib/supabaseClient');
+const requireAuth = require('../middleware/auth');
 
 // Buscar dados do usuário logado
-router.get('/:id', async (req, res) => {
-  const { id } = req.params;
+// Ignora qualquer :id vindo da URL por segurança: busca sempre o perfil do usuário autenticado no token (req.user.id).
+router.get(['/:id', '/'], requireAuth, async (req, res) => {
+  const id = req.user.id;
 
   const { data, error } = await supabase
       .from('usuarios')
@@ -15,7 +17,13 @@ router.get('/:id', async (req, res) => {
   if (error) {
     // Usuário autenticado mas ainda sem linha na tabela usuarios - retorna mínimo
     if (error.code === 'PGRST116') {
-      return res.json({ id, nome: 'Usuário', email: '', guest_mode: false, tipo: 'aluno' });
+      return res.json({
+        id,
+        nome: req.user.user_metadata?.nome || 'Usuário',
+        email: req.user.email || '',
+        guest_mode: false,
+        tipo: 'aluno',
+      });
     }
     return res.status(500).json({ error: error.message });
   }
@@ -24,17 +32,16 @@ router.get('/:id', async (req, res) => {
 });
 
 // Criar perfil na tabela usuarios após cadastro
-// `tipo` nunca vem do corpo da requisição: toda conta nasce 'aluno'
-// (default da coluna no banco, ver migração em
-// server/lib/migrations/2026-09-add-tipo-usuario.sql) - promover
-// alguém a ADM é uma ação manual direta no Supabase, não algo que o
-// próprio cadastro possa fazer.
-router.post('/', async (req, res) => {
-  const { id, nome, email } = req.body;
+// Ignora id e email vindos do corpo da requisição: utiliza req.user.id e req.user.email do token autenticado.
+// O tipo nunca vem do cliente (default 'aluno' no banco).
+router.post('/', requireAuth, async (req, res) => {
+  const id = req.user.id;
+  const email = req.user.email || req.body.email || '';
+  const nome = (req.body.nome || req.user.user_metadata?.nome || 'Usuário').trim();
 
   const { data, error } = await supabase
       .from('usuarios')
-      .insert([{ id, nome, email }])
+      .upsert([{ id, nome, email }], { onConflict: 'id' })
       .select()
       .single();
 
@@ -43,12 +50,25 @@ router.post('/', async (req, res) => {
 });
 
 // Atualizar perfil
-// `tipo` é descartado aqui de propósito - essa rota é chamada pela
-// própria conta editando seu perfil (ver Perfil.jsx), e não pode ser
-// usada pra se auto-promover a ADM. Mudança de tipo só direto no banco.
-router.put('/:id/perfil', async (req, res) => {
-  const { id } = req.params;
-  const { tipo, ...updates } = req.body;
+// Permite apenas campos autorizados via allowlist (ex: 'nome').
+// O id vem exclusivamente do token autenticado (req.user.id), ignorando a URL.
+// Bloqueia qualquer tentativa de alteração de id, tipo, email, created_at, etc.
+router.put(['/:id/perfil', '/perfil'], requireAuth, async (req, res) => {
+  const id = req.user.id;
+  const ALLOWED_FIELDS = ['nome'];
+  const updates = {};
+
+  for (const field of ALLOWED_FIELDS) {
+    if (req.body[field] !== undefined) {
+      updates[field] = typeof req.body[field] === 'string' ? req.body[field].trim() : req.body[field];
+    }
+  }
+
+  if (Object.keys(updates).length === 0) {
+    return res.status(400).json({
+      error: 'Nenhum campo permitido para alteração foi fornecido.',
+    });
+  }
 
   const { data, error } = await supabase
       .from('usuarios')

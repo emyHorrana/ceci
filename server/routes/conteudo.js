@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const ai = require('../lib/geminiClient');
+const requireAuth = require('../middleware/auth');
 
 /**
  * Remove tags HTML simples para limpar o contexto original antes de enviar ao prompt
@@ -18,8 +19,9 @@ function limparHtml(html) {
 }
 
 // POST /api/conteudo/reformular
-// Reformula a explicação de uma etapa com analogias do cotidiano e tom acolhedor da Ceci
-router.post('/reformular', async (req, res) => {
+// Reformula a explicação de uma etapa com analogias do cotidiano e tom acolhedor da Ceci.
+// Exige autenticação para proteger o consumo da cota de IA.
+router.post('/reformular', requireAuth, async (req, res) => {
   const { contexto, titulo, nivel, motivo } = req.body;
 
   if (!contexto) {

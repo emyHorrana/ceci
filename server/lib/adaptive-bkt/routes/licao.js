@@ -4,8 +4,9 @@ const supabaseModule = require('../../supabaseClient');
 const supabase = supabaseModule.supabase || supabaseModule;
 const { BKTAdaptativo, FilaDePendencias, Classificador, Recomendacao } = require('../index');
 const unidades = require('../data/unidades');
+const requireAuth = require('../../../middleware/auth');
 
-router.post('/responder', async (req, res) => {
+router.post('/responder', requireAuth, async (req, res) => {
   try {
     const {
       correto,
@@ -18,11 +19,9 @@ router.post('/responder', async (req, res) => {
       biasModulo,
     } = req.body;
 
-    const userId = req.user?.id || req.body.userId;
+    // Usa req.user.id do token autenticado, ignorando qualquer userId do body
+    const userId = req.user.id;
 
-    if (!userId) {
-      return res.status(401).json({ error: 'Usuário não autenticado (userId ausente).' });
-    }
     if (!moduleId) {
       return res.status(400).json({ error: 'moduleId é obrigatório.' });
     }
@@ -106,11 +105,12 @@ router.post('/simular', (req, res) => {
 
 /*
   Devolve o domínio (L do BKT) e a classificação categórica (Iniciante/Básico/Intermediário/Avançado)
-  de TODAS as Unidades já tentadas pelo aluno.
+  de TODAS as Unidades já tentadas pelo aluno autenticado.
+  Ignora :userId da URL e busca estritamente os dados de req.user.id.
  */
-router.get('/perfis/:userId', async (req, res) => {
+router.get(['/perfis/:userId', '/perfis'], requireAuth, async (req, res) => {
   try {
-    const { userId } = req.params;
+    const userId = req.user.id;
 
     const { data: perfis, error } = await supabase
       .from('perfis_aluno')
@@ -192,7 +192,7 @@ router.get('/perfis/:userId', async (req, res) => {
       limiar: FilaDePendencias.LIMIAR_PADRAO,
     });
   } catch (err) {
-    console.error('[GET /api/licao/perfis/:userId]', err);
+    console.error('[GET /api/licao/perfis]', err);
     res.status(500).json({ error: 'Erro ao buscar perfis do aluno.' });
   }
 });
@@ -201,10 +201,11 @@ router.get('/perfis/:userId', async (req, res) => {
   Devolve a próxima Unidade que o aluno deveria estudar: uma pendência
   (Unidade já tentada e abaixo do limiar) tem prioridade sobre a
   próxima Unidade nova da sequência - ver FilaDePendencias.js.
+  Ignora :userId da URL e calcula estritamente para o req.user.id autenticado.
  */
-router.get('/proxima-unidade/:userId', async (req, res) => {
+router.get(['/proxima-unidade/:userId', '/proxima-unidade'], requireAuth, async (req, res) => {
   try {
-    const { userId } = req.params;
+    const userId = req.user.id;
 
     const { data: perfis, error } = await supabase
       .from('perfis_aluno')
@@ -225,7 +226,7 @@ router.get('/proxima-unidade/:userId', async (req, res) => {
 
     res.json(proxima);
   } catch (err) {
-    console.error('[GET /api/licao/proxima-unidade/:userId]', err);
+    console.error('[GET /api/licao/proxima-unidade]', err);
     res.status(500).json({ error: 'Erro ao calcular a próxima unidade.' });
   }
 });

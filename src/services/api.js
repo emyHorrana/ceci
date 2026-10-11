@@ -1,12 +1,13 @@
 // api.js
 // Cliente HTTP centralizado da aplicação CECI.
 // Utiliza axios com interceptors para:
-//   - Injetar o token JWT em todas as requisições autenticadas
-//   - Tratar erros globais (ex: token expirado → redireciona para login)
+//   - Injetar o session.access_token do Supabase Auth em todas as requisições autenticadas
+//   - Tratar erros globais (ex: token expirado → encerra sessão e redireciona)
 //
 // Todos os services da aplicação importam este cliente em vez de usar axios diretamente.
 
 import axios from 'axios';
+import { supabase } from '../lib/supabaseClient';
 
 // URL base da API: usa variável de ambiente ou localhost em desenvolvimento
 const API_BASE_URL = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '/api' : 'http://localhost:3001/api');
@@ -19,12 +20,17 @@ const apiClient = axios.create({
   },
 });
 
-// Interceptor de requisição: injeta o token JWT no header Authorization
+// Interceptor de requisição: injeta o access_token da sessão do Supabase no header Authorization
 apiClient.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('ceci-token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+  async (config) => {
+    try {
+      const { data } = await supabase.auth.getSession();
+      const token = data?.session?.access_token;
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+    } catch (err) {
+      console.warn('Erro ao obter token da sessão do Supabase:', err);
     }
     return config;
   },
@@ -32,13 +38,20 @@ apiClient.interceptors.request.use(
 );
 
 // Interceptor de resposta: trata erros globais
-// 401 = token expirado ou inválido → limpa sessão e redireciona para login
+// 401 = token expirado ou inválido → limpa sessão no Supabase e redireciona para login
 apiClient.interceptors.response.use(
   (response) => response.data,
-  (error) => {
+  async (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('ceci-token');
-      window.location.href = '/';
+      try {
+        await supabase.auth.signOut();
+      } catch (_) {
+        // ignora erro ao deslogar
+      }
+
+      if (window.location.pathname !== '/' && window.location.pathname !== '/login') {
+        window.location.href = '/login';
+      }
     }
     return Promise.reject(error.response?.data || error);
   }

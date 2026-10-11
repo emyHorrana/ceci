@@ -1,50 +1,62 @@
 // checkpointService.js
-// Guarda o resultado dos desafios de fim de Unidade (ver
-// UnidadeCheckpoint.jsx) - PLACEHOLDER local, no localStorage do
-// navegador, até a integração de verdade com o algoritmo adaptativo
-// existir (fila de pendências real, por aluno, no back-end).
-//
-// Isso deixa o fluxo inteiro testável hoje (fazer o desafio, ver o
-// resultado, ver a Unidade marcada) sem depender de nada que ainda
-// não foi construído. Quando a integração real existir, trocar as
-// funções abaixo por chamadas à API - quem consome (UnidadeCheckpoint,
-// futuramente o Dashboard) não precisa mudar nada além do import.
+// Guarda o resultado dos desafios de fim de Unidade (ver UnidadeCheckpoint.jsx).
+// Armazenado no localStorage de forma isolada por aluno (ceci_checkpoints_<userId>).
 
-const CHAVE = 'ceci-checkpoints';
+const CHAVE_PREFIX = 'ceci_checkpoints_';
 
-function lerTudo() {
+function obterChave(userId) {
+  return userId ? `${CHAVE_PREFIX}${userId}` : null;
+}
+
+export function lerCheckpoints(userId) {
+  if (!userId) return {};
   try {
-    const bruto = localStorage.getItem(CHAVE);
+    const chave = obterChave(userId);
+    const bruto = chave ? localStorage.getItem(chave) : null;
     return bruto ? JSON.parse(bruto) : {};
   } catch {
     return {};
   }
 }
 
-function salvarTudo(dados) {
+export function salvarCheckpoints(userId, dados) {
+  if (!userId) return;
   try {
-    localStorage.setItem(CHAVE, JSON.stringify(dados));
+    const chave = obterChave(userId);
+    if (chave) {
+      localStorage.setItem(chave, JSON.stringify(dados));
+    }
   } catch {
-    // localStorage indisponível (modo privado, quota cheia etc) - não
-    // é crítico pra esse placeholder, só não persiste desta vez.
+    // localStorage indisponível (modo privado, quota cheia etc)
   }
 }
 
-// Registra o resultado de um checkpoint. dominou=true → domínio
-// demonstrado; dominou=false → precisa de reforço (erro esgotado ou
-// pulou). `sinais` é o objeto cru que o GameMoment já captura (tempo
-// de resposta, trocas de aba, tempo inativo, abandono) - guardado
-// junto e não só o veredito booleano, porque é exatamente esse dado
-// bruto que o algoritmo da Emily consome (ver Indicadores.js) quando
-// a integração de verdade existir. `attempts` também guardado por ser
-// a base de tentativas/tentativasAposErro do contrato dela.
-export function registrarResultadoCheckpoint(unidadeId, dominou, { attempts, sinais } = {}) {
-  const dados = lerTudo();
+export function limparCheckpoints(userId) {
+  if (!userId) return;
+  try {
+    const chave = obterChave(userId);
+    if (chave) {
+      localStorage.removeItem(chave);
+    }
+  } catch {
+    // ignore
+  }
+}
+
+// Registra o resultado de um checkpoint para o aluno autenticado.
+// dominou=true → domínio demonstrado; dominou=false → precisa de reforço.
+export function registrarResultadoCheckpoint(unidadeId, dominou, { attempts, sinais, acertos, total, taxa, respostas, userId } = {}) {
+  if (!userId) return;
+  const dados = lerCheckpoints(userId);
   dados[unidadeId] = {
-    dominou,
+    dominou: Boolean(dominou),
     attempts: attempts ?? 0,
+    acertos: acertos ?? 0,
+    total: total ?? 0,
+    taxa: taxa ?? 0,
     sinais: sinais ?? null,
+    respostas: respostas ?? null,
     em: new Date().toISOString(),
   };
-  salvarTudo(dados);
+  salvarCheckpoints(userId, dados);
 }

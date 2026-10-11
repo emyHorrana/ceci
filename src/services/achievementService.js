@@ -9,22 +9,10 @@ import { MODULOS } from '../data/modulos';
 import { salvarConquista, toLocalDateStr } from './progressService';
 import { getPerfisAluno } from './algorithmService';
 import { supabase } from '../lib/supabaseClient';
+import { lerCheckpoints } from './checkpointService';
 
-const CHECKPOINT_STORAGE_KEY = 'ceci-checkpoints';
 const ACTIVITY_STORAGE_KEY_PREFIX = 'ceci_activity_log_';
 const COMPLETED_MINIMODULOS_KEY_PREFIX = 'ceci_minimodulos_completos_';
-
-/**
- * Lê os checkpoints registrados no localStorage.
- */
-function lerCheckpointsLocais() {
-  try {
-    const raw = localStorage.getItem(CHECKPOINT_STORAGE_KEY);
-    return raw ? JSON.parse(raw) : {};
-  } catch {
-    return {};
-  }
-}
 
 /**
  * Lê os mini-módulos concluídos registrados no localStorage.
@@ -60,8 +48,8 @@ export function marcarMiniModuloConcluidoLocal(userId, miniModuloId) {
  * Verifica se uma Unidade específica foi concluída pelo aluno.
  * Critérios:
  * 1) Todos os seus mini-módulos foram concluídos no progresso_usuario ou localmente; OU
- * 2) O checkpoint da unidade foi superado (dominou = true ou registrado); OU
- * 3) O algoritmo BKT registrou domínio >= limiar ou origem 'onboarding'.
+ * 2) O checkpoint da unidade foi superado com domínio estrito (dominou === true); OU
+ * 3) O algoritmo BKT registrou domínio >= limiar.
  */
 export function isUnidadeConcluida(unidade, {
   miniModulosConcluidos = new Set(),
@@ -78,19 +66,15 @@ export function isUnidadeConcluida(unidade, {
     return true;
   }
 
-  // 2. Checkpoint da unidade
+  // 2. Checkpoint da unidade (estrito dominou === true)
   const cp = checkpoints[unidade.id];
-  if (cp && (cp.dominou === true || cp.dominou === undefined)) {
+  if (cp && cp.dominou === true) {
     return true;
   }
 
   // 3. Domínio BKT
   const dominio = dominiosPorUnidade[unidade.id];
   if (dominio !== undefined && dominio !== null && dominio >= limiar) {
-    return true;
-  }
-
-  if (origemPorUnidade[unidade.id] === 'onboarding') {
     return true;
   }
 
@@ -131,6 +115,7 @@ export function avaliarConquistas({
   origemPorUnidade = {},
   miniModulosComAtividade = [],
   streak = 0,
+  checkpoints: checkpointsParam = null,
 }) {
   if (!userId) return [];
 
@@ -145,7 +130,7 @@ export function avaliarConquistas({
     if (id) miniModulosConcluidos.add(id);
   });
 
-  const checkpoints = lerCheckpointsLocais();
+  const checkpoints = checkpointsParam || lerCheckpoints(userId);
 
   const evalContext = {
     miniModulosConcluidos,
@@ -295,6 +280,8 @@ export async function sincronizarProgressoEConquistas(userId, user = null, dados
         .filter(Boolean)
     );
 
+    let checkpoints = dadosAtuais.checkpoints || lerCheckpoints(userId);
+
     // 2. Avalia quais conquistas o usuário atinge
     const idsElegiveis = avaliarConquistas({
       userId,
@@ -304,6 +291,7 @@ export async function sincronizarProgressoEConquistas(userId, user = null, dados
       origemPorUnidade,
       miniModulosComAtividade,
       streak,
+      checkpoints,
     });
 
     const recemDesbloqueadas = [];

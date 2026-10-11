@@ -125,6 +125,7 @@ export default function UnidadeCheckpoint() {
       total: totalQ,
       taxa: taxaAcerto,
       respostas: todasRespostas,
+      userId: user?.id,
     });
 
     setResultado(dominou ? 'dominou' : 'reforco');

@@ -8,6 +8,7 @@ import { isAdmin } from '../utils/roles';
 import { isModuloConcluido, lerMiniModulosConcluidosLocais } from './achievementService';
 import { getPerfisAluno } from './algorithmService';
 import { supabase } from '../lib/supabaseClient';
+import { lerCheckpoints } from './checkpointService';
 
 const LAB_UNLOCKED_PREFIX = 'ceci_lab_unlocked_';
 const LAB_NOTIFIED_PREFIX = 'ceci_lab_notified_';
@@ -311,7 +312,7 @@ export function obterStatusModosLaboratorio({
   dominiosPorUnidade = {},
   origemPorUnidade = {},
   miniModulosComAtividade = [],
-  checkpoints = {},
+  checkpoints = null,
 } = {}) {
   const miniModulosConcluidos = lerMiniModulosConcluidosLocais(userId);
   (progressoUsuario || []).forEach((p) => {
@@ -325,13 +326,14 @@ export function obterStatusModosLaboratorio({
 
   const modosDesbloqueadosLocais = lerModosDesbloqueadosLocais(userId);
   const teoriasConcluidas = lerTeoriasConcluidasLocais(userId);
+  const cps = (checkpoints && Object.keys(checkpoints).length > 0) ? checkpoints : (userId ? lerCheckpoints(userId) : {});
 
   const context = {
     userId,
     user,
     miniModulosConcluidos,
     teoriasConcluidas,
-    checkpoints,
+    checkpoints: cps,
     dominiosPorUnidade,
     origemPorUnidade,
     modosDesbloqueadosLocais,
@@ -367,7 +369,7 @@ export async function verificarNovosDesbloqueiosLaboratorio(userId, user = null,
     let dominiosPorUnidade = dadosAtuais.dominiosPorUnidade || {};
     let origemPorUnidade = dadosAtuais.origemPorUnidade || {};
     let miniModulosComAtividade = dadosAtuais.miniModulosComAtividade || [];
-    let checkpoints = dadosAtuais.checkpoints || {};
+    let checkpoints = dadosAtuais.checkpoints || (userId ? lerCheckpoints(userId) : {});
 
     if (!progressoUsuario) {
       const { data: resProg } = await supabase

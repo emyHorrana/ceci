@@ -114,13 +114,13 @@ export default function MiniModulo() {
   const todasEtapas = resultado?.miniModulo?.etapas ?? [];
   const unidade = getUnidadeByMiniModulo(miniModuloId);
 
-  const CHAVE_ETAPA_SALVA = `ceci_etapa_${miniModuloId}`;
+  const chaveEtapaAtual = user?.id ? `ceci_etapa_${user.id}_${miniModuloId}` : `ceci_etapa_${miniModuloId}`;
 
-  // Memória de onde parou: inicializa na etapa salva no localStorage
+  // Memória de onde parou: inicializa na etapa salva no localStorage isolado por aluno
   // (contas ADM sempre começam do zero - nada fica salvo pra elas)
   const [etapaAtual, setEtapaAtual] = useState(() => {
     if (admin) return 0;
-    const salva = localStorage.getItem(CHAVE_ETAPA_SALVA);
+    const salva = localStorage.getItem(chaveEtapaAtual);
     return salva ? parseInt(salva, 10) || 0 : 0;
   });
 
@@ -167,9 +167,14 @@ export default function MiniModulo() {
 
   const abandonosRef = useRef([]);
 
-  // Reset completo de estado ao trocar de mini-módulo
+  // Reset completo de estado ao trocar de mini-módulo ou usuário
   useEffect(() => {
-    const salva = admin ? null : localStorage.getItem(`ceci_etapa_${miniModuloId}`);
+    if (admin) {
+      setEtapaAtual(0);
+      return;
+    }
+    const chave = user?.id ? `ceci_etapa_${user.id}_${miniModuloId}` : `ceci_etapa_${miniModuloId}`;
+    const salva = localStorage.getItem(chave);
     const etapaInicial = salva ? parseInt(salva, 10) || 0 : 0;
     setEtapaAtual(etapaInicial);
     setResultadoJogo(null);
@@ -178,7 +183,7 @@ export default function MiniModulo() {
     setMostrarExplicacaoIA({});
     setCarregandoIA(false);
     setErroIA(null);
-  }, [miniModuloId, admin]);
+  }, [miniModuloId, user?.id, admin]);
 
   useEffect(() => {
     setResultadoJogo(null);
@@ -189,14 +194,15 @@ export default function MiniModulo() {
 
   const indiceSeguro = etapas.length > 0 ? Math.min(Math.max(0, etapaAtual), etapas.length - 1) : 0;
 
-  // Atualiza persistência da etapa atual no localStorage
+  // Atualiza persistência da etapa atual no localStorage isolado por aluno
   // (não pra conta ADM - ver comentário no topo do componente)
   useEffect(() => {
-    if (admin) return;
+    if (admin || !user?.id) return;
+    const chave = `ceci_etapa_${user.id}_${miniModuloId}`;
     if (indiceSeguro >= 0) {
-      localStorage.setItem(CHAVE_ETAPA_SALVA, indiceSeguro.toString());
+      localStorage.setItem(chave, indiceSeguro.toString());
     }
-  }, [indiceSeguro, CHAVE_ETAPA_SALVA, admin]);
+  }, [indiceSeguro, miniModuloId, user?.id, admin]);
 
   const etapa = etapas[indiceSeguro];
   const isFirst = indiceSeguro === 0;
@@ -366,7 +372,10 @@ export default function MiniModulo() {
   };
 
   const concluir = async () => {
-    localStorage.removeItem(CHAVE_ETAPA_SALVA);
+    if (user?.id) {
+      localStorage.removeItem(`ceci_etapa_${user.id}_${miniModuloId}`);
+    }
+    localStorage.removeItem(`ceci_etapa_${miniModuloId}`);
 
     if (user?.id) {
       marcarMiniModuloConcluidoLocal(user.id, miniModuloId);

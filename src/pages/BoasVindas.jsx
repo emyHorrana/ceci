@@ -198,6 +198,7 @@ import { useLocalStorage } from '../hooks/useLocalStorage';
 import { simularQuestao } from '../services/algorithmService';
 import { getTempoIdealMs } from '../utils/jogoTempoIdeal';
 import { Mascote } from '../components/Mascote/Mascote';
+import { salvarModoDesbloqueadoLocal, marcarModoNotificadoLocal } from '../services/laboratorioService';
 import styles from './BoasVindas.module.css';
 
 // Sequência de interações de diagnóstico. Adicione novos passos aqui.
@@ -524,12 +525,28 @@ export default function BoasVindas() {
     setVerificacaoIndex(0);
     const confirmado = (resposta?.dominio ?? 0) >= (resposta?.limiar ?? 0.5);
     if (dominio === 'mouse') {
+      if (confirmado) {
+        setOnboarding((atual) => ({ ...atual, verificacao_mouse_confirmada: true }));
+        salvarModoDesbloqueadoLocal(null, 'mouse');
+        salvarModoDesbloqueadoLocal(null, 'arrastar');
+        salvarModoDesbloqueadoLocal(null, 'desenho');
+        marcarModoNotificadoLocal(null, 'mouse');
+        marcarModoNotificadoLocal(null, 'arrastar');
+        marcarModoNotificadoLocal(null, 'desenho');
+      }
       // Sem card explicativo antes: quem não confirma cai direto na
       // prática (aula-mouse-pratica) - a explicação de qual botão usar
       // já está fixa na lateral (ver nota "DICAS FIXAS NA LATERAL" no
       // topo do arquivo), não precisa repetir.
       irPara(confirmado ? 'pergunta-teclado' : 'aula-mouse-pratica');
     } else {
+      if (confirmado) {
+        setOnboarding((atual) => ({ ...atual, verificacao_teclado_confirmada: true }));
+        salvarModoDesbloqueadoLocal(null, 'teclado');
+        salvarModoDesbloqueadoLocal(null, 'dedos');
+        marcarModoNotificadoLocal(null, 'teclado');
+        marcarModoNotificadoLocal(null, 'dedos');
+      }
       // Teclado é diferente do mouse: quem respondeu "já uso" nunca vê
       // o teclado101.exe, confirmando ou não no desafio - só segue pra
       // pergunta de internet. O tutorial fica reservado só pra quem

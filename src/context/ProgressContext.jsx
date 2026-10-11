@@ -6,6 +6,7 @@
 import { createContext, useState, useCallback, useRef } from 'react';
 import * as progressService from '../services/progressService';
 import { sincronizarProgressoEConquistas } from '../services/achievementService';
+import { verificarNovosDesbloqueiosLaboratorio } from '../services/laboratorioService';
 
 export const ProgressContext = createContext();
 
@@ -40,17 +41,18 @@ export function ProgressProvider({ children }) {
     });
   }, []);
 
-  // Verifica e sincroniza conquistas do usuário
+  // Verifica e sincroniza conquistas e treinos do laboratório do usuário
   const checkAchievements = useCallback(async (userId, user = null, dadosAtuais = {}) => {
     if (!userId) return [];
     try {
-      const { recemDesbloqueadas, todasConquistas } = await sincronizarProgressoEConquistas(
-        userId,
-        user,
-        dadosAtuais
-      );
+      const [resConquistas, novosTreinosLab] = await Promise.all([
+        sincronizarProgressoEConquistas(userId, user, dadosAtuais),
+        verificarNovosDesbloqueiosLaboratorio(userId, user, dadosAtuais),
+      ]);
 
-      // Se houve novas conquistas, atualiza o estado local e enfileira notificação
+      const { recemDesbloqueadas, todasConquistas } = resConquistas;
+
+      // Se houve novas conquistas, enfileira notificação
       if (recemDesbloqueadas.length > 0) {
         recemDesbloqueadas.forEach((conq) => {
           queueAchievementNotification(conq);
@@ -65,9 +67,16 @@ export function ProgressProvider({ children }) {
         });
       }
 
+      // Se houve novos treinos liberados no laboratório, enfileira notificação celebratória
+      if (novosTreinosLab && novosTreinosLab.length > 0) {
+        novosTreinosLab.forEach((treinoNotif) => {
+          queueAchievementNotification(treinoNotif);
+        });
+      }
+
       return recemDesbloqueadas;
     } catch (err) {
-      console.warn('Erro ao verificar conquistas:', err);
+      console.warn('Erro ao verificar conquistas e treinos:', err);
       return [];
     }
   }, [queueAchievementNotification]);

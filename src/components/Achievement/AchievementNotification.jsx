@@ -30,9 +30,13 @@ export function AchievementNotification({ conquista, onClose }) {
 
   if (!conquista) return null;
 
-  const handleVerConquistas = () => {
+  const handleAcao = () => {
     onClose();
-    navigate('/conquistas');
+    if (conquista.destino) {
+      navigate(conquista.destino);
+    } else {
+      navigate('/conquistas');
+    }
   };
 
   return (
@@ -40,14 +44,16 @@ export function AchievementNotification({ conquista, onClose }) {
       className={styles.overlay}
       role="status"
       aria-live="polite"
-      aria-label={`Conquista desbloqueada: ${conquista.titulo || conquista.title}`}
+      aria-label={`${conquista.tipo || 'Desbloqueio'}: ${conquista.titulo || conquista.title}`}
     >
       <div className={styles.window}>
         {/* Barra de título estilo Windows retrô do CECI */}
         <div className={styles.titleBar}>
           <div className={styles.titleText}>
-            <span className={styles.titleIcon} aria-hidden="true">🏆</span>
-            <span>Nova Conquista Desbloqueada!</span>
+            <span className={styles.titleIcon} aria-hidden="true">
+              {conquista.barraIcone || '🏆'}
+            </span>
+            <span>{conquista.barraTitulo || 'Nova Conquista Desbloqueada!'}</span>
           </div>
           <button
             type="button"
@@ -88,9 +94,9 @@ export function AchievementNotification({ conquista, onClose }) {
             <button
               type="button"
               className={styles.primaryBtn}
-              onClick={handleVerConquistas}
+              onClick={handleAcao}
             >
-              Ver todas as conquistas
+              {conquista.botaoLabel || (conquista.destino ? 'Ir para o Laboratório' : 'Ver todas as conquistas')}
             </button>
             <button
               type="button"

@@ -52,9 +52,12 @@
 // final - nunca precisa ser corrigido depois.
 
 import { useContext, useState, useCallback, useRef, useEffect } from 'react';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { UserContext } from '../context/UserContext';
 import { AppLayout, PageHeader } from '../components/Layout/AppLayout';
 import { Mascote } from '../components/Mascote/Mascote';
+import { ButtonPrimary } from '../components/Buttons/ButtonPrimary';
+import { ButtonOutline } from '../components/Buttons/ButtonOutline';
 import appStyles from '../components/Layout/AppLayout.module.css';
 import { AlvoMovelGame } from '../components/Game/games/AlvoMovelGame';
 import { PressionarTeclaGame } from '../components/Game/games/PressionarTeclaGame';
@@ -65,6 +68,8 @@ import { FASES_TREINO_DEDOS } from '../data/treinoDedosFases';
 import { sortearFigura } from '../utils/figurasCanvas';
 import { useSomClique } from '../hooks/useSomClique';
 import { useSomTecla } from '../hooks/useSomTecla';
+import { obterStatusModosLaboratorio, MODOS_LABORATORIO } from '../services/laboratorioService';
+import { getPerfisAluno } from '../services/algorithmService';
 import styles from './Laboratorio.module.css';
 
 const TECLAS_TREINO = [
@@ -174,10 +179,10 @@ export default function Laboratorio() {
         );
     }
 
-    return <LaboratorioConteudo userId={user?.id} />;
+    return <LaboratorioConteudo userId={user?.id} user={user} />;
 }
 
-function LaboratorioConteudo({ userId }) {
+function LaboratorioConteudo({ userId, user }) {
     // Som de clique (esquerdo + direito) e bloqueio do menu de opções do
     // navegador - ver useSomClique.js e o mesmo uso em GameMoment.jsx
     // (lições). Espalhado na arena inteira (não só no gameHost) porque
@@ -192,7 +197,61 @@ function LaboratorioConteudo({ userId }) {
     // de fato no modo de treino de teclado.
     useSomTecla();
 
-    const [modo, setModo] = useState('mouse');
+    const [searchParams, setSearchParams] = useSearchParams();
+    const navigate = useNavigate();
+    const modoParam = searchParams.get('modo');
+
+    const [statusModos, setStatusModos] = useState(() =>
+        obterStatusModosLaboratorio({ userId, user })
+    );
+
+    // Carrega domínio adaptativo e atualiza o mapa de status dos treinos
+    useEffect(() => {
+        let ativo = true;
+        async function carregarStatus() {
+            try {
+                let dominiosPorUnidade = {};
+                let origemPorUnidade = {};
+                let miniModulosComAtividade = [];
+
+                if (userId) {
+                    try {
+                        const perfis = await getPerfisAluno(userId);
+                        if (perfis) {
+                            dominiosPorUnidade = perfis.dominiosPorUnidade || {};
+                            origemPorUnidade = perfis.origemPorUnidade || {};
+                            miniModulosComAtividade = perfis.miniModulosComAtividade || [];
+                        }
+                    } catch (err) {
+                        console.warn('Erro ao carregar perfis para o laboratório:', err);
+                    }
+                }
+
+                if (ativo) {
+                    const novosStatus = obterStatusModosLaboratorio({
+                        userId,
+                        user,
+                        dominiosPorUnidade,
+                        origemPorUnidade,
+                        miniModulosComAtividade,
+                    });
+                    setStatusModos(novosStatus);
+                }
+            } catch (err) {
+                console.warn('Erro ao avaliar status dos modos de laboratório:', err);
+            }
+        }
+
+        carregarStatus();
+        return () => { ativo = false; };
+    }, [userId, user]);
+
+    const [modoInterno, setModoInterno] = useState(() => {
+        if (modoParam && MODOS[modoParam]) return modoParam;
+        return 'mouse';
+    });
+    const modo = modoParam && MODOS[modoParam] ? modoParam : modoInterno;
+
     const [rodada, setRodada] = useState(0);
     const [acertosSessao, setAcertosSessao] = useState(0);
     const [teclaAtual, setTeclaAtual] = useState(() => sortearDaLista(TECLAS_TREINO, null));
@@ -200,7 +259,7 @@ function LaboratorioConteudo({ userId }) {
     const [figuraAtual, setFiguraAtual] = useState(() => sortearFigura(null));
     // Seguro ler direto aqui agora - userId já chega definitivo (ver
     // comentário no componente Laboratorio, acima).
-    const [recorde, setRecorde] = useState(() => lerRecorde(userId, 'mouse'));
+    const [recorde, setRecorde] = useState(() => lerRecorde(userId, modo));
     // true durante a pausa depois de um acerto (ver PAUSA_APOS_ACERTO_MS).
     const [acertou, setAcertou] = useState(false);
     // Card onde a Ceci pode ser arrastada (ver CapturaPuffGame/limiteRef).
@@ -225,14 +284,15 @@ function LaboratorioConteudo({ userId }) {
         clearTimeout(timerRodadaRef.current);
         aguardandoRef.current = false;
         setAcertou(false);
-        setModo(novoModo);
+        setModoInterno(novoModo);
         setRodada(0);
         setAcertosSessao(0);
         setRecorde(lerRecorde(userId, novoModo));
         if (novoModo === 'teclado') setTeclaAtual(sortearDaLista(TECLAS_TREINO, null));
         if (novoModo === 'mouse') setTipoCliqueAtual(sortearDaLista(TIPOS_CLIQUE, null));
         if (novoModo === 'desenho') setFiguraAtual(sortearFigura(null));
-    }, [userId]);
+        setSearchParams({ modo: novoModo }, { replace: true });
+    }, [userId, setSearchParams]);
 
     const handleResultado = useCallback((sucesso, meta) => {
         if (!sucesso) return; // tentativa errada em "Tecla certa" chama com false - não avança rodada
@@ -265,6 +325,8 @@ function LaboratorioConteudo({ userId }) {
     }, [acertosSessao, recorde, modo, userId]);
 
     const modoInfo = MODOS[modo];
+    const statusModoAtual = statusModos[modo];
+    const estaDesbloqueado = statusModoAtual?.desbloqueado ?? true;
     const textoTreinoDedos = FASES_TREINO_DEDOS[rodada % FASES_TREINO_DEDOS.length].texto;
 
     // key troca a cada rodada -> força o React a remontar o jogo do zero
@@ -283,79 +345,121 @@ function LaboratorioConteudo({ userId }) {
 
             <div className={appStyles.pageContent}>
                 <div className={styles.tabs}>
-                    {Object.entries(MODOS).map(([chave, info]) => (
-                        <button
-                            key={chave}
-                            type="button"
-                            className={`${styles.tab} ${modo === chave ? styles.tabActive : ''}`}
-                            onClick={() => trocarModo(chave)}
-                        >
-                            {info.label}
-                        </button>
-                    ))}
+                    {Object.entries(MODOS).map(([chave, info]) => {
+                        const modoStatus = statusModos[chave];
+                        const desbloqueado = modoStatus?.desbloqueado ?? true;
+                        return (
+                            <button
+                                key={chave}
+                                type="button"
+                                className={`${styles.tab} ${modo === chave ? styles.tabActive : ''} ${!desbloqueado ? styles.tabLocked : ''}`}
+                                onClick={() => trocarModo(chave)}
+                                title={!desbloqueado ? `Bloqueado - Requer: ${modoStatus?.info?.tituloAula || 'concluir a aula'}` : info.label}
+                            >
+                                {info.label}
+                                {!desbloqueado && (
+                                    <span className={styles.tabLockIcon} aria-label="Bloqueado" title="Treino bloqueado">
+                                        🔒
+                                    </span>
+                                )}
+                            </button>
+                        );
+                    })}
                 </div>
 
-                <div className={styles.scoreRow}>
-                    <div className={styles.scoreChip}>
-                        <span className={styles.scoreLabel}>{modoInfo.metricaSessao}</span>
-                        <span className={styles.scoreValue}>{acertosSessao}</span>
-                    </div>
-                    <div className={styles.scoreChip}>
-                        <span className={styles.scoreLabel}>{modoInfo.metricaRecorde}</span>
-                        <span className={styles.scoreValue}>{recorde}</span>
-                    </div>
-                </div>
-
-                <div
-                    ref={arenaRef}
-                    className={styles.arena}
-                    data-status={acertou ? 'sucesso' : 'jogando'}
-                    {...somHandlers}
-                >
-                    <p className={styles.instrucao}>
-                        {modo === 'mouse' ? modoInfo.instrucaoPara(tipoCliqueAtual) : modoInfo.instrucaoPara()}
-                    </p>
-
-                    <div className={styles.gameHost}>
-                        {modo === 'mouse' && (
-                            <AlvoMovelGame
-                                key={gameKey}
-                                reportResult={handleResultado}
-                                tipoClique={tipoCliqueAtual}
-                                duploClique={false}
-                            />
-                        )}
-
-                            {modo === 'arrastar' && (
-                                <CapturaPuffGame key={gameKey} reportResult={handleResultado} limiteRef={arenaRef} />
-                            )}
-
-                            {modo === 'teclado' && (
-                                <PressionarTeclaGame key={gameKey} reportResult={handleResultado} tecla={teclaAtual} />
-                            )}
-
-                            {modo === 'dedos' && (
-                                <TreinoDedosGame key={gameKey} reportResult={handleResultado} texto={textoTreinoDedos} />
-                            )}
-
-                            {modo === 'desenho' && (
-                                <DesenhoLivreGame key={gameKey} reportResult={handleResultado} figura={figuraAtual} />
-                            )}
-                    </div>
-
-                    {/* Recadinho da Cecília - mesmo do GameMoment: em dúvida
-                        até acertar, comemorando durante a pausa do acerto.
-                        Fica sempre no card (não só no acerto) pra o card não
-                        crescer/encolher a cada rodada. */}
-                    <div className={styles.ceciFeedback}>
-                        <div className={styles.ceciAvatar} aria-hidden>
-                            <Mascote variante={acertou ? 'acerto' : 'duvida'} />
+                {!estaDesbloqueado ? (
+                    <div className={styles.lockedArena}>
+                        <div className={styles.lockedMascote} aria-hidden>
+                            <Mascote variante="duvida" />
                         </div>
-                        <p className={styles.ceciMessage} aria-live="polite">
-                            {acertou ? FALA_ACERTO : FALA_ESPERANDO}
+                        <h2 className={styles.lockedTitulo}>
+                            Treino bloqueado: {modoInfo.label}
+                        </h2>
+                        <p className={styles.lockedTexto}>
+                            Para treinar de forma livre neste modo, você precisa primeiro passar pela aula teórica correspondente (ou comprovar domínio pelo algoritmo adaptativo).
                         </p>
+                        {statusModoAtual?.info?.tituloAula && (
+                            <div className={styles.lockedAulaCard}>
+                                <span>📖</span>
+                                <span>Aula necessária: {statusModoAtual.info.tituloAula}</span>
+                            </div>
+                        )}
+                        <div className={styles.lockedAcoes}>
+                            {statusModoAtual?.info?.rotaAula && (
+                                <ButtonPrimary onClick={() => navigate(statusModoAtual.info.rotaAula)}>
+                                    Ir para a aula teórica
+                                </ButtonPrimary>
+                            )}
+                            <ButtonOutline onClick={() => navigate('/modulos')}>
+                                Ver todos os módulos
+                            </ButtonOutline>
+                        </div>
                     </div>
-                </div>
+                ) : (
+                    <>
+                        <div className={styles.scoreRow}>
+                            <div className={styles.scoreChip}>
+                                <span className={styles.scoreLabel}>{modoInfo.metricaSessao}</span>
+                                <span className={styles.scoreValue}>{acertosSessao}</span>
+                            </div>
+                            <div className={styles.scoreChip}>
+                                <span className={styles.scoreLabel}>{modoInfo.metricaRecorde}</span>
+                                <span className={styles.scoreValue}>{recorde}</span>
+                            </div>
+                        </div>
+
+                        <div
+                            ref={arenaRef}
+                            className={styles.arena}
+                            data-status={acertou ? 'sucesso' : 'jogando'}
+                            {...somHandlers}
+                        >
+                            <p className={styles.instrucao}>
+                                {modo === 'mouse' ? modoInfo.instrucaoPara(tipoCliqueAtual) : modoInfo.instrucaoPara()}
+                            </p>
+
+                            <div className={styles.gameHost}>
+                                {modo === 'mouse' && (
+                                    <AlvoMovelGame
+                                        key={gameKey}
+                                        reportResult={handleResultado}
+                                        tipoClique={tipoCliqueAtual}
+                                        duploClique={false}
+                                    />
+                                )}
+
+                                {modo === 'arrastar' && (
+                                    <CapturaPuffGame key={gameKey} reportResult={handleResultado} limiteRef={arenaRef} />
+                                )}
+
+                                {modo === 'teclado' && (
+                                    <PressionarTeclaGame key={gameKey} reportResult={handleResultado} tecla={teclaAtual} />
+                                )}
+
+                                {modo === 'dedos' && (
+                                    <TreinoDedosGame key={gameKey} reportResult={handleResultado} texto={textoTreinoDedos} />
+                                )}
+
+                                {modo === 'desenho' && (
+                                    <DesenhoLivreGame key={gameKey} reportResult={handleResultado} figura={figuraAtual} />
+                                )}
+                            </div>
+
+                            {/* Recadinho da Cecília - mesmo do GameMoment: em dúvida
+                                até acertar, comemorando durante a pausa do acerto.
+                                Fica sempre no card (não só no acerto) pra o card não
+                                crescer/encolher a cada rodada. */}
+                            <div className={styles.ceciFeedback}>
+                                <div className={styles.ceciAvatar} aria-hidden>
+                                    <Mascote variante={acertou ? 'acerto' : 'duvida'} />
+                                </div>
+                                <p className={styles.ceciMessage} aria-live="polite">
+                                    {acertou ? FALA_ACERTO : FALA_ESPERANDO}
+                                </p>
+                            </div>
+                        </div>
+                    </>
+                )}
             </div>
         </AppLayout>
     );

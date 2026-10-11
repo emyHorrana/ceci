@@ -7,6 +7,7 @@ import { useLocalStorage } from '../hooks/useLocalStorage';
 import { flushOnboardingSignals } from '../services/onboardingSync';
 import { criarUsuario } from '../services/usuarioService';
 import { salvarConquista } from '../services/progressService';
+import { salvarModoDesbloqueadoLocal, marcarModoNotificadoLocal } from '../services/laboratorioService';
 import { AuthLayout } from '../components/Layout/AuthLayout';
 import { Footer } from '../components/Footer/Footer';
 import authStyles from '../components/Layout/AuthLayout.module.css';
@@ -77,6 +78,26 @@ export default function Cadastro() {
       flushOnboardingSignals(newUser.id).catch((err) => {
         console.error('Erro ao sincronizar sinais do onboarding:', err);
       });
+
+      // Se comprovou pelo algoritmo no onboarding, os jogos no laboratório se mantêm desbloqueados por padrão
+      try {
+        if (onboarding?.verificacao_mouse_confirmada) {
+          salvarModoDesbloqueadoLocal(newUser.id, 'mouse');
+          salvarModoDesbloqueadoLocal(newUser.id, 'arrastar');
+          salvarModoDesbloqueadoLocal(newUser.id, 'desenho');
+          marcarModoNotificadoLocal(newUser.id, 'mouse');
+          marcarModoNotificadoLocal(newUser.id, 'arrastar');
+          marcarModoNotificadoLocal(newUser.id, 'desenho');
+        }
+        if (onboarding?.verificacao_teclado_confirmada) {
+          salvarModoDesbloqueadoLocal(newUser.id, 'teclado');
+          salvarModoDesbloqueadoLocal(newUser.id, 'dedos');
+          marcarModoNotificadoLocal(newUser.id, 'teclado');
+          marcarModoNotificadoLocal(newUser.id, 'dedos');
+        }
+      } catch (err) {
+        console.warn('Erro ao configurar modos do laboratório no cadastro:', err);
+      }
 
       // Aguarda 2s para mostrar mensagem de sucesso, depois redireciona pro
       // Dashboard - a bifurcação por familiaridade com mouse acontece toda

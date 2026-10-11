@@ -19,6 +19,7 @@ import { getPerfisAluno, responderQuestao } from '../services/algorithmService';
 import { getTempoIdealMs } from '../utils/jogoTempoIdeal';
 import { reformularExplicacao } from '../services/aiService';
 import { marcarMiniModuloConcluidoLocal } from '../services/achievementService';
+import { registrarConclusaoTeoria } from '../services/laboratorioService';
 import mosquinha from '../assets/mosquinha.png';
 import { isAdmin } from '../utils/roles';
 import { ButtonPrimary } from '../components/Buttons/ButtonPrimary';
@@ -92,7 +93,7 @@ export default function MiniModulo() {
   const { miniModuloId } = useParams();
   const navigate = useNavigate();
   const { user, initializing } = useContext(UserContext);
-  const { updateProgress } = useContext(ProgressContext) || {};
+  const { updateProgress, checkAchievements } = useContext(ProgressContext) || {};
 
   // Sem esse guard, dava pra acessar a página sem login: ela rodava
   // normalmente, mas `if (!user?.id) return` nos handlers abaixo fazia
@@ -183,37 +184,10 @@ export default function MiniModulo() {
     setResultadoJogo(null);
   }, [etapaAtual]);
 
-  if (!resultado) {
-    return (
-        <div className={styles.notFound}>
-          <span className={styles.notFoundEmoji}>🔍</span>
-          <h2>Mini-módulo não encontrado</h2>
-          <ButtonOutline onClick={() => navigate('/dashboard')}>
-            Voltar ao início
-          </ButtonOutline>
-        </div>
-    );
-  }
+  const modulo = resultado?.modulo;
+  const miniModulo = resultado?.miniModulo;
 
-  if (etapas.length === 0) {
-    return (
-        <div className={styles.notFound}>
-          <span className={styles.notFoundEmoji}>🚧</span>
-          <h2>Mini-módulo sem conteúdo ainda</h2>
-          <p>Esse mini-módulo ainda não tem nenhuma etapa cadastrada.</p>
-          <ButtonOutline onClick={() => navigate('/dashboard')}>
-            Voltar ao início
-          </ButtonOutline>
-        </div>
-    );
-  }
-
-  const { modulo, miniModulo } = resultado;
-
-  const indiceSeguro = Math.min(Math.max(0, etapaAtual), etapas.length - 1);
-  if (etapaAtual !== indiceSeguro) {
-    setEtapaAtual(indiceSeguro);
-  }
+  const indiceSeguro = etapas.length > 0 ? Math.min(Math.max(0, etapaAtual), etapas.length - 1) : 0;
 
   // Atualiza persistência da etapa atual no localStorage
   // (não pra conta ADM - ver comentário no topo do componente)
@@ -240,6 +214,31 @@ export default function MiniModulo() {
       });
     }
   }, [indiceSeguro, etapa]);
+
+  // Desbloqueia e notifica novos treinos do Laboratório ao passar pela parte teórica da aula
+  useEffect(() => {
+    if (!user?.id || !miniModuloId || admin) return;
+
+    const etapasTeoricas = etapas.filter((e) => e.tipo !== 'jogo');
+    if (etapasTeoricas.length === 0) return;
+
+    const indicesTeoria = etapas
+      .map((e, idx) => (e.tipo !== 'jogo' ? idx : -1))
+      .filter((idx) => idx !== -1);
+    const ultimoIndiceTeoria = Math.max(...indicesTeoria);
+
+    // Considera a teoria concluída se:
+    // 1) O índice atual já avançou além da última etapa teórica (ex: entrou no jogo prático); OU
+    // 2) A última etapa teórica já está em etapasCompletas; OU
+    // 3) É a última etapa da aula e ela é teórica
+    const passouPelaTeoria =
+      indiceSeguro > ultimoIndiceTeoria ||
+      (ultimoIndiceTeoria !== -1 && etapasCompletas.has(ultimoIndiceTeoria));
+
+    if (passouPelaTeoria) {
+      registrarConclusaoTeoria(user.id, miniModuloId, user, checkAchievements);
+    }
+  }, [indiceSeguro, etapas, etapasCompletas, user, miniModuloId, checkAchievements, admin]);
 
   const handleGameComplete = async (res) => {
     setResultadoJogo(res);
@@ -371,6 +370,7 @@ export default function MiniModulo() {
 
     if (user?.id) {
       marcarMiniModuloConcluidoLocal(user.id, miniModuloId);
+      registrarConclusaoTeoria(user.id, miniModuloId, user, checkAchievements);
       if (updateProgress) {
         try {
           await updateProgress(miniModuloId, user.id, { progress: 100, completed: true }, user);
@@ -396,6 +396,31 @@ export default function MiniModulo() {
     return (
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100svh' }}>
           Carregando...
+        </div>
+    );
+  }
+
+  if (!resultado) {
+    return (
+        <div className={styles.notFound}>
+          <span className={styles.notFoundEmoji}>🔍</span>
+          <h2>Mini-módulo não encontrado</h2>
+          <ButtonOutline onClick={() => navigate('/dashboard')}>
+            Voltar ao início
+          </ButtonOutline>
+        </div>
+    );
+  }
+
+  if (etapas.length === 0) {
+    return (
+        <div className={styles.notFound}>
+          <span className={styles.notFoundEmoji}>🚧</span>
+          <h2>Mini-módulo sem conteúdo ainda</h2>
+          <p>Esse mini-módulo ainda não tem nenhuma etapa cadastrada.</p>
+          <ButtonOutline onClick={() => navigate('/dashboard')}>
+            Voltar ao início
+          </ButtonOutline>
         </div>
     );
   }

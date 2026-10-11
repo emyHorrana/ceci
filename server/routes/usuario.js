@@ -15,11 +15,22 @@ router.get(['/:id', '/'], requireAuth, async (req, res) => {
       .single();
 
   if (error) {
-    // Usuário autenticado mas ainda sem linha na tabela usuarios - retorna mínimo
+    // Usuário autenticado mas ainda sem linha na tabela usuarios - auto-provisiona com tipo 'aluno'
     if (error.code === 'PGRST116') {
+      const nomePadrao = req.user.user_metadata?.nome || (req.user.email ? req.user.email.split('@')[0] : 'Usuário');
+      const { data: criado, error: erroCriacao } = await supabase
+        .from('usuarios')
+        .insert([{ id, nome: nomePadrao, email: req.user.email || '', tipo: 'aluno' }])
+        .select()
+        .single();
+
+      if (!erroCriacao && criado) {
+        return res.json(criado);
+      }
+
       return res.json({
         id,
-        nome: req.user.user_metadata?.nome || 'Usuário',
+        nome: nomePadrao,
         email: req.user.email || '',
         guest_mode: false,
         tipo: 'aluno',

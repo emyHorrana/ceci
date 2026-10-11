@@ -2,6 +2,26 @@ const express = require('express');
 const router = express.Router();
 const ai = require('../lib/geminiClient');
 const requireAuth = require('../middleware/auth');
+const { buscarEtapa } = require('../lib/conteudoModulos');
+
+// Rate limiting em memória: máximo de 10 chamadas por minuto por usuário autenticado
+const rateLimitMap = new Map();
+const LIMITE_REQUISICOES = 10;
+const JANELA_MS = 60 * 1000;
+
+function verificarLimiteTaxa(userId) {
+  const agora = Date.now();
+  const registros = rateLimitMap.get(userId) || [];
+  const registrosValidos = registros.filter((timestamp) => agora - timestamp < JANELA_MS);
+
+  if (registrosValidos.length >= LIMITE_REQUISICOES) {
+    return false;
+  }
+
+  registrosValidos.push(agora);
+  rateLimitMap.set(userId, registrosValidos);
+  return true;
+}
 
 /**
  * Remove tags HTML simples para limpar o contexto original antes de enviar ao prompt
@@ -20,17 +40,35 @@ function limparHtml(html) {
 
 // POST /api/conteudo/reformular
 // Reformula a explicação de uma etapa com analogias do cotidiano e tom acolhedor da Ceci.
-// Exige autenticação para proteger o consumo da cota de IA.
+// Exige autenticação, aplica limite de taxa e busca o conteúdo estático no servidor,
+// impedindo manipulações e Prompt Injection por clientes maliciosos.
 router.post('/reformular', requireAuth, async (req, res) => {
-  const { contexto, titulo, nivel, motivo } = req.body;
+  const userId = req.user?.id || req.ip;
 
-  if (!contexto) {
-    return res.status(400).json({ error: 'contexto é obrigatório.' });
+  if (!verificarLimiteTaxa(userId)) {
+    return res.status(429).json({
+      error: 'Muitas solicitações de explicação. Aguarde um momento antes de tentar novamente.',
+    });
   }
 
-  const contextoLimpo = limparHtml(contexto);
+  const { miniModuloId, etapaIndice, etapaId, moduleId, nivel, motivo } = req.body;
+
+  // Busca o conteúdo seguro e auditado diretamente do servidor
+  const etapaInfo = buscarEtapa({
+    miniModuloId: miniModuloId || moduleId,
+    etapaIndice,
+    etapaId,
+  });
+
+  if (!etapaInfo || !etapaInfo.conteudo) {
+    return res.status(400).json({
+      error: 'Etapa não encontrada no currículo oficial. Informe miniModuloId e etapaIndice válidos.',
+    });
+  }
+
+  const contextoLimpo = limparHtml(etapaInfo.conteudo);
   const nivelAluno = nivel || 'Iniciante';
-  const tituloEtapa = titulo || 'Conceito Básico de Computador';
+  const tituloEtapa = etapaInfo.titulo;
 
   try {
     const prompt = `Você é a Ceci, uma professora virtual calorosa, paciente e encorajadora da plataforma CECI, voltada para inclusão digital de adultos e pessoas idosas que estão tendo o primeiro contato com computadores.
@@ -53,7 +91,7 @@ Instruções para a sua resposta:
 2. Explique o conceito usando uma analogia simples e tangível do cotidiano (ex: eletrodomésticos, controle remoto da TV, trânsito, máquina de lavar, tarefas manuais ou compras).
 3. Seja concisa, clara e acolhedora (máximo 2 a 3 parágrafos curtos).
 4. Termine com uma frase curta de incentivo e carinho.
-5. Formate o texto usando HTML simples (<p>, <strong> para termos-chave). NÃO inclua blocos de código com crases (\`\`\`html) nem tags <html>/<body>.`;
+5. Formate o texto usando HTML simples (<p>, <strong> para termos-chave). NÃO inclua blocos de código com crases (\`\`\`html), nem tags <script>, <img>, <iframe> ou tags estruturais <html>/<body>.`;
 
     const modelName = process.env.GEMINI_MODEL || 'gemini-3.5-flash-lite';
     const response = await ai.models.generateContent({
@@ -68,6 +106,7 @@ Instruções para a sua resposta:
       .replace(/^```html\s*/i, '')
       .replace(/^```\s*/i, '')
       .replace(/```$/g, '')
+      .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
       .trim();
 
     res.json({

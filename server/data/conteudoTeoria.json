@@ -1,0 +1,1422 @@
+{
+  "1-1": {
+    "moduloId": "1",
+    "moduloTitulo": "Uso do Mouse",
+    "miniModuloId": "1-1",
+    "miniModuloTitulo": "Reconhecendo o mouse",
+    "etapas": [
+      {
+        "indice": 0,
+        "id": "1-1-0",
+        "titulo": "Bem-vindo(a) ao mouse",
+        "conteudo": "<p>Aqui vamos falar sobre um instrumento simples, mas muito importante para quem está começando a usar o computador: o <strong>mouse</strong>.</p> <p>Talvez você já tenha usado um mouse antes, ainda que rapidamente, ou talvez esta seja a primeira vez que vai se aproximar dele com atenção. De qualquer forma, não se preocupe: cada movimento novo, no início, exige um pouco de prática - assim como aprender a usar um controle remoto novo ou uma máquina de lavar diferente da que você já conhecia. Com o tempo, o gesto se torna natural.</p> <p>Vamos passo a passo. Sinta-se à vontade para repetir cada parte quantas vezes precisar.</p>"
+      },
+      {
+        "indice": 1,
+        "id": "1-1-1",
+        "titulo": "O que é o mouse",
+        "conteudo": "<p>O mouse é aquele pequeno objeto que fica ao lado do teclado e que você segura com uma das mãos para \"conversar\" com o computador. Pense nele como um ponteiro: por meio dele, você indica ao computador o que deseja fazer, aponta para o que quer abrir ou selecionar.</p> <p>Existem também os <strong>touchpads</strong>, que são as superfícies planas encontradas em notebooks, onde se usa o dedo em vez do mouse. O princípio é parecido, mas aqui vamos focar no mouse tradicional, aquele que se segura com a mão.</p>"
+      },
+      {
+        "indice": 2,
+        "id": "1-1-2",
+        "titulo": "Como segurar o mouse",
+        "conteudo": "<p>Apoie a palma da mão suavemente sobre o mouse, deixando os dedos levemente curvados sobre os botões - sem apertar. Pense em como você seguraria um controle remoto: com firmeza o suficiente para não deixar cair, mas sem tensão.</p> <p>Se sua mão ficar cansada ou dolorida, é sinal de que está segurando com força demais. Relaxe os ombros e o punho: essa postura mais tranquila facilita o controle e evita desconforto.</p>"
+      },
+      {
+        "indice": 3,
+        "id": "1-1-3",
+        "titulo": "O botão esquerdo",
+        "conteudo": "<p>O <strong>botão esquerdo</strong> é o mais usado de todos. Fica sob o dedo indicador (para quem é destro) e serve para selecionar, abrir programas e confirmar ações (como clicar em botões).</p>"
+      },
+      {
+        "indice": 4,
+        "id": "1-1-4",
+        "titulo": "Demonstração: O botão esquerdo",
+        "conteudo": ""
+      },
+      {
+        "indice": 5,
+        "id": "1-1-5",
+        "titulo": "O botão direito",
+        "conteudo": "<p>O <strong>botão direito</strong> abre um menu com opções extras sobre o que você clicou - é uma forma do computador dizer \"aqui estão outras coisas que você pode fazer com isso\".</p>"
+      },
+      {
+        "indice": 6,
+        "id": "1-1-6",
+        "titulo": "Demonstração: O botão direito",
+        "conteudo": ""
+      },
+      {
+        "indice": 7,
+        "id": "1-1-7",
+        "titulo": "A roda (scroll)",
+        "conteudo": "<p>A <strong>roda</strong> (também chamada de scroll) fica entre os dois botões e serve para rolar a tela para cima ou para baixo, revelando o que está fora da tela no momento.</p>"
+      },
+      {
+        "indice": 8,
+        "id": "1-1-8",
+        "titulo": "Demonstração: A roda (scroll)",
+        "conteudo": ""
+      },
+      {
+        "indice": 9,
+        "id": "1-1-9",
+        "titulo": "Prática: Selecionar com botão esquerdo",
+        "conteudo": ""
+      },
+      {
+        "indice": 10,
+        "id": "1-1-10",
+        "titulo": "Prática: Opções com botão direito",
+        "conteudo": ""
+      },
+      {
+        "indice": 11,
+        "id": "1-1-11",
+        "titulo": "Prática: Abrindo um documento",
+        "conteudo": ""
+      },
+      {
+        "indice": 12,
+        "id": "1-1-12",
+        "titulo": "Revisão: Abrindo aplicativos",
+        "conteudo": ""
+      },
+      {
+        "indice": 13,
+        "id": "1-1-13",
+        "titulo": "Revisão: O botão direito",
+        "conteudo": ""
+      },
+      {
+        "indice": 14,
+        "id": "1-1-14",
+        "titulo": "Revisão: A rodinha (scroll)",
+        "conteudo": ""
+      }
+    ]
+  },
+  "1-2": {
+    "moduloId": "1",
+    "moduloTitulo": "Uso do Mouse",
+    "miniModuloId": "1-2",
+    "miniModuloTitulo": "Movimento do cursor",
+    "etapas": [
+      {
+        "indice": 0,
+        "id": "1-2-0",
+        "titulo": "O cursor: seu dedo virtual",
+        "conteudo": "<p>Quando você move o mouse sobre a mesa, uma pequena seta se move na tela do computador. Essa seta é chamada de <strong>cursor</strong>, e ela é o seu \"dedo virtual\" - é por meio dela que você aponta para tudo o que deseja fazer.</p>\n<ul>\n  <li>Se você mover o mouse para cima, o cursor sobe.</li>\n  <li>Se mover para baixo, o cursor desce.</li>\n  <li>Para a esquerda, o cursor vai para a esquerda da tela.</li>\n  <li>Para a direita, o cursor vai para a direita.</li>\n</ul>"
+      },
+      {
+        "indice": 1,
+        "id": "1-2-1",
+        "titulo": "Ajustando o ritmo",
+        "conteudo": "<p>No começo, é comum que a mão queira ir mais rápido do que o cursor consegue acompanhar, ou o contrário. Isso é absolutamente normal - é uma questão de costume, parecida com aprender a dosar a força ao mexer em uma torneira nova até descobrir o ponto certo.</p>\n<p>Uma dica valiosa: mova o mouse devagar no início. Você pode até levantar o mouse do lugar e reposicioná-lo no centro da mesa se sentir que \"ficou sem espaço\" - isso não afeta nada no computador, só o cursor não se move enquanto o mouse está no ar.</p>"
+      },
+      {
+        "indice": 2,
+        "id": "1-2-2",
+        "titulo": "O clique simples",
+        "conteudo": "<p>Depois de conseguir mover o cursor com tranquilidade, vem o próximo passo: parar o cursor exatamente onde você quer e fazer um <strong>clique simples</strong>, apertando levemente o botão esquerdo uma única vez.</p>\n<p>É esse clique que você vai usar para selecionar algo na tela ou confirmar uma escolha.</p>"
+      },
+      {
+        "indice": 3,
+        "id": "1-2-3",
+        "titulo": "Agora é sua vez!",
+        "conteudo": ""
+      },
+      {
+        "indice": 4,
+        "id": "1-2-4",
+        "titulo": "Mais uma vez, com atenção",
+        "conteudo": ""
+      },
+      {
+        "indice": 5,
+        "id": "1-2-5",
+        "titulo": "Com mais opções na tela",
+        "conteudo": ""
+      }
+    ]
+  },
+  "1-3": {
+    "moduloId": "1",
+    "moduloTitulo": "Uso do Mouse",
+    "miniModuloId": "1-3",
+    "miniModuloTitulo": "Duplo clique",
+    "etapas": [
+      {
+        "indice": 0,
+        "id": "1-3-0",
+        "titulo": "O que é o duplo clique",
+        "conteudo": "<p>O duplo clique é simplesmente dois cliques rápidos, um logo em seguida do outro, feitos com o botão esquerdo, sem mover o mouse entre eles.</p>\n<p>Ele é usado, por exemplo, para abrir arquivos, pastas ou programas - é como \"bater duas vezes na porta\" para avisar que você quer entrar.</p>"
+      },
+      {
+        "indice": 1,
+        "id": "1-3-1",
+        "titulo": "Pegando o ritmo",
+        "conteudo": "<p>O desafio, no início, costuma ser o ritmo: se os cliques forem devagar demais, o computador entende como dois cliques separados, e não como um duplo clique. Se vier com muita força ou muito rápido, pode acontecer de sair do lugar.</p>\n<p>Não existe problema em tentar novamente - praticar esse ritmo é como aprender a bater palmas em um compasso constante: no começo exige atenção, depois vem naturalmente.</p>"
+      },
+      {
+        "indice": 2,
+        "id": "1-3-2",
+        "titulo": "Pratique o duplo clique",
+        "conteudo": ""
+      },
+      {
+        "indice": 3,
+        "id": "1-3-3",
+        "titulo": "Duplo clique no ícone certo",
+        "conteudo": ""
+      }
+    ]
+  },
+  "1-4": {
+    "moduloId": "1",
+    "moduloTitulo": "Uso do Mouse",
+    "miniModuloId": "1-4",
+    "miniModuloTitulo": "Scroll (a rodinha do mouse)",
+    "etapas": [
+      {
+        "indice": 0,
+        "id": "1-4-0",
+        "titulo": "Rolando a página",
+        "conteudo": "<p>O scroll é a rodinha que fica entre os dois botões do mouse. Ela serve para rolar a página na tela, revelando conteúdos que estão acima ou abaixo do que você está vendo no momento - como quando você folheia as páginas de uma revista para ver o que vem a seguir.</p>\n<ul>\n  <li>Girar a roda para baixo faz a página rolar para baixo, mostrando o conteúdo que estava mais abaixo.</li>\n  <li>Girar a roda para cima faz a página voltar, mostrando o que estava mais acima.</li>\n</ul>"
+      },
+      {
+        "indice": 1,
+        "id": "1-4-1",
+        "titulo": "Controlando a velocidade",
+        "conteudo": "<p>Você pode controlar a velocidade da rolagem: gire devagar para ler com calma, ou um pouco mais rápido quando quiser passar por um conteúdo já conhecido.</p>\n<p>O importante é girar aos poucos e observar como a tela responde, até sentir confiança para parar exatamente no ponto que deseja ler.</p>"
+      },
+      {
+        "indice": 2,
+        "id": "1-4-2",
+        "titulo": "Primeiro contato com o scroll",
+        "conteudo": ""
+      },
+      {
+        "indice": 3,
+        "id": "1-4-3",
+        "titulo": "Pratique o scroll para baixo",
+        "conteudo": ""
+      },
+      {
+        "indice": 4,
+        "id": "1-4-4",
+        "titulo": "Pratique o scroll com precisão",
+        "conteudo": ""
+      },
+      {
+        "indice": 5,
+        "id": "1-4-5",
+        "titulo": "Revisão: Subir e descer páginas",
+        "conteudo": ""
+      }
+    ]
+  },
+  "1-5": {
+    "moduloId": "1",
+    "moduloTitulo": "Uso do Mouse",
+    "miniModuloId": "1-5",
+    "miniModuloTitulo": "Arrastar e soltar",
+    "etapas": [
+      {
+        "indice": 0,
+        "id": "1-5-0",
+        "titulo": "Como arrastar e soltar",
+        "conteudo": "<p>Arrastar e soltar é uma ação um pouco mais completa, que reúne tudo o que vimos até aqui:</p>\n<ol>\n  <li>Você posiciona o cursor sobre um item na tela (um ícone, por exemplo).</li>\n  <li>Clica e segura o botão esquerdo, sem soltar.</li>\n  <li>Move o mouse até o local desejado, mantendo o botão pressionado.</li>\n  <li>Solta o botão no lugar certo, \"largando\" o item ali.</li>\n</ol>\n<p>É parecido com pegar um objeto da mesa e carregá-lo até outro lugar antes de soltá-lo: enquanto você o segura, ele se move junto com sua mão; quando você abre a mão, ele fica onde foi deixado.</p>"
+      },
+      {
+        "indice": 1,
+        "id": "1-5-1",
+        "titulo": "Pra que serve",
+        "conteudo": "<p>Esse recurso é útil, por exemplo, para mover ícones de lugar na tela ou para selecionar um trecho de texto (arrastando o cursor sobre as palavras que você deseja marcar).</p>"
+      },
+      {
+        "indice": 2,
+        "id": "1-5-2",
+        "titulo": "Atenção ao soltar",
+        "conteudo": "<p>O ponto de maior atenção aqui é não soltar o botão antes da hora. Se isso acontecer, o item cai em um lugar diferente do pretendido - mas não é motivo para preocupação, pois basta repetir o processo e arrastá-lo novamente para o lugar certo.</p>"
+      },
+      {
+        "indice": 3,
+        "id": "1-5-3",
+        "titulo": "Pratique arrastar e soltar",
+        "conteudo": ""
+      },
+      {
+        "indice": 4,
+        "id": "1-5-4",
+        "titulo": "Mais uma vez",
+        "conteudo": ""
+      },
+      {
+        "indice": 5,
+        "id": "1-5-5",
+        "titulo": "Com atenção: tem duas opções agora",
+        "conteudo": ""
+      },
+      {
+        "indice": 6,
+        "id": "1-5-6",
+        "titulo": "Selecionando vários itens ao mesmo tempo",
+        "conteudo": "<p>Às vezes você quer mover, copiar ou apagar vários arquivos de uma vez, em vez de um por um. Uma forma simples de fazer isso: clique numa área vazia perto dos arquivos e arraste - como se estivesse \"jogando uma rede\" por cima dos itens que quer pegar. Tudo que a rede tocar fica selecionado.</p>\n<p>Depois de selecionados, qualquer ação que você fizer (arrastar pra lixeira, copiar, etc.) vale para todos de uma vez.</p>"
+      },
+      {
+        "indice": 7,
+        "id": "1-5-7",
+        "titulo": "Selecione as fotos",
+        "conteudo": ""
+      },
+      {
+        "indice": 8,
+        "id": "1-5-8",
+        "titulo": "Selecionando um trecho de texto",
+        "conteudo": "<p>O mesmo gesto de arrastar também serve para marcar parte de um texto - por exemplo, antes de copiar ou apagar só um trecho, sem mexer no resto.</p>\n<p>Clique bem no início do trecho que você quer, segure o botão, arraste até o final dele e solte. As palavras por onde o cursor passou ficam destacadas (geralmente em azul), mostrando o que está selecionado.</p>"
+      },
+      {
+        "indice": 9,
+        "id": "1-5-9",
+        "titulo": "Selecione o trecho certo",
+        "conteudo": ""
+      }
+    ]
+  },
+  "1-6": {
+    "moduloId": "1",
+    "moduloTitulo": "Uso do Mouse",
+    "miniModuloId": "1-6",
+    "miniModuloTitulo": "Coordenação e precisão",
+    "etapas": [
+      {
+        "indice": 0,
+        "id": "1-6-0",
+        "titulo": "Juntando tudo o que você aprendeu",
+        "conteudo": "<p>Este último tópico traz um convite para exercitar tudo o que foi aprendido - mover o cursor, clicar com o esquerdo e direito, dar duplo clique, rolar a tela e arrastar - em situações práticas do dia a dia, como:</p>\n<ul>\n  <li>Clicar em botões menores ou links</li>\n  <li>Fechar, maximizar ou minimizar uma janela</li>\n  <li>Abrir e fechar programas</li>\n  <li>Selecionar arquivos com precisão</li>\n  <li>Navegar por menus</li>\n</ul>"
+      },
+      {
+        "indice": 1,
+        "id": "1-6-1",
+        "titulo": "A precisão vem com a prática",
+        "conteudo": "<p>É natural que, no começo, a mão precise de mais tempo para apontar com exatidão em áreas menores da tela. Isso melhora com a repetição tranquila, da mesma forma que qualquer habilidade manual - como costurar um botão ou encaixar uma chave na fechadura.</p>\n<p>Se em algum momento você clicar fora do lugar, não há problema: basta clicar novamente no local correto. Errar faz parte do processo de aprender.</p>"
+      },
+      {
+        "indice": 2,
+        "id": "1-6-2",
+        "titulo": "Prática: Fechar janela (botão pequeno)",
+        "conteudo": ""
+      },
+      {
+        "indice": 3,
+        "id": "1-6-3",
+        "titulo": "Prática: Mira e precisão em grade",
+        "conteudo": ""
+      },
+      {
+        "indice": 4,
+        "id": "1-6-4",
+        "titulo": "Hora de treinar com movimento",
+        "conteudo": "<p>Na vida real, às vezes você precisa acompanhar algo que se move na tela. O exercício a seguir ajuda a treinar essa coordenação olho-mão.</p>\n<p>Sem pressa: o alvo vai se mover suavemente pela área. Vá acompanhando com o olhar e clique quando sentir que posicionou o cursor sobre ele.</p>"
+      },
+      {
+        "indice": 5,
+        "id": "1-6-5",
+        "titulo": "Desafio: Coordenação com alvo móvel",
+        "conteudo": ""
+      },
+      {
+        "indice": 6,
+        "id": "1-6-6",
+        "titulo": "Para lembrar",
+        "conteudo": "<ul>\n  <li>O mouse é a sua forma de apontar e escolher no computador.</li>\n  <li>O cursor (a seta na tela) segue o movimento da sua mão.</li>\n  <li>Clique simples seleciona; duplo clique abre; o botão direito mostra opções extras.</li>\n  <li>A rodinha (scroll) rola a página para cima ou para baixo.</li>\n  <li>Arrastar e soltar é clicar, segurar, mover e soltar no lugar certo.</li>\n  <li>A precisão vem com o tempo e com a prática - continue sempre no seu ritmo!</li>\n</ul>"
+      }
+    ]
+  },
+  "2-1": {
+    "moduloId": "2",
+    "moduloTitulo": "Uso do Teclado",
+    "miniModuloId": "2-1",
+    "miniModuloTitulo": "Reconhecendo o teclado",
+    "etapas": [
+      {
+        "indice": 0,
+        "id": "2-1-0",
+        "titulo": "O que é o teclado",
+        "conteudo": "<p>Agora que você já se sente mais à vontade com o mouse, vamos conhecer outra ferramenta essencial: o <strong>teclado</strong>. É por meio dele que você vai escrever mensagens, preencher formulários, digitar uma senha ou até mandar um recado para um familiar.</p>\n<p>Pode parecer que existem teclas demais, e é natural sentir um pouco de insegurança no início - mas você não precisa decorar tudo de uma vez. Vamos avançar aos poucos, uma tecla de cada vez.</p>"
+      },
+      {
+        "indice": 1,
+        "id": "2-1-1",
+        "titulo": "O que você vai encontrar: as letras",
+        "conteudo": "<p>As letras ficam concentradas bem no <strong>centro</strong> do teclado, no bloco principal - é ali que você vai passar a maior parte do tempo digitando.</p>\n<p>Um detalhe que costuma surpreender: elas não seguem a ordem do alfabeto (A, B, C...). O motivo é histórico, vem de máquinas de escrever antigas - mas não se preocupe em decorar a ordem agora, seus dedos vão aprender o caminho naturalmente com a prática.</p>\n"
+      },
+      {
+        "indice": 2,
+        "id": "2-1-2",
+        "titulo": "O que você vai encontrar: os números",
+        "conteudo": "<p>Os números aparecem em <strong>dois lugares</strong>: numa fileira ao longo do topo do teclado, e também - em muitos teclados de computador de mesa - num bloco separado do lado direito, parecido com uma calculadora.</p>\n<p>Esse bloco à direita nem sempre existe (notebooks costumam não ter), mas quando existe, é uma forma rápida de digitar números em sequência, como um valor ou uma data.</p>\n"
+      },
+      {
+        "indice": 3,
+        "id": "2-1-3",
+        "titulo": "O que você vai encontrar: os símbolos",
+        "conteudo": "<p>Símbolos como @ (arroba), ponto e vírgula ficam <strong>acessíveis</strong> por combinações de teclas, principalmente em cima da fileira de números e em algumas teclas específicas próximas ao Enter - você vai aprender a digitar os mais usados mais adiante, com calma.</p>\n<p>Por enquanto, só vale saber que eles existem e mais ou menos onde procurar.</p>\n\n<p>Uma última observação sobre o teclado como um todo: teclas maiores, como a barra de espaço e o Enter, são pensadas de propósito pra serem fáceis de encontrar sem precisar olhar.</p>"
+      },
+      {
+        "indice": 4,
+        "id": "2-1-4",
+        "titulo": "Você reparou nas letras?",
+        "conteudo": ""
+      },
+      {
+        "indice": 5,
+        "id": "2-1-5",
+        "titulo": "Onde ficam as letras?",
+        "conteudo": ""
+      },
+      {
+        "indice": 6,
+        "id": "2-1-6",
+        "titulo": "O teclado numérico",
+        "conteudo": ""
+      }
+    ]
+  },
+  "2-2": {
+    "moduloId": "2",
+    "moduloTitulo": "Uso do Teclado",
+    "miniModuloId": "2-2",
+    "miniModuloTitulo": "Posição das mãos",
+    "etapas": [
+      {
+        "indice": 0,
+        "id": "2-2-0",
+        "titulo": "Como apoiar as mãos",
+        "conteudo": "<p>Apoie os pulsos de maneira relaxada, sem tensão, e deixe os dedos levemente curvados sobre as teclas - como se estivesse prestes a tocar um instrumento musical.</p>\n<p>Não existe obrigação de usar todos os dedos: algumas pessoas digitam com apenas um ou dois dedos, e isso funciona muito bem, principalmente no início. Com o tempo, se sentir vontade, você pode ir incorporando mais dedos - mas isso é um objetivo de longo prazo, não uma exigência imediata.</p>"
+      },
+      {
+        "indice": 1,
+        "id": "2-2-1",
+        "titulo": "Um toque leve já basta",
+        "conteudo": "<p>Pressione as teclas suavemente. Elas não precisam de força para responder - assim como o controle remoto de uma televisão, um toque leve já é suficiente. Apertar com força só cansa os dedos, sem necessidade.</p>"
+      },
+      {
+        "indice": 2,
+        "id": "2-2-2",
+        "titulo": "Se quiser digitar mais rápido, no seu tempo",
+        "conteudo": "<p>Isso aqui é opcional - lembre-se, não existe obrigação de usar todos os dedos. Mas se um dia você quiser ganhar velocidade, existe um truque usado por quem digita bastante: cada dedo tem uma \"casinha\" numa fileira central do teclado, chamada de <strong>fileira base</strong>. Ele sai dali pra apertar outras teclas e sempre volta pra essa posição de descanso.</p>\n\n<p><strong>Mão esquerda</strong> (fileira em amarelo): mindinho no A, anelar no S, médio no D, indicador no F.</p>\n<p><strong>Mão direita</strong> (fileira em âmbar): indicador no J, médio no K, anelar no L, mindinho no Ç.</p>\n<p>Com o tempo, esses dedos aprendem o caminho sozinhos, sem você precisar olhar pra baixo - é exatamente isso que faz digitar ficar mais rápido.</p>"
+      },
+      {
+        "indice": 3,
+        "id": "2-2-3",
+        "titulo": "Pratique: A",
+        "conteudo": ""
+      },
+      {
+        "indice": 4,
+        "id": "2-2-4",
+        "titulo": "Pratique: S",
+        "conteudo": ""
+      },
+      {
+        "indice": 5,
+        "id": "2-2-5",
+        "titulo": "Pratique: D",
+        "conteudo": ""
+      },
+      {
+        "indice": 6,
+        "id": "2-2-6",
+        "titulo": "Pratique: F",
+        "conteudo": ""
+      },
+      {
+        "indice": 7,
+        "id": "2-2-7",
+        "titulo": "Pratique: J",
+        "conteudo": ""
+      },
+      {
+        "indice": 8,
+        "id": "2-2-8",
+        "titulo": "Pratique: K",
+        "conteudo": ""
+      },
+      {
+        "indice": 9,
+        "id": "2-2-9",
+        "titulo": "Pratique: L",
+        "conteudo": ""
+      },
+      {
+        "indice": 10,
+        "id": "2-2-10",
+        "titulo": "Pratique: ;",
+        "conteudo": ""
+      },
+      {
+        "indice": 11,
+        "id": "2-2-11",
+        "titulo": "Sobre os dedos",
+        "conteudo": ""
+      },
+      {
+        "indice": 12,
+        "id": "2-2-12",
+        "titulo": "A força ao digitar",
+        "conteudo": ""
+      },
+      {
+        "indice": 13,
+        "id": "2-2-13",
+        "titulo": "A fileira base",
+        "conteudo": ""
+      }
+    ]
+  },
+  "2-3": {
+    "moduloId": "2",
+    "moduloTitulo": "Uso do Teclado",
+    "miniModuloId": "2-3",
+    "miniModuloTitulo": "Digitação básica",
+    "etapas": [
+      {
+        "indice": 0,
+        "id": "2-3-0",
+        "titulo": "Seus primeiros passos digitando",
+        "conteudo": "<p>Digitar é simplesmente apertar as teclas correspondentes às letras, números ou palavras que você deseja escrever. O caminho mais tranquilo é começar por algo familiar: o seu próprio nome, por exemplo.</p>\n<p>Vá com calma. Digitar devagar, letra por letra, é uma etapa normal e importante do aprendizado - não é sinal de dificuldade, mas parte natural do processo, como quem está aprendendo a bordar um ponto novo e vai devagar até pegar o jeito.</p>\n<p>Se, ao digitar, uma letra sair errada, não há problema algum: já vamos ver como corrigir isso com tranquilidade, usando a tecla Backspace.</p>"
+      },
+      {
+        "indice": 1,
+        "id": "2-3-1",
+        "titulo": "Pratique digitando: gato",
+        "conteudo": ""
+      },
+      {
+        "indice": 2,
+        "id": "2-3-2",
+        "titulo": "Praticando outra palavra do dia a dia",
+        "conteudo": "<p>Agora vamos praticar com outra palavra bem comum do nosso cotidiano: <strong>casa</strong>.</p>\n<p>Procure cada letra no teclado com calma: primeiro a letra C, depois A, depois S e por fim a letra A novamente.</p>"
+      },
+      {
+        "indice": 3,
+        "id": "2-3-3",
+        "titulo": "Pratique digitando: casa",
+        "conteudo": ""
+      },
+      {
+        "indice": 4,
+        "id": "2-3-4",
+        "titulo": "Pratique digitando: sol",
+        "conteudo": ""
+      },
+      {
+        "indice": 5,
+        "id": "2-3-5",
+        "titulo": "Ritmo e paciência",
+        "conteudo": ""
+      },
+      {
+        "indice": 6,
+        "id": "2-3-6",
+        "titulo": "Corrigindo letras erradas",
+        "conteudo": ""
+      }
+    ]
+  },
+  "2-4": {
+    "moduloId": "2",
+    "moduloTitulo": "Uso do Teclado",
+    "miniModuloId": "2-4",
+    "miniModuloTitulo": "Barra de espaço",
+    "etapas": [
+      {
+        "indice": 0,
+        "id": "2-4-0",
+        "titulo": "Separando as palavras",
+        "conteudo": "<p>A barra de espaço é a tecla comprida localizada na parte inferior do teclado. Ela serve para separar as palavras, criando o espaço em branco que permite a leitura, exatamente como fazemos ao escrever à mão.</p>\n<ul>\n  <li>Aperte a barra de espaço uma vez entre cada palavra - apertar várias vezes seguidas cria espaços demais no texto.</li>\n  <li>Depois do espaço, você pode continuar digitando normalmente a próxima palavra da frase.</li>\n</ul>"
+      },
+      {
+        "indice": 1,
+        "id": "2-4-1",
+        "titulo": "Pratique a barra de espaço",
+        "conteudo": ""
+      },
+      {
+        "indice": 2,
+        "id": "2-4-2",
+        "titulo": "Usando o espaço numa frase de verdade",
+        "conteudo": "<p>Agora vamos juntar a barra de espaço com o que você já sabe: digitar. Escreva duas palavras separadas por um espaço, como se estivesse escrevendo o começo de uma frase: <strong>bom dia</strong>.</p>"
+      },
+      {
+        "indice": 3,
+        "id": "2-4-3",
+        "titulo": "Pratique duas palavras",
+        "conteudo": ""
+      },
+      {
+        "indice": 4,
+        "id": "2-4-4",
+        "titulo": "Espaçamento correto",
+        "conteudo": ""
+      },
+      {
+        "indice": 5,
+        "id": "2-4-5",
+        "titulo": "Localização da barra de espaço",
+        "conteudo": ""
+      }
+    ]
+  },
+  "2-5": {
+    "moduloId": "2",
+    "moduloTitulo": "Uso do Teclado",
+    "miniModuloId": "2-5",
+    "miniModuloTitulo": "Enter",
+    "etapas": [
+      {
+        "indice": 0,
+        "id": "2-5-0",
+        "titulo": "Os usos do Enter",
+        "conteudo": "<p>A tecla Enter costuma ficar do lado direito do teclado e tem alguns usos bem comuns:</p>\n<ul>\n  <li><strong>Quebrar linha</strong>: ao escrever um texto mais longo, o Enter leva o cursor para a linha de baixo, começando um novo parágrafo.</li>\n  <li><strong>Confirmar uma ação</strong>: em muitas telas, apertar Enter é como dizer \"sim, pode continuar\" - por exemplo, depois de digitar uma senha.</li>\n  <li><strong>Enviar uma mensagem</strong>: em aplicativos de conversa, o Enter costuma enviar o que foi escrito.</li>\n  <li><strong>Abrir uma pesquisa</strong>: ao digitar algo em um site de busca, apertar Enter inicia a procura.</li>\n</ul>\n<p>Pense nele como o ponto final de uma ação: ele avisa ao computador que você concluiu aquele passo.</p>"
+      },
+      {
+        "indice": 1,
+        "id": "2-5-1",
+        "titulo": "Pratique o Enter",
+        "conteudo": ""
+      },
+      {
+        "indice": 2,
+        "id": "2-5-2",
+        "titulo": "Enter no dia a dia",
+        "conteudo": ""
+      },
+      {
+        "indice": 3,
+        "id": "2-5-3",
+        "titulo": "Pulando de linha",
+        "conteudo": ""
+      }
+    ]
+  },
+  "2-6": {
+    "moduloId": "2",
+    "moduloTitulo": "Uso do Teclado",
+    "miniModuloId": "2-6",
+    "miniModuloTitulo": "Backspace",
+    "etapas": [
+      {
+        "indice": 0,
+        "id": "2-6-0",
+        "titulo": "Apagando o que veio antes",
+        "conteudo": "<p>O Backspace é uma das teclas mais úteis para quem está aprendendo, porque ela serve para <strong>apagar a letra imediatamente antes do cursor</strong>. Costuma ficar acima do Enter, geralmente identificada por uma seta apontando para a esquerda.</p>\n<p>Se você errar uma letra, ou quiser reescrever uma palavra, é só apertar o Backspace quantas vezes forem necessárias para apagar o que não está certo, e depois digitar novamente. Não há pressa nem julgamento nesse processo.</p>"
+      },
+      {
+        "indice": 1,
+        "id": "2-6-1",
+        "titulo": "Pratique o Backspace",
+        "conteudo": ""
+      },
+      {
+        "indice": 2,
+        "id": "2-6-2",
+        "titulo": "Pra qual lado o Backspace apaga?",
+        "conteudo": ""
+      },
+      {
+        "indice": 3,
+        "id": "2-6-3",
+        "titulo": "Identificando o Backspace",
+        "conteudo": ""
+      }
+    ]
+  },
+  "2-7": {
+    "moduloId": "2",
+    "moduloTitulo": "Uso do Teclado",
+    "miniModuloId": "2-7",
+    "miniModuloTitulo": "Delete",
+    "etapas": [
+      {
+        "indice": 0,
+        "id": "2-7-0",
+        "titulo": "Backspace × Delete",
+        "conteudo": "<p>O Delete tem uma função parecida com o Backspace, mas com uma diferença importante:</p>\n<ul>\n  <li>O <strong>Backspace</strong> apaga o que está antes do cursor (à esquerda).</li>\n  <li>O <strong>Delete</strong> apaga o que está depois do cursor (à direita), ou apaga algo que você já selecionou na tela (um arquivo ou foto, por exemplo).</li>\n</ul>\n<p>Não é preciso decorar isso de imediato - com a prática, a diferença fica clara naturalmente.</p>"
+      },
+      {
+        "indice": 1,
+        "id": "2-7-1",
+        "titulo": "Pratique o Delete",
+        "conteudo": ""
+      },
+      {
+        "indice": 2,
+        "id": "2-7-2",
+        "titulo": "Backspace e Delete são a mesma coisa?",
+        "conteudo": ""
+      },
+      {
+        "indice": 3,
+        "id": "2-7-3",
+        "titulo": "Apagando itens selecionados",
+        "conteudo": ""
+      }
+    ]
+  },
+  "2-8": {
+    "moduloId": "2",
+    "moduloTitulo": "Uso do Teclado",
+    "miniModuloId": "2-8",
+    "miniModuloTitulo": "Shift",
+    "etapas": [
+      {
+        "indice": 0,
+        "id": "2-8-0",
+        "titulo": "Maiúsculas e símbolos",
+        "conteudo": "<p>A tecla Shift, localizada nos <strong>dois lados do teclado</strong> (esquerdo e direito), tem duas funções principais:</p>\n<ul>\n  <li>Permite escrever <strong>letras maiúsculas</strong>: basta segurar o Shift e, ao mesmo tempo, apertar a letra desejada.</li>\n  <li>Permite digitar os <strong>símbolos que ficam na parte de cima</strong> de algumas teclas (como os números 1 a 0).</li>\n</ul>\n<p>O segredo para usá-la bem é a ordem: primeiro segure o Shift, depois aperte a outra tecla, e solte as duas em seguida.</p>"
+      },
+      {
+        "indice": 1,
+        "id": "2-8-1",
+        "titulo": "Pratique o Shift ESQUERDO",
+        "conteudo": ""
+      },
+      {
+        "indice": 2,
+        "id": "2-8-2",
+        "titulo": "Pratique o Shift DIREITO",
+        "conteudo": ""
+      },
+      {
+        "indice": 3,
+        "id": "2-8-3",
+        "titulo": "Juntando o Shift com uma letra",
+        "conteudo": "<p>Agora vamos usar o Shift do jeito que ele é usado no dia a dia: segurando ele e apertando uma letra ao mesmo tempo para ela sair maiúscula.</p>"
+      },
+      {
+        "indice": 4,
+        "id": "2-8-4",
+        "titulo": "Pratique uma maiúscula",
+        "conteudo": ""
+      },
+      {
+        "indice": 5,
+        "id": "2-8-5",
+        "titulo": "Os dois lados do Shift",
+        "conteudo": ""
+      },
+      {
+        "indice": 6,
+        "id": "2-8-6",
+        "titulo": "Como fazer maiúscula com Shift",
+        "conteudo": ""
+      }
+    ]
+  },
+  "2-9": {
+    "moduloId": "2",
+    "moduloTitulo": "Uso do Teclado",
+    "miniModuloId": "2-9",
+    "miniModuloTitulo": "Caps Lock",
+    "etapas": [
+      {
+        "indice": 0,
+        "id": "2-9-0",
+        "titulo": "Travando as maiúsculas",
+        "conteudo": "<p>O Caps Lock (também chamado de Fixa) é uma tecla que, quando ativada, faz com que todas as letras digitadas apareçam em maiúsculas, sem precisar segurar o Shift o tempo todo.</p>\n<ul>\n  <li>Para ativar, basta apertar a tecla uma vez.</li>\n  <li>Para desativar, aperte novamente.</li>\n  <li>A maioria dos teclados tem uma pequena luz que acende quando o Caps Lock está ativo.</li>\n</ul>\n<p>Se, ao digitar, você notar que TUDO ESTÁ SAINDO EM MAIÚSCULAS sem que você quisesse, é bem provável que o Caps Lock esteja ativado. Basta apertá-lo novamente para voltar ao normal.</p>"
+      },
+      {
+        "indice": 1,
+        "id": "2-9-1",
+        "titulo": "Pratique o Caps Lock",
+        "conteudo": ""
+      },
+      {
+        "indice": 2,
+        "id": "2-9-2",
+        "titulo": "Pratique digitando em maiúsculas",
+        "conteudo": ""
+      },
+      {
+        "indice": 3,
+        "id": "2-9-3",
+        "titulo": "Como o Caps Lock se comporta",
+        "conteudo": ""
+      },
+      {
+        "indice": 4,
+        "id": "2-9-4",
+        "titulo": "Caps Lock versus Shift",
+        "conteudo": ""
+      }
+    ]
+  },
+  "2-10": {
+    "moduloId": "2",
+    "moduloTitulo": "Uso do Teclado",
+    "miniModuloId": "2-10",
+    "miniModuloTitulo": "Números",
+    "etapas": [
+      {
+        "indice": 0,
+        "id": "2-10-0",
+        "titulo": "Duas formas de digitar números",
+        "conteudo": "<ul>\n  <li>Pela <strong>fileira de números</strong> na parte de cima do teclado, logo acima das letras.</li>\n  <li>Pelo <strong>teclado numérico</strong>, um bloco à direita presente em muitos teclados de computador de mesa, organizado de forma parecida com uma calculadora.</li>\n</ul>\n<p>Essa habilidade é útil para digitar telefones, datas e documentos como o CPF - situações comuns no dia a dia, como preencher um cadastro.</p>"
+      },
+      {
+        "indice": 1,
+        "id": "2-10-1",
+        "titulo": "Pratique os números: ano 2026",
+        "conteudo": ""
+      },
+      {
+        "indice": 2,
+        "id": "2-10-2",
+        "titulo": "Pratique os números: valor 50",
+        "conteudo": ""
+      },
+      {
+        "indice": 3,
+        "id": "2-10-3",
+        "titulo": "Números em situações reais",
+        "conteudo": "<p>Uma das situações mais comuns é digitar um número de telefone com o código DDD da sua cidade na frente. Vamos praticar isso agora com validação completa.</p>"
+      },
+      {
+        "indice": 4,
+        "id": "2-10-4",
+        "titulo": "Pratique um telefone com DDD",
+        "conteudo": ""
+      },
+      {
+        "indice": 5,
+        "id": "2-10-5",
+        "titulo": "Onde estão os números",
+        "conteudo": ""
+      },
+      {
+        "indice": 6,
+        "id": "2-10-6",
+        "titulo": "Ativando o teclado numérico",
+        "conteudo": ""
+      }
+    ]
+  },
+  "2-11": {
+    "moduloId": "2",
+    "moduloTitulo": "Uso do Teclado",
+    "miniModuloId": "2-11",
+    "miniModuloTitulo": "Símbolos",
+    "etapas": [
+      {
+        "indice": 0,
+        "id": "2-11-0",
+        "titulo": "Os símbolos mais usados",
+        "conteudo": "<ul>\n  <li><strong>@</strong> (arroba): muito usado em endereços de e-mail.</li>\n  <li><strong>.</strong> (ponto): usado em sites, e-mails e valores.</li>\n  <li><strong>-</strong> (hífen): usado em alguns documentos e endereços.</li>\n  <li><strong>/</strong> (barra): aparece em endereços de internet e datas.</li>\n  <li><strong>?</strong> (interrogação): usado ao final de perguntas.</li>\n  <li><strong>:</strong> e <strong>;</strong> (dois-pontos e ponto e vírgula): usados na escrita de frases.</li>\n</ul>\n<p>Não é necessário memorizar a posição de todos de uma vez - com o uso repetido em situações reais, como digitar seu próprio e-mail, a localização vai se tornando familiar.</p>"
+      },
+      {
+        "indice": 1,
+        "id": "2-11-1",
+        "titulo": "Pratique um símbolo",
+        "conteudo": ""
+      },
+      {
+        "indice": 2,
+        "id": "2-11-2",
+        "titulo": "Outro símbolo bem comum: o hífen",
+        "conteudo": "<p>O hífen (-) aparece bastante em documentos e endereços - por exemplo, no meio de um CEP. Vamos praticar ele também com a quantidade exata de dígitos de um CEP brasileiro.</p>"
+      },
+      {
+        "indice": 3,
+        "id": "2-11-3",
+        "titulo": "Pratique o hífen no CEP",
+        "conteudo": ""
+      },
+      {
+        "indice": 4,
+        "id": "2-11-4",
+        "titulo": "Símbolo essencial do e-mail",
+        "conteudo": ""
+      },
+      {
+        "indice": 5,
+        "id": "2-11-5",
+        "titulo": "Digitando símbolos superiores",
+        "conteudo": ""
+      }
+    ]
+  },
+  "2-12": {
+    "moduloId": "2",
+    "moduloTitulo": "Uso do Teclado",
+    "miniModuloId": "2-12",
+    "miniModuloTitulo": "Teclas especiais",
+    "etapas": [
+      {
+        "indice": 0,
+        "id": "2-12-0",
+        "titulo": "Conhecendo as teclas especiais",
+        "conteudo": "<ul>\n  <li><strong>ESC</strong>: cancela uma ação, fecha um menu aberto ou sai de tela cheia.</li>\n  <li><strong>TAB</strong>: pula para o próximo campo em formulários e cadastros.</li>\n  <li><strong>Windows (⊞)</strong>: abre o menu principal do computador com seus programas e arquivos.</li>\n  <li><strong>Ctrl e Alt</strong>: usadas em conjunto com outras teclas para atalhos e funções especiais.</li>\n  <li><strong>Alt Gr</strong>: localizada à direita do espaço, serve para digitar o terceiro símbolo de certas teclas (como o @ e o ª).</li>\n</ul>"
+      },
+      {
+        "indice": 1,
+        "id": "2-12-1",
+        "titulo": "Pratique o Esc",
+        "conteudo": ""
+      },
+      {
+        "indice": 2,
+        "id": "2-12-2",
+        "titulo": "Avançando entre campos com o Tab",
+        "conteudo": "<p>A tecla <strong>Tab</strong> (geralmente identificada pelo nome Tab ou por setinhas opostas ⇥) fica no início da fileira de letras. Ao preencher cadastros na internet, apertar Tab faz o cursor pular direto para o próximo campo (do Nome para o E-mail, por exemplo), sem precisar clicar com o mouse.</p>"
+      },
+      {
+        "indice": 3,
+        "id": "2-12-3",
+        "titulo": "Pratique o Tab",
+        "conteudo": ""
+      },
+      {
+        "indice": 4,
+        "id": "2-12-4",
+        "titulo": "O menu principal e a tecla Windows",
+        "conteudo": "<p>A tecla <strong>Windows</strong> (com o símbolo de quatro quadradinhos ⊞) fica na fileira de baixo, ao lado do Ctrl e do Alt. Apertá-la abre o menu Iniciar do computador para pesquisar programas e arquivos.</p>"
+      },
+      {
+        "indice": 5,
+        "id": "2-12-5",
+        "titulo": "Pratique a tecla Windows",
+        "conteudo": ""
+      },
+      {
+        "indice": 6,
+        "id": "2-12-6",
+        "titulo": "As teclas Ctrl e Alt",
+        "conteudo": "<p>As teclas <strong>Ctrl</strong> (Control) e <strong>Alt</strong> funcionam como ajudantes: você segura uma delas e aperta outra tecla para acionar atalhos úteis (como copiar, colar ou salvar).</p>"
+      },
+      {
+        "indice": 7,
+        "id": "2-12-7",
+        "titulo": "Pratique a tecla Ctrl",
+        "conteudo": ""
+      },
+      {
+        "indice": 8,
+        "id": "2-12-8",
+        "titulo": "Pratique a tecla Alt",
+        "conteudo": ""
+      },
+      {
+        "indice": 9,
+        "id": "2-12-9",
+        "titulo": "Avançando entre campos de formulário",
+        "conteudo": ""
+      },
+      {
+        "indice": 10,
+        "id": "2-12-10",
+        "titulo": "Cancelando uma ação com Esc",
+        "conteudo": ""
+      },
+      {
+        "indice": 11,
+        "id": "2-12-11",
+        "titulo": "Abrindo o menu principal",
+        "conteudo": ""
+      }
+    ]
+  },
+  "2-13": {
+    "moduloId": "2",
+    "moduloTitulo": "Uso do Teclado",
+    "miniModuloId": "2-13",
+    "miniModuloTitulo": "Navegação pelo teclado",
+    "etapas": [
+      {
+        "indice": 0,
+        "id": "2-13-0",
+        "titulo": "Se movendo dentro de um texto",
+        "conteudo": "<p>Além do mouse, o próprio teclado permite se movimentar dentro de um texto:</p>\n<ul>\n  <li>As <strong>setas direcionais</strong> (⬅ ➡ ⬆ ⬇) movem o cursor pelo texto, letra por letra ou linha por linha, sem apagar nada.</li>\n  <li>As teclas <strong>Home</strong> e <strong>End</strong> levam direto ao início ou ao fim da linha atual.</li>\n  <li>As teclas <strong>Page Up</strong> (PgUp) e <strong>Page Down</strong> (PgDn) rolam uma página inteira para cima ou para baixo.</li>\n  <li>Segurando o Shift junto com as setas, é possível selecionar trechos de texto sem usar o mouse.</li>\n</ul>"
+      },
+      {
+        "indice": 1,
+        "id": "2-13-1",
+        "titulo": "Pratique a seta para baixo",
+        "conteudo": ""
+      },
+      {
+        "indice": 2,
+        "id": "2-13-2",
+        "titulo": "Pratique a seta para a direita",
+        "conteudo": ""
+      },
+      {
+        "indice": 3,
+        "id": "2-13-3",
+        "titulo": "Pratique a seta para a esquerda",
+        "conteudo": ""
+      },
+      {
+        "indice": 4,
+        "id": "2-13-4",
+        "titulo": "Pratique a seta para cima",
+        "conteudo": ""
+      },
+      {
+        "indice": 5,
+        "id": "2-13-5",
+        "titulo": "Teclas de salto rápido: Home e End",
+        "conteudo": "<p>As teclas <strong>Home</strong> e <strong>End</strong> ficam no bloco de navegação acima das setas:</p>\n<ul>\n  <li><strong>Home</strong>: salta instantaneamente para o início da linha.</li>\n  <li><strong>End</strong>: salta instantaneamente para o final da linha.</li>\n</ul>"
+      },
+      {
+        "indice": 6,
+        "id": "2-13-6",
+        "titulo": "Pratique a tecla Home",
+        "conteudo": ""
+      },
+      {
+        "indice": 7,
+        "id": "2-13-7",
+        "titulo": "Pratique a tecla End",
+        "conteudo": ""
+      },
+      {
+        "indice": 8,
+        "id": "2-13-8",
+        "titulo": "Setas e seleção",
+        "conteudo": ""
+      },
+      {
+        "indice": 9,
+        "id": "2-13-9",
+        "titulo": "Navegando sem apagar",
+        "conteudo": ""
+      },
+      {
+        "indice": 10,
+        "id": "2-13-10",
+        "titulo": "Início e fim da linha",
+        "conteudo": ""
+      }
+    ]
+  },
+  "2-14": {
+    "moduloId": "2",
+    "moduloTitulo": "Uso do Teclado",
+    "miniModuloId": "2-14",
+    "miniModuloTitulo": "Atalhos básicos",
+    "etapas": [
+      {
+        "indice": 0,
+        "id": "2-14-0",
+        "titulo": "Combinações que economizam cliques",
+        "conteudo": "<p>Os atalhos são combinações de teclas que executam ações rapidamente. Alguns dos mais úteis:</p>\n<ul>\n  <li><strong>Ctrl + C</strong>: copia algo que está selecionado.</li>\n  <li><strong>Ctrl + V</strong>: cola o que foi copiado em outro lugar.</li>\n  <li><strong>Ctrl + Z</strong>: desfaz a última ação - uma espécie de \"voltar atrás\".</li>\n  <li><strong>Ctrl + A</strong>: seleciona todo o conteúdo de uma vez.</li>\n</ul>"
+      },
+      {
+        "indice": 1,
+        "id": "2-14-1",
+        "titulo": "Pratique o Ctrl + C",
+        "conteudo": ""
+      },
+      {
+        "indice": 2,
+        "id": "2-14-2",
+        "titulo": "Pratique o Ctrl + V",
+        "conteudo": ""
+      },
+      {
+        "indice": 3,
+        "id": "2-14-3",
+        "titulo": "Pratique o Ctrl + Z",
+        "conteudo": ""
+      },
+      {
+        "indice": 4,
+        "id": "2-14-4",
+        "titulo": "Pratique o Ctrl + A",
+        "conteudo": ""
+      },
+      {
+        "indice": 5,
+        "id": "2-14-5",
+        "titulo": "Desfazendo um erro com atalho",
+        "conteudo": ""
+      },
+      {
+        "indice": 6,
+        "id": "2-14-6",
+        "titulo": "A dupla Copiar e Colar",
+        "conteudo": ""
+      },
+      {
+        "indice": 7,
+        "id": "2-14-7",
+        "titulo": "Selecionando todo o texto",
+        "conteudo": ""
+      }
+    ]
+  },
+  "2-15": {
+    "moduloId": "2",
+    "moduloTitulo": "Uso do Teclado",
+    "miniModuloId": "2-15",
+    "miniModuloTitulo": "Digitação funcional",
+    "etapas": [
+      {
+        "indice": 0,
+        "id": "2-15-0",
+        "titulo": "Juntando tudo em situações reais",
+        "conteudo": "<p>Todas essas habilidades se juntam em situações reais e úteis do cotidiano, como:</p>\n<ul>\n  <li>Digitar uma senha para acessar um aplicativo ou site</li>\n  <li>Digitar um e-mail com formato completo</li>\n  <li>Preencher um endereço com CEP e telefone</li>\n  <li>Escrever uma mensagem para um familiar ou amigo</li>\n  <li>Fazer uma pesquisa no Google</li>\n</ul>\n<p>É normal ir com calma nessas primeiras vezes - a fluência vem naturalmente, na medida em que essas ações se repetem no seu dia a dia.</p>"
+      },
+      {
+        "indice": 1,
+        "id": "2-15-1",
+        "titulo": "Erros comuns (e por que não se preocupar)",
+        "conteudo": "<p>Durante a prática, alguns deslizes são bastante comuns:</p>\n<ul>\n  <li>Apertar o Enter sem querer, no meio da digitação</li>\n  <li>Confundir o Enter com o Backspace</li>\n  <li>Soltar o Shift antes de apertar a letra desejada</li>\n  <li>Manter o Caps Lock ligado sem perceber</li>\n</ul>\n<p>São os erros mais comuns entre quem está aprendendo, e cada um deles tem uma solução simples, como já vimos ao longo deste módulo.</p>"
+      },
+      {
+        "indice": 2,
+        "id": "2-15-2",
+        "titulo": "Hora de juntar tudo numa frase só",
+        "conteudo": "<p>Uma frase curta já usa várias das teclas que você praticou até aqui: uma letra maiúscula no início (Shift), o espaço entre as palavras, e um símbolo de pontuação no final.</p>"
+      },
+      {
+        "indice": 3,
+        "id": "2-15-3",
+        "titulo": "Desafio: digite a frase",
+        "conteudo": ""
+      },
+      {
+        "indice": 4,
+        "id": "2-15-4",
+        "titulo": "Desafio: frase em maiúsculas",
+        "conteudo": ""
+      },
+      {
+        "indice": 5,
+        "id": "2-15-5",
+        "titulo": "Para lembrar",
+        "conteudo": "<ul>\n  <li>O teclado é organizado em letras, números, símbolos e teclas especiais.</li>\n  <li>Um toque leve nas teclas já é suficiente - não é preciso força.</li>\n  <li>Backspace apaga para trás; Delete apaga para frente ou apaga itens selecionados.</li>\n  <li>Shift escreve maiúsculas e símbolos superiores; Caps Lock mantém tudo em maiúsculas.</li>\n  <li>Os atalhos tornam tarefas mais rápidas, mas podem ser aprendidos com calma.</li>\n</ul>"
+      },
+      {
+        "indice": 6,
+        "id": "2-15-6",
+        "titulo": "Desafio: juntando tudo com e-mail",
+        "conteudo": ""
+      },
+      {
+        "indice": 7,
+        "id": "2-15-7",
+        "titulo": "Texto todo maiúsculo por engano",
+        "conteudo": ""
+      },
+      {
+        "indice": 8,
+        "id": "2-15-8",
+        "titulo": "O caminho da autonomia",
+        "conteudo": ""
+      }
+    ]
+  },
+  "3-1": {
+    "moduloId": "3",
+    "moduloTitulo": "Hardware e Periféricos",
+    "miniModuloId": "3-1",
+    "miniModuloTitulo": "O que é hardware",
+    "etapas": [
+      {
+        "indice": 0,
+        "id": "3-1-0",
+        "titulo": "Reconhecendo as peças",
+        "conteudo": "<p>Depois de conhecer o mouse e o teclado, chegou o momento de olhar para o computador como um todo. Você não precisa se tornar um técnico em informática - o objetivo é bem mais simples: reconhecer os equipamentos ao seu redor e ganhar confiança para usá-los no dia a dia.</p>\n<p>\"Hardware\" é o nome dado a tudo aquilo que é físico no computador: as peças que você pode tocar, ver e segurar - diferente do que aparece na tela, que chamamos de \"software\" (os programas e aplicativos).</p>\n<p>Pense assim: o hardware é como o corpo do computador, e os programas são como os pensamentos e ações que esse corpo realiza. O monitor, o teclado, o mouse, as caixas de som - tudo isso é hardware.</p>"
+      },
+      {
+        "indice": 1,
+        "id": "3-1-1",
+        "titulo": "Por que isso importa no dia a dia",
+        "conteudo": "<p>É comum ouvir alguém dizer \"meu computador não liga\" quando, na verdade, o problema é só um cabo solto ou o monitor apagado. Saber separar \"hardware\" (a peça física) de \"software\" (o programa) já ajuda bastante a entender onde pode estar um problema - e a explicar isso, com calma, pra quem for te ajudar.</p>"
+      },
+      {
+        "indice": 2,
+        "id": "3-1-2",
+        "titulo": "Hardware ou software?",
+        "conteudo": ""
+      }
+    ]
+  },
+  "3-2": {
+    "moduloId": "3",
+    "moduloTitulo": "Hardware e Periféricos",
+    "miniModuloId": "3-2",
+    "miniModuloTitulo": "Monitor",
+    "etapas": [
+      {
+        "indice": 0,
+        "id": "3-2-0",
+        "titulo": "A tela do computador",
+        "conteudo": "<p>O monitor é a tela onde aparecem as imagens, textos e vídeos - é por meio dele que \"conversamos\" visualmente com o computador.</p>\n<ul>\n  <li><strong>Ajustar a posição</strong>: vale a pena posicionar o monitor na altura dos olhos, para evitar desconforto no pescoço.</li>\n  <li><strong>Entender o que aparece na tela</strong>: ícones, janelas e textos mudam a cada clique ou tecla digitada.</li>\n</ul>"
+      },
+      {
+        "indice": 1,
+        "id": "3-2-1",
+        "titulo": "O botão que muita gente esquece",
+        "conteudo": "<p>Aqui vai um detalhe que confunde bastante gente no começo: o <strong>monitor tem um botão de ligar só dele</strong>, separado do botão que liga o gabinete (a caixa que guarda as peças internas).</p>\n<p>Isso quer dizer que às vezes o computador está ligado e funcionando normalmente, mas a tela aparece preta - porque só o monitor foi desligado, sem querer, ou nunca foi ligado. Antes de se preocupar com \"o computador quebrou\", vale sempre checar esse botãozinho primeiro.</p>"
+      },
+      {
+        "indice": 2,
+        "id": "3-2-2",
+        "titulo": "Encontre o botão de ligar do monitor",
+        "conteudo": ""
+      }
+    ]
+  },
+  "3-3": {
+    "moduloId": "3",
+    "moduloTitulo": "Hardware e Periféricos",
+    "miniModuloId": "3-3",
+    "miniModuloTitulo": "Gabinete/CPU",
+    "etapas": [
+      {
+        "indice": 0,
+        "id": "3-3-0",
+        "titulo": "O \"cérebro\" da máquina",
+        "conteudo": "<p>O gabinete (também chamado de CPU) é a caixa que guarda as peças internas do computador - é como o \"cérebro\" da máquina, guardado dentro de uma estrutura protegida, parecido com uma caixa de ferramentas fechada: você não precisa abrir pra usar, só reconhecer onde fica e o que tem por fora.</p>\n<p>Vale a pena reconhecer o botão de ligar, geralmente localizado na parte da frente do gabinete.</p>"
+      },
+      {
+        "indice": 1,
+        "id": "3-3-1",
+        "titulo": "Encontre o botão de ligar do gabinete",
+        "conteudo": ""
+      },
+      {
+        "indice": 2,
+        "id": "3-3-2",
+        "titulo": "Um cuidado importante",
+        "conteudo": "<p>Evite desligar o gabinete de forma incorreta, como tirando o cabo de energia diretamente da tomada enquanto o computador está em uso - é parecido com fechar um livro no meio de uma frase: o computador pode não ter terminado de \"guardar\" o que estava fazendo, e isso pode causar problemas.</p>\n<p>O jeito certo de desligar é sempre pelo menu do próprio sistema - isso é assunto do mini-tópico \"Botão de ligar e desligar\", mais adiante.</p>"
+      }
+    ]
+  },
+  "3-4": {
+    "moduloId": "3",
+    "moduloTitulo": "Hardware e Periféricos",
+    "miniModuloId": "3-4",
+    "miniModuloTitulo": "Mouse e teclado como periféricos",
+    "etapas": [
+      {
+        "indice": 0,
+        "id": "3-4-0",
+        "titulo": "Um novo ângulo sobre o que você já conhece",
+        "conteudo": "<p>Você já conhece bem o mouse e o teclado - agora vamos vê-los como <strong>periféricos</strong>: equipamentos que se conectam ao computador para permitir que você interaja com ele.</p>\n<ul>\n  <li>Ambos podem ser <strong>com fio</strong> (conectados por um cabo) ou <strong>sem fio</strong> (conectados por um sinal).</li>\n  <li>Se pararem de responder, muitas vezes o motivo é simples: um cabo solto, uma pilha descarregada ou uma conexão que precisa ser refeita.</li>\n</ul>"
+      },
+      {
+        "indice": 1,
+        "id": "3-4-1",
+        "titulo": "Pratique a conexão",
+        "conteudo": ""
+      },
+      {
+        "indice": 2,
+        "id": "3-4-2",
+        "titulo": "Parou de responder - e agora?",
+        "conteudo": ""
+      }
+    ]
+  },
+  "3-5": {
+    "moduloId": "3",
+    "moduloTitulo": "Hardware e Periféricos",
+    "miniModuloId": "3-5",
+    "miniModuloTitulo": "Caixas de som",
+    "etapas": [
+      {
+        "indice": 0,
+        "id": "3-5-0",
+        "titulo": "Reproduzindo os sons do computador",
+        "conteudo": "<p>As caixas de som são responsáveis por reproduzir os sons do computador - músicas, vídeos, mensagens de áudio e avisos do sistema.</p>\n<p>Elas se conectam por um cabo específico, ligado à saída de som, que costuma ficar na parte de trás ou na lateral do gabinete ou do notebook.</p>"
+      },
+      {
+        "indice": 1,
+        "id": "3-5-1",
+        "titulo": "Uma situação comum",
+        "conteudo": "<p>Imagine que você está numa videochamada com a família e ninguém consegue te ouvir direito, ou você não consegue ouvir quem está falando. Antes de se preocupar, vale sempre checar uma coisa simples primeiro: o volume não está baixo demais ou no mudo?</p>\n<p>No exercício a seguir, o som que você vai ouvir é real - vai tocar de verdade pelas caixas de som ou fone do seu computador, e os botões - e + realmente controlam o quanto ele toca alto ou baixo, exatamente como um controle de volume de verdade.</p>"
+      },
+      {
+        "indice": 2,
+        "id": "3-5-2",
+        "titulo": "Ajuste o volume",
+        "conteudo": ""
+      },
+      {
+        "indice": 3,
+        "id": "3-5-3",
+        "titulo": "Ninguém te ouve na chamada",
+        "conteudo": ""
+      }
+    ]
+  },
+  "3-6": {
+    "moduloId": "3",
+    "moduloTitulo": "Hardware e Periféricos",
+    "miniModuloId": "3-6",
+    "miniModuloTitulo": "Fones de ouvido",
+    "etapas": [
+      {
+        "indice": 0,
+        "id": "3-6-0",
+        "titulo": "Som de forma individual",
+        "conteudo": "<p>Os fones de ouvido cumprem uma função parecida com a das caixas de som, mas de forma mais individual e discreta - úteis, por exemplo, para ouvir uma videochamada tarde da noite sem incomodar quem está dormindo na casa.</p>\n<p>Existem diferentes tipos de conexão, dependendo do modelo: alguns usam um cabo com entrada específica (chamada de P2), outros se conectam sem fio, como o mouse e o teclado sem fio que você já conheceu.</p>"
+      },
+      {
+        "indice": 1,
+        "id": "3-6-1",
+        "titulo": "De olho no detalhe",
+        "conteudo": ""
+      },
+      {
+        "indice": 2,
+        "id": "3-6-2",
+        "titulo": "Encontre a entrada certa",
+        "conteudo": ""
+      }
+    ]
+  },
+  "3-7": {
+    "moduloId": "3",
+    "moduloTitulo": "Hardware e Periféricos",
+    "miniModuloId": "3-7",
+    "miniModuloTitulo": "Webcam e microfone",
+    "etapas": [
+      {
+        "indice": 0,
+        "id": "3-7-0",
+        "titulo": "Vendo e sendo ouvido",
+        "conteudo": "<p>A webcam é uma pequena câmera, geralmente localizada na parte de cima do monitor ou embutida no notebook, usada para videochamadas e fotos. O microfone capta o som da sua voz, permitindo que outras pessoas te ouçam durante uma chamada.</p>\n<p>Um cuidado importante: muitos aparelhos têm uma pequena luz que acende quando a câmera está em uso - vale a pena conferir essa luz antes de uma chamada, ou sempre que quiser ter mais tranquilidade sobre sua privacidade.</p>"
+      },
+      {
+        "indice": 1,
+        "id": "3-7-1",
+        "titulo": "Ache a luz indicadora",
+        "conteudo": ""
+      },
+      {
+        "indice": 2,
+        "id": "3-7-2",
+        "titulo": "Antes de uma chamada",
+        "conteudo": ""
+      }
+    ]
+  },
+  "3-8": {
+    "moduloId": "3",
+    "moduloTitulo": "Hardware e Periféricos",
+    "miniModuloId": "3-8",
+    "miniModuloTitulo": "Cabos e conexões",
+    "etapas": [
+      {
+        "indice": 0,
+        "id": "3-8-0",
+        "titulo": "Aos poucos, sem pressa",
+        "conteudo": "<p>Existem diversos tipos de cabos e conexões diferentes no universo dos computadores, cada um com uma função específica - não é necessário conhecer todos de uma vez. Aos poucos, à medida que for usando o computador no dia a dia, você vai naturalmente identificando qual cabo serve para qual finalidade, só de reparar no formato de cada conector.</p>"
+      },
+      {
+        "indice": 1,
+        "id": "3-8-1",
+        "titulo": "Reconhecendo cabos",
+        "conteudo": ""
+      }
+    ]
+  },
+  "3-9": {
+    "moduloId": "3",
+    "moduloTitulo": "Hardware e Periféricos",
+    "miniModuloId": "3-9",
+    "miniModuloTitulo": "Botão de ligar e desligar",
+    "etapas": [
+      {
+        "indice": 0,
+        "id": "3-9-0",
+        "titulo": "Ligando, desligando e reiniciando",
+        "conteudo": "<ul>\n  <li><strong>Ligar</strong>: aperte o botão indicado no gabinete ou notebook e aguarde o computador carregar - esse processo pode levar alguns instantes, e isso é normal.</li>\n  <li><strong>Desligar corretamente</strong>: o ideal é usar a opção de desligar disponível nos menus do sistema, em vez de apertar o botão físico ou tirar da tomada.</li>\n  <li><strong>Reiniciar</strong>: às vezes o computador precisa ser desligado e ligado novamente para resolver pequenos travamentos.</li>\n</ul>"
+      },
+      {
+        "indice": 1,
+        "id": "3-9-1",
+        "titulo": "Qual é a forma certa?",
+        "conteudo": ""
+      },
+      {
+        "indice": 2,
+        "id": "3-9-2",
+        "titulo": "Quando a tela \"trava\"",
+        "conteudo": "<p>Se a tela parar de responder por um tempo, vale esperar um pouco antes de tomar qualquer decisão mais drástica, como desligar na força - muitas vezes o computador só está processando algo mais pesado e volta a responder sozinho em instantes.</p>"
+      }
+    ]
+  },
+  "3-10": {
+    "moduloId": "3",
+    "moduloTitulo": "Hardware e Periféricos",
+    "miniModuloId": "3-10",
+    "miniModuloTitulo": "Internet e conexão",
+    "etapas": [
+      {
+        "indice": 0,
+        "id": "3-10-0",
+        "titulo": "Se conectando ao mundo",
+        "conteudo": "<p>A internet é o que permite ao computador se comunicar com outros lugares do mundo - enviar mensagens, pesquisar informações, assistir vídeos.</p>\n<ul>\n  <li><strong>Wi-Fi</strong>: conexão sem fio à internet, muito comum em casas e estabelecimentos.</li>\n  <li><strong>Cabo de rede</strong>: uma conexão física à internet, usada em alguns computadores de mesa.</li>\n  <li>O sistema costuma indicar se você está conectado com um ícone específico, geralmente num cantinho da tela.</li>\n</ul>"
+      },
+      {
+        "indice": 1,
+        "id": "3-10-1",
+        "titulo": "Reconhecendo o ícone de conexão",
+        "conteudo": ""
+      },
+      {
+        "indice": 2,
+        "id": "3-10-2",
+        "titulo": "Quando a conexão cai",
+        "conteudo": "<p>Se páginas não carregam ou mensagens não são enviadas, pode ser sinal de que a conexão caiu - algo que acontece até com os usuários mais experientes. Normalmente, esperar um instante ou reiniciar o roteador (o aparelho que distribui o Wi-Fi em casa) já resolve.</p>"
+      }
+    ]
+  },
+  "3-11": {
+    "moduloId": "3",
+    "moduloTitulo": "Hardware e Periféricos",
+    "miniModuloId": "3-11",
+    "miniModuloTitulo": "Cuidados com os equipamentos",
+    "etapas": [
+      {
+        "indice": 0,
+        "id": "3-11-0",
+        "titulo": "Pequenos cuidados que fazem diferença",
+        "conteudo": "<ul>\n  <li><strong>Limpeza básica</strong>: manter o equipamento livre de poeira, com um pano seco e macio.</li>\n  <li><strong>Não puxar os cabos com força</strong>: ao desconectar algo, segure pelo conector, não pelo fio.</li>\n  <li><strong>Não molhar os equipamentos</strong>: líquidos próximos ao computador merecem atenção redobrada.</li>\n  <li><strong>Organizar os fios</strong>: evita tropeços e conexões soltas sem querer.</li>\n  <li><strong>Transportar o notebook com cuidado</strong>: vale usar uma bolsa ou capa protetora.</li>\n</ul>"
+      },
+      {
+        "indice": 1,
+        "id": "3-11-1",
+        "titulo": "Esse hábito está certo?",
+        "conteudo": ""
+      },
+      {
+        "indice": 2,
+        "id": "3-11-2",
+        "titulo": "E esse outro?",
+        "conteudo": ""
+      },
+      {
+        "indice": 3,
+        "id": "3-11-3",
+        "titulo": "Mais um",
+        "conteudo": ""
+      },
+      {
+        "indice": 4,
+        "id": "3-11-4",
+        "titulo": "Para lembrar",
+        "conteudo": "<ul>\n  <li>Hardware é tudo o que é físico no computador: monitor, gabinete, teclado, mouse e outros equipamentos.</li>\n  <li>Cada periférico tem uma função própria, mas todos trabalham juntos.</li>\n  <li>Ligar, desligar e reiniciar de forma correta ajuda a evitar problemas.</li>\n  <li>Pequenos cuidados no dia a dia prolongam a vida do equipamento.</li>\n</ul>"
+      }
+    ]
+  }
+}

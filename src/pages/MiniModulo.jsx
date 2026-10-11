@@ -18,6 +18,7 @@ import { ProgressContext } from '../context/ProgressContext';
 import { getPerfisAluno, responderQuestao } from '../services/algorithmService';
 import { getTempoIdealMs } from '../utils/jogoTempoIdeal';
 import { reformularExplicacao } from '../services/aiService';
+import { sanitizarHtmlIA } from '../utils/sanitize';
 import { marcarMiniModuloConcluidoLocal } from '../services/achievementService';
 import { registrarConclusaoTeoria } from '../services/laboratorioService';
 import mosquinha from '../assets/mosquinha.png';
@@ -347,14 +348,17 @@ export default function MiniModulo() {
 
     try {
       const res = await reformularExplicacao({
-        contexto: etapa.conteudo,
-        titulo: `${modulo?.titulo || ''} - ${etapa?.titulo || ''}`,
+        miniModuloId,
+        etapaIndice: indiceSeguro,
+        etapaId: etapa.id,
+        moduleId: modulo?.id,
         nivel,
         motivo: 'duvida',
       });
 
       if (res?.explicacao) {
-        setExplicacoesIA((prev) => ({ ...prev, [indiceSeguro]: res.explicacao }));
+        const explicacaoSegura = sanitizarHtmlIA(res.explicacao);
+        setExplicacoesIA((prev) => ({ ...prev, [indiceSeguro]: explicacaoSegura }));
         setMostrarExplicacaoIA((prev) => ({ ...prev, [indiceSeguro]: true }));
       } else {
         throw new Error('Nenhuma explicação gerada');
@@ -515,7 +519,7 @@ export default function MiniModulo() {
                         </div>
                         <div
                             className={styles.aiConteudo}
-                            dangerouslySetInnerHTML={{ __html: explicacoesIA[indiceSeguro] }}
+                            dangerouslySetInnerHTML={{ __html: sanitizarHtmlIA(explicacoesIA[indiceSeguro]) }}
                         />
 
                         <div className={styles.aiActions}>

@@ -2,26 +2,23 @@ const express = require('express');
 const router = express.Router();
 const ai = require('../lib/geminiClient');
 const requireAuth = require('../middleware/auth');
+const { rateLimit, ipKeyGenerator } = require('express-rate-limit');
 const { buscarEtapa } = require('../lib/conteudoModulos');
 
-// Rate limiting em memória: máximo de 10 chamadas por minuto por usuário autenticado
-const rateLimitMap = new Map();
-const LIMITE_REQUISICOES = 10;
-const JANELA_MS = 60 * 1000;
-
-function verificarLimiteTaxa(userId) {
-  const agora = Date.now();
-  const registros = rateLimitMap.get(userId) || [];
-  const registrosValidos = registros.filter((timestamp) => agora - timestamp < JANELA_MS);
-
-  if (registrosValidos.length >= LIMITE_REQUISICOES) {
-    return false;
-  }
-
-  registrosValidos.push(agora);
-  rateLimitMap.set(userId, registrosValidos);
-  return true;
-}
+// Rate limiting específico para chamadas de IA (Gemini):
+// Limita a no máximo 5 requisições por minuto por usuário autenticado (ou por IP de fallback)
+const reformularLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 5,
+  keyGenerator: (req) => {
+    return req.user?.id ? `user_${req.user.id}` : ipKeyGenerator(req.ip);
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    error: 'Limite de solicitações de IA atingido. Aguarde 1 minuto antes de solicitar outra reformulação.',
+  },
+});
 
 /**
  * Remove tags HTML simples para limpar o contexto original antes de enviar ao prompt
@@ -40,16 +37,9 @@ function limparHtml(html) {
 
 // POST /api/conteudo/reformular
 // Reformula a explicação de uma etapa com analogias do cotidiano e tom acolhedor da Ceci.
-// Exige autenticação, aplica limite de taxa e busca o conteúdo estático no servidor,
-// impedindo manipulações e Prompt Injection por clientes maliciosos.
-router.post('/reformular', requireAuth, async (req, res) => {
-  const userId = req.user?.id || req.ip;
-
-  if (!verificarLimiteTaxa(userId)) {
-    return res.status(429).json({
-      error: 'Muitas solicitações de explicação. Aguarde um momento antes de tentar novamente.',
-    });
-  }
+// Exige autenticação (requireAuth) e limita chamadas por usuário (reformularLimiter),
+// buscando o conteúdo estático no servidor para impedir manipulações e custos descontrolados.
+router.post('/reformular', requireAuth, reformularLimiter, async (req, res) => {
 
   const { miniModuloId, etapaIndice, etapaId, moduleId, nivel, motivo } = req.body;
 

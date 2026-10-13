@@ -544,7 +544,7 @@ export default function MiniModulo() {
                       <>
                         <div
                             className={styles.etapaConteudo}
-                            dangerouslySetInnerHTML={{ __html: etapa.conteudo }}
+                            dangerouslySetInnerHTML={{ __html: sanitizarHtmlIA(etapa.conteudo) }}
                         />
 
                         <div className={styles.aiTriggerContainer}>

@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import Entrada    from './pages/Entrada';
 import Login      from './pages/Login';
+import RecuperarSenha from './pages/RecuperarSenha';
 import Cadastro   from './pages/Cadastro';
 import Dashboard  from './pages/Dashboard';
 import Modulos    from './pages/Modulos';
@@ -61,6 +62,9 @@ function App() {
                 {/* Login: acessível diretamente também (ex: link "Já tem
                   conta?" no fim do onboarding, ou favoritos antigos) */}
                 <Route path="/login"     element={<Login />} />
+
+                {/* Recuperação de senha com mensagem acolhedora */}
+                <Route path="/recuperar-senha" element={<RecuperarSenha />} />
 
                 {/* Boas-vindas: apresentação da Ceci + diagnóstico inicial.
                   Acesso direto continua livre (ex: repetir o onboarding

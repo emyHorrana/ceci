@@ -1,5 +1,5 @@
 import { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { UserContext } from '../context/UserContext';
 import { ButtonPrimary } from '../components/Buttons/ButtonPrimary';
 import { TextInput } from '../components/Forms/TextInput';
@@ -113,9 +113,9 @@ export default function Login() {
           />
 
           <div className={styles.formLinks}>
-            <a href="/recuperar-senha" className={styles.linkSmall}>
+            <Link to="/recuperar-senha" className={styles.linkSmall}>
               Esqueceu a senha?
-            </a>
+            </Link>
           </div>
 
           {error && (
@@ -138,7 +138,7 @@ export default function Login() {
         <div className={authStyles.footer}>
           <p>
             Não tem conta?
-            <a href="/cadastro" className={authStyles.link}>Criar cadastro</a>
+            <Link to="/cadastro" className={authStyles.link}>Criar cadastro</Link>
           </p>
         </div>
       </AuthLayout>

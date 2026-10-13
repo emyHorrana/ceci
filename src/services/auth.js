@@ -35,6 +35,16 @@ export async function getCurrentUser() {
   return data?.user ?? null;
 }
 
+// Envia e-mail de instruções para redefinição de senha.
+export async function recuperarSenha(email) {
+  const redirectTo = typeof window !== 'undefined' ? `${window.location.origin}/login` : undefined;
+  const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo,
+  });
+  if (error) throw new Error(error.message);
+  return data;
+}
+
 // Escuta mudanças de sessão (login, logout, refresh de token, sessão
 // restaurada do localStorage ao abrir/recarregar a página, etc).
 // Chama callback(user) sempre que o estado de autenticação mudar.

@@ -37,9 +37,15 @@ const MODULOS_EM_BREVE = [
 ];
 
 export default function Modulos() {
-  const { user } = useContext(UserContext);
+  const { user, initializing } = useContext(UserContext);
   const navigate = useNavigate();
   const [origemPorUnidade, setOrigemPorUnidade] = useState({});
+
+  useEffect(() => {
+    if (!initializing && !user) {
+      navigate('/login', { replace: true });
+    }
+  }, [initializing, user, navigate]);
 
   useEffect(() => {
     // Mesmo cuidado do MiniModulo.jsx/Dashboard.jsx/Perfil.jsx: conta
@@ -53,6 +59,14 @@ export default function Modulos() {
         .catch((err) => console.error('Erro ao buscar origem das Unidades:', err));
     return () => { ativo = false; };
   }, [user?.id]);
+
+  if (initializing || !user) {
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100svh' }}>
+        Carregando...
+      </div>
+    );
+  }
 
   const irParaModulo = (modulo) => {
     const primeiroMiniModulo = modulo.miniModulos[0];

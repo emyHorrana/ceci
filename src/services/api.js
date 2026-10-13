@@ -9,8 +9,14 @@
 import axios from 'axios';
 import { supabase } from '../lib/supabaseClient';
 
-// URL base da API: usa variável de ambiente ou localhost em desenvolvimento
-const API_BASE_URL = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '/api' : 'http://localhost:3001/api');
+// URL base da API: usa variável de ambiente ou localhost em desenvolvimento.
+// Ignora se VITE_API_URL apontar erroneamente para a URL do Supabase (.supabase.co),
+// pois as rotas da API do CECI são servidas pelo Express (local ou /api na Vercel).
+const rawApiUrl = import.meta.env.VITE_API_URL;
+const isSupabaseUrl = typeof rawApiUrl === 'string' && rawApiUrl.includes('supabase.co');
+const API_BASE_URL = (rawApiUrl && !isSupabaseUrl)
+  ? rawApiUrl
+  : (import.meta.env.PROD ? '/api' : 'http://localhost:3001/api');
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,

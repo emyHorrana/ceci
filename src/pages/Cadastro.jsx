@@ -17,8 +17,9 @@ export default function Cadastro() {
   // Se a pessoa passou pelo fluxo de /boas-vindas antes de chegar aqui,
   // o nome que ela digitou lá já fica pré-preenchido - não faz sentido
   // pedir de novo algo que ela já contou pra Ceci.
-  const [onboarding] = useLocalStorage('ceci_onboarding', {});
-  const [nome, setNome] = useState(onboarding?.nome?.meta?.valor || '');
+  const [onboarding, setOnboarding] = useLocalStorage('ceci_onboarding', {});
+  const nomeOnboarding = onboarding?.nome?.meta?.valor || (typeof onboarding?.nome === 'string' ? onboarding?.nome : '');
+  const [nome, setNome] = useState(nomeOnboarding || '');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -28,6 +29,16 @@ export default function Cadastro() {
   const { register, user, initializing } = useContext(UserContext);
   const navigate = useNavigate();
 
+  // Validação estrita: exige que o usuário tenha respondido as etapas do onboarding
+  // (familiaridade com mouse, teclado, diagnóstico com nome e conclusão).
+  const temDiagnosticoValido = Boolean(
+    onboarding?.concluido &&
+    onboarding?.prontoParaCadastro &&
+    onboarding?.familiaridadeMouse &&
+    onboarding?.dominios?.teclado &&
+    nomeOnboarding.trim()
+  );
+
   // Se já estiver logado, vai direto pro dashboard
   useEffect(() => {
     if (!initializing && user) {
@@ -35,15 +46,15 @@ export default function Cadastro() {
     }
   }, [initializing, user, navigate]);
 
-  // Se ainda não concluiu o diagnóstico de boas-vindas, não deve se registrar direto:
-  // o algoritmo adaptativo precisa dos sinais para calibrar a trilha e recomendações.
+  // Se ainda não realizou o diagnóstico completo de boas-vindas, barra o cadastro e redireciona.
+  // Sem isso, o algoritmo adaptativo não possui sinais iniciais e gera inconsistências.
   useEffect(() => {
-    if (!initializing && !user && !onboarding?.concluido) {
+    if (!initializing && !user && !temDiagnosticoValido) {
       navigate('/boas-vindas', { replace: true });
     }
-  }, [initializing, user, onboarding?.concluido, navigate]);
+  }, [initializing, user, temDiagnosticoValido, navigate]);
 
-  if (initializing || user || !onboarding?.concluido) return null;
+  if (initializing || user || !temDiagnosticoValido) return null;
 
   const validate = () => {
     if (!nome.trim()) return 'Por favor, informe seu nome.';
@@ -95,6 +106,12 @@ export default function Cadastro() {
       flushOnboardingSignals(newUser.id).catch((err) => {
         console.error('Erro ao sincronizar sinais do onboarding:', err);
       });
+
+      // Consome a autorização para que um novo cadastro futuro não pule o diagnóstico
+      setOnboarding((prev) => ({
+        ...prev,
+        prontoParaCadastro: false,
+      }));
 
       // Se comprovou pelo algoritmo no onboarding, os jogos no laboratório se mantêm desbloqueados por padrão
       try {

@@ -37,9 +37,6 @@ export default function Login() {
       }
       const loggedInUser = await login(email, password);
 
-      // Usuário com conta ativa: garante flag de onboarding concluído
-      setOnboarding((prev) => ({ ...prev, concluido: true }));
-
       // Se a pessoa passou por /boas-vindas de novo neste navegador (ex:
       // limpou os dados) e tinha sinais do onboarding ainda não
       // enviados, mas optou por Login em vez de Cadastro, esses sinais
@@ -168,11 +165,8 @@ export default function Login() {
         <div className={authStyles.footer}>
           <p>
             Não tem conta?{' '}
-            <Link
-              to={onboarding?.concluido ? '/cadastro' : '/boas-vindas'}
-              className={authStyles.link}
-            >
-              {onboarding?.concluido ? 'Criar cadastro' : 'Começar pelas boas-vindas'}
+            <Link to="/boas-vindas" className={authStyles.link}>
+              Começar pelas boas-vindas
             </Link>
           </p>
         </div>

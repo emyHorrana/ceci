@@ -803,11 +803,12 @@ export default function BoasVindas() {
                   <ButtonPrimary
                       size="large"
                       onClick={() => {
-                        // Marca o onboarding como concluído assim que a pessoa
-                        // termina o diagnóstico, mesmo que ainda não tenha criado a
-                        // conta - assim ela não vê o onboarding de novo se voltar
-                        // depois (cai direto no Login). Ver pages/Entrada.jsx.
-                        setOnboarding((atual) => ({ ...atual, concluido: true }));
+                        // Marca o onboarding como concluído e autoriza o cadastro após responder o diagnóstico
+                        setOnboarding((atual) => ({
+                          ...atual,
+                          concluido: true,
+                          prontoParaCadastro: true,
+                        }));
                         irPara('concluido');
                       }}
                   >

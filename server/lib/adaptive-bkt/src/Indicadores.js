@@ -4,12 +4,16 @@
 class Indicadores {
   static calcularVelocidade(tempoIdeal, tempoReal) {
     if (!tempoReal || tempoReal <= 0) return 0;
-    return Indicadores.normalizar(tempoIdeal / tempoReal, 0, 2);
+    // Piso de segurança de 300ms para tempoReal para evitar multiplicação absurda por bot ou cliente manipulado
+    const tempoAjustado = Math.max(tempoReal, 300);
+    return Indicadores.normalizar(tempoIdeal / tempoAjustado, 0, 2);
   }
 
   static calcularFoco(trocasDeAba, tempoInativo, abandonado) {
-    const penalidadeAbas = trocasDeAba * 0.05;
-    const penalidadeInatividade = tempoInativo * 0.02;
+    const abas = Math.max(0, trocasDeAba || 0);
+    const inativo = Math.max(0, tempoInativo || 0);
+    const penalidadeAbas = abas * 0.05;
+    const penalidadeInatividade = inativo * 0.02;
     const penalidadeAbandono = abandonado ? 0.15 : 0;
     const foco = 1 - penalidadeAbas - penalidadeInatividade - penalidadeAbandono;
     return Indicadores.normalizar(foco, 0, 1);
@@ -29,7 +33,7 @@ class Indicadores {
     // pra quem não teve chance de mostrar persistência; o bônus abaixo
     // só se aplica a quem de fato tentou de novo depois de errar.
     const base = 0.3;
-    const bonus = Math.min(tentativasAposErro, 3) * 0.1; // até +0.3 por insistir
+    const bonus = Math.min(Math.max(0, tentativasAposErro || 0), 3) * 0.1; // até +0.3 por insistir
     return Indicadores.normalizar(base + bonus, 0, 1);
   }
 

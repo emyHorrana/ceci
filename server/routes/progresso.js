@@ -3,15 +3,14 @@ const router = express.Router();
 const supabase = require('../lib/supabaseClient');
 const requireAuth = require('../middleware/auth');
 
+const { validate } = require('../middleware/validate');
+const { salvarProgressoSchema, salvarConquistaSchema } = require('../lib/validationSchemas');
+
 // Salvar/atualizar progresso
 // Usa req.user.id do token autenticado, ignorando qualquer usuario_id vindo do body.
-router.post('/', requireAuth, async (req, res) => {
+router.post('/', requireAuth, validate({ body: salvarProgressoSchema }), async (req, res) => {
   const usuario_id = req.user.id;
   const { licao_id, progress, completed } = req.body;
-
-  if (!licao_id) {
-    return res.status(400).json({ error: 'licao_id é obrigatório' });
-  }
 
   const { data, error } = await supabase
     .from('progresso_usuario')
@@ -25,7 +24,10 @@ router.post('/', requireAuth, async (req, res) => {
     .select()
     .single();
 
-  if (error) return res.status(500).json({ error: error.message });
+  if (error) {
+    console.error('[POST /api/progresso] Erro no Supabase ao salvar progresso:', error);
+    return res.status(500).json({ error: 'Erro interno ao salvar progresso.' });
+  }
   res.json({ success: true, data });
 });
 
@@ -66,14 +68,9 @@ function calculateStreakFromDates(dates) {
 
 // Salvar/desbloquear conquista do usuário
 // Usa req.user.id do token autenticado, ignorando qualquer usuario_id vindo do body.
-router.post('/conquistas', requireAuth, async (req, res) => {
+router.post('/conquistas', requireAuth, validate({ body: salvarConquistaSchema }), async (req, res) => {
   const usuario_id = req.user.id;
   const { title } = req.body;
-
-  if (!title) {
-    return res.status(400).json({ error: 'title é obrigatório' });
-  }
-
   const cleanTitle = title.trim();
 
   // Verifica se o usuário já tem essa conquista desbloqueada
@@ -85,7 +82,8 @@ router.post('/conquistas', requireAuth, async (req, res) => {
     .maybeSingle();
 
   if (findError && findError.code !== 'PGRST116') {
-    return res.status(500).json({ error: findError.message });
+    console.error('[POST /api/progresso/conquistas] Erro no Supabase ao verificar conquista existente:', findError);
+    return res.status(500).json({ error: 'Erro interno ao verificar conquista.' });
   }
 
   if (existente) {
@@ -102,7 +100,10 @@ router.post('/conquistas', requireAuth, async (req, res) => {
     .select()
     .single();
 
-  if (error) return res.status(500).json({ error: error.message });
+  if (error) {
+    console.error('[POST /api/progresso/conquistas] Erro no Supabase ao inserir conquista:', error);
+    return res.status(500).json({ error: 'Erro interno ao salvar conquista.' });
+  }
   res.json({ success: true, alreadyUnlocked: false, data });
 });
 
@@ -116,7 +117,10 @@ router.get(['/:usuarioId', '/'], requireAuth, async (req, res) => {
     .select('*, licoes(title, emoji)')
     .eq('usuario_id', usuarioId);
 
-  if (error) return res.status(500).json({ error: error.message });
+  if (error) {
+    console.error('[GET /api/progresso] Erro no Supabase ao buscar progresso do usuário:', error);
+    return res.status(500).json({ error: 'Erro interno ao buscar progresso.' });
+  }
 
   const { data: conquistas } = await supabase
     .from('conquistas')

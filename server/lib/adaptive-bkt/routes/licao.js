@@ -1,12 +1,31 @@
 const express = require('express');
 const router = express.Router();
+const { rateLimit, ipKeyGenerator } = require('express-rate-limit');
 const supabaseModule = require('../../supabaseClient');
 const supabase = supabaseModule.supabase || supabaseModule;
 const { BKTAdaptativo, FilaDePendencias, Classificador, Recomendacao } = require('../index');
 const unidades = require('../data/unidades');
 const requireAuth = require('../../../middleware/auth');
+const { validate } = require('../../../middleware/validate');
+const { responderLicaoSchema, simularLicaoSchema } = require('../../validationSchemas');
 
-router.post('/responder', requireAuth, async (req, res) => {
+// Rate limiting específico para envio de respostas no algoritmo adaptativo
+// Limita a no máximo 30 respostas por minuto por usuário autenticado (ou por IP de fallback)
+// para impedir robôs ou loops de script de forjarem progresso em massa.
+const responderLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 30,
+  keyGenerator: (req) => {
+    return req.user?.id ? `user_responder_${req.user.id}` : ipKeyGenerator(req.ip);
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    error: 'Muitas respostas enviadas em curto intervalo. Aguarde alguns instantes antes de enviar novamente.',
+  },
+});
+
+router.post('/responder', requireAuth, responderLimiter, validate({ body: responderLicaoSchema }), async (req, res) => {
   try {
     const {
       correto,
@@ -22,14 +41,73 @@ router.post('/responder', requireAuth, async (req, res) => {
     // Usa req.user.id do token autenticado, ignorando qualquer userId do body
     const userId = req.user.id;
 
-    if (!moduleId) {
-      return res.status(400).json({ error: 'moduleId é obrigatório.' });
+    // --- PROTEÇÕES ANTI-FORJAMENTO DE PROGRESSO (ANTI-CHEAT) ---
+
+    // 1. Limiar fisiológico mínimo de reação humana
+    // Um aluno humano genuíno precisa ver, ler o enunciado e realizar uma ação motora na tela.
+    // Acertos com tempo de resposta menor que 250ms são fisiologicamente impossíveis e indicam manipulação/bot.
+    if (correto === true && !dadosEvento.abandonado && dadosEvento.tempoResposta < 250) {
+      return res.status(400).json({
+        error: 'Tempo de resposta inverossímil (abaixo do limiar fisiológico humano plausível).',
+      });
     }
-    if (!etapaId) {
-      return res.status(400).json({ error: 'etapaId é obrigatório.' });
+
+    // 2. Coerência entre tempo inativo e tempo total da questão
+    // O tempo inativo não pode exceder a duração total da resposta.
+    if (dadosEvento.tempoInativo > (dadosEvento.tempoResposta / 1000) + 0.5) {
+      return res.status(400).json({
+        error: 'Tempo inativo registrado não pode ser maior que o tempo total da resposta.',
+      });
     }
-    if (correto === undefined || !dadosEvento || !tempoIdeal) {
-      return res.status(400).json({ error: 'correto, dadosEvento e tempoIdeal são obrigatórios.' });
+
+    // 3. Coerência nas tentativas
+    // Se acertou, o total de tentativas deve ser maior que tentativas após erro.
+    if (correto === true && tentativasAposErro >= tentativas) {
+      return res.status(400).json({
+        error: 'Incoerência nas tentativas registradas.',
+      });
+    }
+    if (correto === false && tentativasAposErro > tentativas) {
+      return res.status(400).json({
+        error: 'Incoerência nas tentativas registradas.',
+      });
+    }
+
+    // 4. Validação curricular do módulo e etapa
+    const unidadeValida = unidades.find((u) => u.id === moduleId);
+    if (!unidadeValida) {
+      return res.status(400).json({ error: 'Módulo não reconhecido no currículo oficial.' });
+    }
+
+    const isCheckpoint = etapaId === `${moduleId}#checkpoint`;
+    const isOnboarding = (etapaId.startsWith('boas-vindas#') || etapaId.startsWith('boas-vindas-verificacao#')) && unidadeValida.tier === 0;
+    const [miniModChave] = etapaId.split('#');
+    const isMiniModulo = (unidadeValida.miniModulos || []).includes(miniModChave);
+
+    if (!isCheckpoint && !isOnboarding && !isMiniModulo) {
+      return res.status(400).json({ error: 'A etapa informada não pertence ao módulo especificado.' });
+    }
+
+    // 5. Verificação de integridade de pré-requisitos (impede saltar direto para unidades avançadas)
+    if (unidadeValida.prerequisitos && unidadeValida.prerequisitos.length > 0) {
+      const { data: prereqPerfis, error: errPrereq } = await supabase
+        .from('perfis_aluno')
+        .select('module_id, dominio')
+        .eq('user_id', userId)
+        .in('module_id', unidadeValida.prerequisitos);
+
+      if (errPrereq) {
+        console.error('[POST /api/licao/responder] Erro no Supabase ao verificar pré-requisitos:', errPrereq);
+        return res.status(500).json({ error: 'Erro interno ao validar pré-requisitos do módulo.' });
+      }
+
+      const modulosTentados = new Set((prereqPerfis || []).map((p) => p.module_id));
+      const faltamPrereqs = unidadeValida.prerequisitos.some((pId) => !modulosTentados.has(pId));
+      if (faltamPrereqs) {
+        return res.status(403).json({
+          error: 'Módulo bloqueado. Conclua os módulos pré-requisitos antes de registrar progresso.',
+        });
+      }
     }
 
     const bkt = new BKTAdaptativo({ supabase, userId, moduleId });
@@ -48,7 +126,7 @@ router.post('/responder', requireAuth, async (req, res) => {
     res.json(resultado);
   } catch (err) {
     console.error('[POST /api/licao/responder]', err);
-    res.status(500).json({ error: 'Erro ao processar resposta.' });
+    res.status(500).json({ error: 'Erro ao processar resposta da lição.' });
   }
 });
 
@@ -64,7 +142,7 @@ router.post('/responder', requireAuth, async (req, res) => {
   em BKTAdaptativo.js), em vez de confiar cegamente numa autodeclaração
   "já sei usar mouse/teclado" - ver BoasVindas.jsx.
  */
-router.post('/simular', (req, res) => {
+router.post('/simular', validate({ body: simularLicaoSchema }), (req, res) => {
   try {
     const {
       correto,
@@ -78,10 +156,6 @@ router.post('/simular', (req, res) => {
       questoesAnteriores,
       etapaId,
     } = req.body;
-
-    if (correto === undefined || !dadosEvento || !tempoIdeal) {
-      return res.status(400).json({ error: 'correto, dadosEvento e tempoIdeal são obrigatórios.' });
-    }
 
     const resultado = BKTAdaptativo.calcular({
       correto,
@@ -99,7 +173,7 @@ router.post('/simular', (req, res) => {
     res.json({ ...resultado, limiar: FilaDePendencias.LIMIAR_PADRAO });
   } catch (err) {
     console.error('[POST /api/licao/simular]', err);
-    res.status(500).json({ error: 'Erro ao simular questão.' });
+    res.status(500).json({ error: 'Erro ao simular questão da lição.' });
   }
 });
 

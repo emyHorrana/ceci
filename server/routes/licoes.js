@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const supabase = require('../lib/supabaseClient');
 const requireAuth = require('../middleware/auth');
+const { validate } = require('../middleware/validate');
+const { licaoIdParamSchema } = require('../lib/validationSchemas');
 
 // Listar todas as lições com progresso do usuário autenticado
 // Ignora usuario_id da query e utiliza req.user.id do token autenticado.
@@ -13,7 +15,10 @@ router.get('/', requireAuth, async (req, res) => {
     .select('*')
     .order('created_at');
 
-  if (licaoError) return res.status(500).json({ error: licaoError.message });
+  if (licaoError) {
+    console.error('[GET /api/licoes] Erro no Supabase ao listar lições:', licaoError);
+    return res.status(500).json({ error: 'Erro interno ao buscar lições.' });
+  }
 
   // Busca o progresso do usuário logado
   let progressos = [];
@@ -48,7 +53,7 @@ router.get('/', requireAuth, async (req, res) => {
 });
 
 // Buscar etapas de uma lição específica
-router.get('/:id/etapas', requireAuth, async (req, res) => {
+router.get('/:id/etapas', requireAuth, validate({ params: licaoIdParamSchema }), async (req, res) => {
   const { id } = req.params;
 
   const { data, error } = await supabase
@@ -57,13 +62,16 @@ router.get('/:id/etapas', requireAuth, async (req, res) => {
     .eq('licao_id', id)
     .order('ordem');
 
-  if (error) return res.status(500).json({ error: error.message });
+  if (error) {
+    console.error('[GET /api/licoes/:id/etapas] Erro no Supabase:', error);
+    return res.status(500).json({ error: 'Erro interno ao buscar etapas da lição.' });
+  }
   res.json(data);
 });
 
 // Marcar lição como concluída
 // Usa req.user.id do token autenticado, ignorando qualquer usuario_id vindo do body.
-router.post('/:id/concluir', requireAuth, async (req, res) => {
+router.post('/:id/concluir', requireAuth, validate({ params: licaoIdParamSchema }), async (req, res) => {
   const { id } = req.params;
   const usuario_id = req.user.id;
 
@@ -79,7 +87,10 @@ router.post('/:id/concluir', requireAuth, async (req, res) => {
     .select()
     .single();
 
-  if (error) return res.status(500).json({ error: error.message });
+  if (error) {
+    console.error('[POST /api/licoes/:id/concluir] Erro no Supabase:', error);
+    return res.status(500).json({ error: 'Erro interno ao registrar conclusão da lição.' });
+  }
   res.json({ success: true, data });
 });
 

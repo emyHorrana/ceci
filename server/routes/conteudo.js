@@ -35,33 +35,40 @@ function limparHtml(html) {
     .trim();
 }
 
+const { validate } = require('../middleware/validate');
+const { reformularConteudoSchema } = require('../lib/validationSchemas');
+
 // POST /api/conteudo/reformular
 // Reformula a explicação de uma etapa com analogias do cotidiano e tom acolhedor da Ceci.
-// Exige autenticação (requireAuth) e limita chamadas por usuário (reformularLimiter),
+// Exige autenticação (requireAuth), valida esquema de entrada (validate) e limita chamadas por usuário (reformularLimiter),
 // buscando o conteúdo estático no servidor para impedir manipulações e custos descontrolados.
-router.post('/reformular', requireAuth, reformularLimiter, async (req, res) => {
+router.post(
+  '/reformular',
+  requireAuth,
+  reformularLimiter,
+  validate({ body: reformularConteudoSchema }),
+  async (req, res) => {
+    const { miniModuloId, etapaIndice, etapaId, moduleId, nivel, motivo } = req.body;
 
-  const { miniModuloId, etapaIndice, etapaId, moduleId, nivel, motivo } = req.body;
-
-  // Busca o conteúdo seguro e auditado diretamente do servidor
-  const etapaInfo = buscarEtapa({
-    miniModuloId: miniModuloId || moduleId,
-    etapaIndice,
-    etapaId,
-  });
-
-  if (!etapaInfo || !etapaInfo.conteudo) {
-    return res.status(400).json({
-      error: 'Etapa não encontrada no currículo oficial. Informe miniModuloId e etapaIndice válidos.',
+    // Busca o conteúdo seguro e auditado diretamente do servidor
+    const etapaInfo = buscarEtapa({
+      miniModuloId: miniModuloId || moduleId,
+      etapaIndice,
+      etapaId,
     });
-  }
 
-  const contextoLimpo = limparHtml(etapaInfo.conteudo);
-  const nivelAluno = nivel || 'Iniciante';
-  const tituloEtapa = etapaInfo.titulo;
+    if (!etapaInfo || !etapaInfo.conteudo) {
+      return res.status(400).json({
+        error: 'Etapa não encontrada no currículo oficial. Informe miniModuloId e etapaIndice válidos.',
+      });
+    }
 
-  try {
-    const prompt = `Você é a Ceci, uma professora virtual calorosa, paciente e encorajadora da plataforma CECI, voltada para inclusão digital de adultos e pessoas idosas que estão tendo o primeiro contato com computadores.
+    const contextoLimpo = limparHtml(etapaInfo.conteudo);
+    const nivelAluno = nivel || 'Iniciante';
+    const tituloEtapa = etapaInfo.titulo;
+
+    try {
+      const prompt = `Você é a Ceci, uma professora virtual calorosa, paciente e encorajadora da plataforma CECI, voltada para inclusão digital de adultos e pessoas idosas que estão tendo o primeiro contato com computadores.
 
 O aluno está estudando o tópico: "${tituloEtapa}".
 Nível de domínio atual do aluno: ${nivelAluno}.
@@ -83,35 +90,35 @@ Instruções para a sua resposta:
 4. Termine com uma frase curta de incentivo e carinho.
 5. Formate o texto usando HTML simples (<p>, <strong> para termos-chave). NÃO inclua blocos de código com crases (\`\`\`html), nem tags <script>, <img>, <iframe> ou tags estruturais <html>/<body>.`;
 
-    const modelName = process.env.GEMINI_MODEL || 'gemini-3.5-flash-lite';
-    const response = await ai.models.generateContent({
-      model: modelName,
-      contents: prompt,
-    });
+      const modelName = process.env.GEMINI_MODEL || 'gemini-3.5-flash-lite';
+      const response = await ai.models.generateContent({
+        model: modelName,
+        contents: prompt,
+      });
 
-    let explicacaoGerada = response.text || '';
+      let explicacaoGerada = response.text || '';
 
-    // Limpa eventuais blocos de código markdown que o modelo possa ter colocado
-    explicacaoGerada = explicacaoGerada
-      .replace(/^```html\s*/i, '')
-      .replace(/^```\s*/i, '')
-      .replace(/```$/g, '')
-      .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
-      .trim();
+      // Limpa eventuais blocos de código markdown que o modelo possa ter colocado
+      explicacaoGerada = explicacaoGerada
+        .replace(/^```html\s*/i, '')
+        .replace(/^```\s*/i, '')
+        .replace(/```$/g, '')
+        .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+        .trim();
 
-    res.json({
-      success: true,
-      explicacao: explicacaoGerada,
-      titulo: tituloEtapa,
-      nivel: nivelAluno,
-    });
-  } catch (err) {
-    console.error('[POST /api/conteudo/reformular] Erro na API do Gemini:', err);
-    res.status(500).json({
-      error: 'Não foi possível gerar a explicação personalizada no momento.',
-      detalhes: err.message,
-    });
+      res.json({
+        success: true,
+        explicacao: explicacaoGerada,
+        titulo: tituloEtapa,
+        nivel: nivelAluno,
+      });
+    } catch (err) {
+      console.error('[POST /api/conteudo/reformular] Erro na API do Gemini:', err);
+      res.status(500).json({
+        error: 'Não foi possível gerar a explicação personalizada no momento.',
+      });
+    }
   }
-});
+);
 
 module.exports = router;

@@ -64,6 +64,33 @@ app.use('/api/licoes',    require('./routes/licoes'));
 app.use('/api/progresso', require('./routes/progresso'));
 app.use('/api/conteudo',  require('./routes/conteudo'));
 
+// 404 para rotas de API não reconhecidas
+app.use('/api', (req, res) => {
+  res.status(404).json({ error: 'Rota da API não encontrada.' });
+});
+
+// 5. Middleware global de tratamento de erros
+// Captura erros de parsing de JSON, CORS e exceções não tratadas, impedindo vazamento de stack traces e detalhes internos.
+app.use((err, req, res, next) => {
+  console.error('[Servidor CECI - Erro Global]', err);
+
+  if (res.headersSent) {
+    return next(err);
+  }
+
+  if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
+    return res.status(400).json({ error: 'Formato JSON inválido no corpo da requisição.' });
+  }
+
+  if (err.message && err.message.includes('CORS')) {
+    return res.status(403).json({ error: err.message });
+  }
+
+  res.status(err.status || 500).json({
+    error: 'Erro interno do servidor. Tente novamente mais tarde.',
+  });
+});
+
 // Na Vercel o arquivo é importado por api/index.js como serverless
 // function - quem escuta é a plataforma, não o app.listen daqui.
 // Localmente (npm run dev) continua subindo o servidor normal.

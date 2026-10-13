@@ -1,5 +1,5 @@
-import { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useContext, useEffect } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { UserContext } from '../context/UserContext';
 import { ButtonPrimary } from '../components/Buttons/ButtonPrimary';
 import { TextInput } from '../components/Forms/TextInput';
@@ -25,8 +25,25 @@ export default function Cadastro() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { register } = useContext(UserContext);
+  const { register, user, initializing } = useContext(UserContext);
   const navigate = useNavigate();
+
+  // Se já estiver logado, vai direto pro dashboard
+  useEffect(() => {
+    if (!initializing && user) {
+      navigate('/dashboard', { replace: true });
+    }
+  }, [initializing, user, navigate]);
+
+  // Se ainda não concluiu o diagnóstico de boas-vindas, não deve se registrar direto:
+  // o algoritmo adaptativo precisa dos sinais para calibrar a trilha e recomendações.
+  useEffect(() => {
+    if (!initializing && !user && !onboarding?.concluido) {
+      navigate('/boas-vindas', { replace: true });
+    }
+  }, [initializing, user, onboarding?.concluido, navigate]);
+
+  if (initializing || user || !onboarding?.concluido) return null;
 
   const validate = () => {
     if (!nome.trim()) return 'Por favor, informe seu nome.';
@@ -211,9 +228,9 @@ export default function Cadastro() {
           <div className={authStyles.footer}>
             <p>
               Já tem conta?{' '}
-              <a href="/login" className={authStyles.link}>
+              <Link to="/login" className={authStyles.link}>
                 Fazer login
-              </a>
+              </Link>
             </p>
           </div>
         </div>

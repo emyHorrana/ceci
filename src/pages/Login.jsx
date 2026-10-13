@@ -1,8 +1,9 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { UserContext } from '../context/UserContext';
 import { ButtonPrimary } from '../components/Buttons/ButtonPrimary';
 import { TextInput } from '../components/Forms/TextInput';
+import { useLocalStorage } from '../hooks/useLocalStorage';
 import { flushOnboardingSignals } from '../services/onboardingSync';
 import { AuthLayout } from '../components/Layout/AuthLayout';
 import { Mascote } from '../components/Mascote/Mascote';
@@ -15,8 +16,16 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [error, setError]       = useState('');
   const [loading, setLoading]   = useState(false);
-  const { login }               = useContext(UserContext);
+  const [onboarding, setOnboarding] = useLocalStorage('ceci_onboarding', {});
+  const { login, user, initializing } = useContext(UserContext);
   const navigate = useNavigate();
+
+  // Se já estiver logado, manda direto para o dashboard
+  useEffect(() => {
+    if (!initializing && user) {
+      navigate('/dashboard', { replace: true });
+    }
+  }, [initializing, user, navigate]);
 
   const handleSubmit = async () => {
     setError('');
@@ -27,6 +36,9 @@ export default function Login() {
         return;
       }
       const loggedInUser = await login(email, password);
+
+      // Usuário com conta ativa: garante flag de onboarding concluído
+      setOnboarding((prev) => ({ ...prev, concluido: true }));
 
       // Se a pessoa passou por /boas-vindas de novo neste navegador (ex:
       // limpou os dados) e tinha sinais do onboarding ainda não
@@ -44,6 +56,8 @@ export default function Login() {
       setLoading(false);
     }
   };
+
+  if (initializing || user) return null;
 
   return (
     <>
@@ -92,6 +106,22 @@ export default function Login() {
 
         {/* Campos */}
         <div className={authStyles.form}>
+          {!onboarding?.concluido && (
+            <div className={styles.onboardingBanner} role="note">
+              <span className={styles.onboardingBannerIcon}>💡</span>
+              <div className={styles.onboardingBannerContent}>
+                <strong>Primeira vez por aqui?</strong>
+                <span>
+                  Recomendamos conhecer a Ceci nas{' '}
+                  <Link to="/boas-vindas" className={styles.onboardingBannerLink}>
+                    Boas-vindas
+                  </Link>{' '}
+                  antes de criar sua conta!
+                </span>
+              </div>
+            </div>
+          )}
+
           <TextInput
               label="E-mail"
               type="email"
@@ -137,8 +167,13 @@ export default function Login() {
         {/* Rodapé */}
         <div className={authStyles.footer}>
           <p>
-            Não tem conta?
-            <Link to="/cadastro" className={authStyles.link}>Criar cadastro</Link>
+            Não tem conta?{' '}
+            <Link
+              to={onboarding?.concluido ? '/cadastro' : '/boas-vindas'}
+              className={authStyles.link}
+            >
+              {onboarding?.concluido ? 'Criar cadastro' : 'Começar pelas boas-vindas'}
+            </Link>
           </p>
         </div>
       </AuthLayout>

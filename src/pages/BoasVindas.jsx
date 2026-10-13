@@ -612,9 +612,21 @@ export default function BoasVindas() {
                     tentar. Vamos começar?
                   </p>
 
-                  <ButtonPrimary size="large" onClick={() => irPara('pergunta-mouse')}>
-                    Vamos começar!
-                  </ButtonPrimary>
+                  <div className={styles.introFooter}>
+                    <ButtonPrimary size="large" onClick={() => irPara('pergunta-mouse')}>
+                      Vamos começar!
+                    </ButtonPrimary>
+                    <p className={styles.textoSecundario}>
+                      Já tem uma conta no CECI?{' '}
+                      <button
+                        type="button"
+                        className={styles.linkLoginInline}
+                        onClick={() => navigate('/login')}
+                      >
+                        Fazer login
+                      </button>
+                    </p>
+                  </div>
                 </RetroWindow>
             )}
 
@@ -815,6 +827,16 @@ export default function BoasVindas() {
                   <ButtonPrimary size="large" onClick={() => navigate('/cadastro')}>
                     Criar minha conta
                   </ButtonPrimary>
+                  <p className={styles.textoSecundario}>
+                    Já tem uma conta existente?{' '}
+                    <button
+                      type="button"
+                      className={styles.linkLoginInline}
+                      onClick={() => navigate('/login')}
+                    >
+                      Fazer login
+                    </button>
+                  </p>
                 </RetroWindow>
             )}
           </div>

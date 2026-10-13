@@ -60,6 +60,42 @@
   color: var(--color-yellow-deep);
 }
 
+.onboardingBanner {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  background: var(--color-yellow-bg, #fffbeb);
+  border: 1.5px solid var(--color-yellow-light, #fde68a);
+  border-radius: var(--radius-card, 14px);
+  margin-bottom: 1.25rem;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  color: var(--color-text-primary);
+  text-align: left;
+}
+
+.onboardingBannerIcon {
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.onboardingBannerContent {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.onboardingBannerLink {
+  color: var(--color-purple, #7c3aed);
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.onboardingBannerLink:hover {
+  color: var(--color-purple-dark, #5b21b6);
+}
+
 /* Conteúdo do lado da ilustração (a coluna em si é a AuthLayout) */
 .illustrationContent {
   position: relative;

@@ -25,6 +25,20 @@ const responderLimiter = rateLimit({
   },
 });
 
+// Rate limiting específico por IP para a rota pública de simulação (/api/licao/simular)
+// Usado no onboarding (/boas-vindas) antes da criação de conta.
+// Limita a 30 requisições por minuto por IP para proteger os cálculos do BKT contra DoS/abuso.
+const simularLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 30,
+  keyGenerator: (req) => ipKeyGenerator(req.ip),
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    error: 'Muitas simulações solicitadas em curto intervalo. Aguarde um minuto antes de tentar novamente.',
+  },
+});
+
 router.post('/responder', requireAuth, responderLimiter, validate({ body: responderLicaoSchema }), async (req, res) => {
   try {
     const {
@@ -142,7 +156,7 @@ router.post('/responder', requireAuth, responderLimiter, validate({ body: respon
   em BKTAdaptativo.js), em vez de confiar cegamente numa autodeclaração
   "já sei usar mouse/teclado" - ver BoasVindas.jsx.
  */
-router.post('/simular', validate({ body: simularLicaoSchema }), (req, res) => {
+router.post('/simular', simularLimiter, validate({ body: simularLicaoSchema }), (req, res) => {
   try {
     const {
       correto,

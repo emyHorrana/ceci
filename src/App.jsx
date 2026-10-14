@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Entrada    from './pages/Entrada';
 import Login      from './pages/Login';
 import RecuperarSenha from './pages/RecuperarSenha';
+import RedefinirSenha from './pages/RedefinirSenha';
 import Cadastro   from './pages/Cadastro';
 import Dashboard  from './pages/Dashboard';
 import Modulos    from './pages/Modulos';
@@ -32,10 +33,10 @@ function GlobalAchievementToast() {
   const { achievementNotification, dismissAchievementNotification } = useContext(ProgressContext);
   if (!achievementNotification) return null;
   return (
-    <AchievementNotification
-      conquista={achievementNotification}
-      onClose={dismissAchievementNotification}
-    />
+      <AchievementNotification
+          conquista={achievementNotification}
+          onClose={dismissAchievementNotification}
+      />
   );
 }
 
@@ -65,6 +66,9 @@ function App() {
 
                 {/* Recuperação de senha com mensagem acolhedora */}
                 <Route path="/recuperar-senha" element={<RecuperarSenha />} />
+
+                {/* Destino do link do e-mail de recuperação: define a nova senha */}
+                <Route path="/redefinir-senha" element={<RedefinirSenha />} />
 
                 {/* Boas-vindas: apresentação da Ceci + diagnóstico inicial.
                   Acesso direto continua livre (ex: repetir o onboarding

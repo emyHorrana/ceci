@@ -6,6 +6,7 @@ import { TextInput } from '../components/Forms/TextInput';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { flushOnboardingSignals } from '../services/onboardingSync';
 import { criarUsuario } from '../services/usuarioService';
+import { validarSenha } from '../utils/senha';
 import { salvarConquista } from '../services/progressService';
 import { salvarModoDesbloqueadoLocal, marcarModoNotificadoLocal } from '../services/laboratorioService';
 import { AuthLayout } from '../components/Layout/AuthLayout';
@@ -32,11 +33,11 @@ export default function Cadastro() {
   // Validação estrita: exige que o usuário tenha respondido as etapas do onboarding
   // (familiaridade com mouse, teclado, diagnóstico com nome e conclusão).
   const temDiagnosticoValido = Boolean(
-    onboarding?.concluido &&
-    onboarding?.prontoParaCadastro &&
-    onboarding?.familiaridadeMouse &&
-    onboarding?.dominios?.teclado &&
-    nomeOnboarding.trim()
+      onboarding?.concluido &&
+      onboarding?.prontoParaCadastro &&
+      onboarding?.familiaridadeMouse &&
+      onboarding?.dominios?.teclado &&
+      nomeOnboarding.trim()
   );
 
   // Se já estiver logado, vai direto pro dashboard
@@ -60,7 +61,8 @@ export default function Cadastro() {
     if (!nome.trim()) return 'Por favor, informe seu nome.';
     if (!email.trim()) return 'Por favor, informe seu e-mail.';
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return 'E-mail inválido.';
-    if (password.length < 6) return 'A senha deve ter pelo menos 6 caracteres.';
+    const erroSenha = validarSenha(password);
+    if (erroSenha) return erroSenha;
     if (password !== confirmPassword) return 'As senhas não coincidem.';
     return null;
   };
@@ -151,108 +153,108 @@ export default function Cadastro() {
   };
 
   return (
-    <>
-      <AuthLayout
-        formPosition="right"
-        illustrationMobileMinHeight="220px"
-        illustration={
-          <>
-            <h2 className={authStyles.illustrationTitle}>Aprenda com a CECI</h2>
-            <p className={styles.illustrationText}>
-              Uma plataforma pensada para você aprender tecnologia no seu próprio ritmo, com leveza e sem pressão.
-            </p>
-            <div className={styles.features}>
-              <div className={styles.featureItem}>Lições adaptadas ao seu nível</div>
-              <div className={styles.featureItem}>Atividades práticas e interativas</div>
-              <div className={styles.featureItem}>Acompanhe seu progresso em tempo real</div>
-              <div className={styles.featureItem}>Conquistas e recompensas ao longo do caminho</div>
-            </div>
-          </>
-        }
-      >
-        <div className={styles.card}>
-          <div className={styles.cardHeader}>
-            <img src="/logo-ceci.png" alt="CECI" className={styles.logoMini} />
-            <h1 className={authStyles.title}>Criar conta</h1>
-            <p className={authStyles.subtitle}>Comece a aprender hoje, de graça</p>
-          </div>
-
-          {success ? (
-            <div className={styles.successBox}>
-              <h3>Conta criada com sucesso!</h3>
-              <p>Redirecionando para o dashboard...</p>
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit} className={authStyles.form} noValidate>
-              <TextInput
-                label="Como você se chama?"
-                type="text"
-                value={nome}
-                onChange={(e) => setNome(e.target.value)}
-                placeholder="Seu nome"
-                required
-                disabled={loading}
-                autoFocus
-              />
-
-              <TextInput
-                label="E-mail"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="seu@email.com"
-                required
-                disabled={loading}
-              />
-
-              <TextInput
-                label="Senha"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Mínimo 6 caracteres"
-                required
-                disabled={loading}
-              />
-
-              <TextInput
-                label="Confirmar senha"
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="Repita sua senha"
-                required
-                disabled={loading}
-              />
-
-              {error && (
-                <div className={authStyles.errorBox} role="alert">
-                  ⚠️ {error}
+      <>
+        <AuthLayout
+            formPosition="right"
+            illustrationMobileMinHeight="220px"
+            illustration={
+              <>
+                <h2 className={authStyles.illustrationTitle}>Aprenda com a CECI</h2>
+                <p className={styles.illustrationText}>
+                  Uma plataforma pensada para você aprender tecnologia no seu próprio ritmo, com leveza e sem pressão.
+                </p>
+                <div className={styles.features}>
+                  <div className={styles.featureItem}>Lições adaptadas ao seu nível</div>
+                  <div className={styles.featureItem}>Atividades práticas e interativas</div>
+                  <div className={styles.featureItem}>Acompanhe seu progresso em tempo real</div>
+                  <div className={styles.featureItem}>Conquistas e recompensas ao longo do caminho</div>
                 </div>
-              )}
+              </>
+            }
+        >
+          <div className={styles.card}>
+            <div className={styles.cardHeader}>
+              <img src="/logo-ceci.png" alt="CECI" className={styles.logoMini} />
+              <h1 className={authStyles.title}>Criar conta</h1>
+              <p className={authStyles.subtitle}>Comece a aprender hoje, de graça</p>
+            </div>
 
-              <ButtonPrimary
-                type="submit"
-                fullWidth
-                disabled={loading}
-                size="large"
-              >
-                {loading ? '⏳ Criando conta...' : 'Criar conta grátis'}
-              </ButtonPrimary>
-            </form>
-          )}
+            {success ? (
+                <div className={styles.successBox}>
+                  <h3>Conta criada com sucesso!</h3>
+                  <p>Redirecionando para o dashboard...</p>
+                </div>
+            ) : (
+                <form onSubmit={handleSubmit} className={authStyles.form} noValidate>
+                  <TextInput
+                      label="Como você se chama?"
+                      type="text"
+                      value={nome}
+                      onChange={(e) => setNome(e.target.value)}
+                      placeholder="Seu nome"
+                      required
+                      disabled={loading}
+                      autoFocus
+                  />
 
-          <div className={authStyles.footer}>
-            <p>
-              Já tem conta?{' '}
-              <Link to="/login" className={authStyles.link}>
-                Fazer login
-              </Link>
-            </p>
+                  <TextInput
+                      label="E-mail"
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="seu@email.com"
+                      required
+                      disabled={loading}
+                  />
+
+                  <TextInput
+                      label="Senha"
+                      type="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="Mínimo 6 caracteres"
+                      required
+                      disabled={loading}
+                  />
+
+                  <TextInput
+                      label="Confirmar senha"
+                      type="password"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      placeholder="Repita sua senha"
+                      required
+                      disabled={loading}
+                  />
+
+                  {error && (
+                      <div className={authStyles.errorBox} role="alert">
+                        ⚠️ {error}
+                      </div>
+                  )}
+
+                  <ButtonPrimary
+                      type="submit"
+                      fullWidth
+                      disabled={loading}
+                      size="large"
+                  >
+                    {loading ? '⏳ Criando conta...' : 'Criar conta grátis'}
+                  </ButtonPrimary>
+                </form>
+            )}
+
+            <div className={authStyles.footer}>
+              <p>
+                Já tem conta?{' '}
+                <Link to="/login" className={authStyles.link}>
+                  Fazer login
+                </Link>
+              </p>
+            </div>
           </div>
-        </div>
-      </AuthLayout>
-      <Footer />
-    </>
+        </AuthLayout>
+        <Footer />
+      </>
   );
 }

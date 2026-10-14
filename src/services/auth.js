@@ -36,13 +36,29 @@ export async function getCurrentUser() {
 }
 
 // Envia e-mail de instruções para redefinição de senha.
+// O link do e-mail leva para /redefinir-senha (onde a pessoa define a nova senha).
+// Essa URL precisa estar cadastrada em Authentication > URL Configuration >
+// Redirect URLs no painel do Supabase, senão o Supabase ignora o redirectTo.
 export async function recuperarSenha(email) {
-  const redirectTo = typeof window !== 'undefined' ? `${window.location.origin}/login` : undefined;
+  const redirectTo = typeof window !== 'undefined' ? `${window.location.origin}/redefinir-senha` : undefined;
   const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
     redirectTo,
   });
   if (error) throw new Error(error.message);
   return data;
+}
+
+// Define a nova senha da sessão de recuperação ativa (aberta pelo link do e-mail).
+// Depois encerra TODAS as sessões da conta (scope 'global'), para que quem
+// tinha acesso com a senha antiga seja desconectado também.
+export async function redefinirSenha(novaSenha) {
+  const { error } = await supabase.auth.updateUser({ password: novaSenha });
+  if (error) throw new Error(error.message);
+  try {
+    await supabase.auth.signOut({ scope: 'global' });
+  } catch {
+    await supabase.auth.signOut();
+  }
 }
 
 // Escuta mudanças de sessão (login, logout, refresh de token, sessão

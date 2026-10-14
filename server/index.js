@@ -14,28 +14,45 @@ app.use(helmet({
   crossOriginResourcePolicy: { policy: 'cross-origin' },
 }));
 
-// 2. CORS restrito ao domínio oficial, localhost em dev e Vercel previews
-const allowedOrigins = [
-  'http://localhost:5173',
-  'http://localhost:3000',
-  'http://localhost:3001',
-  process.env.CLIENT_URL,
-  process.env.FRONTEND_URL,
-].filter(Boolean);
+// 2. CORS restrito: só o domínio oficial, o deploy atual da Vercel e localhost em dev.
+// Não há mais curinga *.vercel.app (isso liberava qualquer projeto de qualquer pessoa).
+//  - CLIENT_URL / FRONTEND_URL: domínio de produção (ex: https://ceci.vercel.app ou domínio próprio)
+//  - VERCEL_URL, VERCEL_BRANCH_URL, VERCEL_PROJECT_PRODUCTION_URL: variáveis de sistema que a
+//    própria Vercel injeta (sem protocolo) - cobrem produção e previews DESTE projeto.
+const normalizarOrigem = (valor) => {
+  if (!valor) return null;
+  const semBarra = String(valor).trim().replace(/\/+$/, '');
+  return /^https?:\/\//.test(semBarra) ? semBarra : `https://${semBarra}`;
+};
+
+const allowedOrigins = new Set(
+    [
+      'http://localhost:5173',
+      'http://localhost:3000',
+      'http://localhost:3001',
+      process.env.CLIENT_URL,
+      process.env.FRONTEND_URL,
+      process.env.VERCEL_URL,
+      process.env.VERCEL_BRANCH_URL,
+      process.env.VERCEL_PROJECT_PRODUCTION_URL,
+    ]
+        .map(normalizarOrigem)
+        .filter(Boolean)
+);
 
 const corsOptions = {
   origin: function (origin, callback) {
+    // Requisições sem Origin (curl, health checks, server-to-server) não são navegador: seguem.
     if (!origin) return callback(null, true);
     if (
-      allowedOrigins.includes(origin) ||
-      (process.env.NODE_ENV !== 'production' && origin.startsWith('http://localhost:')) ||
-      /^https:\/\/.*\.vercel\.app$/.test(origin)
+        allowedOrigins.has(origin) ||
+        (process.env.NODE_ENV !== 'production' && origin.startsWith('http://localhost:'))
     ) {
       return callback(null, true);
     }
     return callback(new Error('Origem não permitida pela política de CORS.'));
   },
-  credentials: true,
+  // A autenticação é por Bearer token no header, não por cookie: não precisa de credentials.
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 };

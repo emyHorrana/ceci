@@ -34,8 +34,9 @@ jobs:
         run: npm ci
 
       - name: 4. DevSecOps - Auditoria de Segurança
-        run: npm audit --audit-level=high
-        continue-on-error: true
+        # Falha o pipeline se houver vulnerabilidade alta ou crítica nas
+        # dependências de produção (devDependencies não vão para o servidor/bundle).
+        run: npm audit --omit=dev --audit-level=high
 
       - name: 5. Validação dos Secrets da Vercel
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'

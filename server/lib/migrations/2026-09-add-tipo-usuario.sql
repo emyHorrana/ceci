@@ -10,12 +10,12 @@ BEGIN
     SELECT 1 FROM information_schema.columns 
     WHERE table_name = 'usuarios' AND column_name = 'tipo'
   ) THEN
-    ALTER TABLE public.usuarios ADD COLUMN tipo text DEFAULT 'aluno' NOT NULL;
-  ELSE
-    ALTER TABLE public.usuarios ALTER COLUMN tipo SET DEFAULT 'aluno';
-    UPDATE public.usuarios SET tipo = 'aluno' WHERE tipo IS NULL;
-    ALTER TABLE public.usuarios ALTER COLUMN tipo SET NOT NULL;
-  END IF;
+ALTER TABLE public.usuarios ADD COLUMN tipo text DEFAULT 'aluno' NOT NULL;
+ELSE
+ALTER TABLE public.usuarios ALTER COLUMN tipo SET DEFAULT 'aluno';
+UPDATE public.usuarios SET tipo = 'aluno' WHERE tipo IS NULL;
+ALTER TABLE public.usuarios ALTER COLUMN tipo SET NOT NULL;
+END IF;
 END $$;
 
 -- 2. Restringe os valores permitidos para apenas 'aluno' ou 'admin'
@@ -31,8 +31,8 @@ DROP POLICY IF EXISTS "Usuarios podem ler seu proprio perfil" ON public.usuarios
 CREATE POLICY "Usuarios podem ler seu proprio perfil"
   ON public.usuarios
   FOR SELECT
-  TO authenticated
-  USING (auth.uid() = id);
+                      TO authenticated
+                      USING (auth.uid() = id);
 
 -- 4.2 Inserção e Atualização (INSERT / UPDATE):
 -- O backend roda com SUPABASE_SERVICE_ROLE_KEY, que bypassa RLS automaticamente.
@@ -44,25 +44,33 @@ DROP POLICY IF EXISTS "Usuarios podem criar seu proprio perfil" ON public.usuari
 -- 5. TRIGGER DE DEFESA EM PROFUNDIDADE:
 -- Caso alguma política de UPDATE venha a ser criada no futuro, esta trigger
 -- impede sumariamente que papéis de cliente (authenticated / anon) alterem `tipo`.
+-- IMPORTANTE: NÃO usar SECURITY DEFINER aqui. Nesse modo `current_user` vira o
+-- dono da função (postgres) e o teste abaixo nunca bloquearia o cliente.
 CREATE OR REPLACE FUNCTION public.bloquear_alteracao_tipo_usuario()
-RETURNS TRIGGER AS $$
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SET search_path = public
+AS $$
 BEGIN
   -- Se o campo `tipo` estiver sendo modificado
   IF NEW.tipo IS DISTINCT FROM OLD.tipo THEN
     -- Impede se a chamada vier do cliente Supabase (usuário logado ou anônimo)
     IF current_user IN ('authenticated', 'anon') THEN
       RAISE EXCEPTION 'Acesso negado: o tipo de conta (aluno/admin) só pode ser alterado manualmente pelo administrador.';
-    END IF;
-  END IF;
-  RETURN NEW;
+END IF;
+END IF;
+RETURN NEW;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$;
+
+-- Camada extra por privilégio (o cliente só lê `usuarios`; escritas vão pelo backend).
+REVOKE INSERT, UPDATE, DELETE ON public.usuarios FROM anon, authenticated;
 
 DROP TRIGGER IF EXISTS trg_bloquear_alteracao_tipo ON public.usuarios;
 CREATE TRIGGER trg_bloquear_alteracao_tipo
-  BEFORE UPDATE ON public.usuarios
-  FOR EACH ROW
-  EXECUTE FUNCTION public.bloquear_alteracao_tipo_usuario();
+    BEFORE UPDATE ON public.usuarios
+    FOR EACH ROW
+    EXECUTE FUNCTION public.bloquear_alteracao_tipo_usuario();
 
 -- ==============================================================================
 -- Fim da migração.

@@ -57,8 +57,8 @@ DROP POLICY IF EXISTS "Usuarios podem ler seu proprio perfil" ON public.usuarios
 CREATE POLICY "Usuarios podem ler seu proprio perfil"
   ON public.usuarios
   FOR SELECT
-  TO authenticated
-  USING (auth.uid() = id);
+                                     TO authenticated
+                                     USING (auth.uid() = id);
 
 -- ------------------------------------------------------------------------------
 -- 3.2 CATÁLOGO: `modulos`, `licoes`, `etapas`
@@ -69,22 +69,22 @@ DROP POLICY IF EXISTS "Leitura publica de modulos" ON public.modulos;
 CREATE POLICY "Leitura publica de modulos"
   ON public.modulos
   FOR SELECT
-  TO public
-  USING (true);
+                      TO public
+                      USING (true);
 
 DROP POLICY IF EXISTS "Leitura publica de licoes" ON public.licoes;
 CREATE POLICY "Leitura publica de licoes"
   ON public.licoes
   FOR SELECT
-  TO public
-  USING (true);
+                      TO public
+                      USING (true);
 
 DROP POLICY IF EXISTS "Leitura publica de etapas" ON public.etapas;
 CREATE POLICY "Leitura publica de etapas"
   ON public.etapas
   FOR SELECT
-  TO public
-  USING (true);
+                      TO public
+                      USING (true);
 
 -- ------------------------------------------------------------------------------
 -- 3.3 `perfis_aluno`
@@ -97,8 +97,8 @@ DROP POLICY IF EXISTS "usuario_le_proprio_perfil_bkt" ON public.perfis_aluno;
 CREATE POLICY "usuario_le_proprio_perfil_bkt"
   ON public.perfis_aluno
   FOR SELECT
-  TO authenticated
-  USING (auth.uid() = user_id);
+                           TO authenticated
+                           USING (auth.uid() = user_id);
 
 -- ------------------------------------------------------------------------------
 -- 3.4 `progresso_usuario`
@@ -113,8 +113,8 @@ DROP POLICY IF EXISTS "Usuários podem deletar seu próprio progresso" ON public
 CREATE POLICY "Usuários podem ver seu próprio progresso"
   ON public.progresso_usuario
   FOR SELECT
-  TO authenticated
-  USING (auth.uid() = usuario_id);
+                                          TO authenticated
+                                          USING (auth.uid() = usuario_id);
 
 CREATE POLICY "Usuários podem inserir seu próprio progresso"
   ON public.progresso_usuario
@@ -125,14 +125,14 @@ CREATE POLICY "Usuários podem inserir seu próprio progresso"
 CREATE POLICY "Usuários podem atualizar seu próprio progresso"
   ON public.progresso_usuario
   FOR UPDATE
-  TO authenticated
-  USING (auth.uid() = usuario_id)
-  WITH CHECK (auth.uid() = usuario_id);
+                        TO authenticated
+                        USING (auth.uid() = usuario_id)
+      WITH CHECK (auth.uid() = usuario_id);
 
 CREATE POLICY "Usuários podem deletar seu próprio progresso"
   ON public.progresso_usuario
   FOR DELETE
-  TO authenticated
+TO authenticated
   USING (auth.uid() = usuario_id);
 
 -- ------------------------------------------------------------------------------
@@ -159,52 +159,76 @@ CREATE POLICY "conquistas_proprias"
 -- ==============================================================================
 
 -- 4.1 Bloqueio de auto-promoção para 'admin' via console do navegador
+--
+-- ATENÇÃO: esta função NÃO pode ser SECURITY DEFINER. Em uma função
+-- SECURITY DEFINER, `current_user` é o DONO da função (postgres), e não
+-- quem fez a chamada - então o teste abaixo nunca seria verdadeiro e o
+-- trigger não bloquearia nada. Como função comum (SECURITY INVOKER), o
+-- `current_user` é o papel que o PostgREST usa na requisição:
+-- 'authenticated' (aluno logado) ou 'anon'. Já o backend (service_role)
+-- e o painel do Supabase (postgres) continuam podendo alterar o tipo.
 CREATE OR REPLACE FUNCTION public.bloquear_alteracao_tipo_usuario()
-RETURNS TRIGGER AS $$
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SET search_path = public
+AS $$
 BEGIN
   IF NEW.tipo IS DISTINCT FROM OLD.tipo THEN
     IF current_user IN ('authenticated', 'anon') THEN
       RAISE EXCEPTION 'Acesso negado: o tipo de conta só pode ser alterado manualmente pelo administrador no painel.';
-    END IF;
-  END IF;
-  RETURN NEW;
+END IF;
+END IF;
+RETURN NEW;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$;
+
+-- 4.1.1 Camada extra por privilégio: o cliente (anon/authenticated) não precisa
+-- escrever em `usuarios` (leitura direta; escritas passam pelo backend com
+-- service_role). Revogar no nível da TABELA é o que de fato vale: um REVOKE
+-- só na coluna não tem efeito quando o privilégio da tabela inteira foi concedido.
+REVOKE INSERT, UPDATE, DELETE ON public.usuarios FROM anon, authenticated;
 
 DROP TRIGGER IF EXISTS trg_bloquear_alteracao_tipo ON public.usuarios;
 CREATE TRIGGER trg_bloquear_alteracao_tipo
-  BEFORE UPDATE ON public.usuarios
-  FOR EACH ROW
-  EXECUTE FUNCTION public.bloquear_alteracao_tipo_usuario();
+    BEFORE UPDATE ON public.usuarios
+    FOR EACH ROW
+    EXECUTE FUNCTION public.bloquear_alteracao_tipo_usuario();
 
 -- 4.2 Auto-criação de perfil em `public.usuarios` assim que o usuário nasce em `auth.users`
 -- Isso resolve 100% de cadastros órfãos, independentemente de confirmação de e-mail ou JWT no front.
+-- SECURITY DEFINER aqui é necessário (o trigger roda em auth.users e grava em
+-- public.usuarios); por isso fixamos o search_path para evitar sequestro de schema.
+-- O nome é limitado a 100 caracteres (mesmo limite validado no backend).
 CREATE OR REPLACE FUNCTION public.handle_new_user()
-RETURNS TRIGGER AS $$
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
 BEGIN
-  INSERT INTO public.usuarios (id, nome, email, tipo)
-  VALUES (
-    NEW.id,
-    COALESCE(NEW.raw_user_meta_data->>'nome', SPLIT_PART(NEW.email, '@', 1), 'Usuário'),
-    NEW.email,
-    'aluno'
-  )
-  ON CONFLICT (id) DO UPDATE
-    SET email = EXCLUDED.email,
-        nome = CASE 
-                 WHEN public.usuarios.nome IS NULL OR public.usuarios.nome = '' 
-                 THEN EXCLUDED.nome 
-                 ELSE public.usuarios.nome 
-               END;
-  RETURN NEW;
+INSERT INTO public.usuarios (id, nome, email, tipo)
+VALUES (
+           NEW.id,
+           LEFT(COALESCE(NULLIF(TRIM(NEW.raw_user_meta_data->>'nome'), ''), SPLIT_PART(NEW.email, '@', 1), 'Usuário'), 100),
+           NEW.email,
+           'aluno'
+       )
+    ON CONFLICT (id) DO UPDATE
+                            SET email = EXCLUDED.email,
+                            nome = CASE
+                            WHEN public.usuarios.nome IS NULL OR public.usuarios.nome = ''
+                            THEN EXCLUDED.nome
+                            ELSE public.usuarios.nome
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+RETURN NEW;
+END;
+$$;
 
 DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 CREATE TRIGGER on_auth_user_created
-  AFTER INSERT ON auth.users
-  FOR EACH ROW
-  EXECUTE FUNCTION public.handle_new_user();
+    AFTER INSERT ON auth.users
+    FOR EACH ROW
+    EXECUTE FUNCTION public.handle_new_user();
 
 
 -- ==============================================================================
@@ -212,9 +236,9 @@ CREATE TRIGGER on_auth_user_created
 -- ==============================================================================
 INSERT INTO public.usuarios (id, nome, email, tipo)
 SELECT
-  id,
-  COALESCE(raw_user_meta_data->>'nome', SPLIT_PART(email, '@', 1), 'Usuário'),
-  email,
-  'aluno'
+    id,
+    COALESCE(raw_user_meta_data->>'nome', SPLIT_PART(email, '@', 1), 'Usuário'),
+    email,
+    'aluno'
 FROM auth.users
-ON CONFLICT (id) DO NOTHING;
+    ON CONFLICT (id) DO NOTHING;
